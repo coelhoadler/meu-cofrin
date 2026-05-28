@@ -6,6 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
+    "deploy": "ng build --configuration production && npx firebase deploy",
     "test": "ng test"
   },
   "private": true,
@@ -14,9 +15,13 @@
     "@angular/common": "^21.2.0",
     "@angular/compiler": "^21.2.0",
     "@angular/core": "^21.2.0",
+    "@angular/fire": "^20.0.1",
     "@angular/forms": "^21.2.0",
     "@angular/platform-browser": "^21.2.0",
     "@angular/router": "^21.2.0",
+    "@angular/service-worker": "^21.2.7",
+    "firebase": "^12.11.0",
+    "ngx-mask": "^21.0.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },

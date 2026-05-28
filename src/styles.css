@@ -1,3 +1,9 @@
-/* You can add global styles to this file, and also import other style files */
+/* Arquivo base para estilos globais do projeto */
+/* Aqui importamos o TailwindCSS para começar */
 
 @import 'tailwindcss';
+
+/* Opcional: Definições globais de corpo (body) */
+body {
+    @apply bg-slate-950 text-slate-100;
+}
