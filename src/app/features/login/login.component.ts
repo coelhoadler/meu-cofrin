@@ -22,6 +22,13 @@ export class LoginComponent {
 
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
+  isLoginMode = signal(true);
+
+  toggleMode(mode: 'login' | 'signup') {
+    this.isLoginMode.set(mode === 'login');
+    this.errorMessage.set(null);
+    this.loginForm.reset();
+  }
 
   async onSubmit() {
     if (this.loginForm.invalid) {
@@ -35,10 +42,17 @@ export class LoginComponent {
     const { email, password } = this.loginForm.value;
 
     try {
-      await this.authService.login(email!, password!);
+      if (this.isLoginMode()) {
+        await this.authService.login(email!, password!);
+      } else {
+        await this.authService.signup(email!, password!);
+      }
       this.router.navigate(['/dashboard']);
     } catch (error: any) {
-      this.errorMessage.set('Falha no login. Verifique suas credenciais.');
+      const message = this.isLoginMode() 
+        ? 'Falha no login. Verifique suas credenciais.'
+        : 'Falha ao criar conta. O e-mail pode já estar em uso.';
+      this.errorMessage.set(message);
       console.error(error);
     } finally {
       this.isLoading.set(false);
