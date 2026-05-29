@@ -1,0 +1,52 @@
+<div class="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-fuchsia-500 selection:text-white">
+  <!-- Top Navigation -->
+  <header class="w-full border-b border-white/10 bg-slate-950/50 backdrop-blur-md sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-purple-500/30">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-fuchsia-400">Meu Cofrin</h1>
+      </div>
+      <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-300">
+        <a href="#" class="hover:text-white transition-colors">Dashboard</a>
+        <a href="#" class="hover:text-white transition-colors">Transações</a>
+        <a href="#" class="hover:text-white transition-colors">Metas</a>
+        <button (click)="logout()" class="ml-4 px-4 py-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors border border-red-500/20">
+          Sair
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-grow max-w-6xl w-full mx-auto px-6 py-12 flex flex-col items-center justify-center relative">
+    
+    <!-- Decorative background glow -->
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-600/20 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
+
+    <div class="text-center max-w-2xl space-y-6 animate-fade-in-up">
+      <span class="px-4 py-1.5 rounded-full border border-white/10 bg-white/5 text-sm font-medium text-indigo-300 inline-block mb-2">Painel Principal 🚀</span>
+      
+      <h2 class="text-5xl md:text-6xl font-extrabold tracking-tight">
+        Seu futuro financeiro <br />
+        <span class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-fuchsia-400">começa aqui.</span>
+      </h2>
+      
+      <p class="text-lg text-slate-400 leading-relaxed">
+        Bem-vindo ao <strong>Meu Cofrin</strong>. A estrutura base já está pronta com Angular v21 e TailwindCSS. Agora é hora de dar vida às suas finanças.
+      </p>
+
+      <div class="pt-6 flex items-center justify-center gap-4">
+        <button class="px-8 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white font-semibold shadow-lg shadow-purple-500/25 transition-all hover:scale-105 active:scale-95">
+          Criar Nova Meta
+        </button>
+        <button class="px-8 py-3 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-white font-semibold backdrop-blur-sm transition-all hover:scale-105 active:scale-95">
+          Ver Documentação
+        </button>
+      </div>
+    </div>
+  </main>
+</div>
