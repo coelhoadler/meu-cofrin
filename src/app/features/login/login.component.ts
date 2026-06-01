@@ -23,11 +23,17 @@ export class LoginComponent {
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
   isLoginMode = signal(true);
+  showPassword = signal(false);
 
   toggleMode(mode: 'login' | 'signup') {
     this.isLoginMode.set(mode === 'login');
     this.errorMessage.set(null);
     this.loginForm.reset();
+    this.showPassword.set(false);
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword.update(v => !v);
   }
 
   async onSubmit() {
