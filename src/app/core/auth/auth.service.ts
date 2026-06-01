@@ -20,6 +20,7 @@ export class AuthService {
   async login(email: string, password: string) {
     try {
       const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
+      debugger
       return userCredential;
     } catch (error) {
       throw error;
