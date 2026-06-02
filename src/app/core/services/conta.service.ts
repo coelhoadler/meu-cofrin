@@ -83,6 +83,27 @@ export class ContaService {
     });
   }
 
+  async getContasByMesReferencia(mesReferencia: string): Promise<Conta[]> {
+    const user = this.authService.currentUser();
+    if (!user) {
+      return [];
+    }
+
+    const contasRef = collection(this.firestore, `users/${user.uid}/contas`);
+    const q = query(
+      contasRef,
+      where('mesReferencia', '==', mesReferencia)
+    );
+
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => {
+      return {
+        id: doc.id,
+        ...doc.data()
+      } as Conta;
+    });
+  }
+
   async getContaById(id: string): Promise<Conta | null> {
     const user = this.authService.currentUser();
     if (!user) return null;
