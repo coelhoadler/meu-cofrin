@@ -1,6 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, authState, User } from '@angular/fire/auth';
 import { Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,10 +13,13 @@ export class AuthService {
   currentUser = signal<User | null | undefined>(undefined);
 
   constructor() {
-    debugger
     authState(this.auth).subscribe((user) => {
       this.currentUser.set(user);
     });
+  }
+
+  async getCurrentUserAsync(): Promise<User | null> {
+    return firstValueFrom(authState(this.auth));
   }
 
   async login(email: string, password: string) {

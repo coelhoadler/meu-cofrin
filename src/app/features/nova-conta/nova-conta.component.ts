@@ -87,7 +87,6 @@ export class NovaContaComponent implements OnInit {
       this.editId.set(id);
       this.isLoading.set(true);
       try {
-        debugger
         const conta = await this.contaService.getContaById(id);
 
         if (conta) {
