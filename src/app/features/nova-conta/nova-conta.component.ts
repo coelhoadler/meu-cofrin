@@ -160,4 +160,38 @@ export class NovaContaComponent implements OnInit {
       this.isLoading.set(false);
     }
   }
+
+  async onDeleteConta() {
+    if (confirm('Tem certeza que deseja excluir esta conta?')) {
+      this.isLoading.set(true);
+      try {
+        await this.contaService.deleteConta(this.editId()!);
+        this.router.navigate(['/dashboard']);
+      } catch (error: any) {
+        console.error(error);
+        this.errorMessage.set('Erro ao excluir a conta.');
+      } finally {
+        this.isLoading.set(false);
+      }
+    }
+  }
+
+  async onRemoveRecibo() {
+    if (confirm('Tem certeza que deseja remover o anexo?')) {
+      this.isLoading.set(true);
+      try {
+        await this.contaService.removeRecibo(this.editId()!);
+        this.existingReciboUrl.set(null);
+      } catch (error: any) {
+        console.error(error);
+        this.errorMessage.set('Erro ao remover o anexo.');
+      } finally {
+        this.isLoading.set(false);
+      }
+    }
+  }
+
+  removeSelectedFile() {
+    this.selectedFile.set(null);
+  }
 }

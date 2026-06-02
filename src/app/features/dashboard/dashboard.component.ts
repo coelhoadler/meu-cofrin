@@ -18,6 +18,8 @@ export class DashboardComponent {
 
   lancamentos = signal<Conta[]>([]);
   isLoading = signal(true);
+  
+  selectedConta = signal<Conta | null>(null);
 
   totalDespesas = signal('R$ 0,00');
   totalReceitas = signal('R$ 0,00');
@@ -80,12 +82,21 @@ export class DashboardComponent {
     }
   }
 
+  openModal(conta: Conta) {
+    this.selectedConta.set(conta);
+  }
+
+  closeModal() {
+    this.selectedConta.set(null);
+  }
+
   async deleteLancamento(id: string | undefined) {
     if (!id) return;
 
     if (window.confirm('Tem certeza que deseja deletar este lançamento? Esta ação não pode ser desfeita.')) {
       try {
         await this.contaService.deleteConta(id);
+        this.closeModal();
         // Recarregar os lançamentos após deletar
         await this.loadLancamentos();
         await this.loadResumoMes();

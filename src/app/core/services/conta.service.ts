@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, addDoc, serverTimestamp, query, where, orderBy, getDocs, doc, deleteDoc, getDoc, updateDoc } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, serverTimestamp, query, where, orderBy, getDocs, doc, deleteDoc, getDoc, updateDoc, deleteField } from '@angular/fire/firestore';
 import { Storage, ref, uploadBytes, getDownloadURL } from '@angular/fire/storage';
 import { AuthService } from '../auth/auth.service';
 
@@ -159,5 +159,13 @@ export class ContaService {
 
     const docRef = doc(this.firestore, `users/${user.uid}/contas`, id);
     await deleteDoc(docRef);
+  }
+
+  async removeRecibo(id: string): Promise<void> {
+    const user = await this.authService.getCurrentUserAsync();
+    if (!user) throw new Error('Usuário não autenticado');
+
+    const docRef = doc(this.firestore, `users/${user.uid}/contas`, id);
+    await updateDoc(docRef, { reciboUrl: deleteField() });
   }
 }
