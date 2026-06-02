@@ -17,6 +17,11 @@ export const routes: Routes = [
         loadComponent: () => import('./features/nova-conta/nova-conta.component').then(m => m.NovaContaComponent),
         title: 'Meu Cofrin | Nova Conta' 
       },
+      { 
+        path: 'editar-conta/:id', 
+        loadComponent: () => import('./features/nova-conta/nova-conta.component').then(m => m.NovaContaComponent),
+        title: 'Meu Cofrin | Editar Conta' 
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },

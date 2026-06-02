@@ -8,8 +8,12 @@
   </a>
 
   <div class="mb-8">
-    <h2 class="text-[32px] font-bold text-slate-900 tracking-tight leading-tight">Nova conta</h2>
-    <p class="text-slate-500 text-[15px] mt-1">Cadastre uma receita ou despesa no seu Cofrin.</p>
+    <h2 class="text-[32px] font-bold text-slate-900 tracking-tight leading-tight">
+      {{ isEditMode() ? 'Editar conta' : 'Nova conta' }}
+    </h2>
+    <p class="text-slate-500 text-[15px] mt-1">
+      {{ isEditMode() ? 'Atualize os dados da sua conta.' : 'Cadastre uma receita ou despesa no seu Cofrin.' }}
+    </p>
   </div>
 
   <!-- Form Card -->
@@ -105,7 +109,17 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
           </svg>
           <span class="text-[13px] font-medium text-slate-500 group-hover:text-slate-700 transition-colors">
-             {{ selectedFile() ? selectedFile()?.name : 'Clique para enviar (PDF, imagem — até 5MB)' }}
+             <ng-container *ngIf="selectedFile(); else existingFile">
+               {{ selectedFile()?.name }}
+             </ng-container>
+             <ng-template #existingFile>
+               <ng-container *ngIf="existingReciboUrl(); else noFile">
+                 Arquivo existente (envie outro para substituir)
+               </ng-container>
+               <ng-template #noFile>
+                 Clique para enviar (PDF, imagem — até 5MB)
+               </ng-template>
+             </ng-template>
           </span>
         </div>
       </div>
@@ -122,7 +136,7 @@
       <div class="flex items-center gap-4 pt-4">
         <button type="submit" [disabled]="isLoading()"
           class="flex-1 bg-[#321764] hover:bg-[#25104d] text-white py-3 px-4 rounded-xl text-sm font-semibold shadow-sm transition-all disabled:opacity-70 disabled:cursor-not-allowed">
-          {{ isLoading() ? 'Salvando...' : 'Salvar conta' }}
+          {{ isLoading() ? 'Salvando...' : (isEditMode() ? 'Atualizar conta' : 'Salvar conta') }}
         </button>
         <a routerLink="/dashboard" class="px-6 py-3 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl text-sm font-semibold transition-colors">
           Cancelar

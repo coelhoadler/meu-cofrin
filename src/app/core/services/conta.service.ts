@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, addDoc, serverTimestamp, query, where, orderBy, getDocs } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, serverTimestamp, query, where, orderBy, getDocs, doc, deleteDoc, getDoc, updateDoc } from '@angular/fire/firestore';
 import { Storage, ref, uploadBytes, getDownloadURL } from '@angular/fire/storage';
 import { AuthService } from '../auth/auth.service';
 
@@ -67,11 +67,6 @@ export class ContaService {
     const dataLimite = new Date();
     dataLimite.setDate(dataLimite.getDate() - 15);
 
-    // Note: To use orderBy and where together on the same field, Firestore might require an index. 
-    // Since this is a simple inequality on createdAt and ordering by createdAt, it might work without a composite index, 
-    // but just in case, we'll fetch ordered by createdAt desc and filter in memory if the query fails, or just rely on simple orderBy and filter on client to avoid index errors in MVP.
-    // Actually, where('createdAt', '>=', dataLimite) and orderBy('createdAt', 'desc') is a single-field index, so it's supported by default!
-
     const q = query(
       contasRef,
       where('createdAt', '>=', dataLimite),
@@ -86,5 +81,52 @@ export class ContaService {
         ...data
       } as Conta;
     });
+  }
+
+  async getContaById(id: string): Promise<Conta | null> {
+    const user = this.authService.currentUser();
+    if (!user) return null;
+
+    const docRef = doc(this.firestore, `users/${user.uid}/contas`, id);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      return { id: docSnap.id, ...docSnap.data() } as Conta;
+    }
+    return null;
+  }
+
+  async updateConta(id: string, contaData: Partial<Conta>, file?: File | null): Promise<void> {
+    const user = this.authService.currentUser();
+    if (!user) throw new Error('Usuário não autenticado');
+
+    let reciboUrl = contaData.reciboUrl || '';
+
+    if (file) {
+      const timestamp = new Date().getTime();
+      const filePath = `users/${user.uid}/receipts/${timestamp}_${file.name}`;
+      const storageRef = ref(this.storage, filePath);
+      const snapshot = await uploadBytes(storageRef, file);
+      reciboUrl = await getDownloadURL(snapshot.ref);
+    }
+
+    const docRef = doc(this.firestore, `users/${user.uid}/contas`, id);
+    const dataToUpdate = {
+      ...contaData,
+      ...(reciboUrl ? { reciboUrl } : {})
+    };
+    
+    // Remove id before updating
+    delete dataToUpdate.id;
+
+    await updateDoc(docRef, dataToUpdate);
+  }
+
+  async deleteConta(id: string): Promise<void> {
+    const user = this.authService.currentUser();
+    if (!user) throw new Error('Usuário não autenticado');
+
+    const docRef = doc(this.firestore, `users/${user.uid}/contas`, id);
+    await deleteDoc(docRef);
   }
 }

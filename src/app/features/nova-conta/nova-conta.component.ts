@@ -1,6 +1,6 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NgxMaskDirective } from 'ngx-mask';
 import { Conta, ContaService } from '../../core/services/conta.service';
@@ -11,10 +11,11 @@ import { Conta, ContaService } from '../../core/services/conta.service';
   imports: [ReactiveFormsModule, CommonModule, RouterLink, NgxMaskDirective],
   templateUrl: './nova-conta.component.html'
 })
-export class NovaContaComponent {
+export class NovaContaComponent implements OnInit {
   private fb = inject(FormBuilder);
   private contaService = inject(ContaService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   contaForm = this.fb.group({
     nome: ['', [Validators.required]],
@@ -30,6 +31,10 @@ export class NovaContaComponent {
   selectedFile = signal<File | null>(null);
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
+  
+  isEditMode = signal(false);
+  editId = signal<string | null>(null);
+  existingReciboUrl = signal<string | null>(null);
 
   constructor() {
     // Listen to statusPago to enable/disable dataPagamento
@@ -45,6 +50,41 @@ export class NovaContaComponent {
       }
       dataPagamentoCtrl?.updateValueAndValidity();
     });
+  }
+
+  async ngOnInit() {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.isEditMode.set(true);
+      this.editId.set(id);
+      this.isLoading.set(true);
+      try {
+        const conta = await this.contaService.getContaById(id);
+        if (conta) {
+          // Pre-fill the form
+          this.contaForm.patchValue({
+            nome: conta.nome,
+            descricao: conta.descricao || '',
+            tipo: conta.tipo,
+            categoria: conta.categoria,
+            diaVencimento: conta.diaVencimento,
+            statusPago: conta.statusPago,
+            dataPagamento: conta.dataPagamento || '',
+            valor: conta.valor?.toString() || ''
+          });
+          if (conta.reciboUrl) {
+            this.existingReciboUrl.set(conta.reciboUrl);
+          }
+        } else {
+          this.errorMessage.set('Conta não encontrada.');
+        }
+      } catch (error) {
+        console.error('Erro ao buscar conta:', error);
+        this.errorMessage.set('Erro ao carregar dados da conta.');
+      } finally {
+        this.isLoading.set(false);
+      }
+    }
   }
 
   onFileSelected(event: any) {
@@ -76,7 +116,12 @@ export class NovaContaComponent {
         valor: formValue.valor
       };
 
-      await this.contaService.addConta(contaData, this.selectedFile());
+      if (this.isEditMode() && this.editId()) {
+        await this.contaService.updateConta(this.editId()!, contaData, this.selectedFile());
+      } else {
+        await this.contaService.addConta(contaData, this.selectedFile());
+      }
+      
       this.router.navigate(['/dashboard']);
     } catch (error: any) {
       console.error(error);
