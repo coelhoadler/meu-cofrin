@@ -1,0 +1,85 @@
+<div class="min-h-screen bg-slate-50 flex font-sans text-slate-800">
+  
+  <!-- Sidebar -->
+  <aside 
+    [class.translate-x-0]="isSidebarOpen()" 
+    [class.-translate-x-full]="!isSidebarOpen()"
+    class="fixed inset-y-0 left-0 z-50 w-64 bg-[#1a112c] text-slate-300 transition-transform duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col border-r border-slate-800/50 shadow-xl md:shadow-none">
+    
+    <!-- Sidebar Header -->
+    <div class="p-6 flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-purple-500/30">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-lg font-bold text-white leading-tight">Meu Cofrin</h1>
+        <p class="text-[11px] text-slate-400">Finanças pessoais</p>
+      </div>
+    </div>
+
+    <!-- Sidebar Navigation -->
+    <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+      <a routerLink="/dashboard" routerLinkActive="bg-[#8b5cf6]/20 text-[#c4b5fd]" [routerLinkActiveOptions]="{exact: true}"
+         class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+        </svg>
+        <span class="text-sm">Dashboard</span>
+      </a>
+
+      <a routerLink="/nova-conta" routerLinkActive="bg-[#8b5cf6]/20 text-[#c4b5fd]"
+         class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+        </svg>
+        <span class="text-sm">Nova conta</span>
+      </a>
+    </nav>
+
+    <!-- Sidebar Footer -->
+    <div class="p-4 mt-auto">
+      <div class="flex items-center gap-3 mb-4 px-2">
+        <div class="flex-1 truncate">
+          <p class="text-xs font-medium text-slate-400 truncate">{{ user()?.email || 'usuario@exemplo.com' }}</p>
+        </div>
+      </div>
+      <button (click)="logout()" class="w-full flex items-center gap-3 px-3 py-2 text-sm text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        </svg>
+        Sair
+      </button>
+    </div>
+  </aside>
+
+  <!-- Overlay for mobile when sidebar is open -->
+  @if (isSidebarOpen()) {
+    <div (click)="toggleSidebar()" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 md:hidden"></div>
+  }
+
+  <!-- Main Content Area -->
+  <main class="flex-1 flex flex-col min-w-0 overflow-hidden h-screen overflow-y-auto bg-slate-50">
+    <!-- Top Header Mobile Toggle -->
+    <header class="md:hidden flex items-center justify-between p-4 bg-white border-b border-slate-200 sticky top-0 z-30">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 via-purple-500 to-fuchsia-500 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <span class="font-bold text-slate-800">Meu Cofrin</span>
+      </div>
+      <button (click)="toggleSidebar()" class="p-2 -mr-2 text-slate-500 hover:bg-slate-100 rounded-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </header>
+
+    <div class="flex-1 p-6 md:p-10 xl:px-16 w-full max-w-6xl mx-auto">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>
