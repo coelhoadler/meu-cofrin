@@ -37,8 +37,8 @@
           class="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/20 focus:border-[#421b7b] transition-all text-sm resize-none"></textarea>
       </div>
 
-      <!-- Row: Tipo, Categoria, Vencimento -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Row: Tipo, Mês de Referência -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label for="tipo" class="block text-sm font-semibold text-slate-700 mb-1.5">
             Tipo <span class="text-red-500">*</span>
@@ -51,40 +51,32 @@
         </div>
 
         <div>
-          <label for="categoria" class="block text-sm font-semibold text-slate-700 mb-1.5">
-            Categoria <span class="text-red-500">*</span>
+          <label for="mesReferencia" class="block text-sm font-semibold text-slate-700 mb-1.5">
+            Mês de referência <span class="text-red-500">*</span>
           </label>
-          <input id="categoria" type="text" formControlName="categoria" placeholder="Ex: Moradia, Lazer..."
-            class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/20 focus:border-[#421b7b] transition-all text-sm" />
-          <div *ngIf="contaForm.get('categoria')?.touched && contaForm.get('categoria')?.invalid" class="text-red-500 text-xs mt-1 font-medium">Obrigatório.</div>
-        </div>
-
-        <div>
-          <label for="diaVencimento" class="block text-sm font-semibold text-slate-700 mb-1.5">
-            Dia do Vencimento <span class="text-red-500">*</span>
-          </label>
-          <input id="diaVencimento" type="number" formControlName="diaVencimento" placeholder="1 a 31" min="1" max="31"
-            class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/20 focus:border-[#421b7b] transition-all text-sm" />
-          <div *ngIf="contaForm.get('diaVencimento')?.touched && contaForm.get('diaVencimento')?.invalid" class="text-red-500 text-xs mt-1 font-medium">Insira um dia válido (1-31).</div>
+          <input id="mesReferencia" type="month" formControlName="mesReferencia"
+            class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/20 focus:border-[#421b7b] transition-all text-sm" />
+          <div *ngIf="contaForm.get('mesReferencia')?.touched && contaForm.get('mesReferencia')?.invalid" class="text-red-500 text-xs mt-1 font-medium">Obrigatório.</div>
         </div>
       </div>
 
-      <!-- Row: Pagamento -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end bg-slate-50/50 p-4 rounded-xl border border-slate-100">
-        <div class="flex items-center h-full pb-3">
-          <label class="flex items-center gap-3 cursor-pointer">
-            <input type="checkbox" formControlName="statusPago"
-              class="w-5 h-5 rounded border-slate-300 text-[#421b7b] focus:ring-[#421b7b] cursor-pointer" />
-            <span class="text-sm font-semibold text-slate-700">Conta já foi paga?</span>
+      <!-- Row: Vencimento, Data Pagamento -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label for="diaVencimento" class="block text-sm font-semibold text-slate-700 mb-1.5">
+            Dia do vencimento <span class="text-red-500">*</span>
           </label>
+          <input id="diaVencimento" type="number" formControlName="diaVencimento" placeholder="1-31" min="1" max="31"
+            class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/20 focus:border-[#421b7b] transition-all text-sm" />
+          <div *ngIf="contaForm.get('diaVencimento')?.touched && contaForm.get('diaVencimento')?.invalid" class="text-red-500 text-xs mt-1 font-medium">Insira um dia válido (1-31).</div>
         </div>
 
-        <div [class.opacity-50]="!contaForm.get('statusPago')?.value">
+        <div>
           <label for="dataPagamento" class="block text-sm font-semibold text-slate-700 mb-1.5">
-            Data de Pagamento <span *ngIf="contaForm.get('statusPago')?.value" class="text-red-500">*</span>
+            Dia que foi paga
           </label>
           <input id="dataPagamento" type="date" formControlName="dataPagamento"
-            class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/20 focus:border-[#421b7b] transition-all text-sm disabled:bg-slate-100" />
+            class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/20 focus:border-[#421b7b] transition-all text-sm disabled:bg-slate-100 disabled:opacity-60" />
         </div>
       </div>
 
@@ -97,6 +89,15 @@
           mask="separator.2" thousandSeparator="." decimalMarker="," prefix="R$ " [dropSpecialCharacters]="false"
           class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/20 focus:border-[#421b7b] transition-all text-sm font-medium" />
         <div *ngIf="contaForm.get('valor')?.touched && contaForm.get('valor')?.invalid" class="text-red-500 text-xs mt-1 font-medium">O valor é obrigatório.</div>
+      </div>
+
+      <!-- Conta já foi paga (Checkbox block) -->
+      <div>
+        <label class="flex items-center gap-3 cursor-pointer w-full px-4 py-3.5 bg-white border border-slate-200 rounded-xl transition-all hover:border-[#421b7b]/50">
+          <input type="checkbox" formControlName="statusPago"
+            class="w-5 h-5 rounded-full border-slate-300 text-[#421b7b] focus:ring-[#421b7b] cursor-pointer" />
+          <span class="text-sm font-semibold text-slate-800">Conta já foi paga</span>
+        </label>
       </div>
 
       <!-- Recibo -->

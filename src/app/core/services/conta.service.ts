@@ -8,7 +8,7 @@ export interface Conta {
   nome: string;
   descricao?: string;
   tipo: 'Despesa' | 'Receita';
-  categoria: string;
+  mesReferencia: string;
   diaVencimento: number;
   dataPagamento?: string | null;
   statusPago: boolean;
