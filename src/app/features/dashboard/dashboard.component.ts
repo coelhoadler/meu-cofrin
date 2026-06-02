@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ContaService, Conta } from '../../core/services/conta.service';
 import { AuthService } from '../../core/auth/auth.service';
+import { MessagingService } from '../../core/services/messaging.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,6 +16,7 @@ export class DashboardComponent {
 
   private contaService = inject(ContaService);
   private authService = inject(AuthService);
+  private messagingService = inject(MessagingService);
 
   lancamentos = signal<Conta[]>([]);
   isLoading = signal(true);
@@ -31,6 +33,10 @@ export class DashboardComponent {
       if (user) {
         this.loadLancamentos();
         this.loadResumoMes();
+        
+        // Pede permissão para notificações e salva o token (ideal ser chamado após login)
+        this.messagingService.requestPermissionAndGetToken();
+        this.messagingService.listenForMessages();
       }
     });
   }

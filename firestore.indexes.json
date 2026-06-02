@@ -1,0 +1,23 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "contas",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        {
+          "fieldPath": "mesReferencia",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "diaVencimento",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "statusPago",
+          "order": "ASCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

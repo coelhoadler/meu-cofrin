@@ -45,3 +45,4 @@ Thumbs.db
 
 # Firebase
 .firebase/*
+functions/node_modules
