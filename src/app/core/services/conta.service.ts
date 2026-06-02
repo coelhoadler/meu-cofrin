@@ -8,7 +8,7 @@ export interface Conta {
   nome: string;
   descricao?: string;
   tipo: 'Despesa' | 'Receita';
-  categoria: string;
+  mesReferencia: string;
   diaVencimento: number;
   dataPagamento?: string | null;
   statusPago: boolean;
@@ -79,6 +79,27 @@ export class ContaService {
       return {
         id: doc.id,
         ...data
+      } as Conta;
+    });
+  }
+
+  async getContasByMesReferencia(mesReferencia: string): Promise<Conta[]> {
+    const user = this.authService.currentUser();
+    if (!user) {
+      return [];
+    }
+
+    const contasRef = collection(this.firestore, `users/${user.uid}/contas`);
+    const q = query(
+      contasRef,
+      where('mesReferencia', '==', mesReferencia)
+    );
+
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => {
+      return {
+        id: doc.id,
+        ...doc.data()
       } as Conta;
     });
   }
