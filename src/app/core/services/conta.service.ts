@@ -26,7 +26,7 @@ export class ContaService {
   private authService = inject(AuthService);
 
   async addConta(contaData: Conta, file?: File | null): Promise<void> {
-    const user = this.authService.currentUser();
+    const user = await this.authService.getCurrentUserAsync();
     if (!user) {
       throw new Error('Usuário não autenticado');
     }
@@ -56,7 +56,7 @@ export class ContaService {
   }
 
   async getLancamentosRecentes(): Promise<Conta[]> {
-    const user = this.authService.currentUser();
+    const user = await this.authService.getCurrentUserAsync();
     if (!user) {
       return [];
     }
@@ -94,7 +94,7 @@ export class ContaService {
   }
 
   async getContasByMesReferencia(mesReferencia: string): Promise<Conta[]> {
-    const user = this.authService.currentUser();
+    const user = await this.authService.getCurrentUserAsync();
     if (!user) {
       return [];
     }
@@ -115,7 +115,7 @@ export class ContaService {
   }
 
   async getContaById(id: string): Promise<Conta | null> {
-    const user = this.authService.currentUser();
+    const user = await this.authService.getCurrentUserAsync();
     if (!user) return null;
 
     const docRef = doc(this.firestore, `users/${user.uid}/contas`, id);
@@ -128,7 +128,7 @@ export class ContaService {
   }
 
   async updateConta(id: string, contaData: Partial<Conta>, file?: File | null): Promise<void> {
-    const user = this.authService.currentUser();
+    const user = await this.authService.getCurrentUserAsync();
     if (!user) throw new Error('Usuário não autenticado');
 
     let reciboUrl = contaData.reciboUrl || '';
@@ -146,7 +146,7 @@ export class ContaService {
       ...contaData,
       ...(reciboUrl ? { reciboUrl } : {})
     };
-    
+
     // Remove id before updating
     delete dataToUpdate.id;
 
@@ -154,7 +154,7 @@ export class ContaService {
   }
 
   async deleteConta(id: string): Promise<void> {
-    const user = this.authService.currentUser();
+    const user = await this.authService.getCurrentUserAsync();
     if (!user) throw new Error('Usuário não autenticado');
 
     const docRef = doc(this.firestore, `users/${user.uid}/contas`, id);

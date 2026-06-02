@@ -31,14 +31,42 @@ export class NovaContaComponent implements OnInit {
   selectedFile = signal<File | null>(null);
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
-  
+
   isEditMode = signal(false);
   editId = signal<string | null>(null);
   existingReciboUrl = signal<string | null>(null);
 
   constructor() {
+    // Listen to tipo to handle validations
+    this.contaForm.get('tipo')?.valueChanges.subscribe(tipo => {
+      const diaVencimentoCtrl = this.contaForm.get('diaVencimento');
+      const statusPagoCtrl = this.contaForm.get('statusPago');
+      const dataPagamentoCtrl = this.contaForm.get('dataPagamento');
+
+      if (tipo === 'Receita') {
+        diaVencimentoCtrl?.clearValidators();
+        statusPagoCtrl?.setValue(false, { emitEvent: false });
+        dataPagamentoCtrl?.disable({ emitEvent: false });
+        dataPagamentoCtrl?.clearValidators();
+        dataPagamentoCtrl?.setValue('', { emitEvent: false });
+      } else {
+        diaVencimentoCtrl?.setValidators([Validators.required, Validators.min(1), Validators.max(31)]);
+        if (statusPagoCtrl?.value) {
+          dataPagamentoCtrl?.enable({ emitEvent: false });
+          dataPagamentoCtrl?.setValidators([Validators.required]);
+        } else {
+          dataPagamentoCtrl?.disable({ emitEvent: false });
+          dataPagamentoCtrl?.clearValidators();
+        }
+      }
+      diaVencimentoCtrl?.updateValueAndValidity({ emitEvent: false });
+      dataPagamentoCtrl?.updateValueAndValidity({ emitEvent: false });
+    });
+
     // Listen to statusPago to enable/disable dataPagamento
     this.contaForm.get('statusPago')?.valueChanges.subscribe(isPaid => {
+      if (this.contaForm.get('tipo')?.value === 'Receita') return;
+
       const dataPagamentoCtrl = this.contaForm.get('dataPagamento');
       if (isPaid) {
         dataPagamentoCtrl?.enable();
@@ -60,6 +88,7 @@ export class NovaContaComponent implements OnInit {
       this.isLoading.set(true);
       try {
         const conta = await this.contaService.getContaById(id);
+
         if (conta) {
           // Pre-fill the form
           this.contaForm.patchValue({
@@ -70,8 +99,9 @@ export class NovaContaComponent implements OnInit {
             diaVencimento: conta.diaVencimento,
             statusPago: conta.statusPago,
             dataPagamento: conta.dataPagamento || '',
-            valor: conta.valor?.toString() || ''
+            valor: conta.valor?.toString().replace('.', '')
           });
+
           if (conta.reciboUrl) {
             this.existingReciboUrl.set(conta.reciboUrl);
           }
@@ -121,7 +151,7 @@ export class NovaContaComponent implements OnInit {
       } else {
         await this.contaService.addConta(contaData, this.selectedFile());
       }
-      
+
       this.router.navigate(['/dashboard']);
     } catch (error: any) {
       console.error(error);

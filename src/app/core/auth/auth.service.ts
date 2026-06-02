@@ -1,6 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, authState, User } from '@angular/fire/auth';
 import { Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -17,10 +18,14 @@ export class AuthService {
     });
   }
 
+  async getCurrentUserAsync(): Promise<User | null> {
+    return firstValueFrom(authState(this.auth));
+  }
+
   async login(email: string, password: string) {
     try {
       const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
-      debugger
+
       return userCredential;
     } catch (error) {
       throw error;
