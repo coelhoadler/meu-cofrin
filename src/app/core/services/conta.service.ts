@@ -74,13 +74,23 @@ export class ContaService {
     );
 
     const querySnapshot = await getDocs(q);
-    return querySnapshot.docs.map(doc => {
+    const items = querySnapshot.docs.map(doc => {
       const data = doc.data();
       return {
         id: doc.id,
         ...data
       } as Conta;
     });
+
+    // Ordena: Pendentes (false) primeiro e depois por diaVencimento (crescente)
+    items.sort((a, b) => {
+      if (a.statusPago === b.statusPago) {
+        return a.diaVencimento - b.diaVencimento;
+      }
+      return a.statusPago ? 1 : -1;
+    });
+
+    return items;
   }
 
   async getContasByMesReferencia(mesReferencia: string): Promise<Conta[]> {
