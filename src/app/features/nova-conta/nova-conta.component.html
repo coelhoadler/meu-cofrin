@@ -61,7 +61,7 @@
       </div>
 
       <!-- Row: Vencimento, Data Pagamento -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6" *ngIf="contaForm.get('tipo')?.value === 'Despesa'">
         <div>
           <label for="diaVencimento" class="block text-sm font-semibold text-slate-700 mb-1.5">
             Dia do vencimento <span class="text-red-500">*</span>
@@ -92,7 +92,7 @@
       </div>
 
       <!-- Conta já foi paga (Checkbox block) -->
-      <div>
+      <div *ngIf="contaForm.get('tipo')?.value === 'Despesa'">
         <label class="flex items-center gap-3 cursor-pointer w-full px-4 py-3.5 bg-white border border-slate-200 rounded-xl transition-all hover:border-[#421b7b]/50">
           <input type="checkbox" formControlName="statusPago"
             class="w-5 h-5 rounded-full border-slate-300 text-[#421b7b] focus:ring-[#421b7b] cursor-pointer" />

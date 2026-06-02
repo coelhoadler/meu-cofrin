@@ -146,7 +146,7 @@ export class ContaService {
       ...contaData,
       ...(reciboUrl ? { reciboUrl } : {})
     };
-    
+
     // Remove id before updating
     delete dataToUpdate.id;
 

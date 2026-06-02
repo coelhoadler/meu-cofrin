@@ -15,7 +15,7 @@ export const authGuard: CanActivateFn = (route, state) => {
         // auth_time vem em segundos, convertemos para milissegundos
         const authTime = Number(idTokenResult.claims['auth_time']) * 1000;
         const now = Date.now();
-        const maxDuration = 60 * 60 * 1000; // 1 hora em milissegundos
+        const maxDuration = 120 * 60 * 1000; // 2 horas em milissegundos
 
         if (now - authTime > maxDuration) {
           await auth.signOut(); // Força o logout se expirou

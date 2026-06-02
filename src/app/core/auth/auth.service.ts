@@ -12,6 +12,7 @@ export class AuthService {
   currentUser = signal<User | null | undefined>(undefined);
 
   constructor() {
+    debugger
     authState(this.auth).subscribe((user) => {
       this.currentUser.set(user);
     });
@@ -20,7 +21,7 @@ export class AuthService {
   async login(email: string, password: string) {
     try {
       const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
-      debugger
+
       return userCredential;
     } catch (error) {
       throw error;

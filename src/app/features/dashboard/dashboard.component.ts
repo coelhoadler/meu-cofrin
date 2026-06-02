@@ -56,7 +56,7 @@ export class DashboardComponent {
 
       let somaDespesas = 0;
       let somaReceitas = 0;
-      debugger
+
       contasDoMes.forEach(c => {
         if (c.valor) {
           const cleanValue = c.valor.replace(/\./g, '').replace(',', '.').replace('R$', '');
