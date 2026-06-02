@@ -1,9 +1,7 @@
 <div class="max-w-3xl mx-auto py-4">
   
   <a routerLink="/dashboard" class="inline-flex items-center gap-2 text-slate-500 hover:text-slate-800 transition-colors text-sm font-medium mb-6">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-    </svg>
+    <span class="material-symbols-outlined text-base">arrow_back</span>
     Voltar
   </a>
 
@@ -103,45 +101,79 @@
       <!-- Recibo -->
       <div>
         <label class="block text-sm font-semibold text-slate-700 mb-1.5">Recibo</label>
-        <div class="relative w-full border-2 border-dashed border-slate-200 hover:border-[#421b7b]/50 rounded-xl p-6 transition-colors group cursor-pointer bg-slate-50/50 hover:bg-slate-50 flex flex-col items-center justify-center">
+        
+        <!-- Preview section Se houver arquivo existente ou selecionado -->
+        <div *ngIf="existingReciboUrl() || selectedFile()" class="mb-4 p-4 border border-slate-200 rounded-xl bg-slate-50 flex flex-col gap-4">
+          <!-- Se for arquivo existente -->
+          <div *ngIf="existingReciboUrl() && !selectedFile()" class="flex flex-col items-center gap-4 w-full">
+            <div class="relative w-full flex justify-center bg-slate-100 rounded-lg p-2 border border-slate-200 overflow-hidden">
+               <img [src]="existingReciboUrl()" alt="Recibo" class="max-h-64 object-contain rounded" onerror="this.style.display='none'" />
+            </div>
+            <div class="flex gap-3 w-full justify-center">
+              <a [href]="existingReciboUrl()" target="_blank" class="px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">open_in_new</span>
+                Ver arquivo
+              </a>
+              <button type="button" (click)="onRemoveRecibo()" [disabled]="isLoading()" class="px-4 py-2.5 bg-red-50 text-red-600 rounded-xl text-sm font-semibold hover:bg-red-100 transition-colors flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed">
+                <span class="material-symbols-outlined text-sm">delete</span>
+                Remover
+              </button>
+            </div>
+          </div>
+
+          <!-- Se for arquivo recém-selecionado (ainda não salvo) -->
+          <div *ngIf="selectedFile()" class="flex items-center justify-between w-full bg-white p-3 rounded-lg border border-slate-200 shadow-sm">
+            <div class="flex items-center gap-3 overflow-hidden">
+               <span class="material-symbols-outlined text-3xl text-[#421b7b]">description</span>
+               <div class="flex flex-col truncate">
+                 <span class="text-sm font-semibold text-slate-800 truncate">{{ selectedFile()?.name }}</span>
+                 <span class="text-xs text-slate-500">{{ (selectedFile()?.size! / 1024 / 1024) | number:'1.2-2' }} MB</span>
+               </div>
+            </div>
+            <button type="button" (click)="removeSelectedFile()" class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+              <span class="material-symbols-outlined text-xl">delete</span>
+            </button>
+          </div>
+        </div>
+
+        <div *ngIf="!existingReciboUrl() && !selectedFile()" class="relative w-full border-2 border-dashed border-slate-200 hover:border-[#421b7b]/50 rounded-xl p-6 transition-colors group cursor-pointer bg-slate-50/50 hover:bg-slate-50 flex flex-col items-center justify-center">
           <input type="file" (change)="onFileSelected($event)" accept="image/*,.pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-          
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-400 group-hover:text-[#421b7b] mb-2 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-          </svg>
+          <span class="material-symbols-outlined text-2xl text-slate-400 group-hover:text-[#421b7b] mb-2 transition-colors">upload_file</span>
           <span class="text-[13px] font-medium text-slate-500 group-hover:text-slate-700 transition-colors">
-             <ng-container *ngIf="selectedFile(); else existingFile">
-               {{ selectedFile()?.name }}
-             </ng-container>
-             <ng-template #existingFile>
-               <ng-container *ngIf="existingReciboUrl(); else noFile">
-                 Arquivo existente (envie outro para substituir)
-               </ng-container>
-               <ng-template #noFile>
-                 Clique para enviar (PDF, imagem — até 5MB)
-               </ng-template>
-             </ng-template>
+             Clique para enviar (PDF, imagem — até 5MB)
           </span>
+        </div>
+        
+        <div *ngIf="existingReciboUrl() && !selectedFile()" class="mt-3 text-center">
+           <label class="text-sm text-[#421b7b] font-semibold cursor-pointer hover:underline">
+             Ou selecione um novo arquivo para substituir
+             <input type="file" (change)="onFileSelected($event)" accept="image/*,.pdf" class="hidden" />
+           </label>
         </div>
       </div>
 
       <!-- Error Message -->
       <div *ngIf="errorMessage()" class="p-4 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm font-medium flex items-center gap-2">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-        </svg>
+        <span class="material-symbols-outlined text-xl">error</span>
         {{ errorMessage() }}
       </div>
 
       <!-- Buttons -->
-      <div class="flex items-center gap-4 pt-4">
-        <button type="submit" [disabled]="isLoading()"
-          class="flex-1 bg-[#321764] hover:bg-[#25104d] text-white py-3 px-4 rounded-xl text-sm font-semibold shadow-sm transition-all disabled:opacity-70 disabled:cursor-not-allowed">
-          {{ isLoading() ? 'Salvando...' : (isEditMode() ? 'Atualizar conta' : 'Salvar conta') }}
+      <div class="flex flex-col gap-3 pt-4">
+        <div class="flex items-center gap-4">
+          <button type="submit" [disabled]="isLoading()"
+            class="flex-1 bg-[#321764] hover:bg-[#25104d] text-white py-3 px-4 rounded-xl text-sm font-semibold shadow-sm transition-all disabled:opacity-70 disabled:cursor-not-allowed">
+            {{ isLoading() ? 'Salvando...' : (isEditMode() ? 'Atualizar conta' : 'Salvar conta') }}
+          </button>
+          <a routerLink="/dashboard" class="px-6 py-3 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl text-sm font-semibold transition-colors">
+            Cancelar
+          </a>
+        </div>
+        <button *ngIf="isEditMode()" type="button" (click)="onDeleteConta()" [disabled]="isLoading()"
+          class="w-full flex items-center justify-center gap-2 py-3 px-4 bg-red-50 text-red-600 rounded-xl text-sm font-semibold hover:bg-red-100 transition-colors disabled:opacity-70 disabled:cursor-not-allowed">
+          <span class="material-symbols-outlined text-sm">delete_forever</span>
+          Excluir esta conta
         </button>
-        <a routerLink="/dashboard" class="px-6 py-3 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl text-sm font-semibold transition-colors">
-          Cancelar
-        </a>
       </div>
 
     </form>
