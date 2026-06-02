@@ -1,13 +1,15 @@
 <div class="space-y-6">
-  
+
   <!-- Dashboard Header Area -->
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
     <div>
       <h2 class="text-[28px] font-bold text-slate-900 tracking-tight">Dashboard</h2>
       <p class="text-sm text-slate-500 mt-1 capitalize">{{ currentDate }}</p>
     </div>
-    <a routerLink="/nova-conta" class="flex items-center justify-center gap-2 px-4 py-2 bg-[#421b7b] hover:bg-[#341561] text-white text-sm font-semibold rounded-xl shadow-sm transition-colors">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+    <a routerLink="/nova-conta"
+      class="flex items-center justify-center gap-2 px-4 py-2 bg-[#421b7b] hover:bg-[#341561] text-white text-sm font-semibold rounded-xl shadow-sm transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+        stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
       </svg>
       Nova conta
@@ -17,7 +19,8 @@
   <!-- Row 1: Summary Cards -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
     <!-- Saldo Card -->
-    <div class="bg-[#7941dc] text-white rounded-[20px] p-6 shadow-md shadow-purple-500/10 relative overflow-hidden flex flex-col justify-between h-[140px]">
+    <div
+      class="bg-[#7941dc] text-white rounded-[20px] p-6 shadow-md shadow-purple-500/10 relative overflow-hidden flex flex-col justify-between h-[140px]">
       <div class="relative z-10">
         <p class="text-purple-200 text-sm font-medium mb-1">Saldo do mês</p>
         <h3 class="text-3xl font-bold mb-4">R$ 0,00</h3>
@@ -26,15 +29,19 @@
         <p class="text-purple-300 text-[11px] font-medium">Sem alteração</p>
       </div>
       <!-- Icon top right -->
-      <div class="absolute top-5 right-5 w-10 h-10 bg-white/10 rounded-xl backdrop-blur-sm flex items-center justify-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+      <div
+        class="absolute top-5 right-5 w-10 h-10 bg-white/10 rounded-xl backdrop-blur-sm flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
         </svg>
       </div>
     </div>
 
     <!-- Receitas Card -->
-    <div class="bg-white rounded-[20px] p-6 shadow-sm border border-slate-200/80 relative flex flex-col justify-between h-[140px]">
+    <div
+      class="bg-white rounded-[20px] p-6 shadow-sm border border-slate-200/80 relative flex flex-col justify-between h-[140px]">
       <div>
         <p class="text-slate-500 text-sm font-medium mb-1">Receitas</p>
         <h3 class="text-3xl font-bold text-slate-800 mb-4">R$ 0,00</h3>
@@ -43,14 +50,16 @@
         <p class="text-slate-400 text-[11px] font-medium">Sem alteração</p>
       </div>
       <div class="absolute top-5 right-5 w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M7 11l5-5m0 0l5 5m-5-5v12" />
         </svg>
       </div>
     </div>
 
     <!-- Despesas Card -->
-    <div class="bg-white rounded-[20px] p-6 shadow-sm border border-slate-200/80 relative flex flex-col justify-between h-[140px]">
+    <div
+      class="bg-white rounded-[20px] p-6 shadow-sm border border-slate-200/80 relative flex flex-col justify-between h-[140px]">
       <div>
         <p class="text-slate-500 text-sm font-medium mb-1">Despesas</p>
         <h3 class="text-3xl font-bold text-slate-800 mb-4">R$ 0,00</h3>
@@ -59,7 +68,8 @@
         <p class="text-slate-400 text-[11px] font-medium">Sem alteração</p>
       </div>
       <div class="absolute top-5 right-5 w-8 h-8 bg-rose-50 rounded-lg flex items-center justify-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-rose-500" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M17 13l-5 5m0 0l-5-5m5 5V6" />
         </svg>
       </div>
@@ -68,7 +78,7 @@
 
   <!-- Row 2: Chart Placeholders -->
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    
+
     <!-- Line Chart Placeholder (Spans 2 cols on lg) -->
     <div class="bg-white rounded-[20px] p-6 shadow-sm border border-slate-200/80 lg:col-span-2 flex flex-col h-[320px]">
       <div class="mb-4">
@@ -87,10 +97,10 @@
         </div>
         <!-- Grid lines mock -->
         <div class="w-full h-full flex flex-col justify-between absolute inset-0 py-2 pointer-events-none">
-           <div class="border-t border-slate-100 border-dashed w-full h-0"></div>
-           <div class="border-t border-slate-100 border-dashed w-full h-0"></div>
-           <div class="border-t border-slate-100 border-dashed w-full h-0"></div>
-           <div class="border-t border-slate-100 border-dashed w-full h-0"></div>
+          <div class="border-t border-slate-100 border-dashed w-full h-0"></div>
+          <div class="border-t border-slate-100 border-dashed w-full h-0"></div>
+          <div class="border-t border-slate-100 border-dashed w-full h-0"></div>
+          <div class="border-t border-slate-100 border-dashed w-full h-0"></div>
         </div>
         <!-- X Axis labels mock -->
         <div class="absolute -bottom-6 left-0 right-0 flex justify-between px-4 text-[10px] text-slate-400">
@@ -123,7 +133,9 @@
       </div>
       <!-- Mock Pie Area -->
       <div class="flex-1 flex items-center justify-center relative mt-4">
-         <div class="w-40 h-40 rounded-full border-[20px] border-slate-50 border-t-[#9d6bf3] border-r-[#421b7b] border-b-[#421b7b] border-l-[#9d6bf3]"></div>
+        <div
+          class="w-40 h-40 rounded-full border-[20px] border-slate-50 border-t-[#9d6bf3] border-r-[#421b7b] border-b-[#421b7b] border-l-[#9d6bf3]">
+        </div>
       </div>
       <!-- Legend -->
       <div class="flex justify-center gap-4 mt-6">
@@ -143,14 +155,61 @@
   <div class="bg-white rounded-[20px] p-6 shadow-sm border border-slate-200/80 min-h-[280px] flex flex-col">
     <div class="flex items-center justify-between mb-8">
       <h3 class="text-[15px] font-bold text-slate-800">Lançamentos recentes</h3>
-      <span class="text-xs font-medium text-slate-400">0 no total</span>
+      <span class="text-xs font-medium text-slate-400">{{ lancamentos().length }} no total</span>
     </div>
-    
-    <div class="flex-1 flex flex-col items-center justify-center space-y-4 py-8">
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading()" class="flex-1 flex items-center justify-center py-8">
+      <div class="w-8 h-8 border-4 border-[#421b7b]/20 border-t-[#421b7b] rounded-full animate-spin"></div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading() && lancamentos().length === 0"
+      class="flex-1 flex flex-col items-center justify-center space-y-4 py-8">
       <p class="text-slate-500 text-[13px]">Nenhuma conta cadastrada ainda.</p>
-      <a routerLink="/nova-conta" class="px-5 py-2 bg-[#421b7b] hover:bg-[#341561] text-white text-[13px] font-semibold rounded-xl shadow-sm transition-colors">
+      <a routerLink="/nova-conta"
+        class="px-5 py-2 bg-[#421b7b] hover:bg-[#341561] text-white text-[13px] font-semibold rounded-xl shadow-sm transition-colors">
         Cadastrar primeira conta
       </a>
+    </div>
+
+    <!-- Data List -->
+    <div *ngIf="!isLoading() && lancamentos().length > 0" class="flex-1 overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="border-b border-slate-200/80 text-xs text-slate-400 uppercase tracking-wider">
+            <th class="pb-3 font-medium">Nome</th>
+            <th class="pb-3 font-medium">Categoria</th>
+            <th class="pb-3 font-medium">Data</th>
+            <th class="pb-3 font-medium">Status</th>
+            <th class="pb-3 font-medium text-right">Valor</th>
+          </tr>
+        </thead>
+        <tbody class="text-sm">
+          <tr *ngFor="let item of lancamentos()"
+            class="border-b border-slate-50 last:border-0 hover:bg-slate-50/50 transition-colors">
+            <td class="py-4">
+              <div class="flex flex-col">
+                <span class="font-semibold text-slate-800">{{ item.nome }}</span>
+                <span class="text-[11px] text-slate-400">{{ item.tipo }}</span>
+              </div>
+            </td>
+            <td class="py-4 text-slate-500">{{ item.categoria }}</td>
+            <td class="py-4 text-slate-500">{{ item.createdAt?.toDate() | date:'dd/MM' }}</td>
+            <td class="py-4">
+              <span *ngIf="item.statusPago"
+                class="px-2 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-bold rounded-md uppercase tracking-wide">Pago</span>
+              <span *ngIf="!item.statusPago"
+                class="px-2 py-1 bg-amber-50 text-amber-600 text-[10px] font-bold rounded-md uppercase tracking-wide">Pendente</span>
+            </td>
+            <td class="py-4 text-right font-semibold"
+              [ngClass]="item.tipo === 'Receita' ? 'text-emerald-600' : 'text-slate-800'">
+              <span *ngIf="item.tipo === 'Receita'">+ </span>
+              {{ item.valor }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
