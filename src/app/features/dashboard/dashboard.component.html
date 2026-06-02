@@ -1,240 +1,157 @@
-<div class="min-h-screen bg-slate-50 flex font-sans text-slate-800">
+<div class="space-y-6">
   
-  <!-- Sidebar -->
-  <aside 
-    [class.translate-x-0]="isSidebarOpen()" 
-    [class.-translate-x-full]="!isSidebarOpen()"
-    class="fixed inset-y-0 left-0 z-50 w-64 bg-[#1a112c] text-slate-300 transition-transform duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col border-r border-slate-800/50 shadow-xl md:shadow-none">
-    
-    <!-- Sidebar Header -->
-    <div class="p-6 flex items-center gap-3">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-purple-500/30">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+  <!-- Dashboard Header Area -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
+    <div>
+      <h2 class="text-[28px] font-bold text-slate-900 tracking-tight">Dashboard</h2>
+      <p class="text-sm text-slate-500 mt-1 capitalize">{{ currentDate }}</p>
+    </div>
+    <a routerLink="/nova-conta" class="flex items-center justify-center gap-2 px-4 py-2 bg-[#421b7b] hover:bg-[#341561] text-white text-sm font-semibold rounded-xl shadow-sm transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+      </svg>
+      Nova conta
+    </a>
+  </div>
+
+  <!-- Row 1: Summary Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Saldo Card -->
+    <div class="bg-[#7941dc] text-white rounded-[20px] p-6 shadow-md shadow-purple-500/10 relative overflow-hidden flex flex-col justify-between h-[140px]">
+      <div class="relative z-10">
+        <p class="text-purple-200 text-sm font-medium mb-1">Saldo do mês</p>
+        <h3 class="text-3xl font-bold mb-4">R$ 0,00</h3>
+      </div>
+      <div class="relative z-10 mt-auto">
+        <p class="text-purple-300 text-[11px] font-medium">Sem alteração</p>
+      </div>
+      <!-- Icon top right -->
+      <div class="absolute top-5 right-5 w-10 h-10 bg-white/10 rounded-xl backdrop-blur-sm flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
         </svg>
       </div>
+    </div>
+
+    <!-- Receitas Card -->
+    <div class="bg-white rounded-[20px] p-6 shadow-sm border border-slate-200/80 relative flex flex-col justify-between h-[140px]">
       <div>
-        <h1 class="text-lg font-bold text-white leading-tight">Meu Cofrin</h1>
-        <p class="text-[11px] text-slate-400">Finanças pessoais</p>
+        <p class="text-slate-500 text-sm font-medium mb-1">Receitas</p>
+        <h3 class="text-3xl font-bold text-slate-800 mb-4">R$ 0,00</h3>
+      </div>
+      <div class="mt-auto">
+        <p class="text-slate-400 text-[11px] font-medium">Sem alteração</p>
+      </div>
+      <div class="absolute top-5 right-5 w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M7 11l5-5m0 0l5 5m-5-5v12" />
+        </svg>
       </div>
     </div>
 
-    <!-- Sidebar Navigation -->
-    <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-      <!-- Active Item -->
-      <a href="#" class="flex items-center gap-3 px-3 py-2.5 bg-[#8b5cf6]/20 text-[#c4b5fd] rounded-xl font-medium transition-colors">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-          <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+    <!-- Despesas Card -->
+    <div class="bg-white rounded-[20px] p-6 shadow-sm border border-slate-200/80 relative flex flex-col justify-between h-[140px]">
+      <div>
+        <p class="text-slate-500 text-sm font-medium mb-1">Despesas</p>
+        <h3 class="text-3xl font-bold text-slate-800 mb-4">R$ 0,00</h3>
+      </div>
+      <div class="mt-auto">
+        <p class="text-slate-400 text-[11px] font-medium">Sem alteração</p>
+      </div>
+      <div class="absolute top-5 right-5 w-8 h-8 bg-rose-50 rounded-lg flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 13l-5 5m0 0l-5-5m5 5V6" />
         </svg>
-        <span class="text-sm">Dashboard</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 2: Chart Placeholders -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    
+    <!-- Line Chart Placeholder (Spans 2 cols on lg) -->
+    <div class="bg-white rounded-[20px] p-6 shadow-sm border border-slate-200/80 lg:col-span-2 flex flex-col h-[320px]">
+      <div class="mb-4">
+        <h3 class="text-[15px] font-bold text-slate-800">Últimos 6 meses</h3>
+        <p class="text-[13px] text-slate-500">Receitas vs Despesas</p>
+      </div>
+      <!-- Mock Chart Area -->
+      <div class="flex-1 border-l border-b border-slate-200 relative mt-2 ml-4 mb-6">
+        <!-- Y Axis labels mock -->
+        <div class="absolute -left-7 top-0 bottom-0 flex flex-col justify-between text-[10px] text-slate-400 py-1">
+          <span>R$ 4</span>
+          <span>R$ 3</span>
+          <span>R$ 2</span>
+          <span>R$ 1</span>
+          <span>R$ 0</span>
+        </div>
+        <!-- Grid lines mock -->
+        <div class="w-full h-full flex flex-col justify-between absolute inset-0 py-2 pointer-events-none">
+           <div class="border-t border-slate-100 border-dashed w-full h-0"></div>
+           <div class="border-t border-slate-100 border-dashed w-full h-0"></div>
+           <div class="border-t border-slate-100 border-dashed w-full h-0"></div>
+           <div class="border-t border-slate-100 border-dashed w-full h-0"></div>
+        </div>
+        <!-- X Axis labels mock -->
+        <div class="absolute -bottom-6 left-0 right-0 flex justify-between px-4 text-[10px] text-slate-400">
+          <span>jan</span>
+          <span>fev</span>
+          <span>mar</span>
+          <span>abr</span>
+          <span>mai</span>
+          <span>jun</span>
+        </div>
+      </div>
+      <!-- Legend -->
+      <div class="flex justify-center gap-6">
+        <div class="flex items-center gap-2">
+          <div class="w-2.5 h-2.5 rounded-sm bg-[#9d6bf3]"></div>
+          <span class="text-[11px] text-slate-500 font-medium">Receitas</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="w-2.5 h-2.5 rounded-sm bg-[#421b7b]"></div>
+          <span class="text-[11px] text-slate-500 font-medium">Despesas</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pie Chart Placeholder -->
+    <div class="bg-white rounded-[20px] p-6 shadow-sm border border-slate-200/80 flex flex-col h-[320px]">
+      <div>
+        <h3 class="text-[15px] font-bold text-slate-800">Distribuição do mês</h3>
+        <p class="text-[13px] text-slate-500">Composição atual</p>
+      </div>
+      <!-- Mock Pie Area -->
+      <div class="flex-1 flex items-center justify-center relative mt-4">
+         <div class="w-40 h-40 rounded-full border-[20px] border-slate-50 border-t-[#9d6bf3] border-r-[#421b7b] border-b-[#421b7b] border-l-[#9d6bf3]"></div>
+      </div>
+      <!-- Legend -->
+      <div class="flex justify-center gap-4 mt-6">
+        <div class="flex items-center gap-1.5">
+          <div class="w-2 h-2 rounded-full bg-[#9d6bf3]"></div>
+          <span class="text-[11px] text-slate-500 font-medium">Receitas</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <div class="w-2 h-2 rounded-full bg-[#421b7b]"></div>
+          <span class="text-[11px] text-slate-500 font-medium">Despesas</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 3: Lançamentos Recentes -->
+  <div class="bg-white rounded-[20px] p-6 shadow-sm border border-slate-200/80 min-h-[280px] flex flex-col">
+    <div class="flex items-center justify-between mb-8">
+      <h3 class="text-[15px] font-bold text-slate-800">Lançamentos recentes</h3>
+      <span class="text-xs font-medium text-slate-400">0 no total</span>
+    </div>
+    
+    <div class="flex-1 flex flex-col items-center justify-center space-y-4 py-8">
+      <p class="text-slate-500 text-[13px]">Nenhuma conta cadastrada ainda.</p>
+      <a routerLink="/nova-conta" class="px-5 py-2 bg-[#421b7b] hover:bg-[#341561] text-white text-[13px] font-semibold rounded-xl shadow-sm transition-colors">
+        Cadastrar primeira conta
       </a>
-      <!-- Inactive Item -->
-      <a href="#" class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-        </svg>
-        <span class="text-sm">Nova conta</span>
-      </a>
-    </nav>
-
-    <!-- Sidebar Footer -->
-    <div class="p-4 mt-auto">
-      <div class="flex items-center gap-3 mb-4 px-2">
-        <div class="flex-1 truncate">
-          <p class="text-xs font-medium text-slate-400 truncate">{{ user()?.email || 'usuario@exemplo.com' }}</p>
-        </div>
-      </div>
-      <button (click)="logout()" class="w-full flex items-center gap-3 px-3 py-2 text-sm text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-        </svg>
-        Sair
-      </button>
     </div>
-  </aside>
+  </div>
 
-  <!-- Overlay for mobile when sidebar is open -->
-  @if (isSidebarOpen()) {
-    <div (click)="toggleSidebar()" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 md:hidden"></div>
-  }
-
-  <!-- Main Content Area -->
-  <main class="flex-1 flex flex-col min-w-0 overflow-hidden h-screen overflow-y-auto bg-slate-50">
-    <!-- Top Header Mobile Toggle -->
-    <header class="md:hidden flex items-center justify-between p-4 bg-white border-b border-slate-200 sticky top-0 z-30">
-      <div class="flex items-center gap-2">
-        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 via-purple-500 to-fuchsia-500 flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        </div>
-        <span class="font-bold text-slate-800">Meu Cofrin</span>
-      </div>
-      <button (click)="toggleSidebar()" class="p-2 -mr-2 text-slate-500 hover:bg-slate-100 rounded-lg">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      </button>
-    </header>
-
-    <div class="flex-1 p-6 md:p-10 xl:px-16 w-full max-w-6xl mx-auto">
-      <div class="space-y-6">
-        
-        <!-- Dashboard Header Area -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
-          <div>
-            <h2 class="text-[28px] font-bold text-slate-900 tracking-tight">Dashboard</h2>
-            <p class="text-sm text-slate-500 mt-1 capitalize">{{ currentDate }}</p>
-          </div>
-          <button class="flex items-center justify-center gap-2 px-4 py-2 bg-[#421b7b] hover:bg-[#341561] text-white text-sm font-semibold rounded-xl shadow-sm transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-            </svg>
-            Nova conta
-          </button>
-        </div>
-
-        <!-- Row 1: Summary Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <!-- Saldo Card -->
-          <div class="bg-[#7941dc] text-white rounded-[20px] p-6 shadow-md shadow-purple-500/10 relative overflow-hidden flex flex-col justify-between h-[140px]">
-            <div class="relative z-10">
-              <p class="text-purple-200 text-sm font-medium mb-1">Saldo do mês</p>
-              <h3 class="text-3xl font-bold mb-4">R$ 0,00</h3>
-            </div>
-            <div class="relative z-10 mt-auto">
-              <p class="text-purple-300 text-[11px] font-medium">Sem alteração</p>
-            </div>
-            <!-- Icon top right -->
-            <div class="absolute top-5 right-5 w-10 h-10 bg-white/10 rounded-xl backdrop-blur-sm flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-              </svg>
-            </div>
-          </div>
-
-          <!-- Receitas Card -->
-          <div class="bg-white rounded-[20px] p-6 shadow-sm border border-slate-200/80 relative flex flex-col justify-between h-[140px]">
-            <div>
-              <p class="text-slate-500 text-sm font-medium mb-1">Receitas</p>
-              <h3 class="text-3xl font-bold text-slate-800 mb-4">R$ 0,00</h3>
-            </div>
-            <div class="mt-auto">
-              <p class="text-slate-400 text-[11px] font-medium">Sem alteração</p>
-            </div>
-            <div class="absolute top-5 right-5 w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M7 11l5-5m0 0l5 5m-5-5v12" />
-              </svg>
-            </div>
-          </div>
-
-          <!-- Despesas Card -->
-          <div class="bg-white rounded-[20px] p-6 shadow-sm border border-slate-200/80 relative flex flex-col justify-between h-[140px]">
-            <div>
-              <p class="text-slate-500 text-sm font-medium mb-1">Despesas</p>
-              <h3 class="text-3xl font-bold text-slate-800 mb-4">R$ 0,00</h3>
-            </div>
-            <div class="mt-auto">
-              <p class="text-slate-400 text-[11px] font-medium">Sem alteração</p>
-            </div>
-            <div class="absolute top-5 right-5 w-8 h-8 bg-rose-50 rounded-lg flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M17 13l-5 5m0 0l-5-5m5 5V6" />
-              </svg>
-            </div>
-          </div>
-        </div>
-
-        <!-- Row 2: Chart Placeholders -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          
-          <!-- Line Chart Placeholder (Spans 2 cols on lg) -->
-          <div class="bg-white rounded-[20px] p-6 shadow-sm border border-slate-200/80 lg:col-span-2 flex flex-col h-[320px]">
-            <div class="mb-4">
-              <h3 class="text-[15px] font-bold text-slate-800">Últimos 6 meses</h3>
-              <p class="text-[13px] text-slate-500">Receitas vs Despesas</p>
-            </div>
-            <!-- Mock Chart Area -->
-            <div class="flex-1 border-l border-b border-slate-200 relative mt-2 ml-4 mb-6">
-              <!-- Y Axis labels mock -->
-              <div class="absolute -left-7 top-0 bottom-0 flex flex-col justify-between text-[10px] text-slate-400 py-1">
-                <span>R$ 4</span>
-                <span>R$ 3</span>
-                <span>R$ 2</span>
-                <span>R$ 1</span>
-                <span>R$ 0</span>
-              </div>
-              <!-- Grid lines mock -->
-              <div class="w-full h-full flex flex-col justify-between absolute inset-0 py-2 pointer-events-none">
-                 <div class="border-t border-slate-100 border-dashed w-full h-0"></div>
-                 <div class="border-t border-slate-100 border-dashed w-full h-0"></div>
-                 <div class="border-t border-slate-100 border-dashed w-full h-0"></div>
-                 <div class="border-t border-slate-100 border-dashed w-full h-0"></div>
-              </div>
-              <!-- X Axis labels mock -->
-              <div class="absolute -bottom-6 left-0 right-0 flex justify-between px-4 text-[10px] text-slate-400">
-                <span>jan</span>
-                <span>fev</span>
-                <span>mar</span>
-                <span>abr</span>
-                <span>mai</span>
-                <span>jun</span>
-              </div>
-            </div>
-            <!-- Legend -->
-            <div class="flex justify-center gap-6">
-              <div class="flex items-center gap-2">
-                <div class="w-2.5 h-2.5 rounded-sm bg-[#9d6bf3]"></div>
-                <span class="text-[11px] text-slate-500 font-medium">Receitas</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <div class="w-2.5 h-2.5 rounded-sm bg-[#421b7b]"></div>
-                <span class="text-[11px] text-slate-500 font-medium">Despesas</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Pie Chart Placeholder -->
-          <div class="bg-white rounded-[20px] p-6 shadow-sm border border-slate-200/80 flex flex-col h-[320px]">
-            <div>
-              <h3 class="text-[15px] font-bold text-slate-800">Distribuição do mês</h3>
-              <p class="text-[13px] text-slate-500">Composição atual</p>
-            </div>
-            <!-- Mock Pie Area -->
-            <div class="flex-1 flex items-center justify-center relative mt-4">
-               <div class="w-40 h-40 rounded-full border-[20px] border-slate-50 border-t-[#9d6bf3] border-r-[#421b7b] border-b-[#421b7b] border-l-[#9d6bf3]"></div>
-            </div>
-            <!-- Legend -->
-            <div class="flex justify-center gap-4 mt-6">
-              <div class="flex items-center gap-1.5">
-                <div class="w-2 h-2 rounded-full bg-[#9d6bf3]"></div>
-                <span class="text-[11px] text-slate-500 font-medium">Receitas</span>
-              </div>
-              <div class="flex items-center gap-1.5">
-                <div class="w-2 h-2 rounded-full bg-[#421b7b]"></div>
-                <span class="text-[11px] text-slate-500 font-medium">Despesas</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Row 3: Lançamentos Recentes -->
-        <div class="bg-white rounded-[20px] p-6 shadow-sm border border-slate-200/80 min-h-[280px] flex flex-col">
-          <div class="flex items-center justify-between mb-8">
-            <h3 class="text-[15px] font-bold text-slate-800">Lançamentos recentes</h3>
-            <span class="text-xs font-medium text-slate-400">0 no total</span>
-          </div>
-          
-          <div class="flex-1 flex flex-col items-center justify-center space-y-4 py-8">
-            <p class="text-slate-500 text-[13px]">Nenhuma conta cadastrada ainda.</p>
-            <button class="px-5 py-2 bg-[#421b7b] hover:bg-[#341561] text-white text-[13px] font-semibold rounded-xl shadow-sm transition-colors">
-              Cadastrar primeira conta
-            </button>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </main>
 </div>
