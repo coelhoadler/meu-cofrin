@@ -39,14 +39,12 @@ export const notificarContasVencendo = onSchedule({
 
     for (const doc of snapshot.docs) {
       const conta = doc.data();
-      logger.info(`Conta: ${conta.nome}`);
       const nomeConta = conta.nome || "Conta";
       const valor = conta.valor || 0;
 
       // A coleção de contas fica em users/{userId}/contas/{contaId}
       // O parent do documento da conta é a subcoleção "contas", o parent dessa subcoleção é o documento do usuário
       const userId = doc.ref.parent.parent?.id;
-      logger.info(`User ID: ${userId}`);
       if (!userId) continue;
 
       // Buscar tokens FCM salvos no documento do usuário
@@ -55,10 +53,6 @@ export const notificarContasVencendo = onSchedule({
 
       const userData = userSnap.data();
       const fcmTokens = userData?.fcmTokens || []; // Assumindo que salvaremos os tokens em um array
-      logger.info(`Tokens encontrados: ${fcmTokens.length}`);
-      logger.info(`UserData: ${userData}`);
-
-      logger.info(`fcmTokens.length: ${fcmTokens.length}`);
 
       if (fcmTokens.length === 0) continue;
 
