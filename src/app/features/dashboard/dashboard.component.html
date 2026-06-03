@@ -178,10 +178,13 @@
               </div>
             </td>
             <td class="py-4">
-              <div class="flex items-center gap-2">
-                <span class="font-semibold text-slate-800">{{ item.nome }}</span>
-                <span *ngIf="item.reciboUrl" class="material-symbols-outlined text-slate-400 text-base"
-                  title="Possui imagem">image</span>
+              <div class="flex flex-col">
+                <div class="flex items-center gap-2">
+                  <span class="font-semibold text-slate-800">{{ item.nome }}</span>
+                  <span *ngIf="item.reciboUrl" class="material-symbols-outlined text-slate-400 text-base"
+                    title="Possui imagem">image</span>
+                </div>
+                <span *ngIf="item.categoria" class="text-xs font-medium text-slate-400 mt-0.5">{{ item.categoria }}</span>
               </div>
             </td>
             <td class="py-4 text-slate-500 text-center">{{ item.diaVencimento }}</td>
