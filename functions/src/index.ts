@@ -35,7 +35,7 @@ export const notificarContasVencendo = onSchedule({
       return;
     }
 
-    const mensagens: any = new Array();
+    const mensagens = new Array();
 
     for (const doc of snapshot.docs) {
       const conta = doc.data();
