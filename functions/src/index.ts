@@ -5,7 +5,7 @@ import * as logger from "firebase-functions/logger";
 admin.initializeApp();
 
 export const notificarContasVencendo = onSchedule({
-  schedule: "*/3 * * * *", // Executa a cada 3 minutos para testes
+  schedule: "0 11 * * *",
   timeZone: "America/Sao_Paulo",
 }, async (event) => {
   const db = admin.firestore();
@@ -35,7 +35,7 @@ export const notificarContasVencendo = onSchedule({
       return;
     }
 
-    const mensagens = [];
+    const mensagens = new Array();
 
     for (const doc of snapshot.docs) {
       const conta = doc.data();
@@ -74,11 +74,19 @@ export const notificarContasVencendo = onSchedule({
       }
     }
 
-
     if (mensagens.length > 0) {
       // O sendEach pode enviar até 500 mensagens por vez
       // Para simplificar, assumimos que não vai passar de 500 no nosso cenário inicial
       const responses = await admin.messaging().sendEach(mensagens);
+
+      if (responses.failureCount > 0) {
+        responses.responses.forEach((resp, idx) => {
+          if (!resp.success) {
+            logger.error(`Falha ao enviar para o token ${mensagens[idx].token}:`, resp.error);
+          }
+        });
+      }
+
       logger.info(`Notificações enviadas: ${responses.successCount} sucessos, ${responses.failureCount} falhas.`);
     } else {
       logger.info("Nenhum token encontrado para as contas a vencer.");

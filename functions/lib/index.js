@@ -19,7 +19,6 @@ exports.notificarContasVencendo = (0, scheduler_1.onSchedule)({
     const mes = String(amanha.getMonth() + 1).padStart(2, '0');
     const mesReferencia = `${ano}-${mes}`;
     const diaVencimento = amanha.getDate();
-    logger.info(`Buscando contas vencendo em ${diaVencimento}/${mes}.`);
     try {
         // Buscar todas as contas pendentes que vencem amanhã
         const contasRef = db.collectionGroup("contas");
@@ -32,7 +31,7 @@ exports.notificarContasVencendo = (0, scheduler_1.onSchedule)({
             logger.info(`Nenhuma conta vencendo amanhã (${diaVencimento}/${mes}).`);
             return;
         }
-        const mensagens = [];
+        const mensagens = new Array();
         for (const doc of snapshot.docs) {
             const conta = doc.data();
             logger.info(`Conta: ${conta.nome}`);
@@ -70,6 +69,13 @@ exports.notificarContasVencendo = (0, scheduler_1.onSchedule)({
             // O sendEach pode enviar até 500 mensagens por vez
             // Para simplificar, assumimos que não vai passar de 500 no nosso cenário inicial
             const responses = await admin.messaging().sendEach(mensagens);
+            if (responses.failureCount > 0) {
+                responses.responses.forEach((resp, idx) => {
+                    if (!resp.success) {
+                        logger.error(`Falha ao enviar para o token ${mensagens[idx].token}:`, resp.error);
+                    }
+                });
+            }
             logger.info(`Notificações enviadas: ${responses.successCount} sucessos, ${responses.failureCount} falhas.`);
         }
         else {
