@@ -1,0 +1,84 @@
+<div class="max-w-3xl mx-auto py-4">
+  
+  <a routerLink="/dashboard" class="inline-flex items-center gap-2 text-slate-500 hover:text-slate-800 transition-colors text-sm font-medium mb-6">
+    <span class="material-symbols-outlined text-base">arrow_back</span>
+    Voltar
+  </a>
+
+  <div class="mb-8">
+    <h2 class="text-[32px] font-bold text-slate-900 tracking-tight leading-tight">
+      Nova Categoria
+    </h2>
+    <p class="text-slate-500 text-[15px] mt-1">
+      Cadastre uma nova categoria para organizar suas contas e finanças.
+    </p>
+  </div>
+
+  <!-- Form Card -->
+  <div class="bg-white rounded-[20px] shadow-sm border border-slate-200/80 p-8">
+    <form [formGroup]="categoriaForm" (ngSubmit)="onSubmit()" class="space-y-6">
+      
+      <!-- Nome -->
+      <div>
+        <label for="nome" class="block text-sm font-semibold text-slate-700 mb-1.5">
+          Nome da categoria <span class="text-red-500">*</span>
+        </label>
+        <input id="nome" type="text" formControlName="nome" placeholder="Ex: Alimentação, Transporte, Salário..."
+          class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/20 focus:border-[#421b7b] transition-all text-sm" />
+        <div *ngIf="categoriaForm.get('nome')?.touched && categoriaForm.get('nome')?.invalid" class="text-red-500 text-xs mt-1 font-medium">O nome é obrigatório.</div>
+      </div>
+
+      <!-- Descrição -->
+      <div>
+        <label for="descricao" class="block text-sm font-semibold text-slate-700 mb-1.5">Descrição</label>
+        <textarea id="descricao" formControlName="descricao" rows="3" placeholder="Detalhes sobre a categoria (opcional)"
+          class="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/20 focus:border-[#421b7b] transition-all text-sm resize-none"></textarea>
+      </div>
+
+      <!-- Row: Tipo, Cor -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label for="tipo" class="block text-sm font-semibold text-slate-700 mb-1.5">
+            Tipo <span class="text-red-500">*</span>
+          </label>
+          <select id="tipo" formControlName="tipo"
+            class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/20 focus:border-[#421b7b] transition-all text-sm appearance-none">
+            <option value="Despesa">Despesa</option>
+            <option value="Receita">Receita</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="cor" class="block text-sm font-semibold text-slate-700 mb-1.5">
+            Cor de identificação
+          </label>
+          <div class="flex items-center gap-3">
+            <input id="cor" type="color" formControlName="cor"
+              class="h-11 w-11 p-1 bg-white border border-slate-200 rounded-xl cursor-pointer" />
+            <span class="text-sm text-slate-500">Escolha uma cor de destaque</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error Message -->
+      <div *ngIf="errorMessage()" class="p-4 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm font-medium flex items-center gap-2">
+        <span class="material-symbols-outlined text-xl">error</span>
+        {{ errorMessage() }}
+      </div>
+
+      <!-- Buttons -->
+      <div class="flex flex-col gap-3 pt-4">
+        <div class="flex items-center gap-4">
+          <button type="submit" [disabled]="isLoading()"
+            class="flex-1 bg-[#321764] hover:bg-[#25104d] text-white py-3 px-4 rounded-xl text-sm font-semibold shadow-sm transition-all disabled:opacity-70 disabled:cursor-not-allowed">
+            {{ isLoading() ? 'Salvando...' : 'Salvar categoria' }}
+          </button>
+          <a routerLink="/dashboard" class="px-6 py-3 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl text-sm font-semibold transition-colors">
+            Cancelar
+          </a>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>

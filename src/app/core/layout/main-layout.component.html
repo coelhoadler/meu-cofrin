@@ -1,14 +1,13 @@
 <div class="min-h-screen bg-slate-50 flex font-sans text-slate-800">
-  
+
   <!-- Sidebar -->
-  <aside 
-    [class.translate-x-0]="isSidebarOpen()" 
-    [class.-translate-x-full]="!isSidebarOpen()"
+  <aside [class.translate-x-0]="isSidebarOpen()" [class.-translate-x-full]="!isSidebarOpen()"
     class="fixed inset-y-0 left-0 z-50 w-64 bg-[#1a112c] text-slate-300 transition-transform duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col border-r border-slate-800/50 shadow-xl md:shadow-none">
-    
+
     <!-- Sidebar Header -->
     <div class="p-6 flex items-center gap-3">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-purple-500/30">
+      <div
+        class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-purple-500/30">
         <span class="material-symbols-outlined text-white text-2xl">savings</span>
       </div>
       <div>
@@ -19,16 +18,23 @@
 
     <!-- Sidebar Navigation -->
     <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-      <a routerLink="/dashboard" routerLinkActive="bg-[#8b5cf6]/20 text-[#c4b5fd]" [routerLinkActiveOptions]="{exact: true}"
-         class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors">
+      <a routerLink="/dashboard" routerLinkActive="bg-[#8b5cf6]/20 text-[#c4b5fd]"
+        [routerLinkActiveOptions]="{exact: true}"
+        class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors">
         <span class="material-symbols-outlined text-xl">dashboard</span>
         <span class="text-sm">Dashboard</span>
       </a>
 
       <a routerLink="/nova-conta" routerLinkActive="bg-[#8b5cf6]/20 text-[#c4b5fd]"
-         class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors">
+        class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors">
         <span class="material-symbols-outlined text-xl">add</span>
-        <span class="text-sm">Nova conta</span>
+        <span class="text-sm">Minhas contas</span>
+      </a>
+
+      <a routerLink="/categorias" routerLinkActive="bg-[#8b5cf6]/20 text-[#c4b5fd]"
+        class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors">
+        <span class="material-symbols-outlined text-xl">layers</span>
+        <span class="text-sm">Categorias</span>
       </a>
     </nav>
 
@@ -39,7 +45,8 @@
           <p class="text-xs font-medium text-slate-400 truncate">{{ user()?.email || 'usuario@exemplo.com' }}</p>
         </div>
       </div>
-      <button (click)="logout()" class="w-full flex items-center gap-3 px-3 py-2 text-sm text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors">
+      <button (click)="logout()"
+        class="w-full flex items-center gap-3 px-3 py-2 text-sm text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors">
         <span class="material-symbols-outlined text-xl">logout</span>
         Sair
       </button>
@@ -48,15 +55,17 @@
 
   <!-- Overlay for mobile when sidebar is open -->
   @if (isSidebarOpen()) {
-    <div (click)="toggleSidebar()" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 md:hidden"></div>
+  <div (click)="toggleSidebar()" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 md:hidden"></div>
   }
 
   <!-- Main Content Area -->
   <main class="flex-1 flex flex-col min-w-0 overflow-hidden h-screen overflow-y-auto bg-slate-50">
     <!-- Top Header Mobile Toggle -->
-    <header class="md:hidden flex items-center justify-between p-4 bg-white border-b border-slate-200 sticky top-0 z-30">
+    <header
+      class="md:hidden flex items-center justify-between p-4 bg-white border-b border-slate-200 sticky top-0 z-30">
       <div class="flex items-center gap-2">
-        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 via-purple-500 to-fuchsia-500 flex items-center justify-center">
+        <div
+          class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 via-purple-500 to-fuchsia-500 flex items-center justify-center">
           <span class="material-symbols-outlined text-white text-base">savings</span>
         </div>
         <span class="font-bold text-slate-800">Meu Cofrin</span>
