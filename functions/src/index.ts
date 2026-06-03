@@ -5,7 +5,7 @@ import * as logger from "firebase-functions/logger";
 admin.initializeApp();
 
 export const notificarContasVencendo = onSchedule({
-  schedule: "0 11 * * *", // Executa todos os dias às 8 da manhã
+  schedule: "*/3 * * * *", // Executa a cada 3 minutos para testes
   timeZone: "America/Sao_Paulo",
 }, async (event) => {
   const db = admin.firestore();
@@ -39,13 +39,14 @@ export const notificarContasVencendo = onSchedule({
 
     for (const doc of snapshot.docs) {
       const conta = doc.data();
+      logger.info(`Conta: ${conta.nome}`);
       const nomeConta = conta.nome || "Conta";
       const valor = conta.valor || 0;
 
       // A coleção de contas fica em users/{userId}/contas/{contaId}
       // O parent do documento da conta é a subcoleção "contas", o parent dessa subcoleção é o documento do usuário
       const userId = doc.ref.parent.parent?.id;
-
+      logger.info(`User ID: ${userId}`);
       if (!userId) continue;
 
       // Buscar tokens FCM salvos no documento do usuário
@@ -54,6 +55,10 @@ export const notificarContasVencendo = onSchedule({
 
       const userData = userSnap.data();
       const fcmTokens = userData?.fcmTokens || []; // Assumindo que salvaremos os tokens em um array
+      logger.info(`Tokens encontrados: ${fcmTokens.length}`);
+      logger.info(`UserData: ${userData}`);
+
+      logger.info(`fcmTokens.length: ${fcmTokens.length}`);
 
       if (fcmTokens.length === 0) continue;
 
@@ -68,6 +73,7 @@ export const notificarContasVencendo = onSchedule({
         });
       }
     }
+
 
     if (mensagens.length > 0) {
       // O sendEach pode enviar até 500 mensagens por vez

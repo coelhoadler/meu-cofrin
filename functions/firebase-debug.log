@@ -1,0 +1,173 @@
+[debug] [2026-06-03T10:52:27.603Z] ----------------------------------------------------------------------
+[debug] [2026-06-03T10:52:27.605Z] Command:       C:\Users\adler\AppData\Local\nvs\default\node.exe C:\Users\adler\AppData\Local\nvs\default\node_modules\firebase-tools\lib\bin\firebase.js functions:shell
+[debug] [2026-06-03T10:52:27.605Z] CLI Version:   15.12.0
+[debug] [2026-06-03T10:52:27.605Z] Platform:      win32
+[debug] [2026-06-03T10:52:27.605Z] Node Version:  v22.16.0
+[debug] [2026-06-03T10:52:27.606Z] Time:          Wed Jun 03 2026 07:52:27 GMT-0300 (Horário Padrão de Brasília)
+[debug] [2026-06-03T10:52:27.606Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-06-03T10:52:28.522Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-06-03T10:52:28.523Z] > authorizing via signed-in user (adlercoelhosantos12@gmail.com)
+[debug] [2026-06-03T10:52:28.523Z] [iam] checking project meu-cofrin for permissions ["firebase.projects.get"]
+[debug] [2026-06-03T10:52:28.524Z] Checked if tokens are valid: true, expires at: 1780485182081
+[debug] [2026-06-03T10:52:28.524Z] Checked if tokens are valid: true, expires at: 1780485182081
+[debug] [2026-06-03T10:52:28.525Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/meu-cofrin:testIamPermissions [none]
+[debug] [2026-06-03T10:52:28.525Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/meu-cofrin:testIamPermissions  x-goog-user-project=meu-cofrin
+[debug] [2026-06-03T10:52:28.525Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/meu-cofrin:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2026-06-03T10:52:29.380Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/meu-cofrin:testIamPermissions 200
+[debug] [2026-06-03T10:52:29.380Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/meu-cofrin:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2026-06-03T10:52:29.382Z] [functions] Functions Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2026-06-03T10:52:29.392Z] defaultcredentials: writing to file C:\Users\adler\AppData\Roaming\firebase\adlercoelhosantos12_gmail_com_application_default_credentials.json
+[debug] [2026-06-03T10:52:29.393Z] DEBUG: Setting GAC to C:\Users\adler\AppData\Roaming\firebase\adlercoelhosantos12_gmail_com_application_default_credentials.json
+[debug] [2026-06-03T10:52:29.393Z] Checked if tokens are valid: true, expires at: 1780485182081
+[debug] [2026-06-03T10:52:29.393Z] Checked if tokens are valid: true, expires at: 1780485182081
+[debug] [2026-06-03T10:52:29.393Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/meu-cofrin/adminSdkConfig [none]
+[debug] [2026-06-03T10:52:29.841Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/meu-cofrin/adminSdkConfig 200
+[debug] [2026-06-03T10:52:29.841Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/meu-cofrin/adminSdkConfig {"projectId":"meu-cofrin","storageBucket":"meu-cofrin.firebasestorage.app"}
+[debug] [2026-06-03T10:52:29.852Z] [functions] Watching "C:\Users\adler\OneDrive\Documentos\GitHub\meu-cofrin\functions" for Cloud Functions...
+[debug] [2026-06-03T10:52:29.853Z] Validating nodejs source
+[warn] !  functions: package.json indicates an outdated version of firebase-functions. Please upgrade using npm install --save firebase-functions@latest in your functions directory. 
+[warn] !  functions: Please note that there will be breaking changes when you upgrade. 
+[debug] [2026-06-03T10:52:30.596Z] > [functions] package.json contents: {
+  "name": "functions",
+  "scripts": {
+    "lint": "eslint --ext .js,.ts .",
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "serve": "npm run build && firebase emulators:start --only functions",
+    "shell": "npm run build && firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "22"
+  },
+  "main": "lib/index.js",
+  "dependencies": {
+    "firebase-admin": "^12.1.0",
+    "firebase-functions": "^5.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.0",
+    "eslint": "^8.9.0"
+  },
+  "private": true
+}
+[debug] [2026-06-03T10:52:30.596Z] Building nodejs source
+[debug] [2026-06-03T10:52:30.597Z] Failed to find version of module node: reached end of search path C:\Users\adler\OneDrive\Documentos\GitHub\meu-cofrin\functions\node_modules
+[info] +  functions: Using node@22 from host. 
+[debug] [2026-06-03T10:52:30.598Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-06-03T10:52:30.604Z] Found firebase-functions binary at 'C:\Users\adler\OneDrive\Documentos\GitHub\meu-cofrin\functions\node_modules\.bin\firebase-functions'
+[info] Serving at port 8145
+
+[debug] [2026-06-03T10:52:30.880Z] Got response from /__/functions.yaml {"endpoints":{"notificarContasVencendo":{"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","labels":{},"scheduleTrigger":{"schedule":"0 11 * * *","retryConfig":{},"timeZone":"America/Sao_Paulo"},"entryPoint":"notificarContasVencendo"}},"specVersion":"v1alpha1","requiredAPIs":[{"api":"cloudscheduler.googleapis.com","reason":"Needed for scheduled functions."}],"extensions":{}}
+[debug] [2026-06-03T10:52:34.910Z] [functions] Loaded functions definitions from source: notificarContasVencendo.
+[debug] [2026-06-03T10:52:34.911Z] [functions[us-central1-notificarContasVencendo]] function ignored because the pubsub emulator does not exist or is not running.
+[info] i  functions: Loaded functions: notificarContasVencendo 
+[warn] !  functions: The following emulators are not running, calls to these services will affect production: firestore, database, pubsub, storage, eventarc, tasks 
+[debug] [2026-06-03T10:52:39.472Z] shell:notificarContasVencendo: trigger={"entryPoint":"notificarContasVencendo","platform":"gcfv2","region":"us-central1","name":"notificarContasVencendo","id":"us-central1-notificarContasVencendo","codebase":"default","availableMemoryMb":256,"labels":{"EVENTARC_CLOUD_EVENT_SOURCE":"run-emulated.googleapis.com/projects/meu-cofrin/locations/us-central1/services/notificarContasVencendo"},"timeoutSeconds":60,"secretEnvironmentVariables":[],"eventTrigger":{"eventType":"pubsub","resource":""},"schedule":{"schedule":"0 11 * * *","timeZone":"America/Sao_Paulo","retryConfig":{}}}
+[debug] [2026-06-03T10:52:39.473Z] shell:notificarContasVencendo: opts={}, data={}
+[debug] [2026-06-03T10:52:39.484Z] DEBUG: [worker-pool] addWorker(us-central1-notificarContasVencendo)
+[debug] [2026-06-03T10:52:39.484Z] DEBUG: [worker-pool] Adding worker with key us-central1-notificarContasVencendo, total=1
+[debug] [2026-06-03T10:52:40.170Z] DEBUG: [runtime-status] [32928] Resolved module firebase-admin {"declared":true,"installed":true,"version":"12.7.0","resolution":"C:\\Users\\adler\\OneDrive\\Documentos\\GitHub\\meu-cofrin\\functions\\node_modules\\firebase-admin\\lib\\index.js"}
+[debug] [2026-06-03T10:52:40.171Z] DEBUG: [runtime-status] [32928] Resolved module firebase-functions {"declared":true,"installed":true,"version":"5.1.1","resolution":"C:\\Users\\adler\\OneDrive\\Documentos\\GitHub\\meu-cofrin\\functions\\node_modules\\firebase-functions\\lib\\v1\\index.js"}
+[debug] [2026-06-03T10:52:40.171Z] DEBUG: [runtime-status] [32928] Outgoing network have been stubbed. [{"name":"http","status":"mocked"},{"name":"http","status":"mocked"},{"name":"https","status":"mocked"},{"name":"https","status":"mocked"},{"name":"net","status":"mocked"}]
+[debug] [2026-06-03T10:52:40.171Z] DEBUG: [runtime-status] [32928] Resolved module firebase-functions {"declared":true,"installed":true,"version":"5.1.1","resolution":"C:\\Users\\adler\\OneDrive\\Documentos\\GitHub\\meu-cofrin\\functions\\node_modules\\firebase-functions\\lib\\v1\\index.js"}
+[debug] [2026-06-03T10:52:40.288Z] DEBUG: [runtime-status] [32928] Resolved module firebase-admin {"declared":true,"installed":true,"version":"12.7.0","resolution":"C:\\Users\\adler\\OneDrive\\Documentos\\GitHub\\meu-cofrin\\functions\\node_modules\\firebase-admin\\lib\\index.js"}
+[debug] [2026-06-03T10:52:40.289Z] DEBUG: [runtime-status] [32928] Resolved module firebase-functions {"declared":true,"installed":true,"version":"5.1.1","resolution":"C:\\Users\\adler\\OneDrive\\Documentos\\GitHub\\meu-cofrin\\functions\\node_modules\\firebase-functions\\lib\\v1\\index.js"}
+[debug] [2026-06-03T10:52:40.387Z] DEBUG: [runtime-status] [32928] firebase-admin has been stubbed. {"adminResolution":{"declared":true,"installed":true,"version":"12.7.0","resolution":"C:\\Users\\adler\\OneDrive\\Documentos\\GitHub\\meu-cofrin\\functions\\node_modules\\firebase-admin\\lib\\index.js"}}
+[debug] [2026-06-03T10:52:40.390Z] DEBUG: [runtime-status] [32928] initializeApp(DEFAULT) {"storageBucket":"meu-cofrin.firebasestorage.app","projectId":"meu-cofrin"}
+[debug] [2026-06-03T10:52:40.393Z] DEBUG: [runtime-status] [32928] Functions runtime initialized. {"cwd":"C:\\Users\\adler\\OneDrive\\Documentos\\GitHub\\meu-cofrin\\functions","node_version":"22.16.0"}
+[debug] [2026-06-03T10:52:40.393Z] DEBUG: [runtime-status] [32928] Listening to port: \\?\pipe\fire_emu_f2ee9158342f44db
+[debug] [2026-06-03T10:52:40.470Z] DEBUG: [worker-us-central1-notificarContasVencendo-0903ab1c-cc6f-429d-819a-f65c9144b98d]: IDLE
+[warn] !  functions: The Cloud Firestore emulator is not running, so calls to Firestore will affect production. {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-notificarContasVencendo"},"extension":{},"message":"The Cloud Firestore emulator is not running, so calls to Firestore will affect production."}}
+[info] >  {"severity":"INFO","message":"Buscando contas vencendo em 4/06."} {"user":{"severity":"INFO","message":"Buscando contas vencendo em 4/06."},"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-notificarContasVencendo"},"extension":{},"message":"\u001b[90m> \u001b[39m {\"severity\":\"INFO\",\"message\":\"Buscando contas vencendo em 4/06.\"}"}}
+[warn] !  Google API requested!
+   - URL: "https://oauth2.googleapis.com/token"
+   - Be careful, this may be a production service. {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-notificarContasVencendo"},"extension":{},"message":"Google API requested!\n   - URL: \"https://oauth2.googleapis.com/token\"\n   - Be careful, this may be a production service."}}
+[info] >  {"severity":"INFO","message":"Conta: Teste notificação"} {"user":{"severity":"INFO","message":"Conta: Teste notificação"},"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-notificarContasVencendo"},"extension":{},"message":"\u001b[90m> \u001b[39m {\"severity\":\"INFO\",\"message\":\"Conta: Teste notificação\"}"}}
+[info] >  {"severity":"INFO","message":"User ID: CIcXBzimArUmXX0zsawodtzDszs2"} {"user":{"severity":"INFO","message":"User ID: CIcXBzimArUmXX0zsawodtzDszs2"},"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-notificarContasVencendo"},"extension":{},"message":"\u001b[90m> \u001b[39m {\"severity\":\"INFO\",\"message\":\"User ID: CIcXBzimArUmXX0zsawodtzDszs2\"}"}}
+[info] >  {"severity":"INFO","message":"Nenhum token encontrado para as contas a vencer."} {"user":{"severity":"INFO","message":"Nenhum token encontrado para as contas a vencer."},"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-notificarContasVencendo"},"extension":{},"message":"\u001b[90m> \u001b[39m {\"severity\":\"INFO\",\"message\":\"Nenhum token encontrado para as contas a vencer.\"}"}}
+[debug] [2026-06-03T10:53:24.620Z] DEBUG: File C:\Users\adler\OneDrive\Documentos\GitHub\meu-cofrin\functions\src\index.ts changed, reloading triggers
+[debug] [2026-06-03T10:53:25.621Z] Validating nodejs source
+[warn] !  functions: package.json indicates an outdated version of firebase-functions. Please upgrade using npm install --save firebase-functions@latest in your functions directory. 
+[warn] !  functions: Please note that there will be breaking changes when you upgrade. 
+[debug] [2026-06-03T10:53:26.183Z] > [functions] package.json contents: {
+  "name": "functions",
+  "scripts": {
+    "lint": "eslint --ext .js,.ts .",
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "serve": "npm run build && firebase emulators:start --only functions",
+    "shell": "npm run build && firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "22"
+  },
+  "main": "lib/index.js",
+  "dependencies": {
+    "firebase-admin": "^12.1.0",
+    "firebase-functions": "^5.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.0",
+    "eslint": "^8.9.0"
+  },
+  "private": true
+}
+[debug] [2026-06-03T10:53:26.183Z] Building nodejs source
+[debug] [2026-06-03T10:53:26.184Z] Failed to find version of module node: reached end of search path C:\Users\adler\OneDrive\Documentos\GitHub\meu-cofrin\functions\node_modules
+[info] +  functions: Using node@22 from host. 
+[debug] [2026-06-03T10:53:26.184Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-06-03T10:53:26.189Z] Found firebase-functions binary at 'C:\Users\adler\OneDrive\Documentos\GitHub\meu-cofrin\functions\node_modules\.bin\firebase-functions'
+[info] Serving at port 8307
+
+[debug] [2026-06-03T10:53:26.365Z] Got response from /__/functions.yaml {"endpoints":{"notificarContasVencendo":{"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","labels":{},"scheduleTrigger":{"schedule":"0 11 * * *","retryConfig":{},"timeZone":"America/Sao_Paulo"},"entryPoint":"notificarContasVencendo"}},"specVersion":"v1alpha1","requiredAPIs":[{"api":"cloudscheduler.googleapis.com","reason":"Needed for scheduled functions."}],"extensions":{}}
+[debug] [2026-06-03T10:53:30.382Z] [functions] Loaded functions definitions from source: notificarContasVencendo.
+[debug] [2026-06-03T10:53:30.382Z] DEBUG: [worker-pool] Shutting down IDLE worker (us-central1-notificarContasVencendo)
+[debug] [2026-06-03T10:53:30.382Z] DEBUG: [worker-us-central1-notificarContasVencendo-0903ab1c-cc6f-429d-819a-f65c9144b98d]: FINISHING
+[debug] [2026-06-03T10:53:30.391Z] DEBUG: [worker-us-central1-notificarContasVencendo-0903ab1c-cc6f-429d-819a-f65c9144b98d]: exited
+[debug] [2026-06-03T10:53:30.391Z] DEBUG: [worker-us-central1-notificarContasVencendo-0903ab1c-cc6f-429d-819a-f65c9144b98d]: FINISHED
+[debug] [2026-06-03T10:58:39.221Z] DEBUG: File C:\Users\adler\OneDrive\Documentos\GitHub\meu-cofrin\functions\src\index.ts changed, reloading triggers
+[debug] [2026-06-03T10:58:40.225Z] Validating nodejs source
+[warn] !  functions: package.json indicates an outdated version of firebase-functions. Please upgrade using npm install --save firebase-functions@latest in your functions directory. 
+[warn] !  functions: Please note that there will be breaking changes when you upgrade. 
+[debug] [2026-06-03T10:58:40.792Z] > [functions] package.json contents: {
+  "name": "functions",
+  "scripts": {
+    "lint": "eslint --ext .js,.ts .",
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "serve": "npm run build && firebase emulators:start --only functions",
+    "shell": "npm run build && firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "22"
+  },
+  "main": "lib/index.js",
+  "dependencies": {
+    "firebase-admin": "^12.1.0",
+    "firebase-functions": "^5.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.0",
+    "eslint": "^8.9.0"
+  },
+  "private": true
+}
+[debug] [2026-06-03T10:58:40.793Z] Building nodejs source
+[debug] [2026-06-03T10:58:40.793Z] Failed to find version of module node: reached end of search path C:\Users\adler\OneDrive\Documentos\GitHub\meu-cofrin\functions\node_modules
+[info] +  functions: Using node@22 from host. 
+[debug] [2026-06-03T10:58:40.793Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-06-03T10:58:40.797Z] Found firebase-functions binary at 'C:\Users\adler\OneDrive\Documentos\GitHub\meu-cofrin\functions\node_modules\.bin\firebase-functions'
+[info] Serving at port 8278
+
+[debug] [2026-06-03T10:58:40.964Z] Got response from /__/functions.yaml {"endpoints":{"notificarContasVencendo":{"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","labels":{},"scheduleTrigger":{"schedule":"0 11 * * *","retryConfig":{},"timeZone":"America/Sao_Paulo"},"entryPoint":"notificarContasVencendo"}},"specVersion":"v1alpha1","requiredAPIs":[{"api":"cloudscheduler.googleapis.com","reason":"Needed for scheduled functions."}],"extensions":{}}
+[debug] [2026-06-03T10:58:44.986Z] [functions] Loaded functions definitions from source: notificarContasVencendo.
