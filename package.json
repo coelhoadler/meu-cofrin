@@ -12,6 +12,7 @@
   "private": true,
   "packageManager": "npm@10.9.2",
   "dependencies": {
+    "@angular/animations": "^21.2.16",
     "@angular/common": "^21.2.0",
     "@angular/compiler": "^21.2.0",
     "@angular/core": "^21.2.0",
@@ -23,6 +24,7 @@
     "firebase": "^12.11.0",
     "material-symbols": "^0.44.11",
     "ngx-mask": "^21.0.1",
+    "ngx-toastr": "^20.0.5",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
