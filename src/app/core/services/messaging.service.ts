@@ -15,7 +15,6 @@ export class MessagingService {
 
   async requestPermissionAndGetToken() {
     try {
-      debugger
       if (!('Notification' in window)) {
         console.warn('Este navegador não suporta notificações de sistema.');
         return;
@@ -25,12 +24,8 @@ export class MessagingService {
 
       if (permission === 'granted') {
         const token = await getToken(this.messaging, {
-          // IMPORTANTE: Adicione sua VAPID Key aqui!
-          // Você consegue gerar ela em: Console do Firebase > Configurações do Projeto > Cloud Messaging > Certificados Web Push
           vapidKey: 'BLG5yJCaAx0PVyk0V3SujWOJEq3HxVPGtBLd7qNU_Gd0ZgtSDNg1zZeoY624qXg6Ho9XpP6xYbPtVmwyktyibzY'
         });
-
-        debugger
 
         if (token) {
           await this.saveTokenToFirestore(token);
@@ -60,8 +55,11 @@ export class MessagingService {
   listenForMessages() {
     onMessage(this.messaging, (payload) => {
       console.log('Notificação recebida em primeiro plano: ', payload);
+
       if (payload.notification) {
-        this.toastr.info(payload.notification.body, payload.notification.title);
+        this.toastr.info(payload.notification.body, payload.notification.title, {
+          timeOut: 10000
+        });
       }
     });
   }
