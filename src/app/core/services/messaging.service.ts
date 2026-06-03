@@ -23,7 +23,7 @@ export class MessagingService {
         const token = await getToken(this.messaging, {
           // IMPORTANTE: Adicione sua VAPID Key aqui!
           // Você consegue gerar ela em: Console do Firebase > Configurações do Projeto > Cloud Messaging > Certificados Web Push
-          vapidKey: 'jAOsuHgVrsLUJBUQIxXwK8qFWPJqwDZfGJWvnv794BE'
+          vapidKey: 'BLG5yJCaAx0PVyk0V3SujWOJEq3HxVPGtBLd7qNU_Gd0ZgtSDNg1zZeoY624qXg6Ho9XpP6xYbPtVmwyktyibzY'
         });
 
         if (token) {
