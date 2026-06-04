@@ -4,6 +4,7 @@ import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NgxMaskDirective } from 'ngx-mask';
 import { Conta, ContaService } from '../../core/services/conta.service';
+import { Categoria, CategoriaService } from '../../core/services/categoria.service';
 
 @Component({
   selector: 'app-nova-conta',
@@ -14,14 +15,16 @@ import { Conta, ContaService } from '../../core/services/conta.service';
 export class NovaContaComponent implements OnInit {
   private fb = inject(FormBuilder);
   private contaService = inject(ContaService);
+  private categoriaService = inject(CategoriaService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
   contaForm = this.fb.group({
     nome: ['', [Validators.required]],
     descricao: [''],
+    categoriaId: ['', [Validators.required]],
     tipo: ['Despesa', [Validators.required]],
-    mesReferencia: ['', [Validators.required]],
+    mesReferencia: [new Date().toISOString().slice(0, 7), [Validators.required]],
     diaVencimento: [1, [Validators.required, Validators.min(1), Validators.max(31)]],
     statusPago: [false],
     dataPagamento: [{ value: '', disabled: true }],
@@ -36,7 +39,17 @@ export class NovaContaComponent implements OnInit {
   editId = signal<string | null>(null);
   existingReciboUrl = signal<string | null>(null);
 
+  categorias = signal<Categoria[]>([]);
+
   constructor() {
+    // Listen to categoriaId to update tipo
+    this.contaForm.get('categoriaId')?.valueChanges.subscribe(catId => {
+      const selectedCat = this.categorias().find(c => c.id === catId);
+      if (selectedCat) {
+        this.contaForm.get('tipo')?.setValue(selectedCat.tipo);
+      }
+    });
+
     // Listen to tipo to handle validations
     this.contaForm.get('tipo')?.valueChanges.subscribe(tipo => {
       const diaVencimentoCtrl = this.contaForm.get('diaVencimento');
@@ -81,19 +94,33 @@ export class NovaContaComponent implements OnInit {
   }
 
   async ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.isEditMode.set(true);
-      this.editId.set(id);
-      this.isLoading.set(true);
-      try {
+    this.isLoading.set(true);
+    try {
+      // Load categories first
+      const cats = await this.categoriaService.getCategorias();
+      this.categorias.set(cats);
+
+      const id = this.route.snapshot.paramMap.get('id');
+      if (id) {
+        this.isEditMode.set(true);
+        this.editId.set(id);
+        
         const conta = await this.contaService.getContaById(id);
 
         if (conta) {
           // Pre-fill the form
+          let catIdToSelect = '';
+          if (conta.categoria) {
+             const matchedCat = cats.find(c => c.nome === conta.categoria);
+             if (matchedCat) {
+               catIdToSelect = matchedCat.id!;
+             }
+          }
+
           this.contaForm.patchValue({
             nome: conta.nome,
             descricao: conta.descricao || '',
+            categoriaId: catIdToSelect,
             tipo: conta.tipo,
             mesReferencia: conta.mesReferencia,
             diaVencimento: conta.diaVencimento,
@@ -108,12 +135,12 @@ export class NovaContaComponent implements OnInit {
         } else {
           this.errorMessage.set('Conta não encontrada.');
         }
-      } catch (error) {
-        console.error('Erro ao buscar conta:', error);
-        this.errorMessage.set('Erro ao carregar dados da conta.');
-      } finally {
-        this.isLoading.set(false);
       }
+    } catch (error) {
+      console.error('Erro ao buscar dados:', error);
+      this.errorMessage.set('Erro ao carregar os dados.');
+    } finally {
+      this.isLoading.set(false);
     }
   }
 
@@ -140,11 +167,16 @@ export class NovaContaComponent implements OnInit {
 
     try {
       const formValue = this.contaForm.getRawValue();
+      const selectedCat = this.categorias().find(c => c.id === formValue.categoriaId);
 
       const contaData: any = {
         ...formValue,
+        categoria: selectedCat?.nome || '',
+        tipo: selectedCat?.tipo || 'Despesa',
         valor: formValue.valor
       };
+      
+      delete contaData.categoriaId;
 
       if (this.isEditMode() && this.editId()) {
         await this.contaService.updateConta(this.editId()!, contaData, this.selectedFile());

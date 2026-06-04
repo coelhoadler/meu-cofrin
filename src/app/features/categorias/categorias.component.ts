@@ -54,11 +54,12 @@ export class CategoriasComponent implements OnInit {
       const formValue = this.categoriaForm.value;
       const categoriaData: Categoria = {
         nome: formValue.nome!,
-        descricao: formValue.descricao || undefined,
+        descricao: formValue.descricao || '',
         tipo: formValue.tipo as 'Despesa' | 'Receita',
-        cor: formValue.cor || undefined
+        cor: formValue.cor || ''
       };
 
+      debugger
       if (this.isEditMode() && this.editId()) {
         await this.categoriaService.updateCategoria(this.editId()!, categoriaData);
       } else {
