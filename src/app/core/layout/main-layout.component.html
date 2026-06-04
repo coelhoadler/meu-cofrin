@@ -20,18 +20,21 @@
     <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
       <a routerLink="/dashboard" routerLinkActive="bg-[#8b5cf6]/20 text-[#c4b5fd]"
         [routerLinkActiveOptions]="{exact: true}"
+        (click)="isSidebarOpen.set(false)"
         class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors">
         <span class="material-symbols-outlined text-xl">dashboard</span>
         <span class="text-sm">Dashboard</span>
       </a>
 
       <a routerLink="/nova-conta" routerLinkActive="bg-[#8b5cf6]/20 text-[#c4b5fd]"
+        (click)="isSidebarOpen.set(false)"
         class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors">
         <span class="material-symbols-outlined text-xl">add</span>
         <span class="text-sm">Minhas contas</span>
       </a>
 
       <a routerLink="/categorias" routerLinkActive="bg-[#8b5cf6]/20 text-[#c4b5fd]"
+        (click)="isSidebarOpen.set(false)"
         class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors">
         <span class="material-symbols-outlined text-xl">layers</span>
         <span class="text-sm">Categorias</span>
