@@ -14,6 +14,7 @@ export interface Conta {
   statusPago: boolean;
   valor: string | null;
   reciboUrl?: string;
+  categoria?: string;
   createdAt?: any;
 }
 

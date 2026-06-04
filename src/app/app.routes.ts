@@ -22,6 +22,11 @@ export const routes: Routes = [
         loadComponent: () => import('./features/nova-conta/nova-conta.component').then(m => m.NovaContaComponent),
         title: 'Meu Cofrin | Editar Conta' 
       },
+      { 
+        path: 'categorias', 
+        loadComponent: () => import('./features/categorias/categorias.component').then(m => m.CategoriasComponent),
+        title: 'Meu Cofrin | Categorias' 
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },
