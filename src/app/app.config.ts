@@ -15,6 +15,7 @@ import { registerLocaleData } from '@angular/common';
 import ptBr from '@angular/common/locales/pt';
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 registerLocaleData(ptBr);
 
@@ -50,6 +51,7 @@ export const appConfig: ApplicationConfig = {
       registrationStrategy: 'registerWhenStable:30000',
     }),
     provideEnvironmentNgxMask(), provideClientHydration(withEventReplay()),
+    provideCharts(withDefaultRegisterables())
   ],
 };
 
