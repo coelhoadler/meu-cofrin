@@ -113,22 +113,9 @@
         <h3 class="text-[15px] font-bold text-slate-800">Distribuição do mês</h3>
         <p class="text-[13px] text-slate-500">Composição atual</p>
       </div>
-      <!-- Mock Pie Area -->
-      <div class="flex-1 flex items-center justify-center relative mt-4">
-        <div
-          class="w-40 h-40 rounded-full border-[20px] border-slate-50 border-t-[#9d6bf3] border-r-[#421b7b] border-b-[#421b7b] border-l-[#9d6bf3]">
-        </div>
-      </div>
-      <!-- Legend -->
-      <div class="flex justify-center gap-4 mt-6">
-        <div class="flex items-center gap-1.5">
-          <div class="w-2 h-2 rounded-full bg-[#9d6bf3]"></div>
-          <span class="text-[11px] text-slate-500 font-medium">Receitas</span>
-        </div>
-        <div class="flex items-center gap-1.5">
-          <div class="w-2 h-2 rounded-full bg-[#421b7b]"></div>
-          <span class="text-[11px] text-slate-500 font-medium">Despesas</span>
-        </div>
+      <!-- Chart Area -->
+      <div class="flex-1 relative mt-4 min-h-[200px]">
+        <canvas baseChart [data]="pieChartData" [options]="pieChartOptions" [type]="'pie'"> </canvas>
       </div>
     </div>
   </div>
@@ -180,11 +167,13 @@
             <td class="py-4">
               <div class="flex flex-col">
                 <div class="flex items-center gap-2">
-                  <span class="font-semibold text-slate-800">{{ item.nome }}</span>
+                  <span class="font-semibold text-slate-800" [ngClass]="{'line-through': item.statusPago}">{{
+                    item.nome }}</span>
                   <span *ngIf="item.reciboUrl" class="material-symbols-outlined text-slate-400 text-base"
                     title="Possui imagem">image</span>
                 </div>
-                <span *ngIf="item.categoria" class="text-xs font-medium text-slate-400 mt-0.5">{{ item.categoria }}</span>
+                <span *ngIf="item.categoria" class="text-xs font-medium text-slate-400 mt-0.5">{{ item.categoria
+                  }}</span>
               </div>
             </td>
             <td class="py-4 text-slate-500 text-center">{{ item.diaVencimento }}</td>

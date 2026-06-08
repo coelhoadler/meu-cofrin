@@ -4,11 +4,13 @@ import { CommonModule } from '@angular/common';
 import { ContaService, Conta } from '../../core/services/conta.service';
 import { AuthService } from '../../core/auth/auth.service';
 import { MessagingService } from '../../core/services/messaging.service';
+import { BaseChartDirective } from 'ng2-charts';
+import { ChartConfiguration } from 'chart.js';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [RouterLink, CommonModule],
+  imports: [RouterLink, CommonModule, BaseChartDirective],
   templateUrl: './dashboard.component.html'
 })
 export class DashboardComponent {
@@ -20,12 +22,39 @@ export class DashboardComponent {
 
   lancamentos = signal<Conta[]>([]);
   isLoading = signal(true);
-  
+
   selectedConta = signal<Conta | null>(null);
 
   totalDespesas = signal('R$ 0,00');
   totalReceitas = signal('R$ 0,00');
   saldoMes = signal('R$ 0,00');
+
+  pieChartOptions: ChartConfiguration<'pie'>['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'bottom',
+        align: 'start',
+        labels: {
+          color: '#64748b',
+          font: {
+            size: 11
+          }
+        }
+      }
+    }
+  };
+
+  pieChartData: ChartConfiguration<'pie'>['data'] = {
+    labels: [],
+    datasets: [{
+      data: [],
+      backgroundColor: [],
+      borderWidth: 0
+    }]
+  };
 
   constructor() {
     effect(() => {
@@ -33,7 +62,7 @@ export class DashboardComponent {
       if (user) {
         this.loadLancamentos();
         this.loadResumoMes();
-        
+
         // Pede permissão para notificações e salva o token (ideal ser chamado após login)
         this.messagingService.requestPermissionAndGetToken();
         this.messagingService.listenForMessages();
@@ -64,6 +93,7 @@ export class DashboardComponent {
 
       let somaDespesas = 0;
       let somaReceitas = 0;
+      const chartDataMap = new Map<string, number>();
 
       contasDoMes.forEach(c => {
         if (c.valor) {
@@ -72,9 +102,31 @@ export class DashboardComponent {
           if (!isNaN(numValue)) {
             if (c.tipo === 'Despesa') somaDespesas += numValue;
             if (c.tipo === 'Receita') somaReceitas += numValue;
+
+            const label = `${c.tipo} - ${c.categoria || 'Outros'}`;
+            chartDataMap.set(label, (chartDataMap.get(label) || 0) + numValue);
           }
         }
       });
+
+      const labels = Array.from(chartDataMap.keys());
+      const data = Array.from(chartDataMap.values());
+      const colors = [
+        '#421b7b', '#10b981', '#f59e0b', '#f43f5e', '#3b82f6',
+        '#8b5cf6', '#ec4899', '#14b8a6', '#f97316', '#84cc16'
+      ];
+
+      // Update chart with deep copy to trigger change detection in ng2-charts
+      this.pieChartData = {
+        labels: labels,
+        datasets: [{
+          data: data,
+          backgroundColor: labels.map((_, i) => colors[i % colors.length]),
+          borderWidth: 2,
+          borderColor: '#ffffff',
+          hoverOffset: 4
+        }]
+      };
 
       const saldo = somaReceitas - somaDespesas;
 
