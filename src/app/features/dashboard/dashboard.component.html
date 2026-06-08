@@ -190,11 +190,17 @@
     <!-- Rodapé: Total a Pagar e Legenda -->
     <div *ngIf="!isLoading() && lancamentos().length > 0"
       class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mt-6 pt-4 border-t border-slate-100">
-      
+
       <!-- Total a Pagar -->
       <div>
         <p class="text-[11px] text-slate-500 font-medium uppercase tracking-wider mb-0.5">Resta a pagar (Mês)</p>
         <p class="text-lg font-bold text-orange-500">{{ totalAPagar() }}</p>
+      </div>
+
+      <!-- Total a Pagar -->
+      <div>
+        <p class="text-[11px] text-slate-500 font-medium uppercase tracking-wider mb-0.5">Foi pago (Mês)</p>
+        <p class="text-lg font-bold text-green-500">{{ totalPago() }}</p>
       </div>
 
       <!-- Legenda -->

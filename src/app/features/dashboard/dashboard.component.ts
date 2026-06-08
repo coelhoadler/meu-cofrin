@@ -29,6 +29,7 @@ export class DashboardComponent {
   totalReceitas = signal('R$ 0,00');
   saldoMes = signal('R$ 0,00');
   totalAPagar = signal('R$ 0,00');
+  totalPago = signal('R$ 0,00');
 
   pieChartOptions: ChartConfiguration<'pie'>['options'] = {
     responsive: true,
@@ -142,6 +143,7 @@ export class DashboardComponent {
       this.totalReceitas.set(formatter.format(somaReceitas));
       this.saldoMes.set(formatter.format(saldo));
       this.totalAPagar.set(formatter.format(somaAPagar));
+      this.totalPago.set(formatter.format(somaDespesas - somaAPagar));
 
     } catch (error) {
       console.error('Erro ao buscar resumo do mês:', error);
