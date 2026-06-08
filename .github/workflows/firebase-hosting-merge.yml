@@ -3,7 +3,7 @@
 
 name: Deploy to Firebase Hosting on merge
 env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
 on:
   push:
     branches:
