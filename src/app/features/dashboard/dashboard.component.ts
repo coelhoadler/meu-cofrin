@@ -206,6 +206,40 @@ export class DashboardComponent {
       this.totalAPagar.set(formatter.format(somaAPagar));
       this.totalPago.set(formatter.format(somaDespesas - somaAPagar));
 
+      // Atualiza o gráfico de barras com os dados do mês atual
+      const anoEMes = new Intl.DateTimeFormat('pt-BR', { month: 'short', year: '2-digit' }).format(date).replace('.', '');
+      const mesNomeCapitalized = anoEMes.charAt(0).toUpperCase() + anoEMes.slice(1);
+
+      this.barChartData = {
+        labels: [mesNomeCapitalized],
+        datasets: [
+          {
+            type: 'bar',
+            data: [somaReceitas],
+            label: 'Receitas',
+            backgroundColor: '#9d6bf3',
+            borderRadius: 4
+          },
+          {
+            type: 'bar',
+            data: [somaDespesas],
+            label: 'Despesas',
+            backgroundColor: '#421b7b',
+            borderRadius: 4
+          },
+          {
+            type: 'line',
+            data: [saldo],
+            label: 'Saldo',
+            borderColor: '#10b981', // green-500
+            backgroundColor: 'rgba(16, 185, 129, 0.2)',
+            borderWidth: 2,
+            fill: false,
+            tension: 0.3
+          }
+        ]
+      };
+
     } catch (error) {
       console.error('Erro ao buscar resumo do mês:', error);
     }
