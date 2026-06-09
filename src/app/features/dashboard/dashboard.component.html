@@ -187,20 +187,36 @@
       </table>
     </div>
 
-    <!-- Legenda -->
+    <!-- Rodapé: Total a Pagar e Legenda -->
     <div *ngIf="!isLoading() && lancamentos().length > 0"
-      class="flex flex-wrap justify-end items-center gap-6 mt-6 pt-4 border-t border-slate-100">
-      <div class="flex items-center gap-2">
-        <div class="w-2.5 h-2.5 rounded-full bg-[#421b7b]"></div>
-        <span class="text-[11px] text-slate-500 font-medium uppercase tracking-wider">Receita</span>
+      class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mt-6 pt-4 border-t border-slate-100">
+
+      <!-- Total a Pagar -->
+      <div>
+        <p class="text-[11px] text-slate-500 font-medium uppercase tracking-wider mb-0.5">Resta a pagar (Mês)</p>
+        <p class="text-lg font-bold text-orange-500">{{ totalAPagar() }}</p>
       </div>
-      <div class="flex items-center gap-2">
-        <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
-        <span class="text-[11px] text-slate-500 font-medium uppercase tracking-wider">Pago</span>
+
+      <!-- Total a Pagar -->
+      <div>
+        <p class="text-[11px] text-slate-500 font-medium uppercase tracking-wider mb-0.5">Foi pago (Mês)</p>
+        <p class="text-lg font-bold text-green-500">{{ totalPago() }}</p>
       </div>
-      <div class="flex items-center gap-2">
-        <div class="w-2.5 h-2.5 rounded-full bg-orange-500"></div>
-        <span class="text-[11px] text-slate-500 font-medium uppercase tracking-wider">Pendente</span>
+
+      <!-- Legenda -->
+      <div class="flex flex-wrap items-center gap-6">
+        <div class="flex items-center gap-2">
+          <div class="w-2.5 h-2.5 rounded-full bg-[#421b7b]"></div>
+          <span class="text-[11px] text-slate-500 font-medium uppercase tracking-wider">Receita</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
+          <span class="text-[11px] text-slate-500 font-medium uppercase tracking-wider">Pago</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="w-2.5 h-2.5 rounded-full bg-orange-500"></div>
+          <span class="text-[11px] text-slate-500 font-medium uppercase tracking-wider">Pendente</span>
+        </div>
       </div>
     </div>
   </div>

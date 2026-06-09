@@ -28,6 +28,8 @@ export class DashboardComponent {
   totalDespesas = signal('R$ 0,00');
   totalReceitas = signal('R$ 0,00');
   saldoMes = signal('R$ 0,00');
+  totalAPagar = signal('R$ 0,00');
+  totalPago = signal('R$ 0,00');
 
   pieChartOptions: ChartConfiguration<'pie'>['options'] = {
     responsive: true,
@@ -93,6 +95,7 @@ export class DashboardComponent {
 
       let somaDespesas = 0;
       let somaReceitas = 0;
+      let somaAPagar = 0;
       const chartDataMap = new Map<string, number>();
 
       contasDoMes.forEach(c => {
@@ -100,7 +103,12 @@ export class DashboardComponent {
           const cleanValue = c.valor.replace(/\./g, '').replace(',', '.').replace('R$', '');
           const numValue = parseFloat(cleanValue);
           if (!isNaN(numValue)) {
-            if (c.tipo === 'Despesa') somaDespesas += numValue;
+            if (c.tipo === 'Despesa') {
+              somaDespesas += numValue;
+              if (!c.statusPago) {
+                somaAPagar += numValue;
+              }
+            }
             if (c.tipo === 'Receita') somaReceitas += numValue;
 
             const label = `${c.tipo} - ${c.categoria || 'Outros'}`;
@@ -134,6 +142,8 @@ export class DashboardComponent {
       this.totalDespesas.set(formatter.format(somaDespesas));
       this.totalReceitas.set(formatter.format(somaReceitas));
       this.saldoMes.set(formatter.format(saldo));
+      this.totalAPagar.set(formatter.format(somaAPagar));
+      this.totalPago.set(formatter.format(somaDespesas - somaAPagar));
 
     } catch (error) {
       console.error('Erro ao buscar resumo do mês:', error);
