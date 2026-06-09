@@ -67,35 +67,12 @@
         <h3 class="text-[15px] font-bold text-slate-800">Últimos 6 meses</h3>
         <p class="text-[13px] text-slate-500">Receitas vs Despesas</p>
       </div>
-      <!-- Mock Chart Area -->
-      <div class="flex-1 border-l border-b border-slate-200 relative mt-2 ml-4 mb-6">
-        <!-- Y Axis labels mock -->
-        <div class="absolute -left-7 top-0 bottom-0 flex flex-col justify-between text-[10px] text-slate-400 py-1">
-          <span>R$ 4</span>
-          <span>R$ 3</span>
-          <span>R$ 2</span>
-          <span>R$ 1</span>
-          <span>R$ 0</span>
-        </div>
-        <!-- Grid lines mock -->
-        <div class="w-full h-full flex flex-col justify-between absolute inset-0 py-2 pointer-events-none">
-          <div class="border-t border-slate-100 border-dashed w-full h-0"></div>
-          <div class="border-t border-slate-100 border-dashed w-full h-0"></div>
-          <div class="border-t border-slate-100 border-dashed w-full h-0"></div>
-          <div class="border-t border-slate-100 border-dashed w-full h-0"></div>
-        </div>
-        <!-- X Axis labels mock -->
-        <div class="absolute -bottom-6 left-0 right-0 flex justify-between px-4 text-[10px] text-slate-400">
-          <span>jan</span>
-          <span>fev</span>
-          <span>mar</span>
-          <span>abr</span>
-          <span>mai</span>
-          <span>jun</span>
-        </div>
+      <!-- Chart Area -->
+      <div class="flex-1 relative w-full h-full min-h-[200px]">
+        <canvas baseChart [data]="barChartData" [options]="barChartOptions" [type]="'bar'"></canvas>
       </div>
       <!-- Legend -->
-      <div class="flex justify-center gap-6">
+      <div class="flex justify-center gap-6 mt-4">
         <div class="flex items-center gap-2">
           <div class="w-2.5 h-2.5 rounded-sm bg-[#9d6bf3]"></div>
           <span class="text-[11px] text-slate-500 font-medium">Receitas</span>
@@ -103,6 +80,10 @@
         <div class="flex items-center gap-2">
           <div class="w-2.5 h-2.5 rounded-sm bg-[#421b7b]"></div>
           <span class="text-[11px] text-slate-500 font-medium">Despesas</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="w-2.5 h-0.5 rounded-sm bg-[#10b981]"></div>
+          <span class="text-[11px] text-slate-500 font-medium">Saldo</span>
         </div>
       </div>
     </div>
