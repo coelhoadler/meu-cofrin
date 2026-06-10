@@ -1,5 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { Auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, authState, User, updateProfile } from '@angular/fire/auth';
+import { Auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, authState, User, updateProfile, updatePassword } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 
@@ -59,6 +59,14 @@ export class AuthService {
       } as User;
       
       this.currentUser.set(updatedUser);
+    } else {
+      throw new Error('Nenhum usuário autenticado');
+    }
+  }
+
+  async updateUserPassword(newPassword: string) {
+    if (this.auth.currentUser) {
+      await updatePassword(this.auth.currentUser, newPassword);
     } else {
       throw new Error('Nenhum usuário autenticado');
     }

@@ -1,19 +1,59 @@
 <div class="max-w-2xl mx-auto space-y-6">
   <div>
     <h1 class="text-2xl font-bold text-slate-800">Meu Perfil</h1>
-    <p class="text-slate-500 text-sm mt-1">Gerencie suas informações pessoais</p>
+    <p class="text-slate-500 text-sm mt-1">Gerencie suas informações pessoais e credenciais de acesso.</p>
   </div>
 
   <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-    <div class="flex items-center gap-6 mb-8">
-      <div class="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-500 via-purple-500 to-fuchsia-500 flex items-center justify-center text-white text-3xl font-bold shadow-lg shadow-purple-500/30">
-        {{ user()?.displayName?.charAt(0)?.toUpperCase() || user()?.email?.charAt(0)?.toUpperCase() || 'U' }}
+    <div class="flex flex-col sm:flex-row items-center gap-6 mb-8">
+      <div class="relative group cursor-pointer" (click)="fileInput.click()">
+        @if (user()?.photoURL) {
+        <img [src]="user()?.photoURL" alt="Profile"
+          class="w-24 h-24 rounded-full object-cover shadow-lg border-4 border-white">
+        } @else {
+        <div
+          class="w-24 h-24 rounded-full bg-gradient-to-br from-indigo-500 via-purple-500 to-fuchsia-500 flex items-center justify-center text-white text-3xl font-bold shadow-lg shadow-purple-500/30 border-4 border-white">
+          {{ user()?.displayName?.charAt(0)?.toUpperCase() || user()?.email?.charAt(0)?.toUpperCase() || 'U' }}
+        </div>
+        }
+
+        <div
+          class="absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+          <span class="material-symbols-outlined text-white text-2xl">photo_camera</span>
+        </div>
+
+        @if (isUploading()) {
+        <div class="absolute inset-0 bg-white/80 rounded-full flex items-center justify-center">
+          <span class="material-symbols-outlined animate-spin text-purple-600 text-3xl">progress_activity</span>
+        </div>
+        }
+
+        <input type="file" #fileInput class="hidden" accept="image/*" (change)="uploadProfileImage($event)">
       </div>
-      <div>
+
+      <div class="text-center sm:text-left">
         <h2 class="text-xl font-bold text-slate-800">{{ user()?.displayName || 'Usuário' }}</h2>
         <p class="text-slate-500">{{ user()?.email }}</p>
+        <button (click)="fileInput.click()"
+          class="mt-2 text-sm font-medium text-purple-600 hover:text-purple-700 transition-colors">
+          Alterar foto de perfil
+        </button>
       </div>
     </div>
+
+    <!-- Messages Geral -->
+    @if (successMessage()) {
+    <div class="mb-4 p-3 bg-emerald-50 text-emerald-700 rounded-xl text-sm flex items-center gap-2">
+      <span class="material-symbols-outlined text-emerald-500">check_circle</span>
+      {{ successMessage() }}
+    </div>
+    }
+    @if (errorMessage()) {
+    <div class="mb-4 p-3 bg-red-50 text-red-700 rounded-xl text-sm flex items-center gap-2">
+      <span class="material-symbols-outlined text-red-500">error</span>
+      {{ errorMessage() }}
+    </div>
+    }
 
     <form (ngSubmit)="saveProfile()" class="space-y-4">
       <div>
@@ -22,47 +62,69 @@
           <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <span class="material-symbols-outlined text-slate-400 text-lg">person</span>
           </div>
-          <input 
-            type="text" 
-            id="displayName" 
-            name="displayName"
-            [ngModel]="displayName()"
+          <input type="text" id="displayName" name="displayName" [ngModel]="displayName()" [value]="user()?.displayName"
             (ngModelChange)="displayName.set($event)"
             class="block w-full pl-10 pr-3 py-2.5 border border-slate-300 rounded-xl text-slate-800 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 sm:text-sm transition-colors"
-            placeholder="Seu nome"
-          >
+            placeholder="Seu nome">
         </div>
       </div>
 
-      <!-- Messages -->
-      @if (successMessage()) {
-        <div class="p-3 bg-emerald-50 text-emerald-700 rounded-xl text-sm flex items-center gap-2">
-          <span class="material-symbols-outlined text-emerald-500">check_circle</span>
-          {{ successMessage() }}
-        </div>
-      }
-      @if (errorMessage()) {
-        <div class="p-3 bg-red-50 text-red-700 rounded-xl text-sm flex items-center gap-2">
-          <span class="material-symbols-outlined text-red-500">error</span>
-          {{ errorMessage() }}
-        </div>
-      }
-
-      <div class="pt-4 flex justify-end">
-        <button 
-          type="submit" 
-          [disabled]="isLoading()"
-          class="inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-medium rounded-xl shadow-md shadow-purple-500/20 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-70 disabled:cursor-not-allowed"
-        >
+      <div class="pt-2 flex justify-end">
+        <button type="submit" [disabled]="isLoading()"
+          class="inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-medium rounded-xl shadow-md shadow-purple-500/20 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-70 disabled:cursor-not-allowed">
           @if (isLoading()) {
-            <span class="material-symbols-outlined animate-spin">progress_activity</span>
-            Salvando...
+          <span class="material-symbols-outlined animate-spin">progress_activity</span>
+          Salvando...
           } @else {
-            <span class="material-symbols-outlined text-sm">save</span>
-            Salvar Alterações
+          <span class="material-symbols-outlined text-sm">save</span>
+          Salvar Alterações
           }
         </button>
       </div>
     </form>
+
+    <div class="mt-8 pt-8 border-t border-slate-200">
+      <h3 class="text-lg font-bold text-slate-800 mb-4">Alterar Senha</h3>
+      <form (ngSubmit)="changePassword()" class="space-y-4">
+        <div>
+          <label for="newPassword" class="block text-sm font-medium text-slate-700 mb-1">Nova Senha</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <span class="material-symbols-outlined text-slate-400 text-lg">lock</span>
+            </div>
+            <input type="password" id="newPassword" name="newPassword" [ngModel]="newPassword()"
+              (ngModelChange)="newPassword.set($event)"
+              class="block w-full pl-10 pr-3 py-2.5 border border-slate-300 rounded-xl text-slate-800 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 sm:text-sm transition-colors"
+              placeholder="Digite a nova senha" minlength="6">
+          </div>
+        </div>
+
+        @if (passwordSuccessMessage()) {
+        <div class="p-3 bg-emerald-50 text-emerald-700 rounded-xl text-sm flex items-center gap-2">
+          <span class="material-symbols-outlined text-emerald-500">check_circle</span>
+          {{ passwordSuccessMessage() }}
+        </div>
+        }
+        @if (passwordErrorMessage()) {
+        <div class="p-3 bg-red-50 text-red-700 rounded-xl text-sm flex items-center gap-2">
+          <span class="material-symbols-outlined text-red-500">error</span>
+          {{ passwordErrorMessage() }}
+        </div>
+        }
+
+        <div class="pt-2 flex justify-end">
+          <button type="submit" [disabled]="isPasswordLoading() || !newPassword()"
+            class="inline-flex items-center gap-2 px-6 py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-medium rounded-xl transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 disabled:opacity-70 disabled:cursor-not-allowed">
+            @if (isPasswordLoading()) {
+            <span class="material-symbols-outlined animate-spin">progress_activity</span>
+            Atualizando...
+            } @else {
+            <span class="material-symbols-outlined text-sm">key</span>
+            Atualizar Senha
+            }
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
