@@ -4,3 +4,4 @@ admin.initializeApp();
 
 export * from "./scheduled/notificarContasVencendo";
 export * from "./scheduled/consolidarResumosMensais";
+export * from "./auth/webauthn";

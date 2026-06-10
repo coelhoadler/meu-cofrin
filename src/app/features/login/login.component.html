@@ -94,6 +94,20 @@
         </div>
       </button>
 
+      <!-- Botão de Biometria -->
+      <ng-container *ngIf="isLoginMode() && hasBiometricsConfigured()">
+        <div class="flex items-center gap-3 mt-4 mb-2">
+          <div class="h-px bg-slate-200 flex-1"></div>
+          <span class="text-xs font-medium text-slate-400">OU</span>
+          <div class="h-px bg-slate-200 flex-1"></div>
+        </div>
+        <button type="button" (click)="loginWithBiometrics()" [disabled]="isLoading()"
+          class="w-full px-8 py-3.5 rounded-2xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold shadow-sm transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center h-12 text-sm gap-2">
+          <span class="material-symbols-outlined text-[20px] text-indigo-500">fingerprint</span>
+          Entrar com Biometria
+        </button>
+      </ng-container>
+
     </form>
   </div>
 </div>

@@ -8,6 +8,7 @@ import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getStorage, provideStorage } from '@angular/fire/storage';
 import { getMessaging, provideMessaging } from '@angular/fire/messaging';
+import { getFunctions, provideFunctions } from '@angular/fire/functions';
 import { provideServiceWorker } from '@angular/service-worker';
 import { provideEnvironmentNgxMask } from 'ngx-mask';
 
@@ -46,6 +47,7 @@ export const appConfig: ApplicationConfig = {
     provideFirestore(() => getFirestore()),
     provideStorage(() => getStorage()),
     provideMessaging(() => getMessaging()),
+    provideFunctions(() => getFunctions()),
     provideServiceWorker('ngsw-worker.js', {
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000',
