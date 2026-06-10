@@ -59,7 +59,6 @@ export class CategoriasComponent implements OnInit {
         cor: formValue.cor || ''
       };
 
-      debugger
       if (this.isEditMode() && this.editId()) {
         await this.categoriaService.updateCategoria(this.editId()!, categoriaData);
       } else {

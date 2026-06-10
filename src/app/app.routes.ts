@@ -27,6 +27,11 @@ export const routes: Routes = [
         loadComponent: () => import('./features/categorias/categorias.component').then(m => m.CategoriasComponent),
         title: 'Meu Cofrin | Categorias' 
       },
+      { 
+        path: 'perfil', 
+        loadComponent: () => import('./features/perfil/perfil').then(m => m.Perfil),
+        title: 'Meu Cofrin | Meu Perfil' 
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },

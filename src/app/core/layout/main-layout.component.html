@@ -36,13 +36,28 @@
         <span class="material-symbols-outlined text-xl">layers</span>
         <span class="text-sm">Categorias</span>
       </a>
+
+      <div class="h-px bg-slate-800/50 my-2 mx-3"></div>
+
+      <a routerLink="/perfil" routerLinkActive="bg-[#8b5cf6]/20 text-[#c4b5fd]" (click)="isSidebarOpen.set(false)"
+        class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors">
+        <span class="material-symbols-outlined text-xl">person</span>
+        <span class="text-sm">Meu Perfil</span>
+      </a>
     </nav>
 
     <!-- Sidebar Footer -->
     <div class="p-4 mt-auto">
       <div class="flex items-center gap-3 mb-4 px-2">
+        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-xs shrink-0 overflow-hidden">
+          @if (user()?.photoURL) {
+            <img [src]="user()?.photoURL" class="w-full h-full object-cover">
+          } @else {
+            {{ user()?.displayName?.charAt(0)?.toUpperCase() || user()?.email?.charAt(0)?.toUpperCase() || 'U' }}
+          }
+        </div>
         <div class="flex-1 truncate">
-          <p class="text-xs font-medium text-slate-400 truncate">{{ user()?.email || 'usuario@exemplo.com' }}</p>
+          <p class="text-xs font-medium text-slate-400 truncate">{{ user()?.displayName || user()?.email || 'usuario@exemplo.com' }}</p>
         </div>
       </div>
       <button (click)="logout()"
