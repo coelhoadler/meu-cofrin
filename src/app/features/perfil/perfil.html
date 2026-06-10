@@ -69,20 +69,25 @@
           class="block w-full px-3 py-2 border border-slate-200 rounded-xl text-slate-500 bg-slate-50/50 sm:text-sm">
         <p class="text-xs text-slate-500 mt-2">O e-mail de acesso não pode ser alterado por aqui.</p>
 
-        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mt-4">
+        <div class="mt-4">
           @if (user()?.emailVerified) {
-          <span class="inline-flex items-center gap-1 text-sm text-emerald-500">
-            O e-mail foir verificado.
-          </span>
+          <div
+            class="p-3 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl text-sm flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px] text-emerald-500">check_circle</span>
+            <span>O e-mail foi verificado.</span>
+          </div>
           } @else {
-          <span class="inline-flex items-center gap-1 text-sm text-amber-500">
-            O e-mail não foi verificado.
-          </span>
-          <span class="text-slate-300 hidden sm:inline">•</span>
-          <button (click)="resendVerificationEmail()" [disabled]="isSendingEmail()"
-            class="text-sm font-medium text-[#9b87f5] hover:text-[#8a75e4] hover:underline disabled:opacity-50 transition-colors">
-            {{ isSendingEmail() ? 'Enviando...' : 'Reenviar verificação' }}
-          </button>
+          <div
+            class="p-3 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl text-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[18px] text-amber-500">warning</span>
+              <span>O e-mail não foi verificado.</span>
+            </div>
+            <button type="button" (click)="resendVerificationEmail()" [disabled]="isSendingEmail()"
+              class="px-3 py-1.5 bg-white border border-amber-200 rounded-lg text-xs font-medium text-amber-700 hover:bg-amber-100 hover:text-amber-800 disabled:opacity-50 transition-colors shadow-sm whitespace-nowrap">
+              {{ isSendingEmail() ? 'Enviando...' : 'Reenviar verificação' }}
+            </button>
+          </div>
           }
         </div>
       </div>
