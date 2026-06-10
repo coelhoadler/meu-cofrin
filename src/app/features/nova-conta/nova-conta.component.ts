@@ -52,18 +52,15 @@ export class NovaContaComponent implements OnInit {
 
     // Listen to tipo to handle validations
     this.contaForm.get('tipo')?.valueChanges.subscribe(tipo => {
-      const diaVencimentoCtrl = this.contaForm.get('diaVencimento');
       const statusPagoCtrl = this.contaForm.get('statusPago');
       const dataPagamentoCtrl = this.contaForm.get('dataPagamento');
 
       if (tipo === 'Receita') {
-        diaVencimentoCtrl?.clearValidators();
         statusPagoCtrl?.setValue(false, { emitEvent: false });
         dataPagamentoCtrl?.disable({ emitEvent: false });
         dataPagamentoCtrl?.clearValidators();
         dataPagamentoCtrl?.setValue('', { emitEvent: false });
       } else {
-        diaVencimentoCtrl?.setValidators([Validators.required, Validators.min(1), Validators.max(31)]);
         if (statusPagoCtrl?.value) {
           dataPagamentoCtrl?.enable({ emitEvent: false });
           dataPagamentoCtrl?.setValidators([Validators.required]);
@@ -72,7 +69,6 @@ export class NovaContaComponent implements OnInit {
           dataPagamentoCtrl?.clearValidators();
         }
       }
-      diaVencimentoCtrl?.updateValueAndValidity({ emitEvent: false });
       dataPagamentoCtrl?.updateValueAndValidity({ emitEvent: false });
     });
 
