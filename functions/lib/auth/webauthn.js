@@ -100,7 +100,7 @@ exports.generateAuthenticationOptionsFn = (0, https_1.onCall)(async (request) =>
     // Get user credentials
     const credentialsSnap = await admin.firestore().collection("users").doc(user.uid).collection("passkeys").get();
     const allowCredentials = credentialsSnap.docs.map((doc) => ({
-        id: Buffer.from(doc.id, 'base64url'),
+        id: doc.id,
         type: "public-key",
         transports: doc.data().transports,
     }));
