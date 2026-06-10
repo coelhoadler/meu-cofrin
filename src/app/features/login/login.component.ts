@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
   imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './login.component.html'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private webauthnService = inject(WebauthnService);
@@ -29,11 +29,28 @@ export class LoginComponent {
   showPassword = signal(false);
   hasBiometricsConfigured = signal(localStorage.getItem('biometricsEnabled') === 'true');
 
+  @ViewChild('nomeInput') nomeInput?: ElementRef<HTMLInputElement>;
+  @ViewChild('emailInput') emailInput?: ElementRef<HTMLInputElement>;
+
+  ngOnInit(): void {
+    setTimeout(() => {
+      this.emailInput?.nativeElement.focus();
+    }, 0);
+  }
+
   toggleMode(mode: 'login' | 'signup') {
     this.isLoginMode.set(mode === 'login');
     this.errorMessage.set(null);
     this.loginForm.reset();
     this.showPassword.set(false);
+
+    setTimeout(() => {
+      if (mode === 'signup') {
+        this.nomeInput?.nativeElement.focus();
+      } else {
+        this.emailInput?.nativeElement.focus();
+      }
+    }, 0);
   }
 
   togglePasswordVisibility() {

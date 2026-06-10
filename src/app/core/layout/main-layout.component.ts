@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
+import { ContaService } from '../services/conta.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -10,6 +11,7 @@ import { AuthService } from '../auth/auth.service';
 })
 export class MainLayoutComponent {
   private authService = inject(AuthService);
+  private contaService = inject(ContaService);
 
   isSidebarOpen = signal(false);
   user = this.authService.currentUser;
@@ -19,6 +21,7 @@ export class MainLayoutComponent {
   }
 
   async logout() {
+    this.contaService.invalidateCache();
     await this.authService.logout();
   }
 }

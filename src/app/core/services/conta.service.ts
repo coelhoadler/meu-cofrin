@@ -46,7 +46,7 @@ export class ContaService {
   private cacheResumos = new Map<number, CacheEntry<ResumoMensal[]>>();
   private cacheContasById = new Map<string, CacheEntry<Conta>>();
 
-  private invalidateCache(): void {
+  public invalidateCache(): void {
     this.cacheLancamentosRecentes = null;
     this.cacheContasPorMes.clear();
     this.cacheResumos.clear();
