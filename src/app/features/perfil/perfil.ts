@@ -1,13 +1,14 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
 import { Storage, ref, uploadBytes, getDownloadURL } from '@angular/fire/storage';
 
 @Component({
   selector: 'app-perfil',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './perfil.html',
 })
 export class Perfil implements OnInit {
@@ -21,17 +22,19 @@ export class Perfil implements OnInit {
   successMessage = signal('');
   errorMessage = signal('');
 
-  newPassword = signal('');
-  isPasswordLoading = signal(false);
-  passwordSuccessMessage = signal('');
-  passwordErrorMessage = signal('');
-
   isUploading = signal(false);
+  biometricsEnabled = signal(false);
+  isSendingEmail = signal(false);
 
   ngOnInit() {
     const currentUser = this.user();
     if (currentUser?.displayName) {
       this.displayName.set(currentUser.displayName);
+    }
+
+    const storedBiometrics = localStorage.getItem('biometricsEnabled');
+    if (storedBiometrics === 'true') {
+      this.biometricsEnabled.set(true);
     }
   }
 
@@ -55,32 +58,6 @@ export class Perfil implements OnInit {
       this.errorMessage.set('Erro ao atualizar o perfil. Tente novamente.');
     } finally {
       this.isLoading.set(false);
-    }
-  }
-
-  async changePassword() {
-    if (!this.newPassword().trim() || this.newPassword().length < 6) {
-      this.passwordErrorMessage.set('A nova senha deve ter no mínimo 6 caracteres.');
-      return;
-    }
-
-    this.isPasswordLoading.set(true);
-    this.passwordErrorMessage.set('');
-    this.passwordSuccessMessage.set('');
-
-    try {
-      await this.authService.updateUserPassword(this.newPassword());
-      this.passwordSuccessMessage.set('Senha atualizada com sucesso!');
-      this.newPassword.set('');
-    } catch (error: any) {
-      console.error(error);
-      if (error?.code === 'auth/requires-recent-login') {
-        this.passwordErrorMessage.set('Por segurança, faça login novamente para alterar a senha.');
-      } else {
-        this.passwordErrorMessage.set('Erro ao atualizar a senha. Tente novamente.');
-      }
-    } finally {
-      this.isPasswordLoading.set(false);
     }
   }
 
@@ -110,6 +87,38 @@ export class Perfil implements OnInit {
     } finally {
       this.isUploading.set(false);
       event.target.value = ''; // Reset input to allow re-upload
+    }
+  }
+
+  toggleBiometrics() {
+    this.biometricsEnabled.update(v => !v);
+    localStorage.setItem('biometricsEnabled', this.biometricsEnabled().toString());
+    
+    // Futura integração com WebAuthn/Passkeys pode ser adicionada aqui
+    if (this.biometricsEnabled()) {
+      console.log('Biometria habilitada no dispositivo local.');
+    } else {
+      console.log('Biometria desabilitada.');
+    }
+  }
+
+  async resendVerificationEmail() {
+    this.isSendingEmail.set(true);
+    this.errorMessage.set('');
+    this.successMessage.set('');
+
+    try {
+      await this.authService.sendVerificationEmail();
+      this.successMessage.set('E-mail de verificação enviado! Verifique sua caixa de entrada.');
+    } catch (error: any) {
+      console.error(error);
+      if (error?.code === 'auth/too-many-requests') {
+        this.errorMessage.set('Muitos pedidos recentes. Tente novamente mais tarde.');
+      } else {
+        this.errorMessage.set('Erro ao enviar o e-mail de verificação. Tente novamente.');
+      }
+    } finally {
+      this.isSendingEmail.set(false);
     }
   }
 }

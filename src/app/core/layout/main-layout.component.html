@@ -49,15 +49,17 @@
     <!-- Sidebar Footer -->
     <div class="p-4 mt-auto">
       <div class="flex items-center gap-3 mb-4 px-2">
-        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-xs shrink-0 overflow-hidden">
+        <div
+          class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-xs shrink-0 overflow-hidden">
           @if (user()?.photoURL) {
-            <img [src]="user()?.photoURL" class="w-full h-full object-cover">
+          <img [src]="user()?.photoURL" class="w-full h-full object-cover">
           } @else {
-            {{ user()?.displayName?.charAt(0)?.toUpperCase() || user()?.email?.charAt(0)?.toUpperCase() || 'U' }}
+          {{ user()?.displayName?.charAt(0)?.toUpperCase() || user()?.email?.charAt(0)?.toUpperCase() || 'U' }}
           }
         </div>
         <div class="flex-1 truncate">
-          <p class="text-xs font-medium text-slate-400 truncate">{{ user()?.displayName || user()?.email || 'usuario@exemplo.com' }}</p>
+          <p class="text-xs font-medium text-slate-400 truncate">{{ user()?.displayName || user()?.email ||
+            'usuario@exemplo.com' }}</p>
         </div>
       </div>
       <button (click)="logout()"
