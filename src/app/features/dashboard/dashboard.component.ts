@@ -250,6 +250,13 @@ export class DashboardComponent {
     this.selectedConta.set(conta);
   }
 
+  formatDataVencimento(conta: Conta): string {
+    if (!conta.mesReferencia) return `${conta.diaVencimento}`;
+    const [ano, mes] = conta.mesReferencia.split('-');
+    const dia = conta.diaVencimento.toString().padStart(2, '0');
+    return `${dia}/${mes}/${ano}`;
+  }
+
   closeModal() {
     this.selectedConta.set(null);
   }

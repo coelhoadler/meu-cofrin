@@ -104,8 +104,8 @@
   <!-- Row 3: Lançamentos Recentes -->
   <div class="bg-white rounded-[20px] p-6 shadow-sm border border-slate-200/80 min-h-[280px] flex flex-col">
     <div class="flex items-center justify-between mb-8">
-      <h3 class="text-[15px] font-bold text-slate-800">Lançamentos recentes</h3>
-      <span class="text-xs font-medium text-slate-400">{{ lancamentos().length }} no total</span>
+      <h3 class="text-[15px] font-bold text-slate-800">Lançamentos mais recentes</h3>
+      <span class="text-xs font-medium text-slate-400">{{ lancamentos().length }} conta(s) no total</span>
     </div>
 
     <!-- Loading State -->
@@ -157,7 +157,7 @@
                   }}</span>
               </div>
             </td>
-            <td class="py-4 text-slate-500 text-center">{{ item.diaVencimento }}</td>
+            <td class="py-4 text-slate-500 text-left">{{ formatDataVencimento(item) }}</td>
             <td class="py-4 text-right font-semibold pr-2"
               [ngClass]="item.tipo === 'Receita' ? 'text-emerald-600' : 'text-slate-800'">
               <span *ngIf="item.tipo === 'Receita'">+ </span>
@@ -213,7 +213,7 @@
       <div class="p-6 border-b border-slate-100 flex items-center justify-between">
         <div>
           <h3 class="text-lg font-bold text-slate-800">{{ conta.nome }}</h3>
-          <p class="text-sm text-slate-500 mt-1">{{ conta.valor }} • Venc: {{ conta.diaVencimento }}</p>
+          <p class="text-sm text-slate-500 mt-1">{{ conta.valor }} • Venc: {{ formatDataVencimento(conta) }}</p>
         </div>
         <button (click)="closeModal()"
           class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-700 transition-colors">
