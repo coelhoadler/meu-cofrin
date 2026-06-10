@@ -18,4 +18,5 @@ const admin = require("firebase-admin");
 admin.initializeApp();
 __exportStar(require("./scheduled/notificarContasVencendo"), exports);
 __exportStar(require("./scheduled/consolidarResumosMensais"), exports);
+__exportStar(require("./auth/webauthn"), exports);
 //# sourceMappingURL=index.js.map

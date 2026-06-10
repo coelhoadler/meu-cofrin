@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
 import { Storage, ref, uploadBytes, getDownloadURL } from '@angular/fire/storage';
+import { WebauthnService } from '../../core/auth/webauthn.service';
 
 @Component({
   selector: 'app-perfil',
@@ -14,6 +15,7 @@ import { Storage, ref, uploadBytes, getDownloadURL } from '@angular/fire/storage
 export class Perfil implements OnInit {
   private authService = inject(AuthService);
   private storage = inject(Storage);
+  private webauthnService = inject(WebauthnService);
   
   user = this.authService.currentUser;
   
@@ -90,15 +92,33 @@ export class Perfil implements OnInit {
     }
   }
 
-  toggleBiometrics() {
+  async toggleBiometrics() {
+    const previousState = this.biometricsEnabled();
     this.biometricsEnabled.update(v => !v);
-    localStorage.setItem('biometricsEnabled', this.biometricsEnabled().toString());
     
-    // Futura integração com WebAuthn/Passkeys pode ser adicionada aqui
     if (this.biometricsEnabled()) {
-      console.log('Biometria habilitada no dispositivo local.');
+      try {
+        this.isLoading.set(true);
+        this.errorMessage.set('');
+        await this.webauthnService.registerPasskey();
+        this.successMessage.set('Biometria habilitada com sucesso!');
+        localStorage.setItem('biometricsEnabled', 'true');
+        if (this.user()?.email) {
+          localStorage.setItem('biometricEmail', this.user()?.email as string);
+        }
+      } catch (error: any) {
+        console.error(error);
+        this.biometricsEnabled.set(previousState); // revert
+        this.errorMessage.set(error.message || 'Erro ao habilitar biometria.');
+        localStorage.setItem('biometricsEnabled', 'false');
+      } finally {
+        this.isLoading.set(false);
+      }
     } else {
-      console.log('Biometria desabilitada.');
+      // In a full implementation, you would call a cloud function to remove the credential from Firestore
+      localStorage.setItem('biometricsEnabled', 'false');
+      localStorage.removeItem('biometricEmail');
+      this.successMessage.set('Biometria desabilitada para este dispositivo.');
     }
   }
 

@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
+import { WebauthnService } from '../../core/auth/webauthn.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -13,6 +14,7 @@ import { CommonModule } from '@angular/common';
 export class LoginComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
+  private webauthnService = inject(WebauthnService);
   private router = inject(Router);
 
   loginForm = this.fb.group({
@@ -24,6 +26,7 @@ export class LoginComponent {
   errorMessage = signal<string | null>(null);
   isLoginMode = signal(true);
   showPassword = signal(false);
+  hasBiometricsConfigured = signal(localStorage.getItem('biometricsEnabled') === 'true');
 
   toggleMode(mode: 'login' | 'signup') {
     this.isLoginMode.set(mode === 'login');
@@ -59,6 +62,28 @@ export class LoginComponent {
         ? 'Falha no login. Verifique suas credenciais.'
         : 'Falha ao criar conta. O e-mail pode já estar em uso.';
       this.errorMessage.set(message);
+      console.error(error);
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
+
+  async loginWithBiometrics() {
+    this.errorMessage.set(null);
+    const email = localStorage.getItem('biometricEmail');
+    
+    if (!email) {
+      this.errorMessage.set('Nenhum e-mail salvo para biometria. Faça login com senha primeiro.');
+      return;
+    }
+
+    this.isLoading.set(true);
+
+    try {
+      await this.webauthnService.authenticateWithPasskey(email);
+      this.router.navigate(['/dashboard']);
+    } catch (error: any) {
+      this.errorMessage.set(error.message || 'Falha ao autenticar com biometria.');
       console.error(error);
     } finally {
       this.isLoading.set(false);
