@@ -59,7 +59,7 @@
   </div>
 
   <!-- Row 2: Chart Placeholders -->
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <div *ngIf="lancamentos().length > 0" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
     <!-- Line Chart Placeholder (Spans 2 cols on lg) -->
     <div class="bg-white rounded-[20px] p-3 shadow-sm border border-slate-200/80 lg:col-span-2 flex flex-col h-[320px]">

@@ -89,35 +89,7 @@ export class DashboardComponent {
     }
   };
 
-  barChartData: any = {
-    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
-    datasets: [
-      {
-        type: 'bar',
-        data: [2500, 3200, 2800, 4100, 3800, 4500],
-        label: 'Receitas',
-        backgroundColor: '#9d6bf3',
-        borderRadius: 4
-      },
-      {
-        type: 'bar',
-        data: [2000, 2400, 2900, 2500, 3100, 2800],
-        label: 'Despesas',
-        backgroundColor: '#421b7b',
-        borderRadius: 4
-      },
-      {
-        type: 'line',
-        data: [500, 800, -100, 1600, 700, 1700],
-        label: 'Saldo',
-        borderColor: '#10b981', // green-500
-        backgroundColor: 'rgba(16, 185, 129, 0.2)',
-        borderWidth: 2,
-        fill: false,
-        tension: 0.3
-      }
-    ]
-  };
+  barChartData: any = {};
 
   constructor() {
     effect(() => {
@@ -216,7 +188,7 @@ export class DashboardComponent {
     try {
       // Busca os últimos 6 meses (ordenados do mais recente para o mais antigo)
       const resumos = await this.contaService.getResumosMensais(6);
-      
+
       // Inverte para ficar cronológico no gráfico (ex: Jan, Fev, Mar...)
       resumos.reverse();
 
@@ -229,10 +201,10 @@ export class DashboardComponent {
         // Converter "2026-06" para "Jun 26" ou "Jun"
         const [anoStr, mesStr] = resumo.id.split('-');
         const date = new Date(parseInt(anoStr), parseInt(mesStr) - 1, 1);
-        
+
         let mesNome = new Intl.DateTimeFormat('pt-BR', { month: 'short' }).format(date).replace('.', '');
         mesNome = mesNome.charAt(0).toUpperCase() + mesNome.slice(1);
-        
+
         labels.push(mesNome);
         dataReceitas.push(resumo.totalReceitas || 0);
         dataDespesas.push(resumo.totalDespesas || 0);
