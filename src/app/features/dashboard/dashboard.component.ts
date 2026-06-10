@@ -40,9 +40,11 @@ export class DashboardComponent {
         position: 'bottom',
         align: 'start',
         labels: {
+          usePointStyle: true,
+          pointStyle: 'rectRounded',
           color: '#64748b',
           font: {
-            size: 11
+            size: 12
           }
         }
       }
@@ -56,6 +58,65 @@ export class DashboardComponent {
       backgroundColor: [],
       borderWidth: 0
     }]
+  };
+
+  barChartOptions: ChartConfiguration<'bar'>['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false // Let's hide the default legend since the HTML already has a custom legend below
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        grid: {
+          color: '#f1f5f9', // slate-100
+        },
+        ticks: {
+          color: '#94a3b8', // slate-400
+        }
+      },
+      x: {
+        grid: {
+          display: false
+        },
+        ticks: {
+          color: '#94a3b8', // slate-400
+        }
+      }
+    }
+  };
+
+  barChartData: any = {
+    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+    datasets: [
+      {
+        type: 'bar',
+        data: [2500, 3200, 2800, 4100, 3800, 4500],
+        label: 'Receitas',
+        backgroundColor: '#9d6bf3',
+        borderRadius: 4
+      },
+      {
+        type: 'bar',
+        data: [2000, 2400, 2900, 2500, 3100, 2800],
+        label: 'Despesas',
+        backgroundColor: '#421b7b',
+        borderRadius: 4
+      },
+      {
+        type: 'line',
+        data: [500, 800, -100, 1600, 700, 1700],
+        label: 'Saldo',
+        borderColor: '#10b981', // green-500
+        backgroundColor: 'rgba(16, 185, 129, 0.2)',
+        borderWidth: 2,
+        fill: false,
+        tension: 0.3
+      }
+    ]
   };
 
   constructor() {
@@ -144,6 +205,40 @@ export class DashboardComponent {
       this.saldoMes.set(formatter.format(saldo));
       this.totalAPagar.set(formatter.format(somaAPagar));
       this.totalPago.set(formatter.format(somaDespesas - somaAPagar));
+
+      // Atualiza o gráfico de barras com os dados do mês atual
+      const anoEMes = new Intl.DateTimeFormat('pt-BR', { month: 'short', year: '2-digit' }).format(date).replace('.', '');
+      const mesNomeCapitalized = anoEMes.charAt(0).toUpperCase() + anoEMes.slice(1);
+
+      this.barChartData = {
+        labels: [mesNomeCapitalized],
+        datasets: [
+          {
+            type: 'bar',
+            data: [somaReceitas],
+            label: 'Receitas',
+            backgroundColor: '#9d6bf3',
+            borderRadius: 4
+          },
+          {
+            type: 'bar',
+            data: [somaDespesas],
+            label: 'Despesas',
+            backgroundColor: '#421b7b',
+            borderRadius: 4
+          },
+          {
+            type: 'line',
+            data: [saldo],
+            label: 'Saldo',
+            borderColor: '#10b981', // green-500
+            backgroundColor: 'rgba(16, 185, 129, 0.2)',
+            borderWidth: 2,
+            fill: false,
+            tension: 0.3
+          }
+        ]
+      };
 
     } catch (error) {
       console.error('Erro ao buscar resumo do mês:', error);
