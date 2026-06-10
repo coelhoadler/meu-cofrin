@@ -32,9 +32,14 @@ export class AuthService {
     }
   }
 
-  async signup(email: string, password: string) {
+  async signup(email: string, password: string, displayName: string | null | undefined) {
     try {
       const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
+
+      if (displayName) {
+        await updateProfile(userCredential.user, { displayName });
+      }
+
       return userCredential;
     } catch (error) {
       throw error;
@@ -49,15 +54,15 @@ export class AuthService {
   async updateCurrentUserProfile(data: { displayName?: string | null, photoURL?: string | null }) {
     if (this.auth.currentUser) {
       await updateProfile(this.auth.currentUser, data);
-      
+
       // Update signal manually since updateProfile might not trigger authState
       const currentUser = this.auth.currentUser;
-      const updatedUser = { 
-        ...currentUser, 
+      const updatedUser = {
+        ...currentUser,
         displayName: data.displayName !== undefined ? data.displayName : currentUser.displayName,
         photoURL: data.photoURL !== undefined ? data.photoURL : currentUser.photoURL
       } as User;
-      
+
       this.currentUser.set(updatedUser);
     } else {
       throw new Error('Nenhum usuário autenticado');

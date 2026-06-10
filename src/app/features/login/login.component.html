@@ -48,6 +48,15 @@
     <!-- Formulário -->
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-4">
 
+      @if (!isLoginMode()) {
+      <!-- Nome -->
+      <div class="space-y-1">
+        <label for="nome" class="text-xs font-semibold text-slate-600 ml-1">Nome</label>
+        <input id="nome" type="nome" formControlName="nome" placeholder="Nome de visualização (opcional)" autofocus
+          class="w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm" />
+      </div>
+      }
+
       <!-- E-mail -->
       <div class="space-y-1">
         <label for="email" class="text-xs font-semibold text-slate-600 ml-1">E-mail</label>
@@ -65,9 +74,11 @@
           <label for="password" class="text-xs font-semibold text-slate-600">Senha</label>
         </div>
         <div class="relative">
-          <input id="password" [type]="showPassword() ? 'text' : 'password'" formControlName="password" placeholder="********"
+          <input id="password" [type]="showPassword() ? 'text' : 'password'" formControlName="password"
+            placeholder="********"
             class="w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm pr-12" />
-          <button type="button" (click)="togglePasswordVisibility()" class="absolute inset-y-0 right-0 flex items-center px-4 text-slate-400 hover:text-indigo-500 transition-colors focus:outline-none">
+          <button type="button" (click)="togglePasswordVisibility()"
+            class="absolute inset-y-0 right-0 flex items-center px-4 text-slate-400 hover:text-indigo-500 transition-colors focus:outline-none">
             <span *ngIf="!showPassword()" class="material-symbols-outlined text-xl">visibility</span>
             <span *ngIf="showPassword()" class="material-symbols-outlined text-xl">visibility_off</span>
           </button>

@@ -18,6 +18,7 @@ export class LoginComponent {
   private router = inject(Router);
 
   loginForm = this.fb.group({
+    nome: [''],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required]]
   });
@@ -48,17 +49,17 @@ export class LoginComponent {
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
-    const { email, password } = this.loginForm.value;
+    const { email, password, nome } = this.loginForm.value;
 
     try {
       if (this.isLoginMode()) {
         await this.authService.login(email!, password!);
       } else {
-        await this.authService.signup(email!, password!);
+        await this.authService.signup(email!, password!, nome);
       }
       this.router.navigate(['/dashboard']);
     } catch (error: any) {
-      const message = this.isLoginMode() 
+      const message = this.isLoginMode()
         ? 'Falha no login. Verifique suas credenciais.'
         : 'Falha ao criar conta. O e-mail pode já estar em uso.';
       this.errorMessage.set(message);
@@ -71,7 +72,7 @@ export class LoginComponent {
   async loginWithBiometrics() {
     this.errorMessage.set(null);
     const email = localStorage.getItem('biometricEmail');
-    
+
     if (!email) {
       this.errorMessage.set('Nenhum e-mail salvo para biometria. Faça login com senha primeiro.');
       return;
