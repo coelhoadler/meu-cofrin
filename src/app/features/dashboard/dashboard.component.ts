@@ -125,6 +125,7 @@ export class DashboardComponent {
       if (user) {
         this.loadLancamentos();
         this.loadResumoMes();
+        this.loadResumoGrafico();
 
         // Pede permissão para notificações e salva o token (ideal ser chamado após login)
         this.messagingService.requestPermissionAndGetToken();
@@ -206,32 +207,60 @@ export class DashboardComponent {
       this.totalAPagar.set(formatter.format(somaAPagar));
       this.totalPago.set(formatter.format(somaDespesas - somaAPagar));
 
-      // Atualiza o gráfico de barras com os dados do mês atual
-      const anoEMes = new Intl.DateTimeFormat('pt-BR', { month: 'short', year: '2-digit' }).format(date).replace('.', '');
-      const mesNomeCapitalized = anoEMes.charAt(0).toUpperCase() + anoEMes.slice(1);
+    } catch (error) {
+      console.error('Erro ao buscar resumo do mês:', error);
+    }
+  }
+
+  async loadResumoGrafico() {
+    try {
+      // Busca os últimos 6 meses (ordenados do mais recente para o mais antigo)
+      const resumos = await this.contaService.getResumosMensais(6);
+      
+      // Inverte para ficar cronológico no gráfico (ex: Jan, Fev, Mar...)
+      resumos.reverse();
+
+      const labels: string[] = [];
+      const dataReceitas: number[] = [];
+      const dataDespesas: number[] = [];
+      const dataSaldos: number[] = [];
+
+      resumos.forEach(resumo => {
+        // Converter "2026-06" para "Jun 26" ou "Jun"
+        const [anoStr, mesStr] = resumo.id.split('-');
+        const date = new Date(parseInt(anoStr), parseInt(mesStr) - 1, 1);
+        
+        let mesNome = new Intl.DateTimeFormat('pt-BR', { month: 'short' }).format(date).replace('.', '');
+        mesNome = mesNome.charAt(0).toUpperCase() + mesNome.slice(1);
+        
+        labels.push(mesNome);
+        dataReceitas.push(resumo.totalReceitas || 0);
+        dataDespesas.push(resumo.totalDespesas || 0);
+        dataSaldos.push(resumo.saldo || 0);
+      });
 
       this.barChartData = {
-        labels: [mesNomeCapitalized],
+        labels,
         datasets: [
           {
             type: 'bar',
-            data: [somaReceitas],
+            data: dataReceitas,
             label: 'Receitas',
             backgroundColor: '#9d6bf3',
             borderRadius: 4
           },
           {
             type: 'bar',
-            data: [somaDespesas],
+            data: dataDespesas,
             label: 'Despesas',
             backgroundColor: '#421b7b',
             borderRadius: 4
           },
           {
             type: 'line',
-            data: [saldo],
+            data: dataSaldos,
             label: 'Saldo',
-            borderColor: '#10b981', // green-500
+            borderColor: '#10b981',
             backgroundColor: 'rgba(16, 185, 129, 0.2)',
             borderWidth: 2,
             fill: false,
@@ -241,7 +270,7 @@ export class DashboardComponent {
       };
 
     } catch (error) {
-      console.error('Erro ao buscar resumo do mês:', error);
+      console.error('Erro ao buscar resumo gráfico:', error);
     }
   }
 
@@ -263,6 +292,7 @@ export class DashboardComponent {
         // Recarregar os lançamentos após deletar
         await this.loadLancamentos();
         await this.loadResumoMes();
+        await this.loadResumoGrafico();
       } catch (error) {
         console.error('Erro ao deletar lançamento:', error);
         alert('Erro ao deletar lançamento. Tente novamente.');

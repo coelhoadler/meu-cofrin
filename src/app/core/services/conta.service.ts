@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, addDoc, serverTimestamp, query, where, orderBy, getDocs, doc, deleteDoc, getDoc, updateDoc, deleteField } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, serverTimestamp, query, where, orderBy, getDocs, doc, deleteDoc, getDoc, updateDoc, deleteField, limit } from '@angular/fire/firestore';
 import { Storage, ref, uploadBytes, getDownloadURL } from '@angular/fire/storage';
 import { AuthService } from '../auth/auth.service';
 
@@ -16,6 +16,14 @@ export interface Conta {
   reciboUrl?: string;
   categoria?: string;
   createdAt?: any;
+}
+
+export interface ResumoMensal {
+  id: string; // YYYY-MM
+  totalDespesas: number;
+  totalReceitas: number;
+  saldo: number;
+  atualizadoEm?: any;
 }
 
 @Injectable({
@@ -168,5 +176,27 @@ export class ContaService {
 
     const docRef = doc(this.firestore, `users/${user.uid}/contas`, id);
     await updateDoc(docRef, { reciboUrl: deleteField() });
+  }
+
+  async getResumosMensais(limite: number = 6): Promise<ResumoMensal[]> {
+    const user = await this.authService.getCurrentUserAsync();
+    if (!user) return [];
+
+    const resumosRef = collection(this.firestore, `users/${user.uid}/resumosMensais`);
+    
+    // Buscar ordenando pelo ID do documento (que é YYYY-MM) de forma descendente
+    const q = query(
+      resumosRef,
+      orderBy('__name__', 'desc'),
+      limit(limite)
+    );
+
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => {
+      return {
+        id: doc.id,
+        ...doc.data()
+      } as ResumoMensal;
+    });
   }
 }
