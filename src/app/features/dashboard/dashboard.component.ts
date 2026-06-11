@@ -38,7 +38,7 @@ export class DashboardComponent {
       legend: {
         display: true,
         position: 'bottom',
-        align: 'start',
+        align: 'center',
         labels: {
           usePointStyle: true,
           pointStyle: 'rectRounded',
@@ -259,6 +259,30 @@ export class DashboardComponent {
 
   closeModal() {
     this.selectedConta.set(null);
+  }
+
+  getRowClass(item: Conta): string {
+    if (item.statusPago || item.tipo === 'Receita') {
+      return 'bg-green-100 hover:bg-green-200';
+    }
+
+    if (item.mesReferencia && item.diaVencimento) {
+      const [ano, mes] = item.mesReferencia.split('-');
+      const dataVencimento = new Date(parseInt(ano), parseInt(mes) - 1, item.diaVencimento);
+      const hoje = new Date();
+      hoje.setHours(0, 0, 0, 0);
+
+      const diffTime = dataVencimento.getTime() - hoje.getTime();
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      if (diffDays <= 0) {
+        return 'bg-red-200 hover:bg-red-300';
+      } else if (diffDays <= 5) {
+        return 'bg-yellow-100 hover:bg-yellow-200';
+      }
+    }
+
+    return 'hover:bg-slate-100';
   }
 
   async deleteLancamento(id: string | undefined) {

@@ -26,6 +26,11 @@ export interface ResumoMensal {
   atualizadoEm?: any;
 }
 
+export interface CacheEntry<T> {
+  data: T;
+  timestamp: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -33,6 +38,20 @@ export class ContaService {
   private firestore = inject(Firestore);
   private storage = inject(Storage);
   private authService = inject(AuthService);
+
+  // Configuração de Cache
+  private readonly CACHE_TTL = 5 * 60 * 1000; // 5 minutos de TTL
+  private cacheLancamentosRecentes: CacheEntry<Conta[]> | null = null;
+  private cacheContasPorMes = new Map<string, CacheEntry<Conta[]>>();
+  private cacheResumos = new Map<number, CacheEntry<ResumoMensal[]>>();
+  private cacheContasById = new Map<string, CacheEntry<Conta>>();
+
+  public invalidateCache(): void {
+    this.cacheLancamentosRecentes = null;
+    this.cacheContasPorMes.clear();
+    this.cacheResumos.clear();
+    this.cacheContasById.clear();
+  }
 
   async addConta(contaData: Conta, file?: File | null): Promise<void> {
     const user = await this.authService.getCurrentUserAsync();
@@ -62,12 +81,19 @@ export class ContaService {
     // Save to Firestore
     const contasRef = collection(this.firestore, `users/${user.uid}/contas`);
     await addDoc(contasRef, dataToSave);
+
+    this.invalidateCache();
   }
 
   async getLancamentosRecentes(): Promise<Conta[]> {
     const user = await this.authService.getCurrentUserAsync();
     if (!user) {
       return [];
+    }
+
+    const now = Date.now();
+    if (this.cacheLancamentosRecentes && (now - this.cacheLancamentosRecentes.timestamp < this.CACHE_TTL)) {
+      return [...this.cacheLancamentosRecentes.data];
     }
 
     const contasRef = collection(this.firestore, `users/${user.uid}/contas`);
@@ -99,6 +125,11 @@ export class ContaService {
       return a.statusPago ? 1 : -1;
     });
 
+    this.cacheLancamentosRecentes = {
+      data: [...items],
+      timestamp: now
+    };
+
     return items;
   }
 
@@ -108,6 +139,12 @@ export class ContaService {
       return [];
     }
 
+    const now = Date.now();
+    const cached = this.cacheContasPorMes.get(mesReferencia);
+    if (cached && (now - cached.timestamp < this.CACHE_TTL)) {
+      return [...cached.data];
+    }
+
     const contasRef = collection(this.firestore, `users/${user.uid}/contas`);
     const q = query(
       contasRef,
@@ -115,23 +152,41 @@ export class ContaService {
     );
 
     const querySnapshot = await getDocs(q);
-    return querySnapshot.docs.map(doc => {
+    const items = querySnapshot.docs.map(doc => {
       return {
         id: doc.id,
         ...doc.data()
       } as Conta;
     });
+
+    this.cacheContasPorMes.set(mesReferencia, {
+      data: [...items],
+      timestamp: now
+    });
+
+    return items;
   }
 
   async getContaById(id: string): Promise<Conta | null> {
     const user = await this.authService.getCurrentUserAsync();
     if (!user) return null;
 
+    const now = Date.now();
+    const cached = this.cacheContasById.get(id);
+    if (cached && (now - cached.timestamp < this.CACHE_TTL)) {
+      return { ...cached.data };
+    }
+
     const docRef = doc(this.firestore, `users/${user.uid}/contas`, id);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      return { id: docSnap.id, ...docSnap.data() } as Conta;
+      const conta = { id: docSnap.id, ...docSnap.data() } as Conta;
+      this.cacheContasById.set(id, {
+        data: { ...conta },
+        timestamp: now
+      });
+      return conta;
     }
     return null;
   }
@@ -160,6 +215,8 @@ export class ContaService {
     delete dataToUpdate.id;
 
     await updateDoc(docRef, dataToUpdate);
+
+    this.invalidateCache();
   }
 
   async deleteConta(id: string): Promise<void> {
@@ -168,6 +225,8 @@ export class ContaService {
 
     const docRef = doc(this.firestore, `users/${user.uid}/contas`, id);
     await deleteDoc(docRef);
+
+    this.invalidateCache();
   }
 
   async removeRecibo(id: string): Promise<void> {
@@ -176,11 +235,19 @@ export class ContaService {
 
     const docRef = doc(this.firestore, `users/${user.uid}/contas`, id);
     await updateDoc(docRef, { reciboUrl: deleteField() });
+
+    this.invalidateCache();
   }
 
   async getResumosMensais(limite: number = 6): Promise<ResumoMensal[]> {
     const user = await this.authService.getCurrentUserAsync();
     if (!user) return [];
+
+    const now = Date.now();
+    const cached = this.cacheResumos.get(limite);
+    if (cached && (now - cached.timestamp < this.CACHE_TTL)) {
+      return [...cached.data];
+    }
 
     const resumosRef = collection(this.firestore, `users/${user.uid}/resumosMensais`);
     
@@ -192,11 +259,18 @@ export class ContaService {
     );
 
     const querySnapshot = await getDocs(q);
-    return querySnapshot.docs.map(doc => {
+    const items = querySnapshot.docs.map(doc => {
       return {
         id: doc.id,
         ...doc.data()
       } as ResumoMensal;
     });
+
+    this.cacheResumos.set(limite, {
+      data: [...items],
+      timestamp: now
+    });
+
+    return items;
   }
 }

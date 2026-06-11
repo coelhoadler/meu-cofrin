@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
@@ -11,13 +11,14 @@ import { CommonModule } from '@angular/common';
   imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './login.component.html'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private webauthnService = inject(WebauthnService);
   private router = inject(Router);
 
   loginForm = this.fb.group({
+    nome: [''],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required]]
   });
@@ -28,11 +29,28 @@ export class LoginComponent {
   showPassword = signal(false);
   hasBiometricsConfigured = signal(localStorage.getItem('biometricsEnabled') === 'true');
 
+  @ViewChild('nomeInput') nomeInput?: ElementRef<HTMLInputElement>;
+  @ViewChild('emailInput') emailInput?: ElementRef<HTMLInputElement>;
+
+  ngOnInit(): void {
+    setTimeout(() => {
+      this.emailInput?.nativeElement.focus();
+    }, 0);
+  }
+
   toggleMode(mode: 'login' | 'signup') {
     this.isLoginMode.set(mode === 'login');
     this.errorMessage.set(null);
     this.loginForm.reset();
     this.showPassword.set(false);
+
+    setTimeout(() => {
+      if (mode === 'signup') {
+        this.nomeInput?.nativeElement.focus();
+      } else {
+        this.emailInput?.nativeElement.focus();
+      }
+    }, 0);
   }
 
   togglePasswordVisibility() {
@@ -48,17 +66,17 @@ export class LoginComponent {
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
-    const { email, password } = this.loginForm.value;
+    const { email, password, nome } = this.loginForm.value;
 
     try {
       if (this.isLoginMode()) {
         await this.authService.login(email!, password!);
       } else {
-        await this.authService.signup(email!, password!);
+        await this.authService.signup(email!, password!, nome);
       }
       this.router.navigate(['/dashboard']);
     } catch (error: any) {
-      const message = this.isLoginMode() 
+      const message = this.isLoginMode()
         ? 'Falha no login. Verifique suas credenciais.'
         : 'Falha ao criar conta. O e-mail pode já estar em uso.';
       this.errorMessage.set(message);
@@ -71,7 +89,7 @@ export class LoginComponent {
   async loginWithBiometrics() {
     this.errorMessage.set(null);
     const email = localStorage.getItem('biometricEmail');
-    
+
     if (!email) {
       this.errorMessage.set('Nenhum e-mail salvo para biometria. Faça login com senha primeiro.');
       return;
