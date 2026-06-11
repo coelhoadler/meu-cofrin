@@ -10,6 +10,7 @@ import { getStorage, provideStorage } from '@angular/fire/storage';
 import { getMessaging, provideMessaging } from '@angular/fire/messaging';
 import { getFunctions, provideFunctions } from '@angular/fire/functions';
 import { getPerformance, providePerformance } from '@angular/fire/performance';
+import { getAnalytics, provideAnalytics } from "@angular/fire/analytics";
 import { provideServiceWorker } from '@angular/service-worker';
 import { provideEnvironmentNgxMask } from 'ngx-mask';
 
@@ -50,6 +51,7 @@ export const appConfig: ApplicationConfig = {
     provideMessaging(() => getMessaging()),
     provideFunctions(() => getFunctions()),
     providePerformance(() => getPerformance()),
+    provideAnalytics(() => getAnalytics()),
     provideServiceWorker('ngsw-worker.js', {
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000',
@@ -58,4 +60,3 @@ export const appConfig: ApplicationConfig = {
     provideCharts(withDefaultRegisterables()),
   ],
 };
-
