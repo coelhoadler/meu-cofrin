@@ -1,71 +1,94 @@
 <div
-  class="min-h-screen flex flex-col items-center justify-center p-6 relative font-sans text-slate-800 overflow-hidden">
-
+  class="min-h-screen flex flex-col items-center justify-center p-6 relative font-sans text-slate-800 overflow-hidden"
+>
   <!-- Fundo com a imagem e Blur -->
-  <div class="absolute inset-0 -z-20 scale-110"
-    style="background-image: url('/auth-hero.jpg'); background-size: cover; background-position: center; filter: blur(40px);">
-  </div>
+  <div
+    class="absolute inset-0 -z-20 scale-110"
+    style="
+      background-image: url('/auth-hero.jpg');
+      background-size: cover;
+      background-position: center;
+      filter: blur(40px);
+    "
+  ></div>
 
   <!-- Overlay branco para clarear bastante a imagem -->
   <div class="absolute inset-0 bg-white/85 -z-10"></div>
 
   <!-- Cabeçalho (Logo e Textos) -->
   <div class="flex flex-col items-center mb-8 z-10">
-
     <img src="logo.png" alt="Logotipo" class="w-24 h-24 object-contain" />
 
     <h2 class="text-2xl font-bold text-slate-900 text-center">Meu Cofrin</h2>
-    <p class="text-slate-600 mt-1 text-center text-sm font-medium">Sua vida financeira, organizada com elegância.</p>
+    <p class="text-slate-600 mt-1 text-center text-sm font-medium">
+      Sua vida financeira, organizada com elegância.
+    </p>
   </div>
 
   <!-- Login Card -->
   <div
-    class="w-full max-w-[420px] bg-white rounded-3xl shadow-2xl shadow-indigo-900/10 overflow-hidden p-8 z-10 border border-slate-100">
-
+    class="w-full max-w-[420px] bg-white rounded-3xl shadow-2xl shadow-indigo-900/10 overflow-hidden p-8 z-10 border border-slate-100"
+  >
     <!-- Toggle Slide -->
     <div class="bg-slate-100 rounded-full p-1 flex relative mb-8">
       <!-- Fundo Deslizante -->
       <div
         class="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-white rounded-full shadow-sm transition-transform duration-300 ease-out"
-        [ngClass]="isLoginMode() ? 'translate-x-0' : 'translate-x-[calc(100%+8px)]'">
-      </div>
+        [ngClass]="isLoginMode() ? 'translate-x-0' : 'translate-x-[calc(100%+8px)]'"
+      ></div>
 
       <!-- Botão Entrar -->
-      <button type="button" (click)="toggleMode('login')"
+      <button
+        type="button"
+        (click)="toggleMode('login')"
         class="flex-1 py-2 text-sm font-semibold transition-colors duration-300 z-10"
-        [ngClass]="isLoginMode() ? 'text-slate-900' : 'text-slate-500 hover:text-slate-700'">
+        [ngClass]="isLoginMode() ? 'text-slate-900' : 'text-slate-500 hover:text-slate-700'"
+      >
         Entrar
       </button>
 
       <!-- Botão Criar Conta -->
-      <button type="button" (click)="toggleMode('signup')"
+      <button
+        type="button"
+        (click)="toggleMode('signup')"
         class="flex-1 py-2 text-sm font-semibold transition-colors duration-300 z-10"
-        [ngClass]="!isLoginMode() ? 'text-slate-900' : 'text-slate-500 hover:text-slate-700'">
+        [ngClass]="!isLoginMode() ? 'text-slate-900' : 'text-slate-500 hover:text-slate-700'"
+      >
         Criar conta
       </button>
     </div>
 
     <!-- Formulário -->
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-4">
-
       @if (!isLoginMode()) {
-      <!-- Nome -->
-      <div class="space-y-1">
-        <label for="nome" class="text-xs font-semibold text-slate-600 ml-1">Nome</label>
-        <input #nomeInput id="nome" type="text" formControlName="nome" placeholder="Nome do usuário (opcional)"
-          class="w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm" />
-      </div>
+        <!-- Nome -->
+        <div class="space-y-1">
+          <label for="nome" class="text-xs font-semibold text-slate-600 ml-1">Nome</label>
+          <input
+            #nomeInput
+            id="nome"
+            type="text"
+            formControlName="nome"
+            placeholder="Nome do usuário (opcional)"
+            class="w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm"
+          />
+        </div>
       }
 
       <!-- E-mail -->
       <div class="space-y-1">
         <label for="email" class="text-xs font-semibold text-slate-600 ml-1">E-mail</label>
-        <input #emailInput id="email" type="email" formControlName="email" placeholder="fulano@xpto.com"
-          class="w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm" />
-        <div *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid"
-          class="text-red-500 text-xs ml-1 mt-1 font-medium">
-          Insira um e-mail válido.
-        </div>
+        <input
+          #emailInput
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="fulano@xpto.com"
+          class="w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm"
+        />
+        @if (loginForm.get('email')?.touched && loginForm.get('email')?.invalid) {
+          <div class="text-red-500 text-xs ml-1 mt-1 font-medium">Insira um e-mail válido.</div>
+        }
       </div>
 
       <!-- Senha -->
@@ -74,51 +97,90 @@
           <label for="password" class="text-xs font-semibold text-slate-600">Senha</label>
         </div>
         <div class="relative">
-          <input id="password" [type]="showPassword() ? 'text' : 'password'" formControlName="password"
+          <input
+            id="password"
+            [type]="showPassword() ? 'text' : 'password'"
+            formControlName="password"
             placeholder="********"
-            class="w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm pr-12" />
-          <button type="button" (click)="togglePasswordVisibility()"
-            class="absolute inset-y-0 right-0 flex items-center px-4 text-slate-400 hover:text-indigo-500 transition-colors focus:outline-none">
-            <span *ngIf="!showPassword()" class="material-symbols-outlined text-xl">visibility</span>
-            <span *ngIf="showPassword()" class="material-symbols-outlined text-xl">visibility_off</span>
+            class="w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm pr-12"
+          />
+          <button
+            type="button"
+            (click)="togglePasswordVisibility()"
+            class="absolute inset-y-0 right-0 flex items-center px-4 text-slate-400 hover:text-indigo-500 transition-colors focus:outline-none"
+          >
+            @if (!showPassword()) {
+              <span class="material-symbols-outlined text-xl">visibility</span>
+            }
+            @if (showPassword()) {
+              <span class="material-symbols-outlined text-xl">visibility_off</span>
+            }
           </button>
         </div>
-        <div *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid"
-          class="text-red-500 text-xs ml-1 mt-1 font-medium">
-          A senha é obrigatória.
-        </div>
+        @if (loginForm.get('password')?.touched && loginForm.get('password')?.invalid) {
+          <div class="text-red-500 text-xs ml-1 mt-1 font-medium">A senha é obrigatória.</div>
+        }
       </div>
 
       <!-- Mensagem de Erro -->
-      <div *ngIf="errorMessage()"
-        class="p-3 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm text-center font-medium">
-        {{ errorMessage() }}
-      </div>
+      @if (errorMessage()) {
+        <div
+          class="p-3 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm text-center font-medium"
+        >
+          {{ errorMessage() }}
+        </div>
+      }
 
       <!-- Botão de Ação -->
-      <button type="submit" [disabled]="loginForm.invalid || isLoading()"
-        class="w-full mt-6 px-8 py-3.5 rounded-2xl bg-[#311B65] hover:bg-[#3f2482] text-white font-semibold shadow-md shadow-indigo-900/20 transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center h-12 text-sm">
-        <ng-container *ngIf="!isLoading()">
+      <button
+        type="submit"
+        [disabled]="loginForm.invalid || isLoading()"
+        class="w-full mt-6 px-8 py-3.5 rounded-2xl bg-[#311B65] hover:bg-[#3f2482] text-white font-semibold shadow-md shadow-indigo-900/20 transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center h-12 text-sm"
+      >
+        @if (!isLoading()) {
           {{ isLoginMode() ? 'Entrar' : 'Criar conta' }}
-        </ng-container>
-        <div *ngIf="isLoading()" class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin">
-        </div>
+        }
+        @if (isLoading()) {
+          <div
+            class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"
+          ></div>
+        }
       </button>
 
       <!-- Botão de Biometria -->
-      <ng-container *ngIf="isLoginMode() && hasBiometricsConfigured()">
+      <ng-container>
         <div class="flex items-center gap-3 mt-4 mb-2">
           <div class="h-px bg-slate-200 flex-1"></div>
           <span class="text-xs font-medium text-slate-400">OU</span>
           <div class="h-px bg-slate-200 flex-1"></div>
         </div>
-        <button type="button" (click)="loginWithBiometrics()" [disabled]="isLoading()"
-          class="w-full px-8 py-3.5 rounded-2xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold shadow-sm transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center h-12 text-sm gap-2">
-          <span class="material-symbols-outlined text-[20px] text-indigo-500">fingerprint</span>
-          Entrar com Biometria
+        @if (isLoginMode() && hasBiometricsConfigured()) {
+          <button
+            type="button"
+            (click)="loginWithBiometrics()"
+            [disabled]="isLoading()"
+            class="w-full px-8 py-3.5 rounded-2xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold shadow-sm transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center h-12 text-sm gap-2"
+          >
+            <span class="material-symbols-outlined text-[20px] text-indigo-500">fingerprint</span>
+            Entrar com Biometria
+          </button>
+        }
+
+        <!-- Botão Google -->
+        <button
+          type="button"
+          (click)="loginWithGoogle()"
+          [disabled]="isLoading()"
+          class="w-full mt-3 px-8 py-3.5 rounded-2xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold shadow-sm transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center h-12 text-sm gap-2"
+        >
+          <img
+            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+            alt="Google Logo"
+            class="w-5 h-5"
+          />
+          {{ isLoginMode() ? 'Entrar com Google' : 'Criar conta com Google' }}
         </button>
       </ng-container>
-
     </form>
   </div>
 </div>

@@ -1,5 +1,5 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
@@ -9,16 +9,16 @@ import { WebauthnService } from '../../core/auth/webauthn.service';
 @Component({
   selector: 'app-perfil',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [FormsModule, RouterModule],
   templateUrl: './perfil.html',
 })
 export class Perfil implements OnInit {
   private authService = inject(AuthService);
   private storage = inject(Storage);
   private webauthnService = inject(WebauthnService);
-  
+
   user = this.authService.currentUser;
-  
+
   displayName = signal('');
   isLoading = signal(false);
   successMessage = signal('');
@@ -45,14 +45,14 @@ export class Perfil implements OnInit {
       this.errorMessage.set('O nome não pode estar vazio.');
       return;
     }
-    
+
     this.isLoading.set(true);
     this.errorMessage.set('');
     this.successMessage.set('');
-    
+
     try {
       await this.authService.updateCurrentUserProfile({
-        displayName: this.displayName()
+        displayName: this.displayName(),
       });
       this.successMessage.set('Perfil atualizado com sucesso!');
     } catch (error: any) {
@@ -74,13 +74,13 @@ export class Perfil implements OnInit {
     try {
       const userId = this.user()?.uid;
       if (!userId) throw new Error('Usuário não encontrado');
-      
+
       const filePath = `profile_images/${userId}_${Date.now()}`;
       const storageRef = ref(this.storage, filePath);
-      
+
       await uploadBytes(storageRef, file);
       const downloadURL = await getDownloadURL(storageRef);
-      
+
       await this.authService.updateCurrentUserProfile({ photoURL: downloadURL });
       this.successMessage.set('Foto de perfil atualizada com sucesso!');
     } catch (error) {
@@ -94,8 +94,8 @@ export class Perfil implements OnInit {
 
   async toggleBiometrics() {
     const previousState = this.biometricsEnabled();
-    this.biometricsEnabled.update(v => !v);
-    
+    this.biometricsEnabled.update((v) => !v);
+
     if (this.biometricsEnabled()) {
       try {
         this.isLoading.set(true);
