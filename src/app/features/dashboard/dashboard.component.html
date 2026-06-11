@@ -158,7 +158,7 @@
                   }}</span>
               </div>
             </td>
-            <td class="py-4 text-slate-500 text-left">{{ formatDataVencimento(item) }}</td>
+            <td class="py-4 text-slate-500 text-left sm:font-bold">{{ formatDataVencimento(item) }}</td>
             <td class="py-4 text-right font-semibold pr-2"
               [ngClass]="item.tipo === 'Receita' ? 'text-emerald-600' : 'text-slate-800'">
               <span *ngIf="item.tipo === 'Receita'">+ </span>

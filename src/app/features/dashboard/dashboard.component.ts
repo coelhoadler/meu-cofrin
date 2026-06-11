@@ -254,7 +254,11 @@ export class DashboardComponent {
     if (!conta.mesReferencia) return `${conta.diaVencimento}`;
     const [ano, mes] = conta.mesReferencia.split('-');
     const dia = conta.diaVencimento.toString().padStart(2, '0');
-    return `${dia}/${mes}/${ano}`;
+
+    const date = new Date(parseInt(ano), parseInt(mes) - 1, conta.diaVencimento);
+    const mesNome = new Intl.DateTimeFormat('pt-BR', { month: 'short' }).format(date).replace('.', '');
+
+    return `${dia} de ${mesNome}`?.toUpperCase();
   }
 
   closeModal() {
