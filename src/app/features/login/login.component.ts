@@ -107,4 +107,19 @@ export class LoginComponent implements OnInit {
       this.isLoading.set(false);
     }
   }
+
+  async loginWithGoogle() {
+    this.errorMessage.set(null);
+    this.isLoading.set(true);
+
+    try {
+      await this.authService.loginWithGoogle();
+      this.router.navigate(['/dashboard']);
+    } catch (error: any) {
+      this.errorMessage.set('Falha ao autenticar com o Google. Tente novamente.');
+      console.error(error);
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
 }
