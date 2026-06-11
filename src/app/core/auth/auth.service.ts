@@ -1,5 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, authState, User, updateProfile, updatePassword, sendEmailVerification } from '@angular/fire/auth';
+import { Firestore, doc, setDoc, serverTimestamp } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 
@@ -9,13 +10,26 @@ import { firstValueFrom } from 'rxjs';
 export class AuthService {
   private auth = inject(Auth);
   private router = inject(Router);
+  private firestore = inject(Firestore);
 
   currentUser = signal<User | null | undefined>(undefined);
 
   constructor() {
     authState(this.auth).subscribe((user) => {
       this.currentUser.set(user);
+      if (user) {
+        this.updateLastAccessDate(user.uid);
+      }
     });
+  }
+
+  private async updateLastAccessDate(uid: string) {
+    try {
+      const userDocRef = doc(this.firestore, `users/${uid}`);
+      await setDoc(userDocRef, { lastAccessAt: serverTimestamp() }, { merge: true });
+    } catch (error) {
+      console.error('Erro ao atualizar a última data de acesso do usuário:', error);
+    }
   }
 
   async getCurrentUserAsync(): Promise<User | null> {

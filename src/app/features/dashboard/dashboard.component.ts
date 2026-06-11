@@ -38,7 +38,7 @@ export class DashboardComponent {
       legend: {
         display: true,
         position: 'bottom',
-        align: 'start',
+        align: 'center',
         labels: {
           usePointStyle: true,
           pointStyle: 'rectRounded',
