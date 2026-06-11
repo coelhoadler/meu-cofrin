@@ -11,8 +11,7 @@
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
     <!-- Saldo Card -->
     <div
-      class="bg-[#7941dc] text-white rounded-[20px] p-6 shadow-md shadow-purple-500/10 relative overflow-hidden flex flex-col justify-between h-[140px]"
-    >
+      class="bg-[#7941dc] text-white rounded-[20px] p-6 shadow-md shadow-purple-500/10 relative overflow-hidden flex flex-col justify-between h-[140px]">
       <div class="relative z-10">
         <p class="text-purple-200 text-sm font-medium mb-1">Saldo do mês</p>
         <h3 class="text-3xl font-bold mb-4">{{ saldoMes() }}</h3>
@@ -22,16 +21,14 @@
       </div>
       <!-- Icon top right -->
       <div
-        class="absolute top-5 right-5 w-10 h-10 bg-white/10 rounded-xl backdrop-blur-sm flex items-center justify-center"
-      >
+        class="absolute top-5 right-5 w-10 h-10 bg-white/10 rounded-xl backdrop-blur-sm flex items-center justify-center">
         <span class="material-symbols-outlined text-white text-xl">account_balance_wallet</span>
       </div>
     </div>
 
     <!-- Receitas Card -->
     <div
-      class="bg-white rounded-[20px] p-6 shadow-sm border border-slate-200/80 relative flex flex-col justify-between h-[140px]"
-    >
+      class="bg-white rounded-[20px] p-6 shadow-sm border border-slate-200/80 relative flex flex-col justify-between h-[140px]">
       <div>
         <p class="text-slate-500 text-sm font-medium mb-1">Receitas</p>
         <h3 class="text-3xl font-bold text-slate-800 mb-4">{{ totalReceitas() }}</h3>
@@ -39,17 +36,14 @@
       <div class="mt-auto">
         <p class="text-slate-400 text-[11px] font-medium">Sem alteração</p>
       </div>
-      <div
-        class="absolute top-5 right-5 w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center"
-      >
+      <div class="absolute top-5 right-5 w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center">
         <span class="material-symbols-outlined text-emerald-500 text-base">trending_up</span>
       </div>
     </div>
 
     <!-- Despesas Card -->
     <div
-      class="bg-white rounded-[20px] p-6 shadow-sm border border-slate-200/80 relative flex flex-col justify-between h-[140px]"
-    >
+      class="bg-white rounded-[20px] p-6 shadow-sm border border-slate-200/80 relative flex flex-col justify-between h-[140px]">
       <div>
         <p class="text-slate-500 text-sm font-medium mb-1">Despesas</p>
         <h3 class="text-3xl font-bold text-slate-800 mb-4">{{ totalDespesas() }}</h3>
@@ -57,9 +51,7 @@
       <div class="mt-auto">
         <p class="text-slate-400 text-[11px] font-medium">Sem alteração</p>
       </div>
-      <div
-        class="absolute top-5 right-5 w-8 h-8 bg-rose-50 rounded-lg flex items-center justify-center"
-      >
+      <div class="absolute top-5 right-5 w-8 h-8 bg-rose-50 rounded-lg flex items-center justify-center">
         <span class="material-symbols-outlined text-rose-500 text-base">trending_down</span>
       </div>
     </div>
@@ -67,258 +59,205 @@
 
   <!-- Row 2: Chart Placeholders -->
   @if (lancamentos().length > 0) {
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <!-- Line Chart Placeholder (Spans 2 cols on lg) -->
-      <div
-        class="bg-white rounded-[20px] p-3 shadow-sm border border-slate-200/80 lg:col-span-2 flex flex-col h-[320px]"
-      >
-        <div class="mb-4">
-          <h3 class="text-[15px] font-bold text-slate-800">Últimos 6 meses</h3>
-          <p class="text-[13px] text-slate-500">Receitas vs Despesas</p>
-        </div>
-        <!-- Chart Area -->
-        <div class="flex-1 relative w-full h-full min-h-[200px]">
-          <canvas
-            baseChart
-            [data]="barChartData"
-            [options]="barChartOptions"
-            [type]="'bar'"
-          ></canvas>
-        </div>
-        <!-- Legend -->
-        <div class="flex justify-center gap-6 mt-4">
-          <div class="flex items-center gap-2">
-            <div class="w-2.5 h-2.5 rounded-sm bg-[#9d6bf3]"></div>
-            <span class="text-[11px] text-slate-500 font-medium">Receitas</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <div class="w-2.5 h-2.5 rounded-sm bg-[#421b7b]"></div>
-            <span class="text-[11px] text-slate-500 font-medium">Despesas</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <div class="w-2.5 h-0.5 rounded-sm bg-[#10b981]"></div>
-            <span class="text-[11px] text-slate-500 font-medium">Saldo</span>
-          </div>
-        </div>
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Line Chart Placeholder (Spans 2 cols on lg) -->
+    <div class="bg-white rounded-[20px] p-3 shadow-sm border border-slate-200/80 lg:col-span-2 flex flex-col h-[320px]">
+      <div class="mb-4">
+        <h3 class="text-[15px] font-bold text-slate-800">Últimos 6 meses</h3>
+        <p class="text-[13px] text-slate-500">Receitas vs Despesas</p>
       </div>
-      <!-- Pie Chart Placeholder -->
-      <div
-        class="bg-white rounded-[20px] p-3 shadow-sm border border-slate-200/80 flex flex-col h-[320px]"
-      >
-        <div>
-          <h3 class="text-[15px] font-bold text-slate-800">Distribuição do mês</h3>
-          <p class="text-[13px] text-slate-500">Composição atual</p>
+      <!-- Chart Area -->
+      <div class="flex-1 relative w-full h-full min-h-[200px]">
+        <canvas baseChart [data]="barChartData" [options]="barChartOptions" [type]="'bar'"></canvas>
+      </div>
+      <!-- Legend -->
+      <div class="flex justify-center gap-6 mt-4">
+        <div class="flex items-center gap-2">
+          <div class="w-2.5 h-2.5 rounded-sm bg-[#9d6bf3]"></div>
+          <span class="text-[11px] text-slate-500 font-medium">Receitas</span>
         </div>
-        <!-- Chart Area -->
-        <div class="flex-1 relative mt-4 min-h-[200px]">
-          <canvas baseChart [data]="pieChartData" [options]="pieChartOptions" [type]="'pie'">
-          </canvas>
+        <div class="flex items-center gap-2">
+          <div class="w-2.5 h-2.5 rounded-sm bg-[#421b7b]"></div>
+          <span class="text-[11px] text-slate-500 font-medium">Despesas</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="w-2.5 h-0.5 rounded-sm bg-[#10b981]"></div>
+          <span class="text-[11px] text-slate-500 font-medium">Saldo</span>
         </div>
       </div>
     </div>
+    <!-- Pie Chart Placeholder -->
+    <div class="bg-white rounded-[20px] p-3 shadow-sm border border-slate-200/80 flex flex-col h-[320px]">
+      <div>
+        <h3 class="text-[15px] font-bold text-slate-800">Distribuição do mês</h3>
+        <p class="text-[13px] text-slate-500">Composição atual</p>
+      </div>
+      <!-- Chart Area -->
+      <div class="flex-1 relative mt-4 min-h-[200px]">
+        <canvas baseChart [data]="pieChartData" [options]="pieChartOptions" [type]="'pie'">
+        </canvas>
+      </div>
+    </div>
+  </div>
   }
 
   <!-- Row 3: Lançamentos Recentes -->
-  <div
-    class="bg-white rounded-[20px] p-6 shadow-sm border border-slate-200/80 min-h-[280px] flex flex-col"
-  >
+  <div class="bg-white rounded-[20px] p-3 shadow-sm border border-slate-200/80 min-h-[280px] flex flex-col">
     <div class="flex items-center justify-between mb-8">
-      <h3 class="text-[15px] font-bold text-slate-800">Lançamentos mais recentes</h3>
-      <span class="text-xs font-medium text-slate-400"
-        >{{ lancamentos().length }} conta(s) no total</span
-      >
+      <h3 class="text-[15px] font-bold text-slate-800">Lançamentos recentes</h3>
+      <span class="text-xs font-medium text-slate-400">{{ lancamentos().length }} conta(s) no total</span>
     </div>
 
     <!-- Loading State -->
     @if (isLoading()) {
-      <div class="flex-1 flex items-center justify-center py-8">
-        <div
-          class="w-8 h-8 border-4 border-[#421b7b]/20 border-t-[#421b7b] rounded-full animate-spin"
-        ></div>
-      </div>
+    <div class="flex-1 flex items-center justify-center py-8">
+      <div class="w-8 h-8 border-4 border-[#421b7b]/20 border-t-[#421b7b] rounded-full animate-spin"></div>
+    </div>
     }
 
     <!-- Empty State -->
     @if (!isLoading() && lancamentos().length === 0) {
-      <div class="flex-1 flex flex-col items-center justify-center space-y-4 py-8">
-        <p class="text-slate-500 text-[13px]">Nenhuma conta cadastrada ainda.</p>
-        <a
-          routerLink="/nova-conta"
-          class="px-5 py-2 bg-[#421b7b] hover:bg-[#341561] text-white text-[13px] font-semibold rounded-xl shadow-sm transition-colors"
-        >
-          Cadastrar primeira conta
-        </a>
-      </div>
+    <div class="flex-1 flex flex-col items-center justify-center space-y-4 py-8">
+      <p class="text-slate-500 text-[13px]">Nenhuma conta cadastrada ainda.</p>
+      <a routerLink="/nova-conta"
+        class="px-5 py-2 bg-[#421b7b] hover:bg-[#341561] text-white text-[13px] font-semibold rounded-xl shadow-sm transition-colors">
+        Cadastrar primeira conta
+      </a>
+    </div>
     }
 
     <!-- Data List -->
     @if (!isLoading() && lancamentos().length > 0) {
-      <div class="flex-1 overflow-x-auto">
-        <table class="w-full text-left border-collapse">
-          <thead>
-            <tr
-              class="border-b border-slate-200/80 text-xs text-slate-400 uppercase tracking-wider"
-            >
-              <th class="pb-3 font-medium w-8"></th>
-              <th class="pb-3 font-medium">Conta</th>
-              <th class="pb-3 font-medium">Dia Venc.</th>
-              <th class="pb-3 font-medium text-right">Valor</th>
-            </tr>
-          </thead>
-          <tbody class="text-sm">
-            @for (item of lancamentos(); track item) {
-              <tr
-                (click)="openModal(item)"
-                class="border-b border-slate-50 last:border-0 transition-colors cursor-pointer active:bg-slate-200"
-                [ngClass]="getRowClass(item)"
-              >
-                <td class="py-4 px-2 w-8">
-                  <div
-                    class="w-3 h-3 rounded-full"
-                    [ngClass]="{
+    <div class="flex-1 overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="border-b border-slate-200/80 text-xs text-slate-400 uppercase tracking-wider">
+            <th class="pb-3 font-medium w-8"></th>
+            <th class="pb-3 font-medium">Conta</th>
+            <th class="pb-3 font-medium">Dia Venc.</th>
+            <th class="pb-3 font-medium text-right">Valor</th>
+          </tr>
+        </thead>
+        <tbody class="text-sm">
+          @for (item of lancamentos(); track item) {
+          <tr (click)="openModal(item)"
+            class="border-b border-slate-50 last:border-0 transition-colors cursor-pointer active:bg-slate-200"
+            [ngClass]="getRowClass(item)">
+            <td class="py-4 px-2 w-8">
+              <div class="w-3 h-3 rounded-full" [ngClass]="{
                       'bg-[#421b7b]': item.tipo === 'Receita',
                       'bg-emerald-500': item.tipo !== 'Receita' && item.statusPago,
                       'bg-orange-500': item.tipo !== 'Receita' && !item.statusPago,
-                    }"
-                  ></div>
-                </td>
-                <td class="py-4">
-                  <div class="flex flex-col">
-                    <div class="flex items-center gap-2">
-                      <span
-                        class="font-semibold text-slate-800"
-                        [ngClass]="{ 'line-through': item.statusPago }"
-                        >{{ item.nome }}</span
-                      >
-                      @if (item.reciboUrl) {
-                        <span
-                          class="material-symbols-outlined text-slate-400 text-base"
-                          title="Possui imagem"
-                          >image</span
-                        >
-                      }
-                    </div>
-                    @if (item.categoria) {
-                      <span class="text-xs font-medium text-slate-400 mt-0.5">{{
-                        item.categoria
-                      }}</span>
-                    }
-                  </div>
-                </td>
-                <td class="py-4 text-slate-500 text-left sm:font-bold">
-                  {{ formatDataVencimento(item) }}
-                </td>
-                <td
-                  class="py-4 text-right font-semibold pr-2"
-                  [ngClass]="item.tipo === 'Receita' ? 'text-emerald-600' : 'text-slate-800'"
-                >
-                  @if (item.tipo === 'Receita') {
-                    <span>+ </span>
+                    }"></div>
+            </td>
+            <td class="py-4">
+              <div class="flex flex-col">
+                <div class="flex items-center gap-2">
+                  <span class="font-semibold text-slate-800" [ngClass]="{ 'line-through': item.statusPago }">{{
+                    item.nome }}</span>
+                  @if (item.reciboUrl) {
+                  <span class="material-symbols-outlined text-slate-400 text-base" title="Possui imagem">image</span>
                   }
-                  {{ item.valor }}
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
+                </div>
+                @if (item.categoria) {
+                <span class="text-xs font-medium text-slate-400 mt-0.5">{{
+                  item.categoria
+                  }}</span>
+                }
+              </div>
+            </td>
+            <td class="py-4 text-slate-500 text-left sm:font-bold">
+              {{ formatDataVencimento(item) }}
+            </td>
+            <td class="py-4 text-right font-semibold pr-2"
+              [ngClass]="item.tipo === 'Receita' ? 'text-emerald-600' : 'text-slate-800'">
+              @if (item.tipo === 'Receita') {
+              <span>+ </span>
+              }
+              {{ item.valor }}
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
     }
 
     <!-- Rodapé: Total a Pagar e Legenda -->
     @if (!isLoading() && lancamentos().length > 0) {
-      <div
-        class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mt-6 pt-4 border-t border-slate-100"
-      >
-        <!-- Total a Pagar -->
-        <div>
-          <p class="text-[11px] text-slate-500 font-medium uppercase tracking-wider mb-0.5">
-            Resta a pagar (Mês)
-          </p>
-          <p class="text-lg font-bold text-orange-500">{{ totalAPagar() }}</p>
+    <div
+      class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mt-6 pt-4 border-t border-slate-100">
+      <!-- Total a Pagar -->
+      <div>
+        <p class="text-[11px] text-slate-500 font-medium uppercase tracking-wider mb-0.5">
+          Resta a pagar (Mês)
+        </p>
+        <p class="text-lg font-bold text-orange-500">{{ totalAPagar() }}</p>
+      </div>
+      <!-- Total a Pagar -->
+      <div>
+        <p class="text-[11px] text-slate-500 font-medium uppercase tracking-wider mb-0.5">
+          Foi pago (Mês)
+        </p>
+        <p class="text-lg font-bold text-green-500">{{ totalPago() }}</p>
+      </div>
+      <!-- Legenda -->
+      <div class="flex flex-wrap items-center gap-6">
+        <div class="flex items-center gap-2">
+          <div class="w-2.5 h-2.5 rounded-full bg-[#421b7b]"></div>
+          <span class="text-[11px] text-slate-500 font-medium uppercase tracking-wider">Receita</span>
         </div>
-        <!-- Total a Pagar -->
-        <div>
-          <p class="text-[11px] text-slate-500 font-medium uppercase tracking-wider mb-0.5">
-            Foi pago (Mês)
-          </p>
-          <p class="text-lg font-bold text-green-500">{{ totalPago() }}</p>
+        <div class="flex items-center gap-2">
+          <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
+          <span class="text-[11px] text-slate-500 font-medium uppercase tracking-wider">Pago</span>
         </div>
-        <!-- Legenda -->
-        <div class="flex flex-wrap items-center gap-6">
-          <div class="flex items-center gap-2">
-            <div class="w-2.5 h-2.5 rounded-full bg-[#421b7b]"></div>
-            <span class="text-[11px] text-slate-500 font-medium uppercase tracking-wider"
-              >Receita</span
-            >
-          </div>
-          <div class="flex items-center gap-2">
-            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
-            <span class="text-[11px] text-slate-500 font-medium uppercase tracking-wider"
-              >Pago</span
-            >
-          </div>
-          <div class="flex items-center gap-2">
-            <div class="w-2.5 h-2.5 rounded-full bg-orange-500"></div>
-            <span class="text-[11px] text-slate-500 font-medium uppercase tracking-wider"
-              >Pendente</span
-            >
-          </div>
+        <div class="flex items-center gap-2">
+          <div class="w-2.5 h-2.5 rounded-full bg-orange-500"></div>
+          <span class="text-[11px] text-slate-500 font-medium uppercase tracking-wider">Pendente</span>
         </div>
       </div>
+    </div>
     }
   </div>
 
   <!-- Modal de Ações -->
   @if (selectedConta(); as conta) {
+  <div
+    class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 sm:p-0 bg-slate-900/40 backdrop-blur-sm transition-opacity"
+    (click)="closeModal()">
+    <!-- Animação do bottom no mobile, center no desktop -->
     <div
-      class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 sm:p-0 bg-slate-900/40 backdrop-blur-sm transition-opacity"
-      (click)="closeModal()"
-    >
-      <!-- Animação do bottom no mobile, center no desktop -->
-      <div
-        class="bg-white rounded-t-[28px] sm:rounded-[24px] shadow-xl w-full max-w-sm overflow-hidden transform transition-transform"
-        (click)="$event.stopPropagation()"
-      >
-        <div class="p-6 border-b border-slate-100 flex items-center justify-between">
-          <div>
-            <h3 class="text-lg font-bold text-slate-800">{{ conta.nome }}</h3>
-            <p class="text-sm text-slate-500 mt-1">
-              {{ conta.valor }} • Venc: {{ formatDataVencimento(conta) }}
-            </p>
+      class="bg-white rounded-t-[28px] sm:rounded-[24px] shadow-xl w-full max-w-sm overflow-hidden transform transition-transform"
+      (click)="$event.stopPropagation()">
+      <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+        <div>
+          <h3 class="text-lg font-bold text-slate-800">{{ conta.nome }}</h3>
+          <p class="text-sm text-slate-500 mt-1">
+            {{ conta.valor }} • Venc: {{ formatDataVencimento(conta) }}
+          </p>
+        </div>
+        <button (click)="closeModal()"
+          class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-700 transition-colors">
+          <span class="material-symbols-outlined text-xl">close</span>
+        </button>
+      </div>
+      <div class="p-3 flex flex-col gap-1">
+        <a [routerLink]="['/editar-conta', conta.id]" (click)="closeModal()"
+          class="flex items-center gap-4 w-full p-4 text-left text-slate-700 hover:bg-slate-50 rounded-xl transition-colors font-semibold">
+          <div class="w-10 h-10 rounded-full bg-[#421b7b]/10 flex items-center justify-center text-[#421b7b]">
+            <span class="material-symbols-outlined">edit</span>
           </div>
-          <button
-            (click)="closeModal()"
-            class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-700 transition-colors"
-          >
-            <span class="material-symbols-outlined text-xl">close</span>
-          </button>
-        </div>
-        <div class="p-3 flex flex-col gap-1">
-          <a
-            [routerLink]="['/editar-conta', conta.id]"
-            (click)="closeModal()"
-            class="flex items-center gap-4 w-full p-4 text-left text-slate-700 hover:bg-slate-50 rounded-xl transition-colors font-semibold"
-          >
-            <div
-              class="w-10 h-10 rounded-full bg-[#421b7b]/10 flex items-center justify-center text-[#421b7b]"
-            >
-              <span class="material-symbols-outlined">edit</span>
-            </div>
-            Editar conta
-          </a>
-          <button
-            (click)="deleteLancamento(conta.id)"
-            class="flex items-center gap-4 w-full p-4 text-left text-rose-600 hover:bg-rose-50 rounded-xl transition-colors font-semibold"
-          >
-            <div
-              class="w-10 h-10 rounded-full bg-rose-50 flex items-center justify-center text-rose-500"
-            >
-              <span class="material-symbols-outlined">delete</span>
-            </div>
-            Excluir conta
-          </button>
-        </div>
+          Editar conta
+        </a>
+        <button (click)="deleteLancamento(conta.id)"
+          class="flex items-center gap-4 w-full p-4 text-left text-rose-600 hover:bg-rose-50 rounded-xl transition-colors font-semibold">
+          <div class="w-10 h-10 rounded-full bg-rose-50 flex items-center justify-center text-rose-500">
+            <span class="material-symbols-outlined">delete</span>
+          </div>
+          Excluir conta
+        </button>
       </div>
     </div>
+  </div>
   }
 </div>
