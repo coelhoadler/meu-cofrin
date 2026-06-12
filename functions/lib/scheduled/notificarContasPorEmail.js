@@ -46,7 +46,7 @@ exports.notificarContasPorEmail = (0, scheduler_1.onSchedule)({
         // Configura a API Key do SendGrid usando o Secret
         sgMail.setApiKey(sendgridApiKey.value());
         const processarDocumentos = async (docs, titulo, fraseContexto) => {
-            var _a;
+            var _a, _b;
             for (const doc of docs) {
                 const conta = doc.data();
                 const nomeConta = conta.nome || "Conta";
@@ -54,8 +54,15 @@ exports.notificarContasPorEmail = (0, scheduler_1.onSchedule)({
                 const userId = (_a = doc.ref.parent.parent) === null || _a === void 0 ? void 0 : _a.id;
                 if (!userId)
                     continue;
-                // Por enquanto, o email está fixado para testes conforme solicitado
-                const emailUsuario = 'adlercoelhosantos12@gmail.com';
+                // Buscar dados do usuário no Firestore
+                const userSnap = await db.collection("users").doc(userId).get();
+                if (!userSnap.exists)
+                    continue;
+                const userData = userSnap.data();
+                const emailUsuario = (_b = userData === null || userData === void 0 ? void 0 : userData.perfil) === null || _b === void 0 ? void 0 : _b.email;
+                // Se o usuário não tiver e-mail salvo, ignora o envio
+                if (!emailUsuario)
+                    continue;
                 emails.push({
                     to: emailUsuario,
                     from: 'meucofrinnoreply@gmail.com',

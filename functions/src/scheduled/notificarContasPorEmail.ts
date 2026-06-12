@@ -62,8 +62,15 @@ export const notificarContasPorEmail = onSchedule({
         const userId = doc.ref.parent.parent?.id;
         if (!userId) continue;
 
-        // Por enquanto, o email está fixado para testes conforme solicitado
-        const emailUsuario = 'adlercoelhosantos12@gmail.com';
+        // Buscar dados do usuário no Firestore
+        const userSnap = await db.collection("users").doc(userId).get();
+        if (!userSnap.exists) continue;
+
+        const userData = userSnap.data();
+        const emailUsuario = userData?.perfil?.email;
+
+        // Se o usuário não tiver e-mail salvo, ignora o envio
+        if (!emailUsuario) continue;
 
         emails.push({
           to: emailUsuario,
