@@ -13,6 +13,11 @@ export const routes: Routes = [
     children: [
       { path: 'dashboard', component: DashboardComponent, title: 'Meu Cofrin | Dashboard' },
       { 
+        path: 'lancamentos', 
+        loadComponent: () => import('./features/lancamentos/lancamentos.component').then(m => m.LancamentosComponent),
+        title: 'Meu Cofrin | Lançamentos' 
+      },
+      { 
         path: 'nova-conta', 
         loadComponent: () => import('./features/nova-conta/nova-conta.component').then(m => m.NovaContaComponent),
         title: 'Meu Cofrin | Nova Conta' 

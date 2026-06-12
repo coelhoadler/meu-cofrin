@@ -1,0 +1,153 @@
+<div class="space-y-6 max-w-5xl mx-auto pb-10">
+  <!-- Header -->
+  <div>
+    <a routerLink="/dashboard" class="inline-flex items-center text-sm font-medium text-slate-500 hover:text-indigo-600 transition-colors mb-2">
+      <span class="material-symbols-outlined text-sm mr-1">arrow_back</span>
+      Voltar
+    </a>
+    <h1 class="text-2xl md:text-3xl font-bold text-slate-800 tracking-tight">Lançamentos</h1>
+    <p class="text-slate-500">Filtre suas receitas e despesas.</p>
+  </div>
+
+  <!-- Filtros -->
+  <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+    <div class="flex items-center gap-2 mb-4 text-slate-700 font-semibold">
+      <span class="material-symbols-outlined text-slate-400">filter_alt</span>
+      Filtros
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <!-- Mês -->
+      <div>
+        <label class="block text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">Mês</label>
+        <select [ngModel]="mesFiltro()" (ngModelChange)="mesFiltro.set($event); onFiltroMesAnoChange()"
+          class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition-colors">
+          @for (mes of meses; track mes.valor) {
+            <option [value]="mes.valor">{{ mes.nome }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Ano -->
+      <div>
+        <label class="block text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">Ano</label>
+        <select [ngModel]="anoFiltro()" (ngModelChange)="anoFiltro.set($event); onFiltroMesAnoChange()"
+          class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition-colors">
+          @for (ano of anos; track ano) {
+            <option [value]="ano">{{ ano }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Tipo -->
+      <div>
+        <label class="block text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">Tipo</label>
+        <select [ngModel]="tipoFiltro()" (ngModelChange)="tipoFiltro.set($event)"
+          class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition-colors">
+          <option value="Todos">Todos</option>
+          <option value="Receita">Receitas</option>
+          <option value="Despesa">Despesas</option>
+        </select>
+      </div>
+
+      <!-- Categoria -->
+      <div>
+        <label class="block text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wider">Categoria</label>
+        <select [ngModel]="categoriaFiltro()" (ngModelChange)="categoriaFiltro.set($event)"
+          class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition-colors">
+          <option value="Todos">Todas</option>
+          @for (cat of categorias(); track cat.id) {
+            <option [value]="cat.nome">{{ cat.nome }}</option>
+          }
+        </select>
+      </div>
+    </div>
+    
+    <div class="flex justify-end mt-4">
+      <button (click)="limparFiltros()"
+        class="text-sm font-medium text-slate-600 hover:text-slate-800 border border-slate-200 bg-white hover:bg-slate-50 px-4 py-2 rounded-lg transition-colors">
+        Limpar Filtros
+      </button>
+    </div>
+  </div>
+
+  <!-- Resumo -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <!-- Receitas -->
+    <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col justify-center">
+      <p class="text-sm text-slate-500 font-medium mb-1">Receitas</p>
+      <p class="text-2xl font-bold text-emerald-500">{{ formatarMoeda(totalReceitas()) }}</p>
+    </div>
+    
+    <!-- Despesas -->
+    <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col justify-center">
+      <p class="text-sm text-slate-500 font-medium mb-1">Despesas</p>
+      <p class="text-2xl font-bold text-rose-500">{{ formatarMoeda(totalDespesas()) }}</p>
+    </div>
+
+    <!-- Saldo -->
+    <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col justify-center">
+      <p class="text-sm text-slate-500 font-medium mb-1">Saldo</p>
+      <p class="text-2xl font-bold text-slate-800">{{ formatarMoeda(saldo()) }}</p>
+    </div>
+  </div>
+
+  <!-- Resultados -->
+  <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+    <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+      <h2 class="text-lg font-bold text-slate-800">Resultados</h2>
+      <span class="text-sm text-slate-500">{{ contasFiltradas().length }} lançamento(s)</span>
+    </div>
+
+    <div class="divide-y divide-slate-100">
+      @if (isLoading()) {
+        <div class="p-8 text-center text-slate-500">
+          <span class="material-symbols-outlined animate-spin text-3xl mb-2 text-indigo-500">progress_activity</span>
+          <p>Carregando lançamentos...</p>
+        </div>
+      } @else if (contasFiltradas().length === 0) {
+        <div class="p-8 text-center text-slate-500">
+          <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3">
+            <span class="material-symbols-outlined text-3xl text-slate-400">receipt_long</span>
+          </div>
+          <p class="font-medium text-slate-700">Nenhum lançamento encontrado.</p>
+          <p class="text-sm">Tente ajustar os filtros acima.</p>
+        </div>
+      } @else {
+        @for (conta of contasFiltradas(); track conta.id) {
+          <div class="p-4 sm:p-5 flex items-center justify-between hover:bg-slate-50 transition-colors">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                   [ngClass]="conta.tipo === 'Receita' ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600'">
+                <span class="material-symbols-outlined">
+                  {{ conta.tipo === 'Receita' ? 'trending_up' : 'trending_down' }}
+                </span>
+              </div>
+              
+              <div>
+                <p class="font-bold text-slate-800">{{ conta.nome }}</p>
+                <div class="flex items-center gap-1.5 text-xs text-slate-500 mt-0.5">
+                  <span class="truncate max-w-[120px] sm:max-w-none">{{ conta.categoria || 'Sem categoria' }}</span>
+                  <span>•</span>
+                  <span>Vence dia {{ conta.diaVencimento }}</span>
+                  <span>•</span>
+                  <span [ngClass]="conta.statusPago ? 'text-emerald-600 font-medium' : 'text-amber-500 font-medium'">
+                    {{ conta.statusPago ? 'Pago' : 'Pendente' }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="text-right">
+              <p class="font-bold whitespace-nowrap"
+                 [ngClass]="conta.tipo === 'Receita' ? 'text-emerald-600' : 'text-rose-600'">
+                {{ conta.tipo === 'Receita' ? '+ ' : '- ' }} 
+                {{ formatarMoeda(parseFloatValor(conta.valor)) }}
+              </p>
+            </div>
+          </div>
+        }
+      }
+    </div>
+  </div>
+</div>

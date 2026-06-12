@@ -1,4 +1,4 @@
-import { Component, inject, signal, effect } from '@angular/core';
+import { Component, inject, signal, effect, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ContaService, Conta } from '../../core/services/conta.service';
@@ -11,7 +11,8 @@ import { ChartConfiguration } from 'chart.js';
   selector: 'app-dashboard',
   standalone: true,
   imports: [RouterLink, CommonModule, BaseChartDirective],
-  templateUrl: './dashboard.component.html'
+  templateUrl: './dashboard.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardComponent {
   currentDate = new Intl.DateTimeFormat('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date());
@@ -30,6 +31,7 @@ export class DashboardComponent {
   saldoMes = signal('R$ 0,00');
   totalAPagar = signal('R$ 0,00');
   totalPago = signal('R$ 0,00');
+  statusConta = signal('');
 
   pieChartOptions: ChartConfiguration<'pie'>['options'] = {
     responsive: true,
@@ -267,21 +269,17 @@ export class DashboardComponent {
 
   getRowClass(item: Conta): string {
     if (item.statusPago || item.tipo === 'Receita') {
-      return 'bg-green-100 hover:bg-green-200';
+      return '';
     }
 
     if (item.mesReferencia && item.diaVencimento) {
-      const [ano, mes] = item.mesReferencia.split('-');
-      const dataVencimento = new Date(parseInt(ano), parseInt(mes) - 1, item.diaVencimento);
-      const hoje = new Date();
-      hoje.setHours(0, 0, 0, 0);
-
-      const diffTime = dataVencimento.getTime() - hoje.getTime();
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      const diffDays = this.calcularDiffDataVencimento(item);
 
       if (diffDays <= 0) {
+        // this.statusConta.set('vencido');
         return 'bg-red-200 hover:bg-red-300';
       } else if (diffDays <= 5) {
+        // this.statusConta.set('prestes_vencer');
         return 'bg-yellow-100 hover:bg-yellow-200';
       }
     }
@@ -306,4 +304,31 @@ export class DashboardComponent {
       }
     }
   }
+
+  public calcularDiffDataVencimento(item: Conta): number {
+    const [ano, mes] = item.mesReferencia.split('-');
+    const dataVencimento = new Date(parseInt(ano), parseInt(mes) - 1, item.diaVencimento);
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+
+    const diffTime = dataVencimento.getTime() - hoje.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    return diffDays;
+  }
+
+  public greetingUser(): string {
+    const data = new Date();
+    const hora = data.getHours();
+    const userName = this.authService.currentUser()?.displayName?.split(' ')[0] || '';
+
+    if (hora < 12) {
+      return `Bom dia, ${userName}!`;
+    } else if (hora < 18) {
+      return `Boa tarde, ${userName}!`;
+    } else {
+      return `Boa noite, ${userName}!`;
+    }
+  }
+
 }
