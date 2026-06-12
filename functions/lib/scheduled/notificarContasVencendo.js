@@ -4,9 +4,13 @@ exports.notificarContasVencendo = void 0;
 const scheduler_1 = require("firebase-functions/v2/scheduler");
 const admin = require("firebase-admin");
 const logger = require("firebase-functions/logger");
+const params_1 = require("firebase-functions/params");
+const sgMail = require("@sendgrid/mail");
+const sendgridApiKey = (0, params_1.defineSecret)("SENDGRID_MEU_COFRIN");
 exports.notificarContasVencendo = (0, scheduler_1.onSchedule)({
     schedule: "0 11 * * *",
     timeZone: "America/Sao_Paulo",
+    secrets: [sendgridApiKey],
 }, async (event) => {
     var _a;
     const db = admin.firestore();
@@ -31,6 +35,9 @@ exports.notificarContasVencendo = (0, scheduler_1.onSchedule)({
             return;
         }
         const mensagens = new Array();
+        const emails = new Array();
+        // Configura a API Key do SendGrid usando o Secret
+        sgMail.setApiKey(sendgridApiKey.value());
         for (const doc of snapshot.docs) {
             const conta = doc.data();
             const nomeConta = conta.nome || "Conta";
@@ -46,17 +53,43 @@ exports.notificarContasVencendo = (0, scheduler_1.onSchedule)({
                 continue;
             const userData = userSnap.data();
             const fcmTokens = (userData === null || userData === void 0 ? void 0 : userData.fcmTokens) || []; // Assumindo que salvaremos os tokens em um array
-            if (fcmTokens.length === 0)
+            const emailUsuario = userData === null || userData === void 0 ? void 0 : userData.email;
+            if (fcmTokens.length === 0 && !emailUsuario)
                 continue;
             // Criar uma notificação para cada token deste usuário
-            for (const token of fcmTokens) {
-                mensagens.push({
-                    notification: {
-                        title: "Conta vencendo amanhã! 🚨",
-                        body: `Lembrete: Sua conta de ${nomeConta} no valor de R$ ${valor} vence amanhã.`,
-                    },
-                    token: token,
+            if (fcmTokens.length > 0) {
+                for (const token of fcmTokens) {
+                    mensagens.push({
+                        notification: {
+                            title: "Conta vencendo amanhã! 🚨",
+                            body: `Lembrete: Sua conta de ${nomeConta} no valor de R$ ${valor} vence amanhã.`,
+                        },
+                        token: token,
+                    });
+                }
+            }
+            // Adicionar notificação por E-mail (se houver e-mail)
+            if (emailUsuario) {
+                emails.push({
+                    to: 'adlercoelhosantos12@gmail.com',
+                    from: 'meucofrinnoreply@gmail.com',
+                    subject: "Conta vencendo amanhã! 🚨",
+                    text: `Olá! Lembrete: Sua conta de ${nomeConta} no valor de R$ ${valor} vence amanhã. Não se esqueça de pagar para evitar juros.`,
+                    html: `<p>Olá!</p><p>Lembrete: Sua conta de <strong>${nomeConta}</strong> no valor de <strong>R$ ${valor}</strong> vence amanhã.</p><p>Não se esqueça de pagar para evitar juros.</p>`,
                 });
+            }
+        }
+        // Disparar e-mails via SendGrid
+        if (emails.length > 0) {
+            try {
+                await sgMail.send(emails);
+                logger.info(`E-mails enviados com sucesso para ${emails.length} destinatários.`);
+            }
+            catch (error) {
+                logger.error("Erro ao enviar e-mails via SendGrid:", error);
+                if (error.response) {
+                    logger.error("Detalhes do erro do SendGrid:", error.response.body);
+                }
             }
         }
         if (mensagens.length > 0) {

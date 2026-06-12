@@ -1,0 +1,94 @@
+[debug] [2026-06-12T16:14:37.652Z] ----------------------------------------------------------------------
+[debug] [2026-06-12T16:14:37.653Z] Command:       C:\Users\adler\AppData\Local\nvs\default\node.exe C:\Users\adler\AppData\Local\nvs\default\node_modules\firebase-tools\lib\bin\firebase.js deploy --only functions
+[debug] [2026-06-12T16:14:37.654Z] CLI Version:   15.12.0
+[debug] [2026-06-12T16:14:37.654Z] Platform:      win32
+[debug] [2026-06-12T16:14:37.654Z] Node Version:  v22.16.0
+[debug] [2026-06-12T16:14:37.654Z] Time:          Fri Jun 12 2026 13:14:37 GMT-0300 (Horário Padrão de Brasília)
+[debug] [2026-06-12T16:14:37.654Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-06-12T16:14:38.626Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-06-12T16:14:38.626Z] > authorizing via signed-in user (adlercoelhosantos12@gmail.com)
+[debug] [2026-06-12T16:14:38.626Z] [iam] checking project meu-cofrin for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2026-06-12T16:14:38.627Z] Checked if tokens are valid: true, expires at: 1781284421343
+[debug] [2026-06-12T16:14:38.627Z] Checked if tokens are valid: true, expires at: 1781284421343
+[debug] [2026-06-12T16:14:38.628Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/meu-cofrin:testIamPermissions [none]
+[debug] [2026-06-12T16:14:38.628Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/meu-cofrin:testIamPermissions  x-goog-user-project=meu-cofrin
+[debug] [2026-06-12T16:14:38.628Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/meu-cofrin:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2026-06-12T16:14:38.912Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/meu-cofrin:testIamPermissions 200
+[debug] [2026-06-12T16:14:38.912Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/meu-cofrin:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2026-06-12T16:14:38.912Z] Checked if tokens are valid: true, expires at: 1781284421343
+[debug] [2026-06-12T16:14:38.912Z] Checked if tokens are valid: true, expires at: 1781284421343
+[debug] [2026-06-12T16:14:38.912Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/meu-cofrin/serviceAccounts/meu-cofrin@appspot.gserviceaccount.com:testIamPermissions [none]
+[debug] [2026-06-12T16:14:38.912Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/meu-cofrin/serviceAccounts/meu-cofrin@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2026-06-12T16:14:39.793Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/meu-cofrin/serviceAccounts/meu-cofrin@appspot.gserviceaccount.com:testIamPermissions 200
+[debug] [2026-06-12T16:14:39.793Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/meu-cofrin/serviceAccounts/meu-cofrin@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[info] 
+[info] === Deploying to 'meu-cofrin'...
+[info] 
+[info] i  deploying functions 
+[debug] [2026-06-12T16:14:39.795Z] Checked if tokens are valid: true, expires at: 1781284421343
+[debug] [2026-06-12T16:14:39.795Z] Checked if tokens are valid: true, expires at: 1781284421343
+[debug] [2026-06-12T16:14:39.795Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/meu-cofrin [none]
+[debug] [2026-06-12T16:14:40.001Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/meu-cofrin 200
+[debug] [2026-06-12T16:14:40.001Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/meu-cofrin {"projectNumber":"570567455946","projectId":"meu-cofrin","lifecycleState":"ACTIVE","name":"meu-cofrin","labels":{"firebase":"enabled","firebase-core":"disabled"},"createTime":"2026-05-28T00:20:23.876Z"}
+[info] i  functions: preparing codebase default for deployment 
+[info] i  functions: ensuring required API cloudfunctions.googleapis.com is enabled... 
+[info] i  functions: ensuring required API cloudbuild.googleapis.com is enabled... 
+[info] i  artifactregistry: ensuring required API artifactregistry.googleapis.com is enabled... 
+[debug] [2026-06-12T16:14:40.003Z] Checked if tokens are valid: true, expires at: 1781284421343
+[debug] [2026-06-12T16:14:40.003Z] Checked if tokens are valid: true, expires at: 1781284421343
+[debug] [2026-06-12T16:14:40.004Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/meu-cofrin/adminSdkConfig [none]
+[debug] [2026-06-12T16:14:40.474Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/meu-cofrin/adminSdkConfig 200
+[debug] [2026-06-12T16:14:40.474Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/meu-cofrin/adminSdkConfig {"projectId":"meu-cofrin","storageBucket":"meu-cofrin.firebasestorage.app"}
+[debug] [2026-06-12T16:14:40.474Z] Checked if tokens are valid: true, expires at: 1781284421343
+[debug] [2026-06-12T16:14:40.474Z] Checked if tokens are valid: true, expires at: 1781284421343
+[debug] [2026-06-12T16:14:40.474Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/meu-cofrin/configs [none]
+[debug] [2026-06-12T16:14:41.533Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/meu-cofrin/configs 200
+[debug] [2026-06-12T16:14:41.533Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/meu-cofrin/configs {}
+[debug] [2026-06-12T16:14:41.534Z] Validating nodejs source
+[warn] !  functions: package.json indicates an outdated version of firebase-functions. Please upgrade using npm install --save firebase-functions@latest in your functions directory. 
+[warn] !  functions: Please note that there will be breaking changes when you upgrade. 
+[debug] [2026-06-12T16:14:42.033Z] > [functions] package.json contents: {
+  "name": "functions",
+  "scripts": {
+    "lint": "eslint --ext .js,.ts .",
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "serve": "npm run build && firebase emulators:start --only functions",
+    "shell": "npm run build && firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "22"
+  },
+  "main": "lib/index.js",
+  "dependencies": {
+    "@sendgrid/mail": "^8.1.6",
+    "@simplewebauthn/server": "^13.3.1",
+    "firebase-admin": "^12.1.0",
+    "firebase-functions": "^5.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.9.0",
+    "typescript": "^4.9.0"
+  },
+  "private": true
+}
+[debug] [2026-06-12T16:14:42.033Z] Building nodejs source
+[info] i  functions: Loading and analyzing source code for codebase default to determine what to deploy 
+[debug] [2026-06-12T16:14:42.034Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-06-12T16:14:42.040Z] Found firebase-functions binary at 'C:\Users\adler\OneDrive\Documentos\GitHub\meu-cofrin\functions\node_modules\.bin\firebase-functions'
+[info] Serving at port 8520
+
+[debug] [2026-06-12T16:14:42.473Z] Got response from /__/functions.yaml {"endpoints":{"notificarContasVencendo":{"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","secretEnvironmentVariables":[{"key":"SENDGRID_MEU_COFRIN"}],"labels":{},"scheduleTrigger":{"schedule":"0 11 * * *","retryConfig":{},"timeZone":"America/Sao_Paulo"},"entryPoint":"notificarContasVencendo"},"consolidarResumosMensais":{"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","labels":{},"scheduleTrigger":{"schedule":"0 5 * * *","retryConfig":{},"timeZone":"America/Sao_Paulo"},"entryPoint":"consolidarResumosMensais"},"generateRegistrationOptionsFn":{"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","labels":{},"callableTrigger":{},"entryPoint":"generateRegistrationOptionsFn"},"verifyRegistrationResponseFn":{"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","labels":{},"callableTrigger":{},"entryPoint":"verifyRegistrationResponseFn"},"generateAuthenticationOptionsFn":{"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","labels":{},"callableTrigger":{},"entryPoint":"generateAuthenticationOptionsFn"},"verifyAuthenticationResponseFn":{"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","labels":{},"callableTrigger":{},"entryPoint":"verifyAuthenticationResponseFn"}},"specVersion":"v1alpha1","requiredAPIs":[{"api":"cloudscheduler.googleapis.com","reason":"Needed for scheduled functions."}],"extensions":{},"params":[{"type":"secret","name":"SENDGRID_MEU_COFRIN"}]}
+[info] i  extensions: ensuring required API firebaseextensions.googleapis.com is enabled... 
+[debug] [2026-06-12T16:14:46.499Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-06-12T16:14:46.499Z] > authorizing via signed-in user (adlercoelhosantos12@gmail.com)
+[debug] [2026-06-12T16:14:46.499Z] [iam] checking project meu-cofrin for permissions ["firebase.projects.get","firebaseextensions.instances.list"]
+[debug] [2026-06-12T16:14:46.499Z] Checked if tokens are valid: true, expires at: 1781284421343
+[debug] [2026-06-12T16:14:46.499Z] Checked if tokens are valid: true, expires at: 1781284421343
+[debug] [2026-06-12T16:14:46.499Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/meu-cofrin:testIamPermissions [none]
+[debug] [2026-06-12T16:14:46.500Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/meu-cofrin:testIamPermissions  x-goog-user-project=meu-cofrin
+[debug] [2026-06-12T16:14:46.500Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/meu-cofrin:testIamPermissions {"permissions":["firebase.projects.get","firebaseextensions.instances.list"]}
