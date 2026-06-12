@@ -1,15 +1,10 @@
 import { onSchedule } from "firebase-functions/v2/scheduler";
 import * as admin from "firebase-admin";
 import * as logger from "firebase-functions/logger";
-import { defineSecret } from "firebase-functions/params";
-import * as sgMail from "@sendgrid/mail";
-
-const sendgridApiKey = defineSecret("SENDGRID_MEU_COFRIN");
 
 export const notificarContasVencendo = onSchedule({
   schedule: "0 11 * * *",
   timeZone: "America/Sao_Paulo",
-  secrets: [sendgridApiKey],
 }, async (event: any) => {
   const db = admin.firestore();
 
@@ -39,10 +34,6 @@ export const notificarContasVencendo = onSchedule({
     }
 
     const mensagens = new Array();
-    const emails = new Array();
-
-    // Configura a API Key do SendGrid usando o Secret
-    sgMail.setApiKey(sendgridApiKey.value());
 
     for (const doc of snapshot.docs) {
       const conta = doc.data();
@@ -60,45 +51,18 @@ export const notificarContasVencendo = onSchedule({
 
       const userData = userSnap.data();
       const fcmTokens = userData?.fcmTokens || []; // Assumindo que salvaremos os tokens em um array
-      const emailUsuario = userData?.email;
 
-      if (fcmTokens.length === 0 && !emailUsuario) continue;
+      if (fcmTokens.length === 0) continue;
 
       // Criar uma notificação para cada token deste usuário
-      if (fcmTokens.length > 0) {
-        for (const token of fcmTokens) {
-          mensagens.push({
-            notification: {
-              title: "Conta vencendo amanhã! 🚨",
-              body: `Lembrete: Sua conta de ${nomeConta} no valor de R$ ${valor} vence amanhã.`,
-            },
-            token: token,
-          });
-        }
-      }
-
-      // Adicionar notificação por E-mail (se houver e-mail)
-      if (emailUsuario) {
-        emails.push({
-          to: 'adlercoelhosantos12@gmail.com',
-          from: 'meucofrinnoreply@gmail.com',
-          subject: "Conta vencendo amanhã! 🚨",
-          text: `Olá! Lembrete: Sua conta de ${nomeConta} no valor de R$ ${valor} vence amanhã. Não se esqueça de pagar para evitar juros.`,
-          html: `<p>Olá!</p><p>Lembrete: Sua conta de <strong>${nomeConta}</strong> no valor de <strong>R$ ${valor}</strong> vence amanhã.</p><p>Não se esqueça de pagar para evitar juros.</p>`,
+      for (const token of fcmTokens) {
+        mensagens.push({
+          notification: {
+            title: "Conta vencendo amanhã! 🚨",
+            body: `Lembrete: Sua conta de ${nomeConta} no valor de R$ ${valor} vence amanhã.`,
+          },
+          token: token,
         });
-      }
-    }
-
-    // Disparar e-mails via SendGrid
-    if (emails.length > 0) {
-      try {
-        await sgMail.send(emails);
-        logger.info(`E-mails enviados com sucesso para ${emails.length} destinatários.`);
-      } catch (error: any) {
-        logger.error("Erro ao enviar e-mails via SendGrid:", error);
-        if (error.response) {
-          logger.error("Detalhes do erro do SendGrid:", error.response.body);
-        }
       }
     }
 
