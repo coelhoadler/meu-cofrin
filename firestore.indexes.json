@@ -15,6 +15,10 @@
         {
           "fieldPath": "statusPago",
           "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "tipo",
+          "order": "ASCENDING"
         }
       ]
     }
