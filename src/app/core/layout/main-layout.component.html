@@ -25,6 +25,12 @@
         <span class="text-sm">Dashboard</span>
       </a>
 
+      <a routerLink="/lancamentos" routerLinkActive="bg-[#8b5cf6]/20 text-[#c4b5fd]" (click)="isSidebarOpen.set(false)"
+        class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors">
+        <span class="material-symbols-outlined text-xl">receipt_long</span>
+        <span class="text-sm">Lançamentos</span>
+      </a>
+
       <a routerLink="/nova-conta" routerLinkActive="bg-[#8b5cf6]/20 text-[#c4b5fd]" (click)="isSidebarOpen.set(false)"
         class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors">
         <span class="material-symbols-outlined text-xl">add</span>
