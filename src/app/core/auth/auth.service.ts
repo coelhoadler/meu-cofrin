@@ -32,6 +32,22 @@ export class AuthService {
     }
   }
 
+  async saveUserProfile(user: User) {
+    try {
+      const userDocRef = doc(this.firestore, `users/${user.uid}`);
+      const perfil = {
+        displayName: user.displayName,
+        email: user.email,
+        photoURL: user.photoURL,
+        phoneNumber: user.phoneNumber,
+        providerId: user.providerId
+      };
+      await setDoc(userDocRef, { perfil }, { merge: true });
+    } catch (error) {
+      console.error('Erro ao salvar o perfil do usuário:', error);
+    }
+  }
+
   async getCurrentUserAsync(): Promise<User | null> {
     return firstValueFrom(authState(this.auth));
   }
