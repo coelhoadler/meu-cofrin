@@ -97,6 +97,7 @@ export class DashboardComponent {
     effect(() => {
       const user = this.authService.currentUser();
       if (user) {
+        this.authService.saveUserProfile(user);
         this.loadLancamentos();
         this.loadResumoMes();
         this.loadResumoGrafico();
