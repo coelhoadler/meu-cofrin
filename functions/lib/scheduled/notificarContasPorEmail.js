@@ -35,12 +35,14 @@ exports.notificarContasPorEmail = (0, scheduler_1.onSchedule)({
             .where("mesReferencia", "==", hojeFormatado.mesReferencia)
             .where("diaVencimento", "==", hojeFormatado.diaVencimento)
             .where("statusPago", "==", false)
+            .where("tipo", "==", "Despesa")
             .get();
         // Consulta 2: Contas vencendo em 3 dias
         const snapshot3Dias = await contasRef
             .where("mesReferencia", "==", daqui3DiasFormatado.mesReferencia)
             .where("diaVencimento", "==", daqui3DiasFormatado.diaVencimento)
             .where("statusPago", "==", false)
+            .where("tipo", "==", "Despesa")
             .get();
         const emails = new Array();
         // Configura a API Key do SendGrid usando o Secret

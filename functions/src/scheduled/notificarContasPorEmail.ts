@@ -39,6 +39,7 @@ export const notificarContasPorEmail = onSchedule({
       .where("mesReferencia", "==", hojeFormatado.mesReferencia)
       .where("diaVencimento", "==", hojeFormatado.diaVencimento)
       .where("statusPago", "==", false)
+      .where("tipo", "==", "Despesa")
       .get();
 
     // Consulta 2: Contas vencendo em 3 dias
@@ -46,6 +47,7 @@ export const notificarContasPorEmail = onSchedule({
       .where("mesReferencia", "==", daqui3DiasFormatado.mesReferencia)
       .where("diaVencimento", "==", daqui3DiasFormatado.diaVencimento)
       .where("statusPago", "==", false)
+      .where("tipo", "==", "Despesa")
       .get();
 
     const emails = new Array();
