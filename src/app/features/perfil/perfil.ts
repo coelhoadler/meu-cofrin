@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -12,7 +12,7 @@ import { WebauthnService } from '../../core/auth/webauthn.service';
   imports: [FormsModule, RouterModule],
   templateUrl: './perfil.html',
 })
-export class Perfil implements OnInit {
+export class Perfil implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private storage = inject(Storage);
   private webauthnService = inject(WebauthnService);
@@ -28,15 +28,36 @@ export class Perfil implements OnInit {
   biometricsEnabled = signal(false);
   isSendingEmail = signal(false);
 
+  phoneNumber = signal('');
+  verificationCode = signal('');
+  isSendingSms = signal(false);
+  isVerifyingSms = signal(false);
+  showSmsInput = signal(false);
+  recaptchaVerifier: any;
+  confirmationResult: any;
+
   ngOnInit() {
     const currentUser = this.user();
     if (currentUser?.displayName) {
       this.displayName.set(currentUser.displayName);
     }
+    if (currentUser?.phoneNumber) {
+      this.phoneNumber.set(currentUser.phoneNumber);
+    }
 
     const storedBiometrics = localStorage.getItem('biometricsEnabled');
     if (storedBiometrics === 'true') {
       this.biometricsEnabled.set(true);
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.recaptchaVerifier) {
+      try {
+        this.recaptchaVerifier.clear();
+      } catch (e) {
+        console.warn('Erro ao limpar reCAPTCHA', e);
+      }
     }
   }
 
@@ -139,6 +160,56 @@ export class Perfil implements OnInit {
       }
     } finally {
       this.isSendingEmail.set(false);
+    }
+  }
+
+  async sendSmsVerification() {
+    if (!this.phoneNumber().trim()) {
+      this.errorMessage.set('Informe um número de celular válido (ex: +5511999999999).');
+      return;
+    }
+
+    this.isSendingSms.set(true);
+    this.errorMessage.set('');
+    this.successMessage.set('');
+
+    try {
+      if (!this.recaptchaVerifier) {
+        this.recaptchaVerifier = this.authService.setupRecaptcha('recaptcha-container');
+      }
+
+      this.confirmationResult = await this.authService.linkPhoneNumber(this.phoneNumber(), this.recaptchaVerifier);
+      this.showSmsInput.set(true);
+      this.successMessage.set('SMS enviado! Insira o código recebido.');
+    } catch (error: any) {
+      console.error(error);
+      this.errorMessage.set(error.message || 'Erro ao enviar o SMS. Verifique o formato do número (+55...).');
+      // Firebase reCAPTCHA might be expired or failed, but recreating it on the same container causes the 'already rendered' error.
+      // We leave the instance intact so the user can try again.
+    } finally {
+      this.isSendingSms.set(false);
+    }
+  }
+
+  async confirmSmsCode() {
+    if (!this.verificationCode().trim()) {
+      this.errorMessage.set('Informe o código recebido por SMS.');
+      return;
+    }
+
+    this.isVerifyingSms.set(true);
+    this.errorMessage.set('');
+    this.successMessage.set('');
+
+    try {
+      await this.confirmationResult.confirm(this.verificationCode());
+      this.successMessage.set('Celular verificado com sucesso! Notificações por WhatsApp poderão ser habilitadas.');
+      this.showSmsInput.set(false);
+    } catch (error: any) {
+      console.error(error);
+      this.errorMessage.set('Código inválido ou expirado. Tente novamente.');
+    } finally {
+      this.isVerifyingSms.set(false);
     }
   }
 }
