@@ -2,6 +2,7 @@ import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { NgxMaskDirective } from 'ngx-mask';
 import { AuthService } from '../../core/auth/auth.service';
 import { Storage, ref, uploadBytes, getDownloadURL } from '@angular/fire/storage';
 import { WebauthnService } from '../../core/auth/webauthn.service';
@@ -9,7 +10,7 @@ import { WebauthnService } from '../../core/auth/webauthn.service';
 @Component({
   selector: 'app-perfil',
   standalone: true,
-  imports: [FormsModule, RouterModule],
+  imports: [FormsModule, RouterModule, NgxMaskDirective],
   templateUrl: './perfil.html',
 })
 export class Perfil implements OnInit, OnDestroy {
@@ -42,7 +43,8 @@ export class Perfil implements OnInit, OnDestroy {
       this.displayName.set(currentUser.displayName);
     }
     if (currentUser?.phoneNumber) {
-      this.phoneNumber.set(currentUser.phoneNumber);
+      const phone = currentUser.phoneNumber;
+      this.phoneNumber.set(phone.startsWith('+55') ? phone.replace('+55', '') : phone);
     }
 
     const storedBiometrics = localStorage.getItem('biometricsEnabled');
@@ -164,10 +166,13 @@ export class Perfil implements OnInit, OnDestroy {
   }
 
   async sendSmsVerification() {
-    if (!this.phoneNumber().trim()) {
-      this.errorMessage.set('Informe um número de celular válido (ex: +5511999999999).');
+    const rawNumber = this.phoneNumber().replace(/\D/g, '');
+    if (rawNumber.length < 10) {
+      this.errorMessage.set('Informe um número de celular válido com DDD (ex: (11) 99999-9999).');
       return;
     }
+    
+    const fullNumber = `+55${rawNumber}`;
 
     this.isSendingSms.set(true);
     this.errorMessage.set('');
@@ -178,7 +183,7 @@ export class Perfil implements OnInit, OnDestroy {
         this.recaptchaVerifier = this.authService.setupRecaptcha('recaptcha-container');
       }
 
-      this.confirmationResult = await this.authService.linkPhoneNumber(this.phoneNumber(), this.recaptchaVerifier);
+      this.confirmationResult = await this.authService.linkPhoneNumber(fullNumber, this.recaptchaVerifier);
       this.showSmsInput.set(true);
       this.successMessage.set('SMS enviado! Insira o código recebido.');
     } catch (error: any) {
