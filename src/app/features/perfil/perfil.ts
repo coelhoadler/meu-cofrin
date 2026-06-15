@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, signal, OnInit, OnDestroy, effect } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -37,16 +37,22 @@ export class Perfil implements OnInit, OnDestroy {
   recaptchaVerifier: any;
   confirmationResult: any;
 
-  ngOnInit() {
-    const currentUser = this.user();
-    if (currentUser?.displayName) {
-      this.displayName.set(currentUser.displayName);
-    }
-    if (currentUser?.phoneNumber) {
-      const phone = currentUser.phoneNumber;
-      this.phoneNumber.set(phone.startsWith('+55') ? phone.replace('+55', '') : phone);
-    }
+  constructor() {
+    effect(() => {
+      const currentUser = this.user();
+      if (currentUser) {
+        if (currentUser.displayName && !this.displayName()) {
+          this.displayName.set(currentUser.displayName);
+        }
+        if (currentUser.phoneNumber && !this.phoneNumber()) {
+          const phone = currentUser.phoneNumber;
+          this.phoneNumber.set(phone.startsWith('+55') ? phone.replace('+55', '') : phone);
+        }
+      }
+    });
+  }
 
+  ngOnInit() {
     const storedBiometrics = localStorage.getItem('biometricsEnabled');
     if (storedBiometrics === 'true') {
       this.biometricsEnabled.set(true);
