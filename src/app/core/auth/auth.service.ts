@@ -1,5 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { Auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, authState, User, updateProfile, updatePassword, sendEmailVerification, GoogleAuthProvider, signInWithPopup } from '@angular/fire/auth';
+import { Auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, authState, User, updateProfile, updatePassword, sendEmailVerification, GoogleAuthProvider, signInWithPopup, RecaptchaVerifier, linkWithPhoneNumber, ConfirmationResult } from '@angular/fire/auth';
 import { Firestore, doc, setDoc, serverTimestamp } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -120,6 +120,20 @@ export class AuthService {
   async sendVerificationEmail() {
     if (this.auth.currentUser) {
       await sendEmailVerification(this.auth.currentUser);
+    } else {
+      throw new Error('Nenhum usuário autenticado');
+    }
+  }
+
+  setupRecaptcha(containerId: string) {
+    return new RecaptchaVerifier(this.auth, containerId, {
+      size: 'invisible'
+    });
+  }
+
+  async linkPhoneNumber(phoneNumber: string, recaptchaVerifier: RecaptchaVerifier): Promise<ConfirmationResult> {
+    if (this.auth.currentUser) {
+      return await linkWithPhoneNumber(this.auth.currentUser, phoneNumber, recaptchaVerifier);
     } else {
       throw new Error('Nenhum usuário autenticado');
     }
