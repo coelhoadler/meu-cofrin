@@ -1,9 +1,17 @@
-import { APP_INITIALIZER, ApplicationConfig, ErrorHandler, isDevMode, LOCALE_ID, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
+import {
+  APP_INITIALIZER,
+  ApplicationConfig,
+  ErrorHandler,
+  isDevMode,
+  LOCALE_ID,
+  provideBrowserGlobalErrorListeners,
+  provideZonelessChangeDetection,
+} from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter, Router } from '@angular/router';
 import { provideToastr } from 'ngx-toastr';
 
-import { getAnalytics, provideAnalytics } from "@angular/fire/analytics";
+import { getAnalytics, provideAnalytics } from '@angular/fire/analytics';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
@@ -17,7 +25,7 @@ import { provideEnvironmentNgxMask } from 'ngx-mask';
 import { registerLocaleData } from '@angular/common';
 import ptBr from '@angular/common/locales/pt';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
-import * as Sentry from "@sentry/angular";
+import * as Sentry from '@sentry/angular';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { routes } from './app.routes';
 
@@ -37,13 +45,13 @@ export const appConfig: ApplicationConfig = {
     { provide: LOCALE_ID, useValue: 'pt' },
     provideFirebaseApp(() =>
       initializeApp({
-        apiKey: "AIzaSyAPDHqVLWlphds13yTj_YK_P2irI_lVLG0",
-        authDomain: "meu-cofrin.firebaseapp.com",
-        projectId: "meu-cofrin",
-        storageBucket: "meu-cofrin.firebasestorage.app",
-        messagingSenderId: "570567455946",
-        appId: "1:570567455946:web:ea39f614bd1397991f7033",
-        measurementId: "G-QHZ9Q0MRZS"
+        apiKey: 'AIzaSyAPDHqVLWlphds13yTj_YK_P2irI_lVLG0',
+        authDomain: 'meu-cofrin.firebaseapp.com',
+        projectId: 'meu-cofrin',
+        storageBucket: 'meu-cofrin.firebasestorage.app',
+        messagingSenderId: '570567455946',
+        appId: '1:570567455946:web:ea39f614bd1397991f7033',
+        measurementId: 'G-QHZ9Q0MRZS',
       }),
     ),
     provideAuth(() => getAuth()),
@@ -57,7 +65,8 @@ export const appConfig: ApplicationConfig = {
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000',
     }),
-    provideEnvironmentNgxMask(), provideClientHydration(withEventReplay()),
+    provideEnvironmentNgxMask(),
+    provideClientHydration(withEventReplay()),
     provideCharts(withDefaultRegisterables()),
     {
       provide: ErrorHandler,
@@ -69,7 +78,7 @@ export const appConfig: ApplicationConfig = {
     },
     {
       provide: APP_INITIALIZER,
-      useFactory: () => () => { },
+      useFactory: () => () => {},
       deps: [Sentry.TraceService],
       multi: true,
     },
