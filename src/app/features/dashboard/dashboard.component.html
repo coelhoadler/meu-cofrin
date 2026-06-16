@@ -170,9 +170,11 @@
               {{ formatDataVencimento(item) }}
             </td>
             <td class="py-4 text-right font-semibold pr-2"
-              [ngClass]="item.tipo === 'Receita' ? 'text-emerald-600' : 'text-slate-800'">
+              [ngClass]="item.tipo === 'Receita' ? 'text-emerald-600' : 'text-red-500'">
               @if (item.tipo === 'Receita') {
               <span>+ </span>
+              } @else {
+              <span>- </span>
               }
               {{ item.valor }}
             </td>

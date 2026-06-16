@@ -40,7 +40,7 @@ export class CategoriaService {
     }
 
     const categoriasRef = collection(this.firestore, `users/${user.uid}/categorias`);
-    const q = query(categoriasRef, orderBy('createdAt', 'desc'));
+    const q = query(categoriasRef, orderBy('tipo', 'desc'));
 
     const querySnapshot = await getDocs(q);
     return querySnapshot.docs.map(doc => {
