@@ -36,7 +36,8 @@
       <div class="mt-auto">
         <p class="text-slate-400 dark:text-slate-500 text-[11px] font-medium">Sem alteração</p>
       </div>
-      <div class="absolute top-5 right-5 w-8 h-8 bg-emerald-50 dark:bg-emerald-500/10 rounded-lg flex items-center justify-center">
+      <div
+        class="absolute top-5 right-5 w-8 h-8 bg-emerald-50 dark:bg-emerald-500/10 rounded-lg flex items-center justify-center">
         <span class="material-symbols-outlined text-emerald-500 dark:text-emerald-400 text-base">trending_up</span>
       </div>
     </div>
@@ -51,7 +52,8 @@
       <div class="mt-auto">
         <p class="text-slate-400 dark:text-slate-500 text-[11px] font-medium">Sem alteração</p>
       </div>
-      <div class="absolute top-5 right-5 w-8 h-8 bg-rose-50 dark:bg-rose-500/10 rounded-lg flex items-center justify-center">
+      <div
+        class="absolute top-5 right-5 w-8 h-8 bg-rose-50 dark:bg-rose-500/10 rounded-lg flex items-center justify-center">
         <span class="material-symbols-outlined text-rose-500 dark:text-rose-400 text-base">trending_down</span>
       </div>
     </div>
@@ -61,7 +63,8 @@
   @if (lancamentos().length > 0) {
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Line Chart Placeholder (Spans 2 cols on lg) -->
-    <div class="bg-white dark:bg-[#1a112c] rounded-[20px] p-3 shadow-sm border border-slate-200/80 dark:border-slate-800/50 lg:col-span-2 flex flex-col h-[320px] transition-colors duration-300">
+    <div
+      class="bg-white dark:bg-[#1a112c] rounded-[20px] p-3 shadow-sm border border-slate-200/80 dark:border-slate-800/50 lg:col-span-2 flex flex-col h-[320px] transition-colors duration-300">
       <div class="mb-4">
         <h3 class="text-[15px] font-bold text-slate-800 dark:text-white">Últimos 6 meses</h3>
         <p class="text-[13px] text-slate-500 dark:text-slate-400">Receitas vs Despesas</p>
@@ -87,7 +90,8 @@
       </div>
     </div>
     <!-- Pie Chart Placeholder -->
-    <div class="bg-white dark:bg-[#1a112c] rounded-[20px] p-3 shadow-sm border border-slate-200/80 dark:border-slate-800/50 flex flex-col h-[320px] transition-colors duration-300">
+    <div
+      class="bg-white dark:bg-[#1a112c] rounded-[20px] p-3 shadow-sm border border-slate-200/80 dark:border-slate-800/50 flex flex-col h-[320px] transition-colors duration-300">
       <div>
         <h3 class="text-[15px] font-bold text-slate-800 dark:text-white">Distribuição do mês</h3>
         <p class="text-[13px] text-slate-500 dark:text-slate-400">Composição atual</p>
@@ -102,10 +106,12 @@
   }
 
   <!-- Row 3: Lançamentos Recentes -->
-  <div class="bg-white dark:bg-[#1a112c] rounded-[20px] p-3 shadow-sm border border-slate-200/80 dark:border-slate-800/50 min-h-[280px] flex flex-col transition-colors duration-300">
+  <div
+    class="bg-white dark:bg-[#1a112c] rounded-[20px] p-3 shadow-sm border border-slate-200/80 dark:border-slate-800/50 min-h-[280px] flex flex-col transition-colors duration-300">
     <div class="flex items-center justify-between mb-8">
       <h3 class="text-[15px] font-bold text-slate-800 dark:text-white">Lançamentos recentes</h3>
-      <span class="text-xs font-medium text-slate-400 dark:text-slate-500">{{ lancamentos().length }} conta(s) no total</span>
+      <span class="text-xs font-medium text-slate-400 dark:text-slate-500">{{ lancamentos().length }} conta(s) no
+        total</span>
     </div>
 
     <!-- Loading State -->
@@ -131,7 +137,8 @@
     <div class="flex-1 overflow-x-auto">
       <table class="w-full text-left border-collapse">
         <thead>
-          <tr class="border-b border-slate-200/80 dark:border-slate-800/50 text-xs text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+          <tr
+            class="border-b border-slate-200/80 dark:border-slate-800/50 text-xs text-slate-400 dark:text-slate-500 uppercase tracking-wider">
             <th class="pb-3 font-medium w-8"></th>
             <th class="pb-3 font-medium">Conta</th>
             <th class="pb-3 font-medium">Dia Venc.</th>
@@ -153,7 +160,9 @@
             <td class="py-4">
               <div class="flex flex-col">
                 <div class="flex items-center gap-2">
-                  <span class="font-semibold text-slate-800 dark:text-slate-200 dark:group-hover:text-white dark:group-hover:font-bold transition-all" [ngClass]="{ 'line-through': item.statusPago }">{{
+                  <span
+                    class="font-semibold text-slate-800 dark:text-slate-200 dark:group-hover:text-white dark:group-hover:font-bold transition-all"
+                    [ngClass]="{ 'line-through': item.statusPago }">{{
                     item.nome }}</span>
                   @if (item.reciboUrl) {
                   <span class="material-symbols-outlined text-slate-400 text-base" title="Possui imagem">image</span>
@@ -246,14 +255,16 @@
       <div class="p-3 flex flex-col gap-1">
         <a [routerLink]="['/editar-conta', conta.id]" (click)="closeModal()"
           class="flex items-center gap-4 w-full p-4 text-left text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-xl transition-colors font-semibold">
-          <div class="w-10 h-10 rounded-full bg-[#421b7b]/10 dark:bg-[#421b7b]/20 flex items-center justify-center text-[#421b7b] dark:text-[#a78bfa]">
+          <div
+            class="w-10 h-10 rounded-full bg-[#421b7b]/10 dark:bg-[#421b7b]/20 flex items-center justify-center text-[#421b7b] dark:text-[#a78bfa]">
             <span class="material-symbols-outlined">edit</span>
           </div>
           Editar conta
         </a>
         <button (click)="deleteLancamento(conta.id)"
           class="flex items-center gap-4 w-full p-4 text-left text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-xl transition-colors font-semibold">
-          <div class="w-10 h-10 rounded-full bg-rose-50 dark:bg-rose-500/10 flex items-center justify-center text-rose-500 dark:text-rose-400">
+          <div
+            class="w-10 h-10 rounded-full bg-rose-50 dark:bg-rose-500/10 flex items-center justify-center text-rose-500 dark:text-rose-400">
             <span class="material-symbols-outlined">delete</span>
           </div>
           Excluir conta

@@ -1,24 +1,25 @@
-import { ApplicationConfig, LOCALE_ID, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection, isDevMode } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { APP_INITIALIZER, ApplicationConfig, ErrorHandler, isDevMode, LOCALE_ID, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideRouter, Router } from '@angular/router';
 import { provideToastr } from 'ngx-toastr';
 
+import { getAnalytics, provideAnalytics } from "@angular/fire/analytics";
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
-import { getStorage, provideStorage } from '@angular/fire/storage';
-import { getMessaging, provideMessaging } from '@angular/fire/messaging';
 import { getFunctions, provideFunctions } from '@angular/fire/functions';
+import { getMessaging, provideMessaging } from '@angular/fire/messaging';
 import { getPerformance, providePerformance } from '@angular/fire/performance';
-import { getAnalytics, provideAnalytics } from "@angular/fire/analytics";
+import { getStorage, provideStorage } from '@angular/fire/storage';
 import { provideServiceWorker } from '@angular/service-worker';
 import { provideEnvironmentNgxMask } from 'ngx-mask';
 
 import { registerLocaleData } from '@angular/common';
 import ptBr from '@angular/common/locales/pt';
-import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import * as Sentry from "@sentry/angular";
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
+import { routes } from './app.routes';
 
 registerLocaleData(ptBr);
 
@@ -58,5 +59,19 @@ export const appConfig: ApplicationConfig = {
     }),
     provideEnvironmentNgxMask(), provideClientHydration(withEventReplay()),
     provideCharts(withDefaultRegisterables()),
+    {
+      provide: ErrorHandler,
+      useValue: Sentry.createErrorHandler(),
+    },
+    {
+      provide: Sentry.TraceService,
+      deps: [Router],
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: () => () => { },
+      deps: [Sentry.TraceService],
+      multi: true,
+    },
   ],
 };
