@@ -1,15 +1,15 @@
 <div class="max-w-3xl mx-auto py-4">
   <a routerLink="/dashboard"
-    class="inline-flex items-center gap-2 text-slate-500 hover:text-slate-800 transition-colors text-sm font-medium mb-6">
+    class="inline-flex items-center gap-2 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors text-sm font-medium mb-6">
     <span class="material-symbols-outlined text-base">arrow_back</span>
     Voltar
   </a>
 
   <div class="mb-8">
-    <h2 class="text-[32px] font-bold text-slate-900 tracking-tight leading-tight">
+    <h2 class="text-[32px] font-bold text-slate-900 dark:text-white tracking-tight leading-tight">
       {{ isEditMode() ? 'Editar conta' : 'Nova conta' }}
     </h2>
-    <p class="text-slate-500 text-[15px] mt-1">
+    <p class="text-slate-500 dark:text-slate-400 text-[15px] mt-1">
       {{
       isEditMode()
       ? 'Atualize os dados da sua conta.'
@@ -19,15 +19,15 @@
   </div>
 
   <!-- Form Card -->
-  <div class="bg-white rounded-[20px] shadow-sm border border-slate-200/80 p-8">
+  <div class="bg-white dark:bg-[#1a112c] rounded-[20px] shadow-sm border border-slate-200/80 dark:border-slate-800/50 p-8 transition-colors duration-300">
     <form [formGroup]="contaForm" (ngSubmit)="onSubmit()" class="space-y-6">
       <!-- Nome -->
       <div>
-        <label for="nome" class="block text-sm font-semibold text-slate-700 mb-1.5">
+        <label for="nome" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
           Nome <span class="text-red-500">*</span>
         </label>
         <input id="nome" type="text" formControlName="nome" placeholder="Ex: Aluguel, Salário..."
-          class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/20 focus:border-[#421b7b] transition-all text-sm" />
+          class="w-full px-4 py-2.5 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/50 focus:border-[#421b7b] transition-all text-sm" />
         @if (contaForm.get('nome')?.touched && contaForm.get('nome')?.invalid) {
         <div class="text-red-500 text-xs mt-1 font-medium">O nome é obrigatório.</div>
         }
@@ -35,19 +35,19 @@
 
       <!-- Descrição -->
       <div>
-        <label for="descricao" class="block text-sm font-semibold text-slate-700 mb-1.5">Descrição</label>
+        <label for="descricao" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Descrição</label>
         <textarea id="descricao" formControlName="descricao" rows="3" placeholder="Detalhes sobre a conta"
-          class="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/20 focus:border-[#421b7b] transition-all text-sm resize-none"></textarea>
+          class="w-full px-4 py-3 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/50 focus:border-[#421b7b] transition-all text-sm resize-none"></textarea>
       </div>
 
       <!-- Row: Categoria, Mês de Referência -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label for="categoriaId" class="block text-sm font-semibold text-slate-700 mb-1.5">
+          <label for="categoriaId" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
             Categoria <span class="text-red-500">*</span>
           </label>
           <select id="categoriaId" formControlName="categoriaId"
-            class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/20 focus:border-[#421b7b] transition-all text-sm appearance-none">
+            class="w-full px-4 py-2.5 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#421b7b]/50 focus:border-[#421b7b] transition-all text-sm appearance-none">
             <option value="" disabled selected>Selecione uma categoria</option>
             @for (cat of categorias(); track cat) {
             <option [value]="cat.id">{{ cat.nome }} ({{ cat.tipo }})</option>
@@ -65,11 +65,11 @@
         </div>
 
         <div>
-          <label for="mesReferencia" class="block text-sm font-semibold text-slate-700 mb-1.5">
+          <label for="mesReferencia" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
             Mês de referência <span class="text-red-500">*</span>
           </label>
           <input id="mesReferencia" type="month" formControlName="mesReferencia"
-            class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/20 focus:border-[#421b7b] transition-all text-sm" />
+            class="w-full px-4 py-2.5 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#421b7b]/50 focus:border-[#421b7b] transition-all text-sm" />
           @if (contaForm.get('mesReferencia')?.touched && contaForm.get('mesReferencia')?.invalid) {
           <div class="text-red-500 text-xs mt-1 font-medium">Obrigatório.</div>
           }
@@ -79,11 +79,11 @@
       <!-- Row: Vencimento, Data Pagamento -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label for="diaVencimento" class="block text-sm font-semibold text-slate-700 mb-1.5">
+          <label for="diaVencimento" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
             Dia do vencimento <span class="text-red-500">*</span>
           </label>
           <input id="diaVencimento" type="number" formControlName="diaVencimento" placeholder="1-31" min="1" max="31"
-            class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/20 focus:border-[#421b7b] transition-all text-sm" />
+            class="w-full px-4 py-2.5 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/50 focus:border-[#421b7b] transition-all text-sm" />
           @if (contaForm.get('diaVencimento')?.touched && contaForm.get('diaVencimento')?.invalid) {
           <div class="text-red-500 text-xs mt-1 font-medium">Insira um dia válido (1-31).</div>
           }
@@ -91,23 +91,23 @@
 
         @if (contaForm.get('tipo')?.value === 'Despesa') {
         <div>
-          <label for="dataPagamento" class="block text-sm font-semibold text-slate-700 mb-1.5">
+          <label for="dataPagamento" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
             Dia que foi paga
           </label>
           <input id="dataPagamento" type="date" formControlName="dataPagamento"
-            class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/20 focus:border-[#421b7b] transition-all text-sm disabled:bg-slate-100 disabled:opacity-60" />
+            class="w-full px-4 py-2.5 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#421b7b]/50 focus:border-[#421b7b] transition-all text-sm disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:opacity-60" />
         </div>
         }
       </div>
 
       <!-- Valor -->
       <div>
-        <label for="valor" class="block text-sm font-semibold text-slate-700 mb-1.5">
+        <label for="valor" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
           Valor (R$) <span class="text-red-500">*</span>
         </label>
         <input id="valor" type="text" formControlName="valor" placeholder="0,00" mask="separator.2"
           thousandSeparator="." decimalMarker="," prefix="R$ " [dropSpecialCharacters]="false"
-          class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/20 focus:border-[#421b7b] transition-all text-sm font-medium" />
+          class="w-full px-4 py-2.5 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/50 focus:border-[#421b7b] transition-all text-sm font-medium" />
         @if (contaForm.get('valor')?.touched && contaForm.get('valor')?.invalid) {
         <div class="text-red-500 text-xs mt-1 font-medium">O valor é obrigatório.</div>
         }
@@ -116,36 +116,36 @@
       <!-- Conta já foi paga (Checkbox block) -->
       <div>
         <label
-          class="flex items-center gap-3 cursor-pointer w-full px-4 py-3.5 bg-white border border-slate-200 rounded-xl transition-all hover:border-[#421b7b]/50">
+          class="flex items-center gap-3 cursor-pointer w-full px-4 py-3.5 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl transition-all hover:border-[#421b7b]/50 dark:hover:border-[#421b7b]/50">
           <input type="checkbox" formControlName="statusPago"
             class="w-5 h-5 rounded-full border-slate-300 text-[#421b7b] focus:ring-[#421b7b] cursor-pointer" />
-          <span class="text-sm font-semibold text-slate-800">Conta já foi paga</span>
+          <span class="text-sm font-semibold text-slate-800 dark:text-slate-200">Conta já foi paga</span>
         </label>
       </div>
 
       <!-- Recibo -->
       <div>
-        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Recibo</label>
+        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Recibo</label>
 
         <!-- Preview section Se houver arquivo existente ou selecionado -->
         @if (existingReciboUrl() || selectedFile()) {
-        <div class="mb-4 p-4 border border-slate-200 rounded-xl bg-slate-50 flex flex-col gap-4">
+        <div class="mb-4 p-4 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-800/30 flex flex-col gap-4">
           <!-- Se for arquivo existente -->
           @if (existingReciboUrl() && !selectedFile()) {
           <div class="flex flex-col items-center gap-4 w-full">
             <div
-              class="relative w-full flex justify-center bg-slate-100 rounded-lg p-2 border border-slate-200 overflow-hidden">
+              class="relative w-full flex justify-center bg-slate-100 dark:bg-slate-800/50 rounded-lg p-2 border border-slate-200 dark:border-slate-700 overflow-hidden">
               <img [src]="existingReciboUrl()" alt="Recibo" class="max-h-64 object-contain rounded"
                 onerror="this.style.display = 'none'" />
             </div>
             <div class="flex gap-3 w-full justify-center">
               <a [href]="existingReciboUrl()" target="_blank"
-                class="px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors flex items-center gap-2">
+                class="px-4 py-2.5 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors flex items-center gap-2">
                 <span class="material-symbols-outlined text-sm">open_in_new</span>
                 Ver arquivo
               </a>
               <button type="button" (click)="onRemoveRecibo()" [disabled]="isLoading()"
-                class="px-4 py-2.5 bg-red-50 text-red-600 rounded-xl text-sm font-semibold hover:bg-red-100 transition-colors flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed">
+                class="px-4 py-2.5 bg-red-50 dark:bg-rose-500/10 text-red-600 dark:text-rose-400 rounded-xl text-sm font-semibold hover:bg-red-100 dark:hover:bg-rose-900/20 transition-colors flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed">
                 <span class="material-symbols-outlined text-sm">delete</span>
                 Remover
               </button>
@@ -155,19 +155,19 @@
           <!-- Se for arquivo recém-selecionado (ainda não salvo) -->
           @if (selectedFile()) {
           <div
-            class="flex items-center justify-between w-full bg-white p-3 rounded-lg border border-slate-200 shadow-sm">
+            class="flex items-center justify-between w-full bg-white dark:bg-[#130c25] p-3 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
             <div class="flex items-center gap-3 overflow-hidden">
-              <span class="material-symbols-outlined text-3xl text-[#421b7b]">description</span>
+              <span class="material-symbols-outlined text-3xl text-[#421b7b] dark:text-[#a78bfa]">description</span>
               <div class="flex flex-col truncate">
-                <span class="text-sm font-semibold text-slate-800 truncate">{{
+                <span class="text-sm font-semibold text-slate-800 dark:text-slate-200 truncate">{{
                   selectedFile()?.name
                   }}</span>
-                <span class="text-xs text-slate-500">{{ selectedFile()?.size! / 1024 / 1024 | number: '1.2-2' }}
+                <span class="text-xs text-slate-500 dark:text-slate-400">{{ selectedFile()?.size! / 1024 / 1024 | number: '1.2-2' }}
                   MB</span>
               </div>
             </div>
             <button type="button" (click)="removeSelectedFile()"
-              class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+              class="p-2 text-red-500 dark:text-rose-400 hover:bg-red-50 dark:hover:bg-rose-900/20 rounded-lg transition-colors">
               <span class="material-symbols-outlined text-xl">delete</span>
             </button>
           </div>
@@ -177,12 +177,12 @@
 
         @if (!existingReciboUrl() && !selectedFile()) {
         <div
-          class="relative w-full border-2 border-dashed border-slate-200 hover:border-[#421b7b]/50 rounded-xl p-6 transition-colors group cursor-pointer bg-slate-50/50 hover:bg-slate-50 flex flex-col items-center justify-center">
+          class="relative w-full border-2 border-dashed border-slate-200 dark:border-slate-700 hover:border-[#421b7b]/50 dark:hover:border-[#421b7b]/50 rounded-xl p-6 transition-colors group cursor-pointer bg-slate-50/50 dark:bg-slate-800/10 hover:bg-slate-50 dark:hover:bg-slate-800/30 flex flex-col items-center justify-center">
           <input type="file" (change)="onFileSelected($event)" accept="image/*,.pdf"
             class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
           <span
-            class="material-symbols-outlined text-2xl text-slate-400 group-hover:text-[#421b7b] mb-2 transition-colors">upload_file</span>
-          <span class="text-[13px] font-medium text-slate-500 group-hover:text-slate-700 transition-colors">
+            class="material-symbols-outlined text-2xl text-slate-400 dark:text-slate-500 group-hover:text-[#421b7b] dark:group-hover:text-[#a78bfa] mb-2 transition-colors">upload_file</span>
+          <span class="text-[13px] font-medium text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors">
             Clique para enviar (PDF, imagem — até 5MB)
           </span>
         </div>
@@ -215,13 +215,13 @@
             {{ isLoading() ? 'Salvando...' : isEditMode() ? 'Atualizar conta' : 'Salvar conta' }}
           </button>
           <a routerLink="/dashboard"
-            class="px-6 py-3 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl text-sm font-semibold transition-colors">
+            class="px-6 py-3 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-xl text-sm font-semibold transition-colors">
             Cancelar
           </a>
         </div>
         @if (isEditMode()) {
         <button type="button" (click)="onDeleteConta()" [disabled]="isLoading()"
-          class="w-full flex items-center justify-center gap-2 py-3 px-4 bg-red-50 text-red-600 rounded-xl text-sm font-semibold hover:bg-red-100 transition-colors disabled:opacity-70 disabled:cursor-not-allowed">
+          class="w-full flex items-center justify-center gap-2 py-3 px-4 bg-red-50 dark:bg-rose-500/10 text-red-600 dark:text-rose-400 rounded-xl text-sm font-semibold hover:bg-red-100 dark:hover:bg-rose-900/20 transition-colors disabled:opacity-70 disabled:cursor-not-allowed">
           <span class="material-symbols-outlined text-sm">delete_forever</span>
           Excluir esta conta
         </button>

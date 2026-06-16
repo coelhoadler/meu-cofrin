@@ -2,8 +2,8 @@
   <!-- Dashboard Header Area -->
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
     <div>
-      <h2 class="text-[28px] font-bold text-slate-900 tracking-tight">{{greetingUser()}}</h2>
-      <p class="text-sm text-slate-500 mt-1 capitalize">{{ currentDate }}</p>
+      <h2 class="text-[28px] font-bold text-slate-900 dark:text-white tracking-tight">{{greetingUser()}}</h2>
+      <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 capitalize">{{ currentDate }}</p>
     </div>
   </div>
 
@@ -28,31 +28,31 @@
 
     <!-- Receitas Card -->
     <div
-      class="bg-white rounded-[20px] p-6 shadow-sm border border-slate-200/80 relative flex flex-col justify-between h-[140px]">
+      class="bg-white dark:bg-[#1a112c] rounded-[20px] p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/50 relative flex flex-col justify-between h-[140px] transition-colors duration-300">
       <div>
-        <p class="text-slate-500 text-sm font-medium mb-1">Receitas</p>
-        <h3 class="text-3xl font-bold text-slate-800 mb-4">{{ totalReceitas() }}</h3>
+        <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mb-1">Receitas</p>
+        <h3 class="text-3xl font-bold text-slate-800 dark:text-white mb-4">{{ totalReceitas() }}</h3>
       </div>
       <div class="mt-auto">
-        <p class="text-slate-400 text-[11px] font-medium">Sem alteração</p>
+        <p class="text-slate-400 dark:text-slate-500 text-[11px] font-medium">Sem alteração</p>
       </div>
-      <div class="absolute top-5 right-5 w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center">
-        <span class="material-symbols-outlined text-emerald-500 text-base">trending_up</span>
+      <div class="absolute top-5 right-5 w-8 h-8 bg-emerald-50 dark:bg-emerald-500/10 rounded-lg flex items-center justify-center">
+        <span class="material-symbols-outlined text-emerald-500 dark:text-emerald-400 text-base">trending_up</span>
       </div>
     </div>
 
     <!-- Despesas Card -->
     <div
-      class="bg-white rounded-[20px] p-6 shadow-sm border border-slate-200/80 relative flex flex-col justify-between h-[140px]">
+      class="bg-white dark:bg-[#1a112c] rounded-[20px] p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/50 relative flex flex-col justify-between h-[140px] transition-colors duration-300">
       <div>
-        <p class="text-slate-500 text-sm font-medium mb-1">Despesas</p>
-        <h3 class="text-3xl font-bold text-slate-800 mb-4">{{ totalDespesas() }}</h3>
+        <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mb-1">Despesas</p>
+        <h3 class="text-3xl font-bold text-slate-800 dark:text-white mb-4">{{ totalDespesas() }}</h3>
       </div>
       <div class="mt-auto">
-        <p class="text-slate-400 text-[11px] font-medium">Sem alteração</p>
+        <p class="text-slate-400 dark:text-slate-500 text-[11px] font-medium">Sem alteração</p>
       </div>
-      <div class="absolute top-5 right-5 w-8 h-8 bg-rose-50 rounded-lg flex items-center justify-center">
-        <span class="material-symbols-outlined text-rose-500 text-base">trending_down</span>
+      <div class="absolute top-5 right-5 w-8 h-8 bg-rose-50 dark:bg-rose-500/10 rounded-lg flex items-center justify-center">
+        <span class="material-symbols-outlined text-rose-500 dark:text-rose-400 text-base">trending_down</span>
       </div>
     </div>
   </div>
@@ -61,10 +61,10 @@
   @if (lancamentos().length > 0) {
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Line Chart Placeholder (Spans 2 cols on lg) -->
-    <div class="bg-white rounded-[20px] p-3 shadow-sm border border-slate-200/80 lg:col-span-2 flex flex-col h-[320px]">
+    <div class="bg-white dark:bg-[#1a112c] rounded-[20px] p-3 shadow-sm border border-slate-200/80 dark:border-slate-800/50 lg:col-span-2 flex flex-col h-[320px] transition-colors duration-300">
       <div class="mb-4">
-        <h3 class="text-[15px] font-bold text-slate-800">Últimos 6 meses</h3>
-        <p class="text-[13px] text-slate-500">Receitas vs Despesas</p>
+        <h3 class="text-[15px] font-bold text-slate-800 dark:text-white">Últimos 6 meses</h3>
+        <p class="text-[13px] text-slate-500 dark:text-slate-400">Receitas vs Despesas</p>
       </div>
       <!-- Chart Area -->
       <div class="flex-1 relative w-full h-full min-h-[200px]">
@@ -87,10 +87,10 @@
       </div>
     </div>
     <!-- Pie Chart Placeholder -->
-    <div class="bg-white rounded-[20px] p-3 shadow-sm border border-slate-200/80 flex flex-col h-[320px]">
+    <div class="bg-white dark:bg-[#1a112c] rounded-[20px] p-3 shadow-sm border border-slate-200/80 dark:border-slate-800/50 flex flex-col h-[320px] transition-colors duration-300">
       <div>
-        <h3 class="text-[15px] font-bold text-slate-800">Distribuição do mês</h3>
-        <p class="text-[13px] text-slate-500">Composição atual</p>
+        <h3 class="text-[15px] font-bold text-slate-800 dark:text-white">Distribuição do mês</h3>
+        <p class="text-[13px] text-slate-500 dark:text-slate-400">Composição atual</p>
       </div>
       <!-- Chart Area -->
       <div class="flex-1 relative mt-4 min-h-[200px]">
@@ -102,10 +102,10 @@
   }
 
   <!-- Row 3: Lançamentos Recentes -->
-  <div class="bg-white rounded-[20px] p-3 shadow-sm border border-slate-200/80 min-h-[280px] flex flex-col">
+  <div class="bg-white dark:bg-[#1a112c] rounded-[20px] p-3 shadow-sm border border-slate-200/80 dark:border-slate-800/50 min-h-[280px] flex flex-col transition-colors duration-300">
     <div class="flex items-center justify-between mb-8">
-      <h3 class="text-[15px] font-bold text-slate-800">Lançamentos recentes</h3>
-      <span class="text-xs font-medium text-slate-400">{{ lancamentos().length }} conta(s) no total</span>
+      <h3 class="text-[15px] font-bold text-slate-800 dark:text-white">Lançamentos recentes</h3>
+      <span class="text-xs font-medium text-slate-400 dark:text-slate-500">{{ lancamentos().length }} conta(s) no total</span>
     </div>
 
     <!-- Loading State -->
@@ -131,7 +131,7 @@
     <div class="flex-1 overflow-x-auto">
       <table class="w-full text-left border-collapse">
         <thead>
-          <tr class="border-b border-slate-200/80 text-xs text-slate-400 uppercase tracking-wider">
+          <tr class="border-b border-slate-200/80 dark:border-slate-800/50 text-xs text-slate-400 dark:text-slate-500 uppercase tracking-wider">
             <th class="pb-3 font-medium w-8"></th>
             <th class="pb-3 font-medium">Conta</th>
             <th class="pb-3 font-medium">Dia Venc.</th>
@@ -141,7 +141,7 @@
         <tbody class="text-sm">
           @for (item of lancamentos(); track item.id) {
           <tr (click)="openModal(item)"
-            class="border-b border-slate-50 last:border-0 transition-colors cursor-pointer active:bg-slate-200"
+            class="border-b border-slate-50 dark:border-slate-800/30 last:border-0 transition-colors cursor-pointer active:bg-slate-200 dark:active:bg-slate-800"
             [ngClass]="getRowClass(item)">
             <td class="py-4 px-2 w-8">
               <div class="w-3 h-3 rounded-full" [ngClass]="{
@@ -153,20 +153,20 @@
             <td class="py-4">
               <div class="flex flex-col">
                 <div class="flex items-center gap-2">
-                  <span class="font-semibold text-slate-800" [ngClass]="{ 'line-through': item.statusPago }">{{
+                  <span class="font-semibold text-slate-800 dark:text-slate-200" [ngClass]="{ 'line-through': item.statusPago }">{{
                     item.nome }}</span>
                   @if (item.reciboUrl) {
                   <span class="material-symbols-outlined text-slate-400 text-base" title="Possui imagem">image</span>
                   }
                 </div>
                 @if (item.categoria) {
-                <span class="text-xs font-medium text-slate-400 mt-0.5">{{
+                <span class="text-xs font-medium text-slate-400 dark:text-slate-500 mt-0.5">{{
                   item.categoria
                   }}</span>
                 }
               </div>
             </td>
-            <td class="py-4 text-slate-500 text-left sm:font-bold">
+            <td class="py-4 text-slate-500 dark:text-slate-400 text-left sm:font-bold">
               {{ formatDataVencimento(item) }}
             </td>
             <td class="py-4 text-right font-semibold pr-2"
@@ -188,7 +188,7 @@
     <!-- Rodapé: Total a Pagar e Legenda -->
     @if (!isLoading() && lancamentos().length > 0) {
     <div
-      class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mt-6 pt-4 border-t border-slate-100">
+      class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mt-6 pt-4 border-t border-slate-100 dark:border-slate-800/50">
       <!-- Total a Pagar -->
       <div>
         <p class="text-[11px] text-slate-500 font-medium uppercase tracking-wider mb-0.5">
@@ -229,31 +229,31 @@
     (click)="closeModal()">
     <!-- Animação do bottom no mobile, center no desktop -->
     <div
-      class="bg-white rounded-t-[28px] sm:rounded-[24px] shadow-xl w-full max-w-sm overflow-hidden transform transition-transform"
+      class="bg-white dark:bg-[#1a112c] rounded-t-[28px] sm:rounded-[24px] shadow-xl w-full max-w-sm overflow-hidden transform transition-transform"
       (click)="$event.stopPropagation()">
-      <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+      <div class="p-6 border-b border-slate-100 dark:border-slate-800/50 flex items-center justify-between">
         <div>
-          <h3 class="text-lg font-bold text-slate-800">{{ conta.nome }}</h3>
-          <p class="text-sm text-slate-500 mt-1">
+          <h3 class="text-lg font-bold text-slate-800 dark:text-white">{{ conta.nome }}</h3>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
             {{ conta.valor }} • Venc: {{ formatDataVencimento(conta) }}
           </p>
         </div>
         <button (click)="closeModal()"
-          class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-700 transition-colors">
+          class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-700 dark:hover:text-slate-200 transition-colors">
           <span class="material-symbols-outlined text-xl">close</span>
         </button>
       </div>
       <div class="p-3 flex flex-col gap-1">
         <a [routerLink]="['/editar-conta', conta.id]" (click)="closeModal()"
-          class="flex items-center gap-4 w-full p-4 text-left text-slate-700 hover:bg-slate-50 rounded-xl transition-colors font-semibold">
-          <div class="w-10 h-10 rounded-full bg-[#421b7b]/10 flex items-center justify-center text-[#421b7b]">
+          class="flex items-center gap-4 w-full p-4 text-left text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-xl transition-colors font-semibold">
+          <div class="w-10 h-10 rounded-full bg-[#421b7b]/10 dark:bg-[#421b7b]/20 flex items-center justify-center text-[#421b7b] dark:text-[#a78bfa]">
             <span class="material-symbols-outlined">edit</span>
           </div>
           Editar conta
         </a>
         <button (click)="deleteLancamento(conta.id)"
-          class="flex items-center gap-4 w-full p-4 text-left text-rose-600 hover:bg-rose-50 rounded-xl transition-colors font-semibold">
-          <div class="w-10 h-10 rounded-full bg-rose-50 flex items-center justify-center text-rose-500">
+          class="flex items-center gap-4 w-full p-4 text-left text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-xl transition-colors font-semibold">
+          <div class="w-10 h-10 rounded-full bg-rose-50 dark:bg-rose-500/10 flex items-center justify-center text-rose-500 dark:text-rose-400">
             <span class="material-symbols-outlined">delete</span>
           </div>
           Excluir conta

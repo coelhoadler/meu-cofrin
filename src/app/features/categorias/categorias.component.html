@@ -1,15 +1,15 @@
 <div class="max-w-3xl mx-auto py-4">
   <a routerLink="/dashboard"
-    class="inline-flex items-center gap-2 text-slate-500 hover:text-slate-800 transition-colors text-sm font-medium mb-6">
+    class="inline-flex items-center gap-2 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors text-sm font-medium mb-6">
     <span class="material-symbols-outlined text-base">arrow_back</span>
     Voltar
   </a>
 
   <div class="mb-8">
-    <h2 class="text-[32px] font-bold text-slate-900 tracking-tight leading-tight">
+    <h2 class="text-[32px] font-bold text-slate-900 dark:text-white tracking-tight leading-tight">
       {{ isEditMode() ? 'Editar Categoria' : 'Nova Categoria' }}
     </h2>
-    <p class="text-slate-500 text-[15px] mt-1">
+    <p class="text-slate-500 dark:text-slate-400 text-[15px] mt-1">
       {{
       isEditMode()
       ? 'Atualize os dados desta categoria.'
@@ -19,15 +19,15 @@
   </div>
 
   <!-- Form Card -->
-  <div class="bg-white rounded-[20px] shadow-sm border border-slate-200/80 p-3 sm:p-8">
+  <div class="bg-white dark:bg-[#1a112c] rounded-[20px] shadow-sm border border-slate-200/80 dark:border-slate-800/50 p-3 sm:p-8 transition-colors duration-300">
     <form [formGroup]="categoriaForm" (ngSubmit)="onSubmit()" class="space-y-6">
       <!-- Nome -->
       <div>
-        <label for="nome" class="block text-sm font-semibold text-slate-700 mb-1.5">
+        <label for="nome" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
           Nome da categoria <span class="text-red-500">*</span>
         </label>
         <input id="nome" type="text" formControlName="nome" placeholder="Ex: Alimentação, Transporte, Salário..."
-          class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/20 focus:border-[#421b7b] transition-all text-sm" />
+          class="w-full px-4 py-2.5 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/50 focus:border-[#421b7b] transition-all text-sm" />
         @if (categoriaForm.get('nome')?.touched && categoriaForm.get('nome')?.invalid) {
         <div class="text-red-500 text-xs mt-1 font-medium">O nome é obrigatório.</div>
         }
@@ -35,20 +35,20 @@
 
       <!-- Descrição -->
       <div>
-        <label for="descricao" class="block text-sm font-semibold text-slate-700 mb-1.5">Descrição</label>
+        <label for="descricao" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Descrição</label>
         <textarea id="descricao" formControlName="descricao" rows="3"
           placeholder="Detalhes sobre a categoria (opcional)"
-          class="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/20 focus:border-[#421b7b] transition-all text-sm resize-none"></textarea>
+          class="w-full px-4 py-3 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/50 focus:border-[#421b7b] transition-all text-sm resize-none"></textarea>
       </div>
 
       <!-- Row: Tipo, Cor -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label for="tipo" class="block text-sm font-semibold text-slate-700 mb-1.5">
+          <label for="tipo" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
             Tipo <span class="text-red-500">*</span>
           </label>
           <select id="tipo" formControlName="tipo"
-            class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/20 focus:border-[#421b7b] transition-all text-sm appearance-none">
+            class="w-full px-4 py-2.5 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#421b7b]/50 focus:border-[#421b7b] transition-all text-sm appearance-none">
             <option value="Despesa">Despesa</option>
             <option value="Receita">Receita</option>
           </select>
@@ -91,13 +91,13 @@
 
           @if (isEditMode()) {
           <button type="button" (click)="cancelEdit()"
-            class="px-6 py-3 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl text-sm font-semibold transition-colors">
+            class="px-6 py-3 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-xl text-sm font-semibold transition-colors">
             Cancelar Edição
           </button>
           }
           @if (!isEditMode()) {
           <a routerLink="/dashboard"
-            class="px-6 py-3 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl text-sm font-semibold transition-colors">
+            class="px-6 py-3 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-xl text-sm font-semibold transition-colors">
             Voltar
           </a>
           }
@@ -107,11 +107,11 @@
   </div>
 
   <!-- Lista de Categorias -->
-  <div class="mt-8 bg-white rounded-[20px] shadow-sm border border-slate-200/80 p-3 sm:p-8">
-    <h3 class="text-xl font-bold text-slate-900 mb-6">Categorias Cadastradas</h3>
+  <div class="mt-8 bg-white dark:bg-[#1a112c] rounded-[20px] shadow-sm border border-slate-200/80 dark:border-slate-800/50 p-3 sm:p-8 transition-colors duration-300">
+    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-6">Categorias Cadastradas</h3>
 
     @if (categorias().length === 0) {
-    <div class="text-center py-8 text-slate-500 text-sm bg-slate-50 rounded-xl border border-dashed border-slate-200">
+    <div class="text-center py-8 text-slate-500 dark:text-slate-400 text-sm bg-slate-50 dark:bg-slate-800/30 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">
       Nenhuma categoria cadastrada ainda.
     </div>
     }
@@ -120,13 +120,13 @@
     <div class="space-y-3">
       @for (cat of categorias(); track cat) {
       <div
-        class="flex flex-col gap-2 p-3 border border-slate-200 rounded-xl hover:border-[#421b7b]/30 transition-colors bg-white">
+        class="flex flex-col gap-2 p-3 border border-slate-200 dark:border-slate-800/50 rounded-xl hover:border-[#421b7b]/30 dark:hover:border-[#421b7b]/50 transition-colors bg-white dark:bg-[#130c25]">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-4">
             <div class="w-3 h-3 shrink-0 rounded-full shadow-sm" [ngStyle]="{ 'background-color': cat.cor || '#1a112c' }">
             </div>
             <div class="flex items-center gap-2">
-              <span class="font-medium text-slate-800 w-[100px] sm:w-[200px] truncate" [title]="cat.nome">{{ cat.nome }}</span>
+              <span class="font-medium text-slate-800 dark:text-slate-200 w-[100px] sm:w-[200px] truncate" [title]="cat.nome">{{ cat.nome }}</span>
               <span class="text-[11px] font-semibold px-2 py-0.5 rounded-md" [ngClass]="
                       cat.tipo === 'Despesa' ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'
                     ">
@@ -136,17 +136,17 @@
           </div>
           <div class="flex items-center gap-2">
             <button type="button" (click)="editCategoria(cat)" title="Editar"
-              class="p-2 text-slate-400 hover:text-[#421b7b] hover:bg-[#421b7b]/5 rounded-lg transition-colors flex items-center justify-center">
+              class="p-2 text-slate-400 dark:text-slate-500 hover:text-[#421b7b] dark:hover:text-[#a78bfa] hover:bg-[#421b7b]/5 dark:hover:bg-[#421b7b]/20 rounded-lg transition-colors flex items-center justify-center">
               <span class="material-symbols-outlined text-[20px]">edit</span>
             </button>
             <button type="button" (click)="deleteCategoria(cat.id!)" title="Excluir"
-              class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors flex items-center justify-center">
+              class="p-2 text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors flex items-center justify-center">
               <span class="material-symbols-outlined text-[20px]">delete</span>
             </button>
           </div>
         </div>
         @if (cat.descricao) {
-        <div class="text-[13px] text-slate-500 pl-7 w-full break-words">
+        <div class="text-[13px] text-slate-500 dark:text-slate-400 pl-7 w-full break-words">
           {{ cat.descricao }}
         </div>
         }
