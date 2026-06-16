@@ -1,29 +1,29 @@
 <div class="max-w-2xl mx-auto space-y-6 pb-12">
   <!-- Header -->
   <div>
-    <button routerLink="/" class="text-slate-500 hover:text-slate-700 flex items-center gap-1 text-sm font-medium mb-6">
+    <button routerLink="/" class="text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 flex items-center gap-1 text-sm font-medium mb-6">
       <span class="material-symbols-outlined text-[18px]">arrow_back</span>
       Voltar
     </button>
-    <h1 class="text-3xl font-bold text-slate-900">Meu perfil</h1>
-    <p class="text-slate-500 text-sm mt-1">Atualize seus dados e segurança.</p>
+    <h1 class="text-3xl font-bold text-slate-900 dark:text-white">Meu perfil</h1>
+    <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Atualize seus dados e segurança.</p>
   </div>
 
   <!-- Card 1: Photo -->
   <div
-    class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col sm:flex-row items-center sm:items-center gap-6">
+    class="bg-white dark:bg-[#1a112c] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800/50 p-6 flex flex-col sm:flex-row items-center sm:items-center gap-6 transition-colors duration-300">
     <div class="relative flex-shrink-0">
       @if (user()?.photoURL) {
       <img [src]="user()?.photoURL" alt="Profile" class="w-36 h-36 rounded-full object-cover">
       } @else {
       <div
-        class="w-36 h-36 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 text-3xl font-bold">
+        class="w-36 h-36 rounded-full bg-slate-200 dark:bg-slate-800/50 flex items-center justify-center text-slate-500 dark:text-slate-400 text-3xl font-bold">
         {{ user()?.displayName?.charAt(0)?.toUpperCase() || user()?.email?.charAt(0)?.toUpperCase() || 'U' }}
       </div>
       }
 
       <button (click)="fileInput.click()"
-        class="absolute bottom-0 right-0 w-8 h-8 bg-white border border-slate-200 rounded-full flex items-center justify-center text-slate-700 hover:bg-slate-50 shadow-sm transition-colors">
+        class="absolute bottom-0 right-0 w-8 h-8 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-full flex items-center justify-center text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 shadow-sm transition-colors">
         <span class="material-symbols-outlined text-[16px]">photo_camera</span>
       </button>
 
@@ -38,7 +38,7 @@
     </div>
 
     <div class="text-center sm:text-left flex flex-col gap-1.5">
-      <h2 class="text-xl font-bold text-slate-900 leading-none">{{ user()?.displayName || 'Usuário sem nome' }}</h2>
+      <h2 class="text-xl font-bold text-slate-900 dark:text-white leading-none">{{ user()?.displayName || 'Usuário sem nome' }}</h2>
     </div>
   </div>
 
@@ -57,17 +57,17 @@
   }
 
   <!-- Card 2: Personal Info -->
-  <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+  <div class="bg-white dark:bg-[#1a112c] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800/50 p-6 transition-colors duration-300">
     <form (ngSubmit)="saveProfile()" class="space-y-6">
 
       <div>
-        <label class="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2">
+        <label class="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
           <span class="material-symbols-outlined text-[18px]">mail</span>
           E-mail
         </label>
         <input type="email" [value]="user()?.email" readonly
-          class="block w-full px-3 py-2 border border-slate-200 rounded-xl text-slate-500 bg-slate-50/50 sm:text-sm">
-        <p class="text-xs text-slate-500 mt-2">O e-mail de acesso não pode ser alterado por aqui.</p>
+          class="block w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-500 dark:text-slate-400 bg-slate-50/50 dark:bg-slate-800/30 sm:text-sm">
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">O e-mail de acesso não pode ser alterado por aqui.</p>
 
         <div class="mt-4">
           @if (user()?.emailVerified) {
@@ -93,13 +93,13 @@
       </div>
 
       <div>
-        <label for="displayName" class="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2">
+        <label for="displayName" class="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
           <span class="material-symbols-outlined text-[18px]">person</span>
           Nome de exibição
         </label>
         <input type="text" id="displayName" name="displayName" [ngModel]="displayName()"
           (ngModelChange)="displayName.set($event)" [value]="user()?.displayName"
-          class="block w-full px-3 py-2 border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#9b87f5] focus:border-[#9b87f5] sm:text-sm transition-colors"
+          class="block w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white bg-white dark:bg-[#130c25] focus:ring-2 focus:ring-[#9b87f5] focus:border-[#9b87f5] sm:text-sm transition-colors"
           placeholder="Seu nome">
       </div>
 
@@ -117,23 +117,23 @@
   </div>
 
   <!-- Card 2.5: Phone Verification -->
-  <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+  <div class="bg-white dark:bg-[#1a112c] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800/50 p-6 transition-colors duration-300">
     <div>
-      <label class="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2">
+      <label class="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
         <span class="material-symbols-outlined text-[18px]">smartphone</span>
         Número de celular (WhatsApp)
       </label>
       <div class="flex gap-0">
-        <span class="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-slate-200 bg-slate-50 text-slate-500 sm:text-sm font-medium">
+        <span class="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/30 text-slate-500 dark:text-slate-400 sm:text-sm font-medium">
           +55
         </span>
         <input type="tel" [ngModel]="phoneNumber()" (ngModelChange)="phoneNumber.set($event)"
           mask="(00) 00000-0000"
           [disabled]="showSmsInput() || !!user()?.phoneNumber"
-          class="block w-full px-3 py-2 border border-slate-200 rounded-r-xl text-slate-900 focus:ring-2 focus:ring-[#9b87f5] focus:border-[#9b87f5] sm:text-sm transition-colors disabled:bg-slate-50 disabled:text-slate-500"
+          class="block w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-r-xl text-slate-900 dark:text-white bg-white dark:bg-[#130c25] focus:ring-2 focus:ring-[#9b87f5] focus:border-[#9b87f5] sm:text-sm transition-colors disabled:bg-slate-50 dark:disabled:bg-slate-800 disabled:text-slate-500"
           placeholder="(11) 99999-9999">
       </div>
-      <p class="text-xs text-slate-500 mt-2">
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">
         Validando o número conseguiremos habilitar o envio de notificações por WhatsApp no futuro.
       </p>
 
@@ -158,11 +158,11 @@
             </button>
           </div>
           } @else {
-          <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
-            <label class="block text-sm font-medium text-slate-700">Código SMS recebido</label>
+          <div class="p-4 bg-slate-50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 rounded-xl space-y-3">
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Código SMS recebido</label>
             <div class="flex gap-2">
               <input type="text" [ngModel]="verificationCode()" (ngModelChange)="verificationCode.set($event)"
-                class="block w-full px-3 py-2 border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#9b87f5] focus:border-[#9b87f5] sm:text-sm transition-colors"
+                class="block w-full px-3 py-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#130c25] rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-[#9b87f5] focus:border-[#9b87f5] sm:text-sm transition-colors"
                 placeholder="Código de 6 dígitos">
               <button type="button" (click)="confirmSmsCode()" [disabled]="isVerifyingSms()"
                 class="px-4 py-2 bg-[#9b87f5] hover:bg-[#8a75e4] text-white font-medium rounded-xl shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#9b87f5] disabled:opacity-70 disabled:cursor-not-allowed whitespace-nowrap text-sm">
@@ -180,14 +180,14 @@
   </div>
 
   <!-- Card 3: Biometrics -->
-  <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex items-center justify-between gap-4">
+  <div class="bg-white dark:bg-[#1a112c] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800/50 p-6 flex items-center justify-between gap-4 transition-colors duration-300">
     <div class="flex items-start gap-4">
-      <div class="w-10 h-10 rounded-full bg-[#f3f0ff] flex items-center justify-center flex-shrink-0 mt-0.5">
+      <div class="w-10 h-10 rounded-full bg-[#f3f0ff] dark:bg-[#9b87f5]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
         <span class="material-symbols-outlined text-[#9b87f5] text-[20px]">fingerprint</span>
       </div>
       <div>
-        <h3 class="text-[15px] font-semibold text-slate-900">Acesso biométrico</h3>
-        <p class="text-[13px] text-slate-500 mt-0.5 max-w-sm">Use a digital, Face ID ou Windows Hello deste dispositivo
+        <h3 class="text-[15px] font-semibold text-slate-900 dark:text-white">Acesso biométrico</h3>
+        <p class="text-[13px] text-slate-500 dark:text-slate-400 mt-0.5 max-w-sm">Use a digital, Face ID ou Windows Hello deste dispositivo
           para entrar mais rápido.</p>
       </div>
     </div>

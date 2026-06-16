@@ -1,6 +1,8 @@
 /* Arquivo base para estilos globais do projeto */
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Manrope:wght@300;400;500;600;700&display=swap');
 @import 'tailwindcss';
+@custom-variant dark (&:is(.dark *));
+
 @import 'material-symbols/outlined';
 @import 'ngx-toastr/toastr';
 
@@ -10,5 +12,5 @@
 
 /* Opcional: Definições globais de corpo (body) */
 body {
-  @apply bg-slate-950 text-slate-100 font-sans antialiased;
+  @apply bg-white text-slate-900 font-sans antialiased dark:bg-[#130c25] dark:text-slate-100;
 }
