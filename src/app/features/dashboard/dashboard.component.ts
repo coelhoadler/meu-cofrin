@@ -270,7 +270,7 @@ export class DashboardComponent {
 
   getRowClass(item: Conta): string {
     if (item.statusPago || item.tipo === 'Receita') {
-      return '';
+      return 'hover:bg-slate-50 dark:hover:bg-slate-800/40';
     }
 
     if (item.mesReferencia && item.diaVencimento) {
@@ -278,14 +278,14 @@ export class DashboardComponent {
 
       if (diffDays <= 0) {
         // this.statusConta.set('vencido');
-        return 'bg-red-200 hover:bg-red-300';
+        return 'bg-red-200 hover:bg-red-300 dark:bg-rose-900/40 dark:hover:bg-rose-900/60';
       } else if (diffDays <= 5) {
         // this.statusConta.set('prestes_vencer');
-        return 'bg-yellow-100 hover:bg-yellow-200';
+        return 'bg-yellow-100 hover:bg-yellow-200 dark:bg-[#7941dc]/20 dark:hover:bg-[#7941dc]/40';
       }
     }
 
-    return 'hover:bg-slate-100';
+    return 'hover:bg-slate-50 dark:hover:bg-slate-800/40';
   }
 
   async deleteLancamento(id: string | undefined) {
