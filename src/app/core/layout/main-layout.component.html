@@ -6,11 +6,11 @@
 
     <!-- Sidebar Header -->
     <div class="p-6 flex items-center gap-3">
-      <div
+      <div [routerLink]="['/dashboard']"
         class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-purple-500/30">
         <span class="material-symbols-outlined text-white text-2xl">savings</span>
       </div>
-      <div>
+      <div [routerLink]="['/dashboard']">
         <h1 class="text-lg font-bold text-white leading-tight">Meu Cofrin</h1>
         <p class="text-[11px] text-slate-400">Finanças pessoais</p>
       </div>
@@ -94,18 +94,20 @@
   }
 
   <!-- Main Content Area -->
-  <main class="flex-1 flex flex-col min-w-0 overflow-hidden h-screen overflow-y-auto bg-slate-50 dark:bg-[#130c25] transition-colors duration-300">
+  <main
+    class="flex-1 flex flex-col min-w-0 overflow-hidden h-screen overflow-y-auto bg-slate-50 dark:bg-[#130c25] transition-colors duration-300">
     <!-- Top Header Mobile Toggle -->
     <header
       class="md:hidden flex items-center justify-between p-4 bg-white dark:bg-[#1a112c] border-b border-slate-200 dark:border-slate-800/50 sticky top-0 z-30 transition-colors duration-300">
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2" [routerLink]="['/dashboard']">
         <div
           class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 via-purple-500 to-fuchsia-500 flex items-center justify-center">
           <span class="material-symbols-outlined text-white text-base">savings</span>
         </div>
         <span class="font-bold text-slate-800 dark:text-white">Meu Cofrin</span>
       </div>
-      <button (click)="toggleSidebar()" class="p-2 -mr-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+      <button (click)="toggleSidebar()"
+        class="p-2 -mr-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
         <span class="material-symbols-outlined text-2xl">menu</span>
       </button>
     </header>
