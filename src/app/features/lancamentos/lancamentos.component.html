@@ -11,7 +11,8 @@
   </div>
 
   <!-- Filtros -->
-  <div class="bg-white dark:bg-[#1a112c] rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800/50 transition-colors duration-300">
+  <div
+    class="bg-white dark:bg-[#1a112c] rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800/50 transition-colors duration-300">
     <div class="flex items-center gap-2 mb-4 text-slate-700 dark:text-slate-300 font-semibold">
       <span class="material-symbols-outlined text-slate-400 dark:text-slate-500">filter_alt</span>
       Filtros
@@ -20,7 +21,8 @@
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
       <!-- Mês -->
       <div>
-        <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Mês</label>
+        <label
+          class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Mês</label>
         <select [ngModel]="mesFiltro()" (ngModelChange)="mesFiltro.set($event); onFiltroMesAnoChange()"
           class="w-full bg-slate-50 dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white text-sm rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition-colors">
           @for (mes of meses; track mes.valor) {
@@ -31,7 +33,8 @@
 
       <!-- Ano -->
       <div>
-        <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Ano</label>
+        <label
+          class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Ano</label>
         <select [ngModel]="anoFiltro()" (ngModelChange)="anoFiltro.set($event); onFiltroMesAnoChange()"
           class="w-full bg-slate-50 dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white text-sm rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition-colors">
           @for (ano of anos; track ano) {
@@ -42,7 +45,8 @@
 
       <!-- Tipo -->
       <div>
-        <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Tipo</label>
+        <label
+          class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Tipo</label>
         <select [ngModel]="tipoFiltro()" (ngModelChange)="tipoFiltro.set($event)"
           class="w-full bg-slate-50 dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white text-sm rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition-colors">
           <option value="Todos">Todos</option>
@@ -53,7 +57,8 @@
 
       <!-- Categoria -->
       <div>
-        <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Categoria</label>
+        <label
+          class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Categoria</label>
         <select [ngModel]="categoriaFiltro()" (ngModelChange)="categoriaFiltro.set($event)"
           class="w-full bg-slate-50 dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white text-sm rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition-colors">
           <option value="Todos">Todas</option>
@@ -75,26 +80,30 @@
   <!-- Resumo -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
     <!-- Receitas -->
-    <div class="bg-white dark:bg-[#1a112c] rounded-2xl p-5 shadow-sm border border-slate-200 dark:border-slate-800/50 flex flex-col justify-center transition-colors duration-300">
+    <div
+      class="bg-white dark:bg-[#1a112c] rounded-2xl p-5 shadow-sm border border-slate-200 dark:border-slate-800/50 flex flex-col justify-center transition-colors duration-300">
       <p class="text-sm text-slate-500 dark:text-slate-400 font-medium mb-1">Receitas</p>
       <p class="text-2xl font-bold text-emerald-500 dark:text-emerald-400">{{ formatarMoeda(totalReceitas()) }}</p>
     </div>
 
     <!-- Despesas -->
-    <div class="bg-white dark:bg-[#1a112c] rounded-2xl p-5 shadow-sm border border-slate-200 dark:border-slate-800/50 flex flex-col justify-center transition-colors duration-300">
+    <div
+      class="bg-white dark:bg-[#1a112c] rounded-2xl p-5 shadow-sm border border-slate-200 dark:border-slate-800/50 flex flex-col justify-center transition-colors duration-300">
       <p class="text-sm text-slate-500 dark:text-slate-400 font-medium mb-1">Despesas</p>
       <p class="text-2xl font-bold text-rose-500 dark:text-rose-400">{{ formatarMoeda(totalDespesas()) }}</p>
     </div>
 
     <!-- Saldo -->
-    <div class="bg-white dark:bg-[#1a112c] rounded-2xl p-5 shadow-sm border border-slate-200 dark:border-slate-800/50 flex flex-col justify-center transition-colors duration-300">
+    <div
+      class="bg-white dark:bg-[#1a112c] rounded-2xl p-5 shadow-sm border border-slate-200 dark:border-slate-800/50 flex flex-col justify-center transition-colors duration-300">
       <p class="text-sm text-slate-500 dark:text-slate-400 font-medium mb-1">Saldo</p>
       <p class="text-2xl font-bold text-slate-800 dark:text-white">{{ formatarMoeda(saldo()) }}</p>
     </div>
   </div>
 
   <!-- Resultados -->
-  <div class="bg-white dark:bg-[#1a112c] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800/50 overflow-hidden transition-colors duration-300">
+  <div
+    class="bg-white dark:bg-[#1a112c] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800/50 overflow-hidden transition-colors duration-300">
     <div class="p-5 border-b border-slate-100 dark:border-slate-800/50 flex items-center justify-between">
       <h2 class="text-lg font-bold text-slate-800 dark:text-white">Resultados</h2>
       <span class="text-sm text-slate-500 dark:text-slate-400">{{ contasFiltradas().length }} lançamento(s)</span>
@@ -103,12 +112,14 @@
     <div class="divide-y divide-slate-100 dark:divide-slate-800/50">
       @if (isLoading()) {
       <div class="p-8 text-center text-slate-500 dark:text-slate-400">
-        <span class="material-symbols-outlined animate-spin text-3xl mb-2 text-indigo-500 dark:text-indigo-400">progress_activity</span>
+        <span
+          class="material-symbols-outlined animate-spin text-3xl mb-2 text-indigo-500 dark:text-indigo-400">progress_activity</span>
         <p>Carregando lançamentos...</p>
       </div>
       } @else if (contasFiltradas().length === 0) {
       <div class="p-8 text-center text-slate-500 dark:text-slate-400">
-        <div class="w-16 h-16 bg-slate-100 dark:bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-3">
+        <div
+          class="w-16 h-16 bg-slate-100 dark:bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-3">
           <span class="material-symbols-outlined text-3xl text-slate-400 dark:text-slate-500">receipt_long</span>
         </div>
         <p class="font-medium text-slate-700 dark:text-slate-300">Nenhum lançamento encontrado.</p>
@@ -116,9 +127,10 @@
       </div>
       } @else {
       @for (conta of contasFiltradas(); track conta.id) {
-      <div class="p-4 sm:p-5 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+      <div
+        class="p-4 sm:p-5 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
         <div class="flex items-center gap-4">
-          <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 hidden sm:flex"
             [ngClass]="conta.tipo === 'Receita' ? 'bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-rose-100 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400'">
             <span class="material-symbols-outlined">
               {{ conta.tipo === 'Receita' ? 'trending_up' : 'trending_down' }}
@@ -126,12 +138,14 @@
           </div>
 
           <div>
-            <p class="font-bold text-slate-800 dark:text-slate-200" [ngClass]="{ 'line-through': conta.statusPago }">{{ conta.nome }}</p>
+            <p class="font-bold text-slate-800 dark:text-slate-200" [ngClass]="{ 'line-through': conta.statusPago }">{{
+              conta.nome }}</p>
             <div class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               <span class="truncate max-w-[120px] sm:max-w-none">{{ conta.categoria || 'Sem categoria' }}</span>
               <span>•</span>
               <span>Vence dia {{ conta.diaVencimento }}</span>
-              <span>•</span>
+            </div>
+            <div class="flex items-center gap-1.5 w-full text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               <span [ngClass]="conta.statusPago ? 'text-emerald-600 font-medium' : 'text-amber-500 font-medium'">
                 {{ conta.statusPago ? 'Pago' : 'Pendente' }}
               </span>
