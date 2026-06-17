@@ -1,4 +1,6 @@
-<div class="min-h-screen bg-slate-50 flex font-sans text-slate-800">
+<div class="min-h-screen bg-slate-50 flex font-sans text-slate-800"
+     (touchstart)="onTouchStart($event)"
+     (touchend)="onTouchEnd($event)">
 
   <!-- Sidebar -->
   <aside [class.translate-x-0]="isSidebarOpen()" [class.-translate-x-full]="!isSidebarOpen()"

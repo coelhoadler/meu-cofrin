@@ -18,8 +18,35 @@ export class MainLayoutComponent {
   isSidebarOpen = signal(false);
   user = this.authService.currentUser;
 
+  private touchStartX = 0;
+  private touchEndX = 0;
+
   toggleSidebar() {
     this.isSidebarOpen.update(v => !v);
+  }
+
+  onTouchStart(event: TouchEvent) {
+    this.touchStartX = event.changedTouches[0].screenX;
+  }
+
+  onTouchEnd(event: TouchEvent) {
+    this.touchEndX = event.changedTouches[0].screenX;
+    this.handleSwipe();
+  }
+
+  private handleSwipe() {
+    const swipeDistance = this.touchEndX - this.touchStartX;
+    
+    // Swipe da esquerda para a direita (abrir menu)
+    // O swipe deve começar próximo à borda esquerda (menos de 60px) para evitar toques acidentais
+    if (swipeDistance > 50 && this.touchStartX < 60 && !this.isSidebarOpen()) {
+      this.isSidebarOpen.set(true);
+    }
+    
+    // Swipe da direita para a esquerda (fechar menu)
+    if (swipeDistance < -50 && this.isSidebarOpen()) {
+      this.isSidebarOpen.set(false);
+    }
   }
 
   async logout() {
