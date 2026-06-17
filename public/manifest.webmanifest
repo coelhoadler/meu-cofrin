@@ -1,6 +1,6 @@
 {
-  "name": "meu-cofrin",
-  "short_name": "meu-cofrin",
+  "name": "Meu Cofrin",
+  "short_name": "Meu Cofrin",
   "display": "standalone",
   "scope": "./",
   "start_url": "./",
