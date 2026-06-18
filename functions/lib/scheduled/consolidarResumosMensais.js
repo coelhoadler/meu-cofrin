@@ -4,6 +4,7 @@ exports.consolidarResumosMensais = void 0;
 const scheduler_1 = require("firebase-functions/v2/scheduler");
 const admin = require("firebase-admin");
 const logger = require("firebase-functions/logger");
+const calcularResumoMensal_1 = require("../utils/calcularResumoMensal");
 exports.consolidarResumosMensais = (0, scheduler_1.onSchedule)({
     schedule: "0 5 * * *",
     timeZone: "America/Sao_Paulo",
@@ -24,38 +25,7 @@ exports.consolidarResumosMensais = (0, scheduler_1.onSchedule)({
         // Processar cada usuário
         for (const userDoc of usersSnapshot.docs) {
             const userId = userDoc.id;
-            const contasSnapshot = await db.collection(`users/${userId}/contas`)
-                .where("mesReferencia", "==", mesReferencia)
-                .get();
-            let totalDespesas = 0;
-            let totalReceitas = 0;
-            for (const contaDoc of contasSnapshot.docs) {
-                const conta = contaDoc.data();
-                if (conta.valor) {
-                    // Converter string "1.500,00" para number 1500.00
-                    // Adicionamos trimming e replace global para cobrir variações de espaçamento
-                    let cleanValue = String(conta.valor).trim().replace(/R\$\s?/g, '');
-                    cleanValue = cleanValue.replace(/\./g, '').replace(',', '.');
-                    const numValue = parseFloat(cleanValue);
-                    if (!isNaN(numValue)) {
-                        if (conta.tipo === 'Despesa') {
-                            totalDespesas += numValue;
-                        }
-                        else if (conta.tipo === 'Receita') {
-                            totalReceitas += numValue;
-                        }
-                    }
-                }
-            }
-            const saldo = totalReceitas - totalDespesas;
-            // Salvar os totais na subcoleção resumosMensais
-            const resumoRef = db.doc(`users/${userId}/resumosMensais/${mesReferencia}`);
-            await resumoRef.set({
-                totalDespesas,
-                totalReceitas,
-                saldo,
-                atualizadoEm: admin.firestore.FieldValue.serverTimestamp()
-            }, { merge: true });
+            await (0, calcularResumoMensal_1.calcularResumoMensal)(db, userId, mesReferencia);
             usersProcessados++;
         }
         logger.info(`Consolidação concluída para o mês ${mesReferencia}. Usuários processados: ${usersProcessados}`);
