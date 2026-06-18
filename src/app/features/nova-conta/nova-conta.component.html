@@ -19,7 +19,8 @@
   </div>
 
   <!-- Form Card -->
-  <div class="bg-white dark:bg-[#1a112c] rounded-[20px] shadow-sm border border-slate-200/80 dark:border-slate-800/50 p-8 transition-colors duration-300">
+  <div
+    class="bg-white dark:bg-[#1a112c] rounded-[20px] shadow-sm border border-slate-200/80 dark:border-slate-800/50 p-8 transition-colors duration-300">
     <form [formGroup]="contaForm" (ngSubmit)="onSubmit()" class="space-y-6">
       <!-- Nome -->
       <div>
@@ -29,13 +30,14 @@
         <input id="nome" type="text" formControlName="nome" placeholder="Ex: Aluguel, Salário..."
           class="w-full px-4 py-2.5 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/50 focus:border-[#421b7b] transition-all text-sm" />
         @if (contaForm.get('nome')?.touched && contaForm.get('nome')?.invalid) {
-        <div class="text-red-500 text-xs mt-1 font-medium">O nome é obrigatório.</div>
+        <div class="text-red-500 text-xs mt-2 font-medium">O nome é obrigatório.</div>
         }
       </div>
 
       <!-- Descrição -->
       <div>
-        <label for="descricao" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Descrição</label>
+        <label for="descricao"
+          class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Descrição</label>
         <textarea id="descricao" formControlName="descricao" rows="3" placeholder="Detalhes sobre a conta"
           class="w-full px-4 py-3 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/50 focus:border-[#421b7b] transition-all text-sm resize-none"></textarea>
       </div>
@@ -53,13 +55,13 @@
             <option [value]="cat.id">{{ cat.nome }} ({{ cat.tipo }})</option>
             }
           </select>
-          @if (contaForm.get('categoriaId')?.touched && contaForm.get('categoriaId')?.invalid) {
-          <div class="mt-1 text-xs">
-            <span class="text-red-500 font-medium">A categoria é obrigatória.</span>
-            @if (categorias().length === 0) {
-            <a routerLink="/categorias" class="text-[#421b7b] font-semibold hover:underline ml-1">Cadastrar
+          @if (contaForm.get('categoriaId')?.invalid && categorias().length === 0) {
+          <div class="mt-2 text-xs">
+            <span class="text-red-500 dark:text-rose-300 font-medium">Cadastre pelo menos 1 categoria.</span>
+            <a routerLink="/categorias"
+              class="text-[#421b7b] dark:text-[#a78bfa] font-semibold hover:underline ml-1">Cadastrar
               categoria</a>
-            }
+
           </div>
           }
         </div>
@@ -71,7 +73,7 @@
           <input id="mesReferencia" type="month" formControlName="mesReferencia"
             class="w-full px-4 py-2.5 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#421b7b]/50 focus:border-[#421b7b] transition-all text-sm" />
           @if (contaForm.get('mesReferencia')?.touched && contaForm.get('mesReferencia')?.invalid) {
-          <div class="text-red-500 text-xs mt-1 font-medium">Obrigatório.</div>
+          <div class="text-red-500 text-xs mt-2 font-medium">Obrigatório.</div>
           }
         </div>
       </div>
@@ -109,7 +111,7 @@
           thousandSeparator="." decimalMarker="," prefix="R$ " [dropSpecialCharacters]="false"
           class="w-full px-4 py-2.5 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/50 focus:border-[#421b7b] transition-all text-sm font-medium" />
         @if (contaForm.get('valor')?.touched && contaForm.get('valor')?.invalid) {
-        <div class="text-red-500 text-xs mt-1 font-medium">O valor é obrigatório.</div>
+        <div class="text-red-500 text-xs mt-2 font-medium">O valor é obrigatório.</div>
         }
       </div>
 
@@ -129,7 +131,8 @@
 
         <!-- Preview section Se houver arquivo existente ou selecionado -->
         @if (existingReciboUrl() || selectedFile()) {
-        <div class="mb-4 p-4 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-800/30 flex flex-col gap-4">
+        <div
+          class="mb-4 p-4 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-800/30 flex flex-col gap-4">
           <!-- Se for arquivo existente -->
           @if (existingReciboUrl() && !selectedFile()) {
           <div class="flex flex-col items-center gap-4 w-full">
@@ -162,7 +165,8 @@
                 <span class="text-sm font-semibold text-slate-800 dark:text-slate-200 truncate">{{
                   selectedFile()?.name
                   }}</span>
-                <span class="text-xs text-slate-500 dark:text-slate-400">{{ selectedFile()?.size! / 1024 / 1024 | number: '1.2-2' }}
+                <span class="text-xs text-slate-500 dark:text-slate-400">{{ selectedFile()?.size! / 1024 / 1024 |
+                  number: '1.2-2' }}
                   MB</span>
               </div>
             </div>
@@ -182,7 +186,8 @@
             class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
           <span
             class="material-symbols-outlined text-2xl text-slate-400 dark:text-slate-500 group-hover:text-[#421b7b] dark:group-hover:text-[#a78bfa] mb-2 transition-colors">upload_file</span>
-          <span class="text-[13px] font-medium text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors">
+          <span
+            class="text-[13px] font-medium text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors">
             Clique para enviar (PDF, imagem — até 5MB)
           </span>
         </div>
