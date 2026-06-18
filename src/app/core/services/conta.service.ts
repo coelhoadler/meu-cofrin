@@ -100,7 +100,7 @@ export class ContaService {
 
     // Calculate date 15 days ago
     const dataLimite = new Date();
-    dataLimite.setDate(dataLimite.getDate() - 15);
+    dataLimite.setDate(dataLimite.getDate() - 30);
 
     const q = query(
       contasRef,
@@ -250,7 +250,7 @@ export class ContaService {
     }
 
     const resumosRef = collection(this.firestore, `users/${user.uid}/resumosMensais`);
-    
+
     // Buscar ordenando pelo ID do documento (que é YYYY-MM) de forma descendente
     const q = query(
       resumosRef,
