@@ -39,7 +39,7 @@ export class DashboardComponent {
     plugins: {
       legend: {
         display: true,
-        position: 'bottom',
+        position: 'left',
         align: 'center',
         labels: {
           usePointStyle: true,
@@ -148,7 +148,7 @@ export class DashboardComponent {
             }
             if (c.tipo === 'Receita') somaReceitas += numValue;
 
-            const label = `${c.tipo} - ${c.categoria || 'Outros'}`;
+            const label = `${c.tipo === 'Receita' ? 'R' : 'D'} - ${c.categoria || 'Outros'}`;
             chartDataMap.set(label, (chartDataMap.get(label) || 0) + numValue);
           }
         }
