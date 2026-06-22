@@ -133,7 +133,8 @@ export class DashboardComponent {
       let somaDespesas = 0;
       let somaReceitas = 0;
       let somaAPagar = 0;
-      const chartDataMap = new Map<string, number>();
+      const chartReceitasMap = new Map<string, number>();
+      const chartDespesasMap = new Map<string, number>();
 
       contasDoMes.forEach(c => {
         if (c.valor) {
@@ -145,17 +146,31 @@ export class DashboardComponent {
               if (!c.statusPago) {
                 somaAPagar += numValue;
               }
+              const label = `D - ${c.categoria || 'Outros'}`;
+              chartDespesasMap.set(label, (chartDespesasMap.get(label) || 0) + numValue);
             }
-            if (c.tipo === 'Receita') somaReceitas += numValue;
-
-            const label = `${c.tipo === 'Receita' ? 'R' : 'D'} - ${c.categoria || 'Outros'}`;
-            chartDataMap.set(label, (chartDataMap.get(label) || 0) + numValue);
+            if (c.tipo === 'Receita') {
+              somaReceitas += numValue;
+              const label = `R - ${c.categoria || 'Outros'}`;
+              chartReceitasMap.set(label, (chartReceitasMap.get(label) || 0) + numValue);
+            }
           }
         }
       });
 
-      const labels = Array.from(chartDataMap.keys());
-      const data = Array.from(chartDataMap.values());
+      // Pegar top 3 de cada
+      const topReceitas = Array.from(chartReceitasMap.entries())
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3);
+      
+      const topDespesas = Array.from(chartDespesasMap.entries())
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3);
+
+      const topData = [...topReceitas, ...topDespesas];
+
+      const labels = topData.map(item => item[0]);
+      const data = topData.map(item => item[1]);
       const colors = [
         '#421b7b', '#10b981', '#f59e0b', '#f43f5e', '#3b82f6',
         '#8b5cf6', '#ec4899', '#14b8a6', '#f97316', '#84cc16'
