@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "deploy": "ng build --configuration production && npx firebase deploy",
     "test": "ng test",
-    "e2e": "playwright test"
+    "e2e": "playwright test --headed"
   },
   "private": true,
   "packageManager": "npm@10.9.2",
