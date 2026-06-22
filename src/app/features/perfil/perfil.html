@@ -1,7 +1,8 @@
 <div class="max-w-2xl mx-auto space-y-6 pb-12">
   <!-- Header -->
   <div>
-    <button routerLink="/" class="text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 flex items-center gap-1 text-sm font-medium mb-6">
+    <button routerLink="/"
+      class="text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 flex items-center gap-1 text-sm font-medium mb-6">
       <span class="material-symbols-outlined text-[18px]">arrow_back</span>
       Voltar
     </button>
@@ -38,7 +39,8 @@
     </div>
 
     <div class="text-center sm:text-left flex flex-col gap-1.5">
-      <h2 class="text-xl font-bold text-slate-900 dark:text-white leading-none">{{ user()?.displayName || 'Usuário sem nome' }}</h2>
+      <h2 class="text-xl font-bold text-slate-900 dark:text-white leading-none">{{ user()?.displayName || 'Usuário sem
+        nome' }}</h2>
     </div>
   </div>
 
@@ -57,7 +59,8 @@
   }
 
   <!-- Card 2: Personal Info -->
-  <div class="bg-white dark:bg-[#1a112c] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800/50 p-6 transition-colors duration-300">
+  <div
+    class="bg-white dark:bg-[#1a112c] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800/50 p-6 transition-colors duration-300">
     <form (ngSubmit)="saveProfile()" class="space-y-6">
 
       <div>
@@ -67,13 +70,15 @@
         </label>
         <input type="email" [value]="user()?.email" readonly
           class="block w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-500 dark:text-slate-400 bg-slate-50/50 dark:bg-slate-800/30 sm:text-sm">
-        <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">O e-mail de acesso não pode ser alterado por aqui.</p>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">O e-mail de acesso não pode ser alterado por aqui.
+        </p>
 
         <div class="mt-4">
           @if (user()?.emailVerified) {
           <div
-            class="p-3 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl text-sm flex items-center gap-2">
-            <span class="material-symbols-outlined text-[18px] text-emerald-500">check_circle</span>
+            class="p-3 bg-emerald-50 border border-emerald-200 text-emerald-500 dark:text-emerald-700 dark:text-emerald-800 rounded-xl text-sm flex items-center gap-2">
+            <span
+              class="material-symbols-outlined text-[18px] text-emerald-500 dark:text-emerald-700">check_circle</span>
             <span>O e-mail foi verificado.</span>
           </div>
           } @else {
@@ -93,7 +98,8 @@
       </div>
 
       <div>
-        <label for="displayName" class="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+        <label for="displayName"
+          class="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
           <span class="material-symbols-outlined text-[18px]">person</span>
           Nome de exibição
         </label>
@@ -117,18 +123,19 @@
   </div>
 
   <!-- Card 2.5: Phone Verification -->
-  <div class="bg-white dark:bg-[#1a112c] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800/50 p-6 transition-colors duration-300">
+  <div
+    class="bg-white dark:bg-[#1a112c] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800/50 p-6 transition-colors duration-300">
     <div>
       <label class="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
         <span class="material-symbols-outlined text-[18px]">smartphone</span>
         Número de celular (WhatsApp)
       </label>
       <div class="flex gap-0">
-        <span class="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/30 text-slate-500 dark:text-slate-400 sm:text-sm font-medium">
+        <span
+          class="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/30 text-slate-500 dark:text-slate-400 sm:text-sm font-medium">
           +55
         </span>
-        <input type="tel" [ngModel]="phoneNumber()" (ngModelChange)="phoneNumber.set($event)"
-          mask="(00) 00000-0000"
+        <input type="tel" [ngModel]="phoneNumber()" (ngModelChange)="phoneNumber.set($event)" mask="(00) 00000-0000"
           [disabled]="showSmsInput() || !!user()?.phoneNumber"
           class="block w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-r-xl text-slate-900 dark:text-white bg-white dark:bg-[#130c25] focus:ring-2 focus:ring-[#9b87f5] focus:border-[#9b87f5] sm:text-sm transition-colors disabled:bg-slate-50 dark:disabled:bg-slate-800 disabled:text-slate-500"
           placeholder="(11) 99999-9999">
@@ -141,53 +148,60 @@
 
       <div class="mt-4">
         @if (user()?.phoneNumber) {
-        <div class="p-3 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl text-sm flex items-center gap-2">
-          <span class="material-symbols-outlined text-[18px] text-emerald-500">check_circle</span>
+        <div
+          class="p-3 bg-emerald-50 border border-emerald-200 text-emerald-500 rounded-xl text-sm flex items-center gap-2 dark:text-emerald-700 dark:text-emerald-800">
+          <span class="material-symbols-outlined text-[18px] text-emerald-500 dark:text-emerald-700">check_circle</span>
           <span>O número foi verificado.</span>
         </div>
         } @else {
-          @if (!showSmsInput()) {
-          <div class="p-3 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl text-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-[18px] text-amber-500">warning</span>
-              <span>O número não foi verificado.</span>
-            </div>
-            <button type="button" (click)="sendSmsVerification()" [disabled]="isSendingSms()"
-              class="px-3 py-1.5 bg-white border border-amber-200 rounded-lg text-xs font-medium text-amber-700 hover:bg-amber-100 hover:text-amber-800 disabled:opacity-50 transition-colors shadow-sm whitespace-nowrap">
-              {{ isSendingSms() ? 'Enviando...' : 'Verificar número' }}
+        @if (!showSmsInput()) {
+        <div
+          class="p-3 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl text-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px] text-amber-500">warning</span>
+            <span>O número não foi verificado.</span>
+          </div>
+          <button type="button" (click)="sendSmsVerification()" [disabled]="isSendingSms()"
+            class="px-3 py-1.5 bg-white border border-amber-200 rounded-lg text-xs font-medium text-amber-700 hover:bg-amber-100 hover:text-amber-800 disabled:opacity-50 transition-colors shadow-sm whitespace-nowrap">
+            {{ isSendingSms() ? 'Enviando...' : 'Verificar número' }}
+          </button>
+        </div>
+        } @else {
+        <div
+          class="p-4 bg-slate-50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 rounded-xl space-y-3">
+          <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Código SMS recebido</label>
+          <div class="flex gap-2">
+            <input type="text" [ngModel]="verificationCode()" (ngModelChange)="verificationCode.set($event)"
+              class="block w-full px-3 py-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#130c25] rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-[#9b87f5] focus:border-[#9b87f5] sm:text-sm transition-colors"
+              placeholder="Código de 6 dígitos">
+            <button type="button" (click)="confirmSmsCode()" [disabled]="isVerifyingSms()"
+              class="px-4 py-2 bg-[#9b87f5] hover:bg-[#8a75e4] text-white font-medium rounded-xl shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#9b87f5] disabled:opacity-70 disabled:cursor-not-allowed whitespace-nowrap text-sm">
+              Confirmar
             </button>
           </div>
-          } @else {
-          <div class="p-4 bg-slate-50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700 rounded-xl space-y-3">
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Código SMS recebido</label>
-            <div class="flex gap-2">
-              <input type="text" [ngModel]="verificationCode()" (ngModelChange)="verificationCode.set($event)"
-                class="block w-full px-3 py-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#130c25] rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-[#9b87f5] focus:border-[#9b87f5] sm:text-sm transition-colors"
-                placeholder="Código de 6 dígitos">
-              <button type="button" (click)="confirmSmsCode()" [disabled]="isVerifyingSms()"
-                class="px-4 py-2 bg-[#9b87f5] hover:bg-[#8a75e4] text-white font-medium rounded-xl shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#9b87f5] disabled:opacity-70 disabled:cursor-not-allowed whitespace-nowrap text-sm">
-                Confirmar
-              </button>
-            </div>
-            <button type="button" (click)="showSmsInput.set(false)" class="text-xs text-[#9b87f5] hover:text-[#8a75e4] font-medium">
-              Voltar e corrigir número
-            </button>
-          </div>
-          }
+          <button type="button" (click)="showSmsInput.set(false)"
+            class="text-xs text-[#9b87f5] hover:text-[#8a75e4] font-medium">
+            Voltar e corrigir número
+          </button>
+        </div>
+        }
         }
       </div>
     </div>
   </div>
 
   <!-- Card 3: Biometrics -->
-  <div class="bg-white dark:bg-[#1a112c] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800/50 p-6 flex items-center justify-between gap-4 transition-colors duration-300">
+  <div
+    class="bg-white dark:bg-[#1a112c] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800/50 p-6 flex items-center justify-between gap-4 transition-colors duration-300">
     <div class="flex items-start gap-4">
-      <div class="w-10 h-10 rounded-full bg-[#f3f0ff] dark:bg-[#9b87f5]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+      <div
+        class="w-10 h-10 rounded-full bg-[#f3f0ff] dark:bg-[#9b87f5]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
         <span class="material-symbols-outlined text-[#9b87f5] text-[20px]">fingerprint</span>
       </div>
       <div>
         <h3 class="text-[15px] font-semibold text-slate-900 dark:text-white">Acesso biométrico</h3>
-        <p class="text-[13px] text-slate-500 dark:text-slate-400 mt-0.5 max-w-sm">Use a digital, Face ID ou Windows Hello deste dispositivo
+        <p class="text-[13px] text-slate-500 dark:text-slate-400 mt-0.5 max-w-sm">Use a digital, Face ID ou Windows
+          Hello deste dispositivo
           para entrar mais rápido.</p>
       </div>
     </div>
