@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { DatePickerModule } from 'primeng/datepicker';
+import { SelectModule } from 'primeng/select';
 import { ContaService, Conta } from '../../core/services/conta.service';
 import { CategoriaService, Categoria } from '../../core/services/categoria.service';
 
 @Component({
   selector: 'app-lancamentos',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, DatePickerModule],
+  imports: [CommonModule, FormsModule, RouterModule, DatePickerModule, SelectModule],
   templateUrl: './lancamentos.component.html',
 })
 export class LancamentosComponent implements OnInit {
@@ -45,6 +46,19 @@ export class LancamentosComponent implements OnInit {
   contas = signal<Conta[]>([]);
   categorias = signal<Categoria[]>([]);
   isLoading = signal<boolean>(false);
+
+  tiposOptions = [
+    { label: 'Todos', value: 'Todos' },
+    { label: 'Receitas', value: 'Receita' },
+    { label: 'Despesas', value: 'Despesa' }
+  ];
+
+  categoriasOptions = computed(() => {
+    return [
+      { label: 'Todas', value: 'Todos' },
+      ...this.categorias().map(c => ({ label: c.nome, value: c.nome }))
+    ];
+  });
 
   // Computeds
   contasFiltradas = computed(() => {
