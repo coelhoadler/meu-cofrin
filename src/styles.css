@@ -14,3 +14,11 @@
 body {
   @apply bg-white text-slate-900 font-sans antialiased dark:bg-[#130c25] dark:text-slate-100;
 }
+
+/* Garante que ícones nativos (como o de calendário) fiquem visíveis no modo escuro */
+.dark input[type="date"],
+.dark input[type="month"],
+.dark input[type="time"],
+.dark input[type="datetime-local"] {
+  color-scheme: dark;
+}
