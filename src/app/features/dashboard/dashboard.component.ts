@@ -53,14 +53,14 @@ export class DashboardComponent {
     }
   };
 
-  pieChartData: ChartConfiguration<'pie'>['data'] = {
+  pieChartData = signal<ChartConfiguration<'pie'>['data']>({
     labels: [],
     datasets: [{
       data: [],
       backgroundColor: [],
       borderWidth: 0
     }]
-  };
+  });
 
   barChartOptions: ChartConfiguration<'bar'>['options'] = {
     responsive: true,
@@ -91,7 +91,10 @@ export class DashboardComponent {
     }
   };
 
-  barChartData: any = {};
+  barChartData = signal<ChartConfiguration<'bar'>['data']>({
+    labels: [],
+    datasets: []
+  });
 
   constructor() {
     effect(() => {
@@ -162,7 +165,7 @@ export class DashboardComponent {
       const topReceitas = Array.from(chartReceitasMap.entries())
         .sort((a, b) => b[1] - a[1])
         .slice(0, 3);
-      
+
       const topDespesas = Array.from(chartDespesasMap.entries())
         .sort((a, b) => b[1] - a[1])
         .slice(0, 3);
@@ -177,7 +180,7 @@ export class DashboardComponent {
       ];
 
       // Update chart with deep copy to trigger change detection in ng2-charts
-      this.pieChartData = {
+      this.pieChartData.set({
         labels: labels,
         datasets: [{
           data: data,
@@ -186,7 +189,7 @@ export class DashboardComponent {
           borderColor: '#ffffff',
           hoverOffset: 4
         }]
-      };
+      });
 
       const saldo = somaReceitas - somaDespesas;
 
@@ -229,7 +232,7 @@ export class DashboardComponent {
         dataSaldos.push(resumo.saldo || 0);
       });
 
-      this.barChartData = {
+      this.barChartData.set({
         labels,
         datasets: [
           {
@@ -256,8 +259,8 @@ export class DashboardComponent {
             fill: false,
             tension: 0.3
           }
-        ]
-      };
+        ] as any
+      });
 
     } catch (error) {
       console.error('Erro ao buscar resumo gráfico:', error);
