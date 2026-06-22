@@ -46,3 +46,10 @@ Thumbs.db
 # Firebase
 .firebase/*
 functions/node_modules
+
+# Playwright
+playwright-report/*
+playwright-video/*
+playwright-trace/*
+playwright-debug.log
+test-results/*
