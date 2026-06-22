@@ -18,6 +18,22 @@
       Filtros
     </div>
 
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+      <!-- Pesquisa por Nome -->
+      <div>
+        <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Nome</label>
+        <input type="text" [ngModel]="nomeFiltro()" (ngModelChange)="nomeFiltro.set($event)" placeholder="Buscar por nome..."
+          class="w-full bg-slate-50 dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white text-sm rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition-colors" />
+      </div>
+
+      <!-- Range de Datas -->
+      <div>
+        <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Período</label>
+        <p-datepicker [ngModel]="dataRangeFiltro()" (ngModelChange)="dataRangeFiltro.set($event)" selectionMode="range" [readonlyInput]="true" placeholder="Selecionar intervalo..." dateFormat="dd/mm/yy"
+          styleClass="w-full" inputStyleClass="w-full bg-slate-50 dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white text-sm rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition-colors"></p-datepicker>
+      </div>
+    </div>
+
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
       <!-- Mês -->
       <div>
