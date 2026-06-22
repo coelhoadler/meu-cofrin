@@ -1,15 +1,18 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NgxMaskDirective } from 'ngx-mask';
 import { Conta, ContaService } from '../../core/services/conta.service';
 import { Categoria, CategoriaService } from '../../core/services/categoria.service';
+import { DatePickerModule } from 'primeng/datepicker';
+import { CheckboxModule } from 'primeng/checkbox';
+import { SelectModule } from 'primeng/select';
 
 @Component({
   selector: 'app-nova-conta',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, RouterLink, NgxMaskDirective],
+  imports: [ReactiveFormsModule, CommonModule, RouterLink, NgxMaskDirective, DatePickerModule, CheckboxModule, SelectModule],
   templateUrl: './nova-conta.component.html'
 })
 export class NovaContaComponent implements OnInit {
@@ -24,10 +27,10 @@ export class NovaContaComponent implements OnInit {
     descricao: [''],
     categoriaId: ['', [Validators.required]],
     tipo: ['Despesa', [Validators.required]],
-    mesReferencia: [new Date().toISOString().slice(0, 7), [Validators.required]],
-    diaVencimento: [1, [Validators.required, Validators.min(1), Validators.max(31)]],
+    mesReferencia: [new Date(), [Validators.required]],
+    diaVencimento: [new Date().getDate(), [Validators.required, Validators.min(1), Validators.max(31)]],
     statusPago: [false],
-    dataPagamento: [{ value: '', disabled: true }],
+    dataPagamento: [{ value: null as any, disabled: true }],
     valor: ['', [Validators.required]]
   });
 
@@ -40,6 +43,10 @@ export class NovaContaComponent implements OnInit {
   existingReciboUrl = signal<string | null>(null);
 
   categorias = signal<Categoria[]>([]);
+  categoriasOptions = computed(() => this.categorias().map(cat => ({
+    ...cat,
+    label: `${cat.nome} (${cat.tipo})`
+  })));
 
   constructor() {
     // Listen to categoriaId to update tipo
@@ -59,7 +66,7 @@ export class NovaContaComponent implements OnInit {
         statusPagoCtrl?.setValue(false, { emitEvent: false });
         dataPagamentoCtrl?.disable({ emitEvent: false });
         dataPagamentoCtrl?.clearValidators();
-        dataPagamentoCtrl?.setValue('', { emitEvent: false });
+        dataPagamentoCtrl?.setValue(null, { emitEvent: false });
       } else {
         if (statusPagoCtrl?.value) {
           dataPagamentoCtrl?.enable({ emitEvent: false });
@@ -83,7 +90,7 @@ export class NovaContaComponent implements OnInit {
       } else {
         dataPagamentoCtrl?.disable();
         dataPagamentoCtrl?.clearValidators();
-        dataPagamentoCtrl?.setValue('');
+        dataPagamentoCtrl?.setValue(null);
       }
       dataPagamentoCtrl?.updateValueAndValidity();
     });
@@ -100,17 +107,29 @@ export class NovaContaComponent implements OnInit {
       if (id) {
         this.isEditMode.set(true);
         this.editId.set(id);
-        
+
         const conta = await this.contaService.getContaById(id);
 
         if (conta) {
           // Pre-fill the form
           let catIdToSelect = '';
           if (conta.categoria) {
-             const matchedCat = cats.find(c => c.nome === conta.categoria);
-             if (matchedCat) {
-               catIdToSelect = matchedCat.id!;
-             }
+            const matchedCat = cats.find(c => c.nome === conta.categoria);
+            if (matchedCat) {
+              catIdToSelect = matchedCat.id!;
+            }
+          }
+
+          let mesRefDate = new Date();
+          if (conta.mesReferencia) {
+            const [y, m] = conta.mesReferencia.split('-');
+            mesRefDate = new Date(parseInt(y), parseInt(m) - 1, 1);
+          }
+
+          let dataPagDate = null;
+          if (conta.dataPagamento) {
+            const [y, m, d] = conta.dataPagamento.split('-');
+            dataPagDate = new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
           }
 
           this.contaForm.patchValue({
@@ -118,10 +137,10 @@ export class NovaContaComponent implements OnInit {
             descricao: conta.descricao || '',
             categoriaId: catIdToSelect,
             tipo: conta.tipo,
-            mesReferencia: conta.mesReferencia,
+            mesReferencia: mesRefDate as any,
             diaVencimento: conta.diaVencimento,
             statusPago: conta.statusPago,
-            dataPagamento: conta.dataPagamento || '',
+            dataPagamento: dataPagDate as any,
             valor: conta.valor?.toString().replace('.', '')
           });
 
@@ -165,13 +184,29 @@ export class NovaContaComponent implements OnInit {
       const formValue = this.contaForm.getRawValue();
       const selectedCat = this.categorias().find(c => c.id === formValue.categoriaId);
 
+      let formattedMesRef = '';
+      if (formValue.mesReferencia instanceof Date) {
+        formattedMesRef = `${formValue.mesReferencia.getFullYear()}-${String(formValue.mesReferencia.getMonth() + 1).padStart(2, '0')}`;
+      } else {
+        formattedMesRef = formValue.mesReferencia as any;
+      }
+
+      let formattedDataPag = '';
+      if (formValue.dataPagamento instanceof Date) {
+        formattedDataPag = `${formValue.dataPagamento.getFullYear()}-${String(formValue.dataPagamento.getMonth() + 1).padStart(2, '0')}-${String(formValue.dataPagamento.getDate()).padStart(2, '0')}`;
+      } else if (formValue.dataPagamento) {
+        formattedDataPag = formValue.dataPagamento as any;
+      }
+
       const contaData: any = {
         ...formValue,
+        mesReferencia: formattedMesRef,
+        dataPagamento: formattedDataPag,
         categoria: selectedCat?.nome || '',
         tipo: selectedCat?.tipo || 'Despesa',
         valor: formValue.valor
       };
-      
+
       delete contaData.categoriaId;
 
       if (this.isEditMode() && this.editId()) {
