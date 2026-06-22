@@ -2,13 +2,14 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { DatePickerModule } from 'primeng/datepicker';
 import { ContaService, Conta } from '../../core/services/conta.service';
 import { CategoriaService, Categoria } from '../../core/services/categoria.service';
 
 @Component({
   selector: 'app-lancamentos',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, DatePickerModule],
   templateUrl: './lancamentos.component.html',
 })
 export class LancamentosComponent implements OnInit {
@@ -37,6 +38,8 @@ export class LancamentosComponent implements OnInit {
   anoFiltro = signal<string>(new Date().getFullYear().toString());
   tipoFiltro = signal<string>('Todos');
   categoriaFiltro = signal<string>('Todos');
+  nomeFiltro = signal<string>('');
+  dataRangeFiltro = signal<Date[] | null>(null);
 
   // Dados
   contas = signal<Conta[]>([]);
@@ -53,6 +56,30 @@ export class LancamentosComponent implements OnInit {
 
     if (this.categoriaFiltro() !== 'Todos') {
       filtradas = filtradas.filter(c => c.categoria === this.categoriaFiltro());
+    }
+
+    if (this.nomeFiltro().trim()) {
+      const termo = this.nomeFiltro().toLowerCase().trim();
+      filtradas = filtradas.filter(c => c.nome.toLowerCase().includes(termo));
+    }
+
+    const range = this.dataRangeFiltro();
+    if (range && range.length === 2 && range[0] && range[1]) {
+      const inicio = range[0];
+      const fim = range[1];
+      
+      filtradas = filtradas.filter(c => {
+        // Criar data baseada no mesReferencia e diaVencimento
+        const [ano, mes] = c.mesReferencia.split('-');
+        const dataVencimento = new Date(parseInt(ano), parseInt(mes) - 1, c.diaVencimento);
+        
+        // Zera as horas para comparar apenas datas
+        const dataVencZera = new Date(dataVencimento.getFullYear(), dataVencimento.getMonth(), dataVencimento.getDate());
+        const inicioZera = new Date(inicio.getFullYear(), inicio.getMonth(), inicio.getDate());
+        const fimZera = new Date(fim.getFullYear(), fim.getMonth(), fim.getDate());
+
+        return dataVencZera >= inicioZera && dataVencZera <= fimZera;
+      });
     }
 
     return filtradas;
@@ -119,6 +146,8 @@ export class LancamentosComponent implements OnInit {
     this.anoFiltro.set(new Date().getFullYear().toString());
     this.tipoFiltro.set('Todos');
     this.categoriaFiltro.set('Todos');
+    this.nomeFiltro.set('');
+    this.dataRangeFiltro.set(null);
     this.carregarDados();
   }
 

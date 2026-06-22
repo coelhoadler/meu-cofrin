@@ -23,6 +23,8 @@
     "@angular/pwa": "^21.2.16",
     "@angular/router": "^21.2.16",
     "@angular/service-worker": "^21.2.16",
+    "@primeng/themes": "^21.0.4",
+    "@primeuix/themes": "^2.0.3",
     "@sentry/angular": "^10.58.0",
     "@simplewebauthn/browser": "^13.3.0",
     "chart.js": "^4.5.1",
@@ -31,6 +33,7 @@
     "ng2-charts": "^10.0.0",
     "ngx-mask": "^21.0.1",
     "ngx-toastr": "^20.0.5",
+    "primeng": "^21.1.9",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
