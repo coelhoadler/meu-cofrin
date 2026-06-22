@@ -71,7 +71,7 @@
       </div>
       <!-- Chart Area -->
       <div class="flex-1 relative w-full h-full min-h-[200px]">
-        <canvas baseChart [data]="barChartData" [options]="barChartOptions" [type]="'bar'"></canvas>
+        <canvas baseChart [data]="barChartData()" [options]="barChartOptions" [type]="'bar'"></canvas>
       </div>
       <!-- Legend -->
       <div class="flex justify-center gap-6 mt-4">
@@ -98,7 +98,7 @@
       </div>
       <!-- Chart Area -->
       <div class="flex-1 relative mt-4 min-h-[200px]">
-        <canvas baseChart [data]="pieChartData" [options]="pieChartOptions" [type]="'pie'">
+        <canvas baseChart [data]="pieChartData()" [options]="pieChartOptions" [type]="'pie'">
         </canvas>
       </div>
     </div>
