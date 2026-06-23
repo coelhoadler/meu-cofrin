@@ -164,6 +164,12 @@
                     class="font-semibold text-slate-800 dark:text-slate-200 dark:group-hover:text-white dark:group-hover:font-bold transition-all"
                     [ngClass]="{ 'line-through': item.statusPago }">{{
                     item.nome }}</span>
+                  @if (item.isRecorrente) {
+                  <span class="flex items-center gap-1 px-1.5 py-0.5 bg-[#421b7b]/10 dark:bg-[#a78bfa]/10 text-[#421b7b] dark:text-[#a78bfa] rounded text-[10px] font-bold uppercase tracking-wider">
+                    <span class="material-symbols-outlined text-[12px]">sync_alt</span>
+                    Recorrente
+                  </span>
+                  }
                   @if (item.reciboUrl) {
                   <span class="material-symbols-outlined text-slate-400 text-base" title="Possui imagem">image</span>
                   }

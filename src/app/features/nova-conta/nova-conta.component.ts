@@ -30,6 +30,7 @@ export class NovaContaComponent implements OnInit {
     mesReferencia: [new Date(), [Validators.required]],
     diaVencimento: [new Date().getDate(), [Validators.required, Validators.min(1), Validators.max(31)]],
     statusPago: [false],
+    isRecorrente: [false],
     dataPagamento: [{ value: null as any, disabled: true }],
     valor: ['', [Validators.required]]
   });
@@ -140,6 +141,7 @@ export class NovaContaComponent implements OnInit {
             mesReferencia: mesRefDate as any,
             diaVencimento: conta.diaVencimento,
             statusPago: conta.statusPago,
+            isRecorrente: conta.isRecorrente || false,
             dataPagamento: dataPagDate as any,
             valor: conta.valor?.toString().replace('.', '')
           });

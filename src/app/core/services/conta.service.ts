@@ -16,6 +16,7 @@ export interface Conta {
   reciboUrl?: string;
   categoria?: string;
   createdAt?: any;
+  isRecorrente?: boolean;
 }
 
 export interface ResumoMensal {
