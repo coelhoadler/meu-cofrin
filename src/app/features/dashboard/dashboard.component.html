@@ -5,10 +5,12 @@
       <h2 class="text-[28px] font-bold text-slate-900 dark:text-white tracking-tight">{{greetingUser()}}</h2>
       <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 capitalize">{{ currentDate }}</p>
     </div>
+
+    <p-button label="Replicar mês" severity="secondary" variant="outlined" icon="pi pi-clone" />
   </div>
 
   <!-- Row 1: Summary Cards -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+  <div class=" grid grid-cols-1 md:grid-cols-3 gap-6">
     <!-- Saldo Card -->
     <div
       class="bg-[#7941dc] text-white rounded-[20px] p-6 shadow-md shadow-purple-500/10 relative overflow-hidden flex flex-col justify-between h-[140px]">
@@ -165,7 +167,8 @@
                     [ngClass]="{ 'line-through': item.statusPago }">{{
                     item.nome }}</span>
                   @if (item.isRecorrente) {
-                  <span class="flex items-center gap-1 px-1.5 py-0.5 bg-[#421b7b]/10 dark:bg-[#a78bfa]/10 text-[#421b7b] dark:text-[#a78bfa] rounded text-[10px] font-bold uppercase tracking-wider">
+                  <span
+                    class="flex items-center gap-1 px-1.5 py-0.5 bg-[#421b7b]/10 dark:bg-[#a78bfa]/10 text-[#421b7b] dark:text-[#a78bfa] rounded text-[10px] font-bold uppercase tracking-wider">
                     <span class="material-symbols-outlined text-[12px]">sync_alt</span>
                     Recorrente
                   </span>
@@ -282,7 +285,7 @@
 
   <!-- Floating Action Button (Mobile Only) -->
   <a routerLink="/nova-conta"
-     class="fixed bottom-6 right-6 z-40 sm:hidden flex items-center justify-center w-14 h-14 bg-[#421b7b] active:bg-[#341561] text-white rounded-full border-[2.5px] border-[#9d6bf3] shadow-[0_0_20px_rgba(157,107,243,0.4)] transition-transform active:scale-95">
+    class="fixed bottom-6 right-6 z-40 sm:hidden flex items-center justify-center w-14 h-14 bg-[#421b7b] active:bg-[#341561] text-white rounded-full border-[2.5px] border-[#9d6bf3] shadow-[0_0_20px_rgba(157,107,243,0.4)] transition-transform active:scale-95">
     <span class="material-symbols-outlined text-3xl">add</span>
   </a>
 </div>

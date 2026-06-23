@@ -1,16 +1,17 @@
-import { Component, inject, signal, effect, ChangeDetectionStrategy } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { ContaService, Conta } from '../../core/services/conta.service';
-import { AuthService } from '../../core/auth/auth.service';
-import { MessagingService } from '../../core/services/messaging.service';
-import { BaseChartDirective } from 'ng2-charts';
+import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { ChartConfiguration } from 'chart.js';
+import { BaseChartDirective } from 'ng2-charts';
+import { ButtonModule } from 'primeng/button';
+import { AuthService } from '../../core/auth/auth.service';
+import { Conta, ContaService } from '../../core/services/conta.service';
+import { MessagingService } from '../../core/services/messaging.service';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [RouterLink, CommonModule, BaseChartDirective],
+  imports: [RouterLink, CommonModule, BaseChartDirective, ButtonModule],
   templateUrl: './dashboard.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })

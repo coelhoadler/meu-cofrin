@@ -33,6 +33,7 @@
     "ng2-charts": "^10.0.0",
     "ngx-mask": "^21.0.1",
     "ngx-toastr": "^20.0.5",
+    "primeicons": "^7.0.0",
     "primeng": "^21.1.9",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
