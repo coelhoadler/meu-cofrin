@@ -19,7 +19,7 @@ import { MessagingService } from '../../core/services/messaging.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardComponent {
-  currentDate = new Intl.DateTimeFormat('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date());
+  currentDate = new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' }).format(new Date());
 
   private contaService = inject(ContaService);
   private authService = inject(AuthService);
@@ -365,11 +365,11 @@ export class DashboardComponent {
   openReplicarModal() {
     const hoje = new Date();
     const proximoMes = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 1);
-    
+
     this.mesOrigem.set(hoje);
     this.mesDestino.set(proximoMes);
     this.showReplicarModal.set(true);
-    
+
     this.loadContasParaReplicar();
   }
 
@@ -394,7 +394,7 @@ export class DashboardComponent {
 
       const contasOrigem = await this.contaService.getContasByMesReferencia(mesOrigemStr);
       let contasDestino: Conta[] = [];
-      
+
       if (mesOrigemStr !== mesDestinoStr) {
         contasDestino = await this.contaService.getContasByMesReferencia(mesDestinoStr);
       }
@@ -424,9 +424,22 @@ export class DashboardComponent {
     this.loadContasParaReplicar();
   }
 
+  get isAllSelected(): boolean {
+    const validContas = this.contasParaReplicar().filter(c => !c.existsInDestino);
+    if (validContas.length === 0) return false;
+    return validContas.every(c => c.selected);
+  }
+
+  toggleAllSelection() {
+    const newValue = !this.isAllSelected;
+    const contas = this.contasParaReplicar();
+    const updated = contas.map(c => c.existsInDestino ? c : { ...c, selected: newValue });
+    this.contasParaReplicar.set(updated);
+  }
+
   toggleContaSelection(conta: Conta & { existsInDestino?: boolean, selected?: boolean }) {
     if (conta.existsInDestino) return; // Não pode selecionar se já existe
-    
+
     const contas = this.contasParaReplicar();
     const updated = contas.map(c => c.id === conta.id ? { ...c, selected: !c.selected } : c);
     this.contasParaReplicar.set(updated);
@@ -453,25 +466,25 @@ export class DashboardComponent {
     this.isLoadingReplicacao.set(true);
     try {
       const mesDestinoStr = `${destino.getFullYear()}-${String(destino.getMonth() + 1).padStart(2, '0')}`;
-      
+
       const promises = contasSelecionadas.map(conta => {
         const novaConta: any = { ...conta };
         delete novaConta.id;
         delete novaConta.existsInDestino;
         delete novaConta.selected;
-        
+
         novaConta.mesReferencia = mesDestinoStr;
         novaConta.statusPago = false;
         novaConta.dataPagamento = null;
         novaConta.reciboUrl = ''; // Não copia recibo? Provavelmente não.
-        
+
         return this.contaService.addConta(novaConta);
       });
 
       await Promise.all(promises);
-      
+
       this.closeReplicarModal();
-      
+
       // Recarregar os dados do dashboard se o destino for o mês atual
       const date = new Date();
       const currentMesRef = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
@@ -480,7 +493,7 @@ export class DashboardComponent {
         await this.loadResumoMes();
       }
       await this.loadResumoGrafico();
-      
+
     } catch (error) {
       console.error('Erro ao replicar contas:', error);
     } finally {

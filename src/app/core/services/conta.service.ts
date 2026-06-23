@@ -106,7 +106,8 @@ export class ContaService {
     const q = query(
       contasRef,
       where('createdAt', '>=', dataLimite),
-      orderBy('createdAt', 'desc')
+      orderBy('createdAt', 'desc'),
+      limit(25)
     );
 
     const querySnapshot = await getDocs(q);
