@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Firestore, collection, addDoc, serverTimestamp, query, where, orderBy, getDocs, doc, deleteDoc, getDoc, updateDoc, deleteField, limit } from '@angular/fire/firestore';
-import { Storage, ref, uploadBytes, getDownloadURL } from '@angular/fire/storage';
+import { Storage, ref, uploadBytes, getDownloadURL, deleteObject } from '@angular/fire/storage';
 import { AuthService } from '../auth/auth.service';
 
 export interface Conta {
@@ -225,6 +225,21 @@ export class ContaService {
     if (!user) throw new Error('Usuário não autenticado');
 
     const docRef = doc(this.firestore, `users/${user.uid}/contas`, id);
+
+    // Remove o recibo do Storage se existir, para não deixar arquivos órfãos
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const conta = docSnap.data() as Conta;
+      if (conta.reciboUrl) {
+        try {
+          const fileRef = ref(this.storage, conta.reciboUrl);
+          await deleteObject(fileRef);
+        } catch (error) {
+          console.error('Erro ao deletar arquivo do Storage na exclusão da conta:', error);
+        }
+      }
+    }
+
     await deleteDoc(docRef);
 
     this.invalidateCache();
@@ -235,6 +250,21 @@ export class ContaService {
     if (!user) throw new Error('Usuário não autenticado');
 
     const docRef = doc(this.firestore, `users/${user.uid}/contas`, id);
+
+    // Buscar o documento para pegar a URL do recibo e deletar do Storage
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const conta = docSnap.data() as Conta;
+      if (conta.reciboUrl) {
+        try {
+          const fileRef = ref(this.storage, conta.reciboUrl);
+          await deleteObject(fileRef);
+        } catch (error) {
+          console.error('Erro ao deletar arquivo do Storage:', error);
+        }
+      }
+    }
+
     await updateDoc(docRef, { reciboUrl: deleteField() });
 
     this.invalidateCache();
