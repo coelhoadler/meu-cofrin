@@ -16,12 +16,12 @@
     <div
       class="bg-[#7941dc] text-white rounded-[20px] p-6 shadow-md shadow-purple-500/10 relative overflow-hidden flex flex-col justify-between h-[140px]">
       <div class="relative z-10">
-        <p class="text-purple-200 text-sm font-medium mb-1">Saldo do mês</p>
+        <p class="text-purple-200 text-sm font-medium mb-5">Saldo do mês</p>
         <h3 class="text-3xl font-bold mb-4">{{ saldoMes() }}</h3>
       </div>
-      <div class="relative z-10 mt-auto">
+      <!-- <div class="relative z-10 mt-auto">
         <p class="text-purple-300 text-[11px] font-medium">Sem alteração</p>
-      </div>
+      </div> -->
       <!-- Icon top right -->
       <div
         class="absolute top-5 right-5 w-10 h-10 bg-white/10 rounded-xl backdrop-blur-sm flex items-center justify-center">
@@ -33,12 +33,12 @@
     <div
       class="bg-white dark:bg-[#1a112c] rounded-[20px] p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/50 relative flex flex-col justify-between h-[140px] transition-colors duration-300">
       <div>
-        <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mb-1">Receitas</p>
+        <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mb-5">Receitas</p>
         <h3 class="text-3xl font-bold text-slate-800 dark:text-white mb-4">{{ totalReceitas() }}</h3>
       </div>
-      <div class="mt-auto">
+      <!-- <div class="mt-auto">
         <p class="text-slate-400 dark:text-slate-500 text-[11px] font-medium">Sem alteração</p>
-      </div>
+      </div> -->
       <div
         class="absolute top-5 right-5 w-8 h-8 bg-emerald-50 dark:bg-emerald-500/10 rounded-lg flex items-center justify-center">
         <span class="material-symbols-outlined text-emerald-500 dark:text-emerald-400 text-base">trending_up</span>
@@ -49,12 +49,12 @@
     <div
       class="bg-white dark:bg-[#1a112c] rounded-[20px] p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/50 relative flex flex-col justify-between h-[140px] transition-colors duration-300">
       <div>
-        <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mb-1">Despesas</p>
+        <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mb-5">Despesas</p>
         <h3 class="text-3xl font-bold text-slate-800 dark:text-white mb-4">{{ totalDespesas() }}</h3>
       </div>
-      <div class="mt-auto">
+      <!-- <div class="mt-auto">
         <p class="text-slate-400 dark:text-slate-500 text-[11px] font-medium">Sem alteração</p>
-      </div>
+      </div> -->
       <div
         class="absolute top-5 right-5 w-8 h-8 bg-rose-50 dark:bg-rose-500/10 rounded-lg flex items-center justify-center">
         <span class="material-symbols-outlined text-rose-500 dark:text-rose-400 text-base">trending_down</span>
@@ -169,8 +169,8 @@
                     item.nome }}</span>
                   @if (item.isRecorrente) {
                   <span
-                    class="flex items-center gap-1 px-1.5 py-0.5 mr-4 bg-[#421b7b]/10 dark:bg-[#a78bfa]/10 text-[#421b7b] dark:text-[#a78bfa] rounded text-[10px] md:text-xs font-bold uppercase tracking-wider">
-                    <span class="text-[14px] md:text-[16px] material-symbols-outlined">autorenew</span>
+                    class="flex items-center gap-1 px-1.5 py-0.5 mr-4 bg-[#421b7b]/10 dark:bg-[#a78bfa]/10 text-[#421b7b] dark:text-[#a78bfa] rounded text-[6px] md:text-[8px] font-bold uppercase tracking-wider">
+                    <span class="material-symbols-outlined">autorenew</span>
                     <p class="hidden md:block">Recorrente</p>
                   </span>
                   }
@@ -341,7 +341,7 @@
             @if (contasParaReplicar().length > 0) {
             <div class="flex items-center gap-2 cursor-pointer group" (click)="toggleAllSelection()">
               <span
-                class="text-xs font-semibold text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-colors">
+                class="text-sm font-semibold text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-colors">
                 {{ isAllSelected ? 'Desmarcar todas' : 'Selecionar todas' }}
               </span>
               <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors p-3"
