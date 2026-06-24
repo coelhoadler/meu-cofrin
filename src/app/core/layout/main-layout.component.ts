@@ -1,4 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 import { ContaService } from '../services/conta.service';
@@ -7,7 +8,7 @@ import { ThemeService } from '../services/theme.service';
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
   templateUrl: './main-layout.component.html'
 })
 export class MainLayoutComponent {
@@ -16,6 +17,7 @@ export class MainLayoutComponent {
   public themeService = inject(ThemeService);
 
   isSidebarOpen = signal(false);
+  isDesktopSidebarCollapsed = signal(false);
   user = this.authService.currentUser;
 
   private touchStartX = 0;
@@ -23,6 +25,10 @@ export class MainLayoutComponent {
 
   toggleSidebar() {
     this.isSidebarOpen.update(v => !v);
+  }
+
+  toggleDesktopSidebar() {
+    this.isDesktopSidebarCollapsed.update(v => !v);
   }
 
   onTouchStart(event: TouchEvent) {

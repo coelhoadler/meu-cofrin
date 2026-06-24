@@ -169,9 +169,9 @@
                     item.nome }}</span>
                   @if (item.isRecorrente) {
                   <span
-                    class="flex items-center gap-1 px-1.5 py-0.5 bg-[#421b7b]/10 dark:bg-[#a78bfa]/10 text-[#421b7b] dark:text-[#a78bfa] rounded text-[10px] font-bold uppercase tracking-wider">
-                    <span class="material-symbols-outlined text-[12px]">sync_alt</span>
-                    Recorrente
+                    class="flex items-center gap-1 px-1.5 py-0.5 mr-4 bg-[#421b7b]/10 dark:bg-[#a78bfa]/10 text-[#421b7b] dark:text-[#a78bfa] rounded text-[10px] md:text-xs font-bold uppercase tracking-wider">
+                    <span class="text-[14px] md:text-[16px] material-symbols-outlined">autorenew</span>
+                    <p class="hidden md:block">Recorrente</p>
                   </span>
                   }
                   @if (item.reciboUrl) {
