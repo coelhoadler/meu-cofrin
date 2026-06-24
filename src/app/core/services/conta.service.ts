@@ -170,6 +170,31 @@ export class ContaService {
     return items;
   }
 
+  async getContasByAno(ano: string, limitNum: number = 50): Promise<Conta[]> {
+    const user = await this.authService.getCurrentUserAsync();
+    if (!user) {
+      return [];
+    }
+
+    const contasRef = collection(this.firestore, `users/${user.uid}/contas`);
+    const q = query(
+      contasRef,
+      where('mesReferencia', '>=', `${ano}-01`),
+      where('mesReferencia', '<=', `${ano}-12`),
+      limit(limitNum)
+    );
+
+    const querySnapshot = await getDocs(q);
+    const items = querySnapshot.docs.map(doc => {
+      return {
+        id: doc.id,
+        ...doc.data()
+      } as Conta;
+    });
+
+    return items;
+  }
+
   async getContaById(id: string): Promise<Conta | null> {
     const user = await this.authService.getCurrentUserAsync();
     if (!user) return null;
