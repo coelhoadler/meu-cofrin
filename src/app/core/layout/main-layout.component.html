@@ -1,6 +1,5 @@
-<div class="min-h-screen bg-slate-50 flex font-sans text-slate-800"
-     (touchstart)="onTouchStart($event)"
-     (touchend)="onTouchEnd($event)">
+<div class="min-h-screen bg-slate-50 flex font-sans text-slate-800" (touchstart)="onTouchStart($event)"
+  (touchend)="onTouchEnd($event)">
 
   <!-- Sidebar -->
   <aside [class.translate-x-0]="isSidebarOpen()" [class.-translate-x-full]="!isSidebarOpen()"
@@ -8,18 +7,21 @@
     class="fixed inset-y-0 left-0 z-50 bg-[#1a112c] text-slate-300 transition-all duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col border-r border-slate-800/50 shadow-xl md:shadow-none">
 
     <!-- Sidebar Header -->
-    <div class="py-6 flex items-center relative px-6 gap-3" [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center md:px-0 md:gap-0' : ''">
+    <div class="py-6 flex items-center relative px-6 gap-3"
+      [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center md:px-0 md:gap-0' : ''">
       <div [routerLink]="['/dashboard']"
         class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-purple-500/30 shrink-0 cursor-pointer">
         <span class="material-symbols-outlined text-white text-2xl">savings</span>
       </div>
-      <div [routerLink]="['/dashboard']" class="cursor-pointer truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">
+      <div [routerLink]="['/dashboard']" class="cursor-pointer truncate"
+        [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">
         <h1 class="text-lg font-bold text-white leading-tight">Meu Cofrin</h1>
         <p class="text-[11px] text-slate-400">Finanças pessoais</p>
       </div>
-      <button (click)="toggleDesktopSidebar()" 
+      <button (click)="toggleDesktopSidebar()"
         class="hidden md:flex absolute -right-3 top-8 w-6 h-6 bg-slate-800 rounded-full items-center justify-center border border-slate-700 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors z-50">
-        <span class="material-symbols-outlined text-sm">{{ isDesktopSidebarCollapsed() ? 'chevron_right' : 'chevron_left' }}</span>
+        <span class="material-symbols-outlined text-sm">{{ isDesktopSidebarCollapsed() ? 'chevron_right' :
+          'chevron_left' }}</span>
       </button>
     </div>
 
@@ -42,7 +44,8 @@
 
       <a routerLink="/nova-conta" routerLinkActive="bg-[#8b5cf6]/20 text-[#c4b5fd]" (click)="isSidebarOpen.set(false)"
         class="flex items-center py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors gap-3 px-3"
-        [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center md:mx-1 md:gap-0 md:px-0' : ''" title="Minhas contas">
+        [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center md:mx-1 md:gap-0 md:px-0' : ''"
+        title="Minhas contas">
         <span class="material-symbols-outlined text-xl">add</span>
         <span class="text-sm truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">Minhas contas</span>
       </a>
@@ -66,7 +69,8 @@
 
     <!-- Sidebar Footer -->
     <div class="p-4 mt-auto">
-      <div class="flex items-center mb-4 gap-3 px-2" [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center md:gap-0 md:px-0' : ''">
+      <div class="flex items-center mb-4 gap-3 px-2"
+        [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center md:gap-0 md:px-0' : ''">
         <div
           class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-xs shrink-0 overflow-hidden">
           @if (user()?.photoURL) {
@@ -85,8 +89,10 @@
           class="flex items-center justify-center py-2 text-sm text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors bg-white/5 flex-1 px-3 gap-2"
           [ngClass]="isDesktopSidebarCollapsed() ? 'md:w-full md:flex-none md:px-0 md:gap-0' : ''"
           [title]="themeService.currentTheme() === 'dark' ? 'Tema claro' : 'Tema escuro'">
-          <span class="material-symbols-outlined text-xl">{{ themeService.currentTheme() === 'dark' ? 'light_mode' : 'dark_mode' }}</span>
-          <span class="truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">{{ themeService.currentTheme() === 'dark' ? 'Tema claro' : 'Tema escuro' }}</span>
+          <span class="material-symbols-outlined text-xl">{{ themeService.currentTheme() === 'dark' ? 'light_mode' :
+            'dark_mode' }}</span>
+          <span class="truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">{{
+            themeService.currentTheme() === 'dark' ? 'Tema claro' : 'Tema escuro' }}</span>
         </button>
         <button (click)="logout()"
           class="flex items-center justify-center py-2 text-sm text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors flex-1 px-3 gap-2"
@@ -109,17 +115,17 @@
     <!-- Top Header Mobile Toggle -->
     <header
       class="md:hidden flex items-center justify-between p-4 bg-white dark:bg-[#1a112c] border-b border-slate-200 dark:border-slate-800/50 sticky top-0 z-30 transition-colors duration-300">
-      <div class="flex items-center gap-2" [routerLink]="['/dashboard']">
+      <button (click)="toggleSidebar()"
+        class="p-2 -mr-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+        <span class="material-symbols-outlined text-2xl">menu</span>
+      </button>
+      <!-- <div class="flex items-center gap-2" [routerLink]="['/dashboard']">
         <div
           class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 via-purple-500 to-fuchsia-500 flex items-center justify-center">
           <span class="material-symbols-outlined text-white text-base">savings</span>
         </div>
         <span class="font-bold text-slate-800 dark:text-white">Meu Cofrin</span>
-      </div>
-      <button (click)="toggleSidebar()"
-        class="p-2 -mr-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
-        <span class="material-symbols-outlined text-2xl">menu</span>
-      </button>
+      </div> -->
     </header>
 
     <div class="flex-1 p-6 md:p-10 xl:px-16 w-full max-w[90%] mx-auto">
