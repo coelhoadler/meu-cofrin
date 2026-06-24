@@ -43,6 +43,36 @@ export class NovaContaComponent implements OnInit {
   editId = signal<string | null>(null);
   existingReciboUrl = signal<string | null>(null);
   returnUrl = signal<string>('/dashboard');
+  
+  valorAntigo = signal<number | null>(null);
+  currentValorNum = signal<number>(0);
+
+  diferencaValor = computed(() => {
+    const antigo = this.valorAntigo();
+    if (antigo === null) return null;
+    
+    const atual = this.currentValorNum();
+    const diff = atual - antigo;
+    
+    if (diff === 0) return null;
+    
+    const tipo = this.contaForm.get('tipo')?.value || 'Despesa';
+    
+    let isPositiveChange = false;
+    if (tipo === 'Despesa') {
+      // Para despesa, aumento é ruim (isPositiveChange = false)
+      isPositiveChange = diff < 0;
+    } else {
+      // Para receita, aumento é bom
+      isPositiveChange = diff > 0;
+    }
+    
+    return {
+      valorAbsoluto: Math.abs(diff),
+      isAumento: diff > 0,
+      isPositiveChange
+    };
+  });
 
   categorias = signal<Categoria[]>([]);
   categoriasOptions = computed(() => this.categorias().map(cat => ({
@@ -51,6 +81,11 @@ export class NovaContaComponent implements OnInit {
   })));
 
   constructor() {
+    // Listen to valor
+    this.contaForm.get('valor')?.valueChanges.subscribe(v => {
+      this.currentValorNum.set(this.parseFloatValor(v));
+    });
+
     // Listen to categoriaId to update tipo
     this.contaForm.get('categoriaId')?.valueChanges.subscribe(catId => {
       const selectedCat = this.categorias().find(c => c.id === catId);
@@ -151,6 +186,10 @@ export class NovaContaComponent implements OnInit {
             dataPagamento: dataPagDate as any,
             valor: conta.valor?.toString().replace('.', '')
           });
+
+          if (conta.valorAntigo) {
+            this.valorAntigo.set(this.parseFloatValor(conta.valorAntigo));
+          }
 
           if (conta.reciboUrl) {
             this.existingReciboUrl.set(conta.reciboUrl);
@@ -264,5 +303,14 @@ export class NovaContaComponent implements OnInit {
 
   removeSelectedFile() {
     this.selectedFile.set(null);
+  }
+
+  parseFloatValor(valor: any): number {
+    if (!valor) return 0;
+    if (typeof valor === 'number') return valor;
+    const str = String(valor);
+    const cleanValue = str.replace(/\./g, '').replace(',', '.').replace('R$', '');
+    const numValue = parseFloat(cleanValue);
+    return isNaN(numValue) ? 0 : numValue;
   }
 }

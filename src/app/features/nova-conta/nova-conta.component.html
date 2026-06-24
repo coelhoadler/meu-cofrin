@@ -109,6 +109,19 @@
         @if (contaForm.get('valor')?.touched && contaForm.get('valor')?.invalid) {
         <div class="text-red-500 text-xs mt-2 font-medium">O valor é obrigatório.</div>
         }
+        
+        @if (diferencaValor()) {
+        <div class="mt-2 text-xs font-medium flex items-center gap-1.5"
+             [ngClass]="diferencaValor()?.isPositiveChange ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'">
+          <span class="material-symbols-outlined text-[14px]">
+            {{ diferencaValor()?.isAumento ? 'trending_up' : 'trending_down' }}
+          </span>
+          <span>
+            Valor replicado era R$ {{ valorAntigo() | number: '1.2-2' }}
+            ({{ diferencaValor()?.isAumento ? '+' : '-' }} R$ {{ diferencaValor()?.valorAbsoluto | number: '1.2-2' }})
+          </span>
+        </div>
+        }
       </div>
 
       <!-- Conta já foi paga (Checkbox block) -->

@@ -477,6 +477,7 @@ export class DashboardComponent {
         novaConta.statusPago = false;
         novaConta.dataPagamento = null;
         novaConta.reciboUrl = ''; // Não copia recibo? Provavelmente não.
+        novaConta.valorAntigo = conta.valor;
 
         return this.contaService.addConta(novaConta);
       });

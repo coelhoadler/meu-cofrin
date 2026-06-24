@@ -17,6 +17,7 @@ export interface Conta {
   categoria?: string;
   createdAt?: any;
   isRecorrente?: boolean;
+  valorAntigo?: string | null;
 }
 
 export interface ResumoMensal {
