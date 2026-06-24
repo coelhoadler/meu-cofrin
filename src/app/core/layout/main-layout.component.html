@@ -4,59 +4,69 @@
 
   <!-- Sidebar -->
   <aside [class.translate-x-0]="isSidebarOpen()" [class.-translate-x-full]="!isSidebarOpen()"
-    class="fixed inset-y-0 left-0 z-50 w-64 bg-[#1a112c] text-slate-300 transition-transform duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col border-r border-slate-800/50 shadow-xl md:shadow-none">
+    [ngClass]="isDesktopSidebarCollapsed() ? 'w-64 md:w-20' : 'w-64'"
+    class="fixed inset-y-0 left-0 z-50 bg-[#1a112c] text-slate-300 transition-all duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col border-r border-slate-800/50 shadow-xl md:shadow-none">
 
     <!-- Sidebar Header -->
-    <div class="p-6 flex items-center gap-3">
+    <div class="py-6 flex items-center relative px-6 gap-3" [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center md:px-0 md:gap-0' : ''">
       <div [routerLink]="['/dashboard']"
-        class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-purple-500/30">
+        class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-purple-500/30 shrink-0 cursor-pointer">
         <span class="material-symbols-outlined text-white text-2xl">savings</span>
       </div>
-      <div [routerLink]="['/dashboard']">
+      <div [routerLink]="['/dashboard']" class="cursor-pointer truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">
         <h1 class="text-lg font-bold text-white leading-tight">Meu Cofrin</h1>
         <p class="text-[11px] text-slate-400">Finanças pessoais</p>
       </div>
+      <button (click)="toggleDesktopSidebar()" 
+        class="hidden md:flex absolute -right-3 top-8 w-6 h-6 bg-slate-800 rounded-full items-center justify-center border border-slate-700 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors z-50">
+        <span class="material-symbols-outlined text-sm">{{ isDesktopSidebarCollapsed() ? 'chevron_right' : 'chevron_left' }}</span>
+      </button>
     </div>
 
     <!-- Sidebar Navigation -->
-    <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+    <nav class="flex-1 px-3 py-4 space-y-2 overflow-y-auto overflow-x-hidden">
       <a routerLink="/dashboard" routerLinkActive="bg-[#8b5cf6]/20 text-[#c4b5fd]"
         [routerLinkActiveOptions]="{exact: true}" (click)="isSidebarOpen.set(false)"
-        class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors">
+        class="flex items-center py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors gap-3 px-3"
+        [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center md:mx-1 md:gap-0 md:px-0' : ''" title="Dashboard">
         <span class="material-symbols-outlined text-xl">dashboard</span>
-        <span class="text-sm">Dashboard</span>
+        <span class="text-sm truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">Dashboard</span>
       </a>
 
       <a routerLink="/lancamentos" routerLinkActive="bg-[#8b5cf6]/20 text-[#c4b5fd]" (click)="isSidebarOpen.set(false)"
-        class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors">
+        class="flex items-center py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors gap-3 px-3"
+        [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center md:mx-1 md:gap-0 md:px-0' : ''" title="Lançamentos">
         <span class="material-symbols-outlined text-xl">receipt_long</span>
-        <span class="text-sm">Lançamentos</span>
+        <span class="text-sm truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">Lançamentos</span>
       </a>
 
       <a routerLink="/nova-conta" routerLinkActive="bg-[#8b5cf6]/20 text-[#c4b5fd]" (click)="isSidebarOpen.set(false)"
-        class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors">
+        class="flex items-center py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors gap-3 px-3"
+        [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center md:mx-1 md:gap-0 md:px-0' : ''" title="Minhas contas">
         <span class="material-symbols-outlined text-xl">add</span>
-        <span class="text-sm">Minhas contas</span>
+        <span class="text-sm truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">Minhas contas</span>
       </a>
 
       <a routerLink="/categorias" routerLinkActive="bg-[#8b5cf6]/20 text-[#c4b5fd]" (click)="isSidebarOpen.set(false)"
-        class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors">
+        class="flex items-center py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors gap-3 px-3"
+        [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center md:mx-1 md:gap-0 md:px-0' : ''" title="Categorias">
         <span class="material-symbols-outlined text-xl">layers</span>
-        <span class="text-sm">Categorias</span>
+        <span class="text-sm truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">Categorias</span>
       </a>
 
       <div class="h-px bg-slate-500/60 my-2 mx-3"></div>
 
       <a routerLink="/perfil" routerLinkActive="bg-[#8b5cf6]/20 text-[#c4b5fd]" (click)="isSidebarOpen.set(false)"
-        class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors">
+        class="flex items-center py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors gap-3 px-3"
+        [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center md:mx-1 md:gap-0 md:px-0' : ''" title="Meu Perfil">
         <span class="material-symbols-outlined text-xl">person</span>
-        <span class="text-sm">Meu Perfil</span>
+        <span class="text-sm truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">Meu Perfil</span>
       </a>
     </nav>
 
     <!-- Sidebar Footer -->
     <div class="p-4 mt-auto">
-      <div class="flex items-center gap-3 mb-4 px-2">
+      <div class="flex items-center mb-4 gap-3 px-2" [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center md:gap-0 md:px-0' : ''">
         <div
           class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-xs shrink-0 overflow-hidden">
           @if (user()?.photoURL) {
@@ -65,26 +75,24 @@
           {{ user()?.displayName?.charAt(0)?.toUpperCase() || user()?.email?.charAt(0)?.toUpperCase() || 'U' }}
           }
         </div>
-        <div class="flex-1 truncate">
+        <div class="flex-1 truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">
           <p class="text-xs font-medium text-slate-400 truncate">{{ user()?.displayName || user()?.email ||
             'usuario@exemplo.com' }}</p>
         </div>
       </div>
-      <div class="flex items-center gap-2 w-full">
+      <div class="flex items-center w-full gap-2" [ngClass]="isDesktopSidebarCollapsed() ? 'md:flex-col' : ''">
         <button (click)="themeService.toggleTheme()"
-          class="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors bg-white/5">
-          @if (themeService.currentTheme() === 'dark') {
-          <span class="material-symbols-outlined text-xl">light_mode</span>
-          Tema claro
-          } @else {
-          <span class="material-symbols-outlined text-xl">dark_mode</span>
-          Tema escuro
-          }
+          class="flex items-center justify-center py-2 text-sm text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors bg-white/5 flex-1 px-3 gap-2"
+          [ngClass]="isDesktopSidebarCollapsed() ? 'md:w-full md:flex-none md:px-0 md:gap-0' : ''"
+          [title]="themeService.currentTheme() === 'dark' ? 'Tema claro' : 'Tema escuro'">
+          <span class="material-symbols-outlined text-xl">{{ themeService.currentTheme() === 'dark' ? 'light_mode' : 'dark_mode' }}</span>
+          <span class="truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">{{ themeService.currentTheme() === 'dark' ? 'Tema claro' : 'Tema escuro' }}</span>
         </button>
         <button (click)="logout()"
-          class="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors">
+          class="flex items-center justify-center py-2 text-sm text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors flex-1 px-3 gap-2"
+          [ngClass]="isDesktopSidebarCollapsed() ? 'md:w-full md:flex-none md:px-0 md:gap-0' : ''" title="Sair">
           <span class="material-symbols-outlined text-xl">logout</span>
-          Sair
+          <span [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">Sair</span>
         </button>
       </div>
     </div>
