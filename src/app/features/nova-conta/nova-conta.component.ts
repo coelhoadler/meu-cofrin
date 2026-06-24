@@ -30,6 +30,7 @@ export class NovaContaComponent implements OnInit {
     mesReferencia: [new Date(), [Validators.required]],
     diaVencimento: [new Date().getDate(), [Validators.required, Validators.min(1), Validators.max(31)]],
     statusPago: [false],
+    isRecorrente: [false],
     dataPagamento: [{ value: null as any, disabled: true }],
     valor: ['', [Validators.required]]
   });
@@ -41,6 +42,7 @@ export class NovaContaComponent implements OnInit {
   isEditMode = signal(false);
   editId = signal<string | null>(null);
   existingReciboUrl = signal<string | null>(null);
+  returnUrl = signal<string>('/dashboard');
 
   categorias = signal<Categoria[]>([]);
   categoriasOptions = computed(() => this.categorias().map(cat => ({
@@ -103,6 +105,11 @@ export class NovaContaComponent implements OnInit {
       const cats = await this.categoriaService.getCategorias();
       this.categorias.set(cats);
 
+      const from = this.route.snapshot.queryParamMap.get('from');
+      if (from === 'lancamentos') {
+        this.returnUrl.set('/lancamentos');
+      }
+
       const id = this.route.snapshot.paramMap.get('id');
       if (id) {
         this.isEditMode.set(true);
@@ -140,6 +147,7 @@ export class NovaContaComponent implements OnInit {
             mesReferencia: mesRefDate as any,
             diaVencimento: conta.diaVencimento,
             statusPago: conta.statusPago,
+            isRecorrente: conta.isRecorrente || false,
             dataPagamento: dataPagDate as any,
             valor: conta.valor?.toString().replace('.', '')
           });
@@ -215,7 +223,7 @@ export class NovaContaComponent implements OnInit {
         await this.contaService.addConta(contaData, this.selectedFile());
       }
 
-      this.router.navigate(['/dashboard']);
+      this.router.navigate([this.returnUrl()]);
     } catch (error: any) {
       console.error(error);
       this.errorMessage.set('Erro ao salvar a conta. Tente novamente.');
@@ -229,7 +237,7 @@ export class NovaContaComponent implements OnInit {
       this.isLoading.set(true);
       try {
         await this.contaService.deleteConta(this.editId()!);
-        this.router.navigate(['/dashboard']);
+        this.router.navigate([this.returnUrl()]);
       } catch (error: any) {
         console.error(error);
         this.errorMessage.set('Erro ao excluir a conta.');

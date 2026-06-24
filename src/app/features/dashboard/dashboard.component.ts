@@ -1,21 +1,25 @@
-import { Component, inject, signal, effect, ChangeDetectionStrategy } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { ContaService, Conta } from '../../core/services/conta.service';
-import { AuthService } from '../../core/auth/auth.service';
-import { MessagingService } from '../../core/services/messaging.service';
-import { BaseChartDirective } from 'ng2-charts';
+import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { ChartConfiguration } from 'chart.js';
+import { BaseChartDirective } from 'ng2-charts';
+import { ButtonModule } from 'primeng/button';
+import { DatePickerModule } from 'primeng/datepicker';
+import { FormsModule } from '@angular/forms';
+import { CheckboxModule } from 'primeng/checkbox';
+import { AuthService } from '../../core/auth/auth.service';
+import { Conta, ContaService } from '../../core/services/conta.service';
+import { MessagingService } from '../../core/services/messaging.service';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [RouterLink, CommonModule, BaseChartDirective],
+  imports: [RouterLink, CommonModule, BaseChartDirective, ButtonModule, DatePickerModule, FormsModule, CheckboxModule],
   templateUrl: './dashboard.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardComponent {
-  currentDate = new Intl.DateTimeFormat('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date());
+  currentDate = new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' }).format(new Date());
 
   private contaService = inject(ContaService);
   private authService = inject(AuthService);
@@ -32,6 +36,13 @@ export class DashboardComponent {
   totalAPagar = signal('R$ 0,00');
   totalPago = signal('R$ 0,00');
   statusConta = signal('');
+
+  // Replicar Mês states
+  showReplicarModal = signal(false);
+  mesOrigem = signal<Date | null>(null);
+  mesDestino = signal<Date | null>(null);
+  contasParaReplicar = signal<(Conta & { existsInDestino?: boolean, selected?: boolean })[]>([]);
+  isLoadingReplicacao = signal(false);
 
   pieChartOptions: ChartConfiguration<'pie'>['options'] = {
     responsive: true,
@@ -347,6 +358,146 @@ export class DashboardComponent {
       return `Boa tarde, ${userName}!`;
     } else {
       return `Boa noite, ${userName}!`;
+    }
+  }
+
+  // --- REPLICAR MÊS LOGIC ---
+  openReplicarModal() {
+    const hoje = new Date();
+    const proximoMes = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 1);
+
+    this.mesOrigem.set(hoje);
+    this.mesDestino.set(proximoMes);
+    this.showReplicarModal.set(true);
+
+    this.loadContasParaReplicar();
+  }
+
+  closeReplicarModal() {
+    this.showReplicarModal.set(false);
+    this.contasParaReplicar.set([]);
+  }
+
+  async loadContasParaReplicar() {
+    const origem = this.mesOrigem();
+    const destino = this.mesDestino();
+
+    if (!origem || !destino) {
+      this.contasParaReplicar.set([]);
+      return;
+    }
+
+    this.isLoadingReplicacao.set(true);
+    try {
+      const mesOrigemStr = `${origem.getFullYear()}-${String(origem.getMonth() + 1).padStart(2, '0')}`;
+      const mesDestinoStr = `${destino.getFullYear()}-${String(destino.getMonth() + 1).padStart(2, '0')}`;
+
+      const contasOrigem = await this.contaService.getContasByMesReferencia(mesOrigemStr);
+      let contasDestino: Conta[] = [];
+
+      if (mesOrigemStr !== mesDestinoStr) {
+        contasDestino = await this.contaService.getContasByMesReferencia(mesDestinoStr);
+      }
+
+      // Filtrar apenas as recorrentes
+      const contasRecorrentes = contasOrigem.filter(c => c.isRecorrente);
+
+      const items = contasRecorrentes.map(conta => {
+        // Checar se já existe no destino (mesmo nome e vencimento)
+        const exists = mesOrigemStr === mesDestinoStr || contasDestino.some(d => d.nome === conta.nome && d.diaVencimento === conta.diaVencimento);
+        return {
+          ...conta,
+          existsInDestino: exists,
+          selected: !exists // Só seleciona por padrão se não existe no destino
+        };
+      }).sort((a, b) => a.diaVencimento - b.diaVencimento);
+
+      this.contasParaReplicar.set(items);
+    } catch (error) {
+      console.error('Erro ao carregar contas para replicar:', error);
+    } finally {
+      this.isLoadingReplicacao.set(false);
+    }
+  }
+
+  onMesReplicacaoChange() {
+    this.loadContasParaReplicar();
+  }
+
+  get isAllSelected(): boolean {
+    const validContas = this.contasParaReplicar().filter(c => !c.existsInDestino);
+    if (validContas.length === 0) return false;
+    return validContas.every(c => c.selected);
+  }
+
+  toggleAllSelection() {
+    const newValue = !this.isAllSelected;
+    const contas = this.contasParaReplicar();
+    const updated = contas.map(c => c.existsInDestino ? c : { ...c, selected: newValue });
+    this.contasParaReplicar.set(updated);
+  }
+
+  toggleContaSelection(conta: Conta & { existsInDestino?: boolean, selected?: boolean }) {
+    if (conta.existsInDestino) return; // Não pode selecionar se já existe
+
+    const contas = this.contasParaReplicar();
+    const updated = contas.map(c => c.id === conta.id ? { ...c, selected: !c.selected } : c);
+    this.contasParaReplicar.set(updated);
+  }
+
+  get selectedContasCount(): number {
+    return this.contasParaReplicar().filter(c => c.selected).length;
+  }
+
+  formatDateName(date: Date | null): string {
+    if (!date) return '';
+    const mes = new Intl.DateTimeFormat('pt-BR', { month: 'long' }).format(date);
+    const ano = date.getFullYear();
+    return `${mes} de ${ano}`;
+  }
+
+  async confirmReplicacao() {
+    const destino = this.mesDestino();
+    if (!destino) return;
+
+    const contasSelecionadas = this.contasParaReplicar().filter(c => c.selected);
+    if (contasSelecionadas.length === 0) return;
+
+    this.isLoadingReplicacao.set(true);
+    try {
+      const mesDestinoStr = `${destino.getFullYear()}-${String(destino.getMonth() + 1).padStart(2, '0')}`;
+
+      const promises = contasSelecionadas.map(conta => {
+        const novaConta: any = { ...conta };
+        delete novaConta.id;
+        delete novaConta.existsInDestino;
+        delete novaConta.selected;
+
+        novaConta.mesReferencia = mesDestinoStr;
+        novaConta.statusPago = false;
+        novaConta.dataPagamento = null;
+        novaConta.reciboUrl = ''; // Não copia recibo? Provavelmente não.
+
+        return this.contaService.addConta(novaConta);
+      });
+
+      await Promise.all(promises);
+
+      this.closeReplicarModal();
+
+      // Recarregar os dados do dashboard se o destino for o mês atual
+      const date = new Date();
+      const currentMesRef = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+      if (mesDestinoStr === currentMesRef) {
+        await this.loadLancamentos();
+        await this.loadResumoMes();
+      }
+      await this.loadResumoGrafico();
+
+    } catch (error) {
+      console.error('Erro ao replicar contas:', error);
+    } finally {
+      this.isLoadingReplicacao.set(false);
     }
   }
 

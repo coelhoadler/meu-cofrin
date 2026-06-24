@@ -130,8 +130,8 @@
       </div>
       } @else {
       @for (conta of contasFiltradas(); track conta.id) {
-      <div
-        class="p-4 sm:p-5 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+      <a [routerLink]="['/editar-conta', conta.id]" [queryParams]="{ from: 'lancamentos' }"
+        class="block p-4 sm:p-5 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors cursor-pointer">
         <div class="flex items-center gap-4">
           <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 hidden sm:flex"
             [ngClass]="conta.tipo === 'Receita' ? 'bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-rose-100 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400'">
@@ -163,7 +163,7 @@
             {{ formatarMoeda(parseFloatValor(conta.valor)) }}
           </p>
         </div>
-      </div>
+      </a>
       }
       }
     </div>
