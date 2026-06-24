@@ -251,14 +251,16 @@ export class DashboardComponent {
             data: dataReceitas,
             label: 'Receitas',
             backgroundColor: '#9d6bf3',
-            borderRadius: 4
+            borderRadius: 4,
+            order: 1
           },
           {
             type: 'bar',
             data: dataDespesas,
             label: 'Despesas',
             backgroundColor: '#421b7b',
-            borderRadius: 4
+            borderRadius: 4,
+            order: 1
           },
           {
             type: 'line',
@@ -268,7 +270,8 @@ export class DashboardComponent {
             backgroundColor: 'rgba(16, 185, 129, 0.2)',
             borderWidth: 2,
             fill: false,
-            tension: 0.3
+            tension: 0.3,
+            order: 0
           }
         ] as any
       });
