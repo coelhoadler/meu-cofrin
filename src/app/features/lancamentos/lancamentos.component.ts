@@ -82,12 +82,12 @@ export class LancamentosComponent implements OnInit {
     if (range && range.length === 2 && range[0] && range[1]) {
       const inicio = range[0];
       const fim = range[1];
-      
+
       filtradas = filtradas.filter(c => {
         // Criar data baseada no mesReferencia e diaVencimento
         const [ano, mes] = c.mesReferencia.split('-');
         const dataVencimento = new Date(parseInt(ano), parseInt(mes) - 1, c.diaVencimento);
-        
+
         // Zera as horas para comparar apenas datas
         const dataVencZera = new Date(dataVencimento.getFullYear(), dataVencimento.getMonth(), dataVencimento.getDate());
         const inicioZera = new Date(inicio.getFullYear(), inicio.getMonth(), inicio.getDate());
@@ -158,16 +158,18 @@ export class LancamentosComponent implements OnInit {
 
   atualizarDateRange() {
     const ano = parseInt(this.anoFiltro());
+    const mes = new Date().getMonth();
     let inicio: Date, fim: Date;
 
     if (this.mesFiltro() === 'Todos') {
-      inicio = new Date(ano, 0, 1);
-      fim = new Date(ano, 11, 31);
+      inicio = new Date(ano, mes, 1);
+      fim = new Date(ano, mes + 1, 0);
     } else {
       const mes = parseInt(this.mesFiltro()) - 1;
       inicio = new Date(ano, mes, 1);
       fim = new Date(ano, mes + 1, 0);
     }
+
     this.dataRangeFiltro.set([inicio, fim]);
   }
 
