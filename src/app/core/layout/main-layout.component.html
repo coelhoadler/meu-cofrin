@@ -59,6 +59,13 @@
 
       <div class="h-px bg-slate-500/60 my-2 mx-3"></div>
 
+      <button (click)="openQrCodeModal(); isSidebarOpen.set(false)"
+        class="w-full flex items-center py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors gap-3 px-3"
+        [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center md:mx-1 md:gap-0 md:px-0' : ''" title="Apoiar Projeto">
+        <span class="material-symbols-outlined text-xl">favorite</span>
+        <span class="text-sm truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">Apoiar Projeto</span>
+      </button>
+
       <a routerLink="/perfil" routerLinkActive="bg-[#8b5cf6]/20 text-[#c4b5fd]" (click)="isSidebarOpen.set(false)"
         class="flex items-center py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors gap-3 px-3"
         [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center md:mx-1 md:gap-0 md:px-0' : ''" title="Meu Perfil">
@@ -132,4 +139,39 @@
       <router-outlet></router-outlet>
     </div>
   </main>
+
+  <!-- QR Code Modal -->
+  @if (isQrCodeModalOpen()) {
+  <div class="fixed inset-0 z-[60] flex items-center justify-center p-4">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" (click)="closeQrCodeModal()"></div>
+    
+    <!-- Modal Content -->
+    <div class="relative bg-white dark:bg-[#1a112c] rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden flex flex-col border border-slate-200 dark:border-slate-700 animate-in fade-in zoom-in-95 duration-200">
+      <!-- Header -->
+      <div class="flex items-center justify-between p-4 border-b border-slate-100 dark:border-slate-800">
+        <h3 class="font-bold text-slate-800 dark:text-white flex items-center gap-2">
+          <span class="material-symbols-outlined text-fuchsia-500">volunteer_activism</span>
+          Apoiar Projeto
+        </h3>
+        <button (click)="closeQrCodeModal()"
+          class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+          <span class="material-symbols-outlined text-xl">close</span>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="p-6 flex flex-col items-center text-center">
+        <p class="text-sm text-slate-600 dark:text-slate-300 mb-6">
+          Se o <strong>Meu Cofrin</strong> tem ajudado você a organizar suas finanças, considere fazer uma doação para apoiar o desenvolvimento contínuo do projeto!
+        </p>
+        
+        <div class="bg-white p-3 rounded-xl shadow-inner border border-slate-200 mb-2">
+          <img src="/my_qr_code.png" alt="QR Code Pix" class="w-48 h-48 object-contain">
+        </div>
+        <p class="text-xs text-slate-500 mt-2 font-medium">Escaneie o QR Code com o app do seu banco</p>
+      </div>
+    </div>
+  </div>
+  }
 </div>

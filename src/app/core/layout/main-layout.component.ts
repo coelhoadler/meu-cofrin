@@ -18,6 +18,7 @@ export class MainLayoutComponent {
 
   isSidebarOpen = signal(false);
   isDesktopSidebarCollapsed = signal(false);
+  isQrCodeModalOpen = signal(false);
   user = this.authService.currentUser;
 
   private touchStartX = 0;
@@ -29,6 +30,14 @@ export class MainLayoutComponent {
 
   toggleDesktopSidebar() {
     this.isDesktopSidebarCollapsed.update(v => !v);
+  }
+
+  openQrCodeModal() {
+    this.isQrCodeModalOpen.set(true);
+  }
+
+  closeQrCodeModal() {
+    this.isQrCodeModalOpen.set(false);
   }
 
   onTouchStart(event: TouchEvent) {
