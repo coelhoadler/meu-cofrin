@@ -7,6 +7,7 @@ import { ButtonModule } from 'primeng/button';
 import { DatePickerModule } from 'primeng/datepicker';
 import { FormsModule } from '@angular/forms';
 import { CheckboxModule } from 'primeng/checkbox';
+import { DialogModule } from 'primeng/dialog';
 import { AuthService } from '../../core/auth/auth.service';
 import { Conta, ContaService } from '../../core/services/conta.service';
 import { MessagingService } from '../../core/services/messaging.service';
@@ -14,7 +15,7 @@ import { MessagingService } from '../../core/services/messaging.service';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [RouterLink, CommonModule, BaseChartDirective, ButtonModule, DatePickerModule, FormsModule, CheckboxModule],
+  imports: [RouterLink, CommonModule, BaseChartDirective, ButtonModule, DatePickerModule, FormsModule, CheckboxModule, DialogModule],
   templateUrl: './dashboard.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -43,6 +44,10 @@ export class DashboardComponent {
   mesDestino = signal<Date | null>(null);
   contasParaReplicar = signal<(Conta & { existsInDestino?: boolean, selected?: boolean })[]>([]);
   isLoadingReplicacao = signal(false);
+
+  // Modal Imagem states
+  showImageModal = signal(false);
+  selectedImageConta = signal<Conta | null>(null);
 
   pieChartOptions: ChartConfiguration<'pie'>['options'] = {
     responsive: true,
@@ -285,6 +290,12 @@ export class DashboardComponent {
     this.selectedConta.set(conta);
   }
 
+  openImageModal(event: Event, conta: Conta) {
+    event.stopPropagation();
+    this.selectedImageConta.set(conta);
+    this.showImageModal.set(true);
+  }
+
   formatDataVencimento(conta: Conta): string {
     if (!conta.mesReferencia) return `${conta.diaVencimento}`;
     const [ano, mes] = conta.mesReferencia.split('-');
@@ -502,6 +513,23 @@ export class DashboardComponent {
       console.error('Erro ao replicar contas:', error);
     } finally {
       this.isLoadingReplicacao.set(false);
+    }
+  }
+
+  async marcarComoPaga(id: string | undefined) {
+    if (!id) return;
+
+    try {
+      await this.contaService.marcarComoPaga(id);
+
+      this.closeModal();
+      // Recarregar os lançamentos após deletar
+      await this.loadLancamentos();
+      await this.loadResumoMes();
+      await this.loadResumoGrafico();
+    } catch (error) {
+      console.error('Erro ao deletar lançamento:', error);
+      alert('Erro ao deletar lançamento. Tente novamente.');
     }
   }
 
