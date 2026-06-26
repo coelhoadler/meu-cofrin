@@ -281,6 +281,16 @@
           </div>
           Excluir conta
         </button>
+        @if (!conta.statusPago) {
+        <button (click)="marcarComoPaga(conta.id)"
+          class="flex items-center gap-4 w-full p-4 text-left text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-xl transition-colors font-semibold">
+          <div
+            class="w-10 h-10 rounded-full bg-green-50 dark:bg-green-500/10 flex items-center justify-center text-green-500 dark:text-green-400">
+            <span class="material-symbols-outlined">check</span>
+          </div>
+          Já foi paga
+        </button>
+        }
       </div>
     </div>
   </div>
@@ -433,32 +443,33 @@
   }
 
   <!-- Modal de Imagem (Recibo) -->
-  <p-dialog header="Detalhes do Recibo" [modal]="true" [(visible)]="showImageModal" [style]="{ width: '90vw', maxWidth: '600px' }"
-    [dismissableMask]="true">
+  <p-dialog header="Detalhes do Recibo" [modal]="true" [(visible)]="showImageModal"
+    [style]="{ width: '90vw', maxWidth: '600px' }" [dismissableMask]="true">
     @if (selectedImageConta(); as conta) {
-      <div class="mb-4 flex flex-col gap-2 text-sm text-slate-700 dark:text-slate-300">
-        <div class="flex justify-between items-center bg-slate-50 dark:bg-slate-800/50 p-3 rounded-lg border border-slate-100 dark:border-slate-700">
-          <div>
-            <p class="font-bold text-base text-slate-800 dark:text-slate-100">{{ conta.nome }}</p>
-            @if (conta.categoria) {
-              <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{{ conta.categoria }}</p>
-            }
-          </div>
-          <div class="text-right">
-            <p class="font-bold text-lg" [ngClass]="conta.tipo === 'Receita' ? 'text-emerald-600' : 'text-rose-500'">
-              {{ conta.tipo === 'Receita' ? '+ ' : '- ' }}{{ conta.valor }}
-            </p>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Venc: {{ formatDataVencimento(conta) }}</p>
-          </div>
+    <div class="mb-4 flex flex-col gap-2 text-sm text-slate-700 dark:text-slate-300">
+      <div
+        class="flex justify-between items-center bg-slate-50 dark:bg-slate-800/50 p-3 rounded-lg border border-slate-100 dark:border-slate-700">
+        <div>
+          <p class="font-bold text-base text-slate-800 dark:text-slate-100">{{ conta.nome }}</p>
+          @if (conta.categoria) {
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{{ conta.categoria }}</p>
+          }
+        </div>
+        <div class="text-right">
+          <p class="font-bold text-lg" [ngClass]="conta.tipo === 'Receita' ? 'text-emerald-600' : 'text-rose-500'">
+            {{ conta.tipo === 'Receita' ? '+ ' : '- ' }}{{ conta.valor }}
+          </p>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Venc: {{ formatDataVencimento(conta) }}</p>
         </div>
       </div>
-      <div class="flex justify-center items-center bg-slate-100 dark:bg-slate-900/50 rounded-lg p-2 min-h-[200px]">
-        @if (conta.reciboUrl) {
-        <img [src]="conta.reciboUrl" alt="Recibo" class="max-w-full max-h-[60vh] object-contain rounded" />
-        } @else {
-        <div class="text-slate-500">Imagem não encontrada.</div>
-        }
-      </div>
+    </div>
+    <div class="flex justify-center items-center bg-slate-100 dark:bg-slate-900/50 rounded-lg p-2 min-h-[200px]">
+      @if (conta.reciboUrl) {
+      <img [src]="conta.reciboUrl" alt="Recibo" class="max-w-full max-h-[60vh] object-contain rounded" />
+      } @else {
+      <div class="text-slate-500">Imagem não encontrada.</div>
+      }
+    </div>
     }
   </p-dialog>
 </div>

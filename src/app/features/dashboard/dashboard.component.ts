@@ -516,4 +516,21 @@ export class DashboardComponent {
     }
   }
 
+  async marcarComoPaga(id: string | undefined) {
+    if (!id) return;
+
+    try {
+      await this.contaService.marcarComoPaga(id);
+
+      this.closeModal();
+      // Recarregar os lançamentos após deletar
+      await this.loadLancamentos();
+      await this.loadResumoMes();
+      await this.loadResumoGrafico();
+    } catch (error) {
+      console.error('Erro ao deletar lançamento:', error);
+      alert('Erro ao deletar lançamento. Tente novamente.');
+    }
+  }
+
 }
