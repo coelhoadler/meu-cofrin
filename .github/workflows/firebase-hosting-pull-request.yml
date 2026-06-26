@@ -13,8 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm i --legacy-peer-deps && npm run build
-      - uses: FirebaseExtended/action-hosting-deploy@v1
+      - run: npm i --legacy-peer-deps && rm -rf dist build && npm run build
+      - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_MEU_COFRIN }}
