@@ -8,6 +8,7 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { FormsModule } from '@angular/forms';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DialogModule } from 'primeng/dialog';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { AuthService } from '../../core/auth/auth.service';
 import { Conta, ContaService } from '../../core/services/conta.service';
 import { MessagingService } from '../../core/services/messaging.service';
@@ -15,7 +16,7 @@ import { MessagingService } from '../../core/services/messaging.service';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [RouterLink, CommonModule, BaseChartDirective, ButtonModule, DatePickerModule, FormsModule, CheckboxModule, DialogModule],
+  imports: [RouterLink, CommonModule, BaseChartDirective, ButtonModule, DatePickerModule, FormsModule, CheckboxModule, DialogModule, ProgressSpinnerModule],
   templateUrl: './dashboard.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -48,6 +49,7 @@ export class DashboardComponent {
   // Modal Imagem states
   showImageModal = signal(false);
   selectedImageConta = signal<Conta | null>(null);
+  isImageLoading = signal(true);
 
   pieChartOptions: ChartConfiguration<'pie'>['options'] = {
     responsive: true,
@@ -292,6 +294,12 @@ export class DashboardComponent {
 
   openImageModal(event: Event, conta: Conta) {
     event.stopPropagation();
+
+    // Apenas ativa o loading se for uma imagem diferente da que já estava carregada
+    if (this.selectedImageConta()?.reciboUrl !== conta.reciboUrl) {
+      this.isImageLoading.set(true);
+    }
+
     this.selectedImageConta.set(conta);
     this.showImageModal.set(true);
   }
@@ -531,6 +539,15 @@ export class DashboardComponent {
       console.error('Erro ao deletar lançamento:', error);
       alert('Erro ao deletar lançamento. Tente novamente.');
     }
+  }
+
+  onImageLoad() {
+    this.isImageLoading.set(false);
+  }
+
+  onImageError() {
+    console.error("Erro ao carregar a imagem do recibo.");
+    this.isImageLoading.set(false);
   }
 
 }

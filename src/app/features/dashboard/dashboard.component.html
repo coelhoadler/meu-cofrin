@@ -465,7 +465,11 @@
     </div>
     <div class="flex justify-center items-center bg-slate-100 dark:bg-slate-900/50 rounded-lg p-2 min-h-[200px]">
       @if (conta.reciboUrl) {
-      <img [src]="conta.reciboUrl" alt="Recibo" class="max-w-full max-h-[60vh] object-contain rounded" />
+        @if (isImageLoading()) {
+          <p-progressSpinner ariaLabel="loading"></p-progressSpinner>
+        }
+        <img [src]="conta.reciboUrl" alt="Recibo" class="max-w-full max-h-[60vh] object-contain rounded"
+          [class.hidden]="isImageLoading()" (load)="onImageLoad()" (error)="onImageError()" />
       } @else {
       <div class="text-slate-500">Imagem não encontrada.</div>
       }
