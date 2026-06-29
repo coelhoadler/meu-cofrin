@@ -155,7 +155,8 @@
             [ngClass]="getRowClass(item)">
             <td class="py-4 px-2 w-8">
               @if(item.tipo === 'Receita') {
-              <div class="material-symbols-outlined text-[#421b7b] text-[11px]" title="Receita">attach_money</div>
+              <div class="material-symbols-outlined text-[#421b7b] dark:text-[#a37fd8] text-[11px]" title="Receita">
+                attach_money</div>
               }
               @if(item.tipo === 'Despesa' && item.statusPago) {
               <div class="material-symbols-outlined text-emerald-500 text-[11px]" title="Pago">check</div>
@@ -231,7 +232,7 @@
       <!-- Legenda -->
       <div class="flex flex-wrap items-center gap-6">
         <div class="flex items-center gap-2">
-          <div class="material-symbols-outlined text-[#421b7b] text-[11px]">attach_money</div>
+          <div class="material-symbols-outlined dark:text-[#a37fd8] text-[#421b7b] text-[11px]">attach_money</div>
           <span class="text-[11px] text-slate-500 font-medium uppercase tracking-wider">Receita</span>
         </div>
         <div class="flex items-center gap-2">
