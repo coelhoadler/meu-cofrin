@@ -86,7 +86,7 @@ export const notificarContasPorEmail = onSchedule({
 
         emails.push({
           to: emailUsuario,
-          from: 'meucofrinnoreply@gmail.com',
+          from: 'naoresponder@meu-cofrin.app.br',
           subject: titulo,
           text: `Olá! Lembrete: Sua conta de ${nomeConta} no valor de R$ ${valor} ${fraseContexto}. Não se esqueça de pagar para evitar juros.`,
           html: `<p>Olá!</p><p>Lembrete: Sua conta de <strong>${nomeConta}</strong> no valor de <strong>R$ ${valor}</strong> ${fraseContexto}.</p><p>Não se esqueça de pagar para evitar juros.</p>`,
