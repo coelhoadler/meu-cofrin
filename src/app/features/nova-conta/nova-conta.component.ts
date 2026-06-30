@@ -124,6 +124,9 @@ export class NovaContaComponent implements OnInit {
       if (isPaid) {
         dataPagamentoCtrl?.enable();
         dataPagamentoCtrl?.setValidators([Validators.required]);
+        if (!dataPagamentoCtrl?.value) {
+          dataPagamentoCtrl?.setValue(new Date());
+        }
       } else {
         dataPagamentoCtrl?.disable();
         dataPagamentoCtrl?.clearValidators();
