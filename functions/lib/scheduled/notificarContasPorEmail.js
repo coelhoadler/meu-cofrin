@@ -47,8 +47,10 @@ exports.notificarContasPorEmail = (0, scheduler_1.onSchedule)({
         const emails = new Array();
         // Configura a API Key do SendGrid usando o Secret
         sgMail.setApiKey(sendgridApiKey.value());
+        // Cache para evitar requisições repetidas ao Firebase Auth para o mesmo usuário
+        const authCache = new Map();
         const processarDocumentos = async (docs, titulo, fraseContexto) => {
-            var _a, _b;
+            var _a;
             for (const doc of docs) {
                 const conta = doc.data();
                 const nomeConta = conta.nome || "Conta";
@@ -56,18 +58,25 @@ exports.notificarContasPorEmail = (0, scheduler_1.onSchedule)({
                 const userId = (_a = doc.ref.parent.parent) === null || _a === void 0 ? void 0 : _a.id;
                 if (!userId)
                     continue;
-                // Buscar dados do usuário no Firestore
-                const userSnap = await db.collection("users").doc(userId).get();
-                if (!userSnap.exists)
-                    continue;
-                const userData = userSnap.data();
-                const emailUsuario = (_b = userData === null || userData === void 0 ? void 0 : userData.perfil) === null || _b === void 0 ? void 0 : _b.email;
-                // Se o usuário não tiver e-mail salvo, ignora o envio
+                let emailUsuario = authCache.get(userId);
+                if (emailUsuario === undefined) {
+                    try {
+                        const authUser = await admin.auth().getUser(userId);
+                        // Só guarda o e-mail se estiver verificado
+                        emailUsuario = authUser.emailVerified && authUser.email ? authUser.email : null;
+                    }
+                    catch (error) {
+                        logger.warn(`Erro ao buscar usuário ${userId} no Auth`, error);
+                        emailUsuario = null;
+                    }
+                    authCache.set(userId, emailUsuario);
+                }
+                // Se o usuário não tiver e-mail verificado, ignora
                 if (!emailUsuario)
                     continue;
                 emails.push({
                     to: emailUsuario,
-                    from: 'meucofrinnoreply@gmail.com',
+                    from: 'naoresponder@meu-cofrin.app.br',
                     subject: titulo,
                     text: `Olá! Lembrete: Sua conta de ${nomeConta} no valor de R$ ${valor} ${fraseContexto}. Não se esqueça de pagar para evitar juros.`,
                     html: `<p>Olá!</p><p>Lembrete: Sua conta de <strong>${nomeConta}</strong> no valor de <strong>R$ ${valor}</strong> ${fraseContexto}.</p><p>Não se esqueça de pagar para evitar juros.</p>`,

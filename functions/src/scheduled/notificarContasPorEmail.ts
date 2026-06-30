@@ -55,6 +55,9 @@ export const notificarContasPorEmail = onSchedule({
     // Configura a API Key do SendGrid usando o Secret
     sgMail.setApiKey(sendgridApiKey.value());
 
+    // Cache para evitar requisições repetidas ao Firebase Auth para o mesmo usuário
+    const authCache = new Map<string, string | null>();
+
     const processarDocumentos = async (docs: any[], titulo: string, fraseContexto: string) => {
       for (const doc of docs) {
         const conta = doc.data();
@@ -64,19 +67,26 @@ export const notificarContasPorEmail = onSchedule({
         const userId = doc.ref.parent.parent?.id;
         if (!userId) continue;
 
-        // Buscar dados do usuário no Firestore
-        const userSnap = await db.collection("users").doc(userId).get();
-        if (!userSnap.exists) continue;
+        let emailUsuario = authCache.get(userId);
 
-        const userData = userSnap.data();
-        const emailUsuario = userData?.perfil?.email;
+        if (emailUsuario === undefined) {
+          try {
+            const authUser = await admin.auth().getUser(userId);
+            // Só guarda o e-mail se estiver verificado
+            emailUsuario = authUser.emailVerified && authUser.email ? authUser.email : null;
+          } catch (error) {
+            logger.warn(`Erro ao buscar usuário ${userId} no Auth`, error);
+            emailUsuario = null;
+          }
+          authCache.set(userId, emailUsuario);
+        }
 
-        // Se o usuário não tiver e-mail salvo, ignora o envio
+        // Se o usuário não tiver e-mail verificado, ignora
         if (!emailUsuario) continue;
 
         emails.push({
           to: emailUsuario,
-          from: 'meucofrinnoreply@gmail.com',
+          from: 'naoresponder@meu-cofrin.app.br',
           subject: titulo,
           text: `Olá! Lembrete: Sua conta de ${nomeConta} no valor de R$ ${valor} ${fraseContexto}. Não se esqueça de pagar para evitar juros.`,
           html: `<p>Olá!</p><p>Lembrete: Sua conta de <strong>${nomeConta}</strong> no valor de <strong>R$ ${valor}</strong> ${fraseContexto}.</p><p>Não se esqueça de pagar para evitar juros.</p>`,
