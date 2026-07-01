@@ -100,15 +100,13 @@ export class ContaService {
 
     const contasRef = collection(this.firestore, `users/${user.uid}/contas`);
 
-    // Calculate date 15 days ago
-    const dataLimite = new Date();
-    dataLimite.setDate(dataLimite.getDate() - 30);
+    const dataAtual = new Date();
+    const mesAtualStr = `${dataAtual.getFullYear()}-${String(dataAtual.getMonth() + 1).padStart(2, '0')}`;
 
     const q = query(
       contasRef,
-      where('createdAt', '>=', dataLimite),
-      orderBy('createdAt', 'desc'),
-      limit(25)
+      where('mesReferencia', '==', mesAtualStr),
+      limit(30)
     );
 
     const querySnapshot = await getDocs(q);
