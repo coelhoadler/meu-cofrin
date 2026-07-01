@@ -106,7 +106,7 @@ export class ContaService {
     const q = query(
       contasRef,
       where('mesReferencia', '==', mesAtualStr),
-      limit(25)
+      limit(30)
     );
 
     const querySnapshot = await getDocs(q);
