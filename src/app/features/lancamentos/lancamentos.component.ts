@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -16,6 +16,44 @@ import { CategoriaService, Categoria } from '../../core/services/categoria.servi
 export class LancamentosComponent implements OnInit {
   private contaService = inject(ContaService);
   private categoriaService = inject(CategoriaService);
+
+  constructor() {
+    const savedFiltros = localStorage.getItem('lancamentosFiltros');
+    if (savedFiltros) {
+      try {
+        const parsed = JSON.parse(savedFiltros);
+        if (parsed.mesFiltro) this.mesFiltro.set(parsed.mesFiltro);
+        if (parsed.anoFiltro) this.anoFiltro.set(parsed.anoFiltro);
+        if (parsed.tipoFiltro) this.tipoFiltro.set(parsed.tipoFiltro);
+        if (parsed.categoriaFiltro) this.categoriaFiltro.set(parsed.categoriaFiltro);
+        if (parsed.nomeFiltro !== undefined) this.nomeFiltro.set(parsed.nomeFiltro);
+        if (parsed.somentePagos !== undefined) this.somentePagos.set(parsed.somentePagos);
+        if (parsed.somentePendentes !== undefined) this.somentePendentes.set(parsed.somentePendentes);
+        if (parsed.isBuscaGlobal !== undefined) this.isBuscaGlobal.set(parsed.isBuscaGlobal);
+        if (parsed.dataRangeFiltro) {
+          const [start, end] = parsed.dataRangeFiltro;
+          this.dataRangeFiltro.set([start ? new Date(start) : null, end ? new Date(end) : null] as any);
+        }
+      } catch (e) {
+        console.error('Erro ao recuperar filtros', e);
+      }
+    }
+
+    effect(() => {
+      const filtros = {
+        mesFiltro: this.mesFiltro(),
+        anoFiltro: this.anoFiltro(),
+        tipoFiltro: this.tipoFiltro(),
+        categoriaFiltro: this.categoriaFiltro(),
+        nomeFiltro: this.nomeFiltro(),
+        dataRangeFiltro: this.dataRangeFiltro(),
+        somentePagos: this.somentePagos(),
+        somentePendentes: this.somentePendentes(),
+        isBuscaGlobal: this.isBuscaGlobal()
+      };
+      localStorage.setItem('lancamentosFiltros', JSON.stringify(filtros));
+    });
+  }
 
   meses = [
     { valor: 'Todos', nome: 'Todos' },
@@ -128,8 +166,15 @@ export class LancamentosComponent implements OnInit {
   ngOnInit() {
     this.gerarAnos();
     this.carregarCategorias();
-    this.atualizarDateRange();
-    this.carregarDados();
+
+    if (this.isBuscaGlobal() && this.nomeFiltro().trim()) {
+      this.executarPesquisaGlobal();
+    } else {
+      if (!this.dataRangeFiltro()) {
+        this.atualizarDateRange();
+      }
+      this.carregarDados();
+    }
   }
 
   gerarAnos() {
@@ -215,7 +260,12 @@ export class LancamentosComponent implements OnInit {
     this.somentePagos.set(false);
     this.somentePendentes.set(false);
     this.isBuscaGlobal.set(true);
-    
+
+    await this.executarPesquisaGlobal();
+  }
+
+  async executarPesquisaGlobal() {
+    const termo = this.nomeFiltro().trim();
     this.isLoading.set(true);
     try {
       const contas = await this.contaService.buscarContasPorNome(termo);

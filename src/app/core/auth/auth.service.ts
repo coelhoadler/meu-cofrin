@@ -87,6 +87,7 @@ export class AuthService {
   }
 
   async logout() {
+    localStorage.removeItem('lancamentosFiltros');
     await signOut(this.auth);
     this.router.navigate(['/login']);
   }
