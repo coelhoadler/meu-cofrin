@@ -134,6 +134,29 @@ export class ContaService {
     return items;
   }
 
+  async buscarContasPorNome(nome: string): Promise<Conta[]> {
+    const user = await this.authService.getCurrentUserAsync();
+    if (!user) {
+      return [];
+    }
+
+    const contasRef = collection(this.firestore, `users/${user.uid}/contas`);
+    // Busca abrangente ordenada pela data de criação
+    const q = query(contasRef, orderBy('createdAt', 'desc'), limit(1000));
+    
+    const querySnapshot = await getDocs(q);
+    const termo = nome.toLowerCase().trim();
+    
+    const items = querySnapshot.docs.map(doc => {
+      return {
+        id: doc.id,
+        ...doc.data()
+      } as Conta;
+    }).filter(c => c.nome.toLowerCase().includes(termo));
+
+    return items;
+  }
+
   async getContasByMesReferencia(mesReferencia: string): Promise<Conta[]> {
     const user = await this.authService.getCurrentUserAsync();
     if (!user) {

@@ -42,6 +42,9 @@ export class LancamentosComponent implements OnInit {
   categoriaFiltro = signal<string>('Todos');
   nomeFiltro = signal<string>('');
   dataRangeFiltro = signal<Date[] | null>(null);
+  somentePagos = signal<boolean>(false);
+  somentePendentes = signal<boolean>(false);
+  isBuscaGlobal = signal<boolean>(false);
 
   // Dados
   contas = signal<Conta[]>([]);
@@ -76,6 +79,12 @@ export class LancamentosComponent implements OnInit {
     if (this.nomeFiltro().trim()) {
       const termo = this.nomeFiltro().toLowerCase().trim();
       filtradas = filtradas.filter(c => c.nome.toLowerCase().includes(termo));
+    }
+
+    if (this.somentePagos()) {
+      filtradas = filtradas.filter(c => c.statusPago === true);
+    } else if (this.somentePendentes()) {
+      filtradas = filtradas.filter(c => c.statusPago === false);
     }
 
     const range = this.dataRangeFiltro();
@@ -138,6 +147,7 @@ export class LancamentosComponent implements OnInit {
   }
 
   async carregarDados() {
+    this.isBuscaGlobal.set(false);
     this.isLoading.set(true);
     try {
       let contas: Conta[] = [];
@@ -184,8 +194,42 @@ export class LancamentosComponent implements OnInit {
     this.tipoFiltro.set('Todos');
     this.categoriaFiltro.set('Todos');
     this.nomeFiltro.set('');
+    this.somentePagos.set(false);
+    this.somentePendentes.set(false);
+    this.isBuscaGlobal.set(false);
     this.atualizarDateRange();
     this.carregarDados();
+  }
+
+  async pesquisaGlobal() {
+    const termo = this.nomeFiltro().trim();
+    if (!termo) {
+      this.limparFiltros();
+      return;
+    }
+
+    this.mesFiltro.set('Todos');
+    this.tipoFiltro.set('Todos');
+    this.categoriaFiltro.set('Todos');
+    this.dataRangeFiltro.set(null);
+    this.somentePagos.set(false);
+    this.somentePendentes.set(false);
+    this.isBuscaGlobal.set(true);
+    
+    this.isLoading.set(true);
+    try {
+      const contas = await this.contaService.buscarContasPorNome(termo);
+      contas.sort((a, b) => {
+        const dateA = new Date(`${a.mesReferencia}-${String(a.diaVencimento).padStart(2, '0')}`);
+        const dateB = new Date(`${b.mesReferencia}-${String(b.diaVencimento).padStart(2, '0')}`);
+        return dateB.getTime() - dateA.getTime();
+      });
+      this.contas.set(contas);
+    } catch (e) {
+      console.error('Erro na pesquisa global', e);
+    } finally {
+      this.isLoading.set(false);
+    }
   }
 
   parseFloatValor(valor: any): number {
