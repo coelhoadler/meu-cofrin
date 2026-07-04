@@ -1,8 +1,8 @@
-<div class="space-y-6 max-w-5xl mx-auto pb-10">
+<div class="space-y-6 max-w-8xl mx-auto pb-10">
   <!-- Header -->
-  <div>
+  <div class="max-w-3xl mx-auto py-4">
     <a routerLink="/dashboard"
-      class="inline-flex items-center text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors mb-2">
+      class="inline-flex items-center text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors mb-6">
       <span class="material-symbols-outlined text-sm mr-1">arrow_back</span>
       Voltar
     </a>
@@ -177,7 +177,8 @@
             <div class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               <span class="truncate max-w-[120px] sm:max-w-none">{{ conta.categoria || 'Sem categoria' }}</span>
               <span>•</span>
-              <span>Vence dia {{ conta.diaVencimento }}{{ '/' + conta.mesReferencia.split('-')[1] || '' }}/{{
+              <span>Vence dia {{ conta.diaVencimento.toString().padStart(2, '0') }}{{ '/' +
+                conta.mesReferencia.split('-')[1] || '' }}/{{
                 conta.mesReferencia.split('-')[0] }}</span>
             </div>
             <div class="flex items-center gap-1.5 w-full text-xs text-slate-500 dark:text-slate-400 mt-0.5">
