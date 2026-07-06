@@ -1,6 +1,6 @@
 import { Component, inject, signal, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
 import { WebauthnService } from '../../core/auth/webauthn.service';
 import { CommonModule } from '@angular/common';
@@ -17,6 +17,7 @@ export class LoginComponent implements OnInit {
   private authService = inject(AuthService);
   private webauthnService = inject(WebauthnService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   loginForm = this.fb.group({
     nome: [''],
@@ -75,7 +76,8 @@ export class LoginComponent implements OnInit {
       } else {
         await this.authService.signup(email!, password!, nome);
       }
-      this.router.navigate(['/dashboard']);
+      const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
+      this.router.navigateByUrl(returnUrl);
     } catch (error: any) {
       const message = this.isLoginMode()
         ? 'Falha no login. Verifique suas credenciais.'
@@ -100,7 +102,8 @@ export class LoginComponent implements OnInit {
 
     try {
       await this.webauthnService.authenticateWithPasskey(email);
-      this.router.navigate(['/dashboard']);
+      const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
+      this.router.navigateByUrl(returnUrl);
     } catch (error: any) {
       this.errorMessage.set(error.message || 'Falha ao autenticar com biometria.');
       console.error(error);
@@ -115,7 +118,8 @@ export class LoginComponent implements OnInit {
 
     try {
       await this.authService.loginWithGoogle();
-      this.router.navigate(['/dashboard']);
+      const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
+      this.router.navigateByUrl(returnUrl);
     } catch (error: any) {
       this.errorMessage.set('Falha ao autenticar com o Google. Tente novamente.');
       console.error(error);

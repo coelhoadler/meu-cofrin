@@ -19,11 +19,11 @@ export const authGuard: CanActivateFn = (route, state) => {
 
         if (now - authTime > maxDuration) {
           await auth.signOut(); // Força o logout se expirou
-          return router.createUrlTree(['/login']);
+          return router.createUrlTree(['/login'], { queryParams: { returnUrl: state.url } });
         }
         return true;
       }
-      return router.createUrlTree(['/login']);
+      return router.createUrlTree(['/login'], { queryParams: { returnUrl: state.url } });
     })
   );
 };

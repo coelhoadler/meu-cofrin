@@ -37,6 +37,11 @@ export const routes: Routes = [
         loadComponent: () => import('./features/perfil/perfil').then(m => m.Perfil),
         title: 'Meu Cofrin | Meu Perfil' 
       },
+      {
+        path: 'conta/:id',
+        loadComponent: () => import('./features/pagar-conta/pagar-conta.component').then(m => m.PagarContaComponent),
+        title: 'Meu Cofrin | Atualizar Conta'
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },

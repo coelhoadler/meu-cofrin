@@ -49,47 +49,64 @@ exports.notificarContasPorEmail = (0, scheduler_1.onSchedule)({
         sgMail.setApiKey(sendgridApiKey.value());
         // Cache para evitar requisições repetidas ao Firebase Auth para o mesmo usuário
         const authCache = new Map();
-        const processarDocumentos = async (docs, titulo, fraseContexto) => {
-            var _a;
+        const processarDocumentos = async (docs, vencimentoTexto) => {
+            var _a, _b;
             for (const doc of docs) {
                 const conta = doc.data();
                 const nomeConta = conta.nome || "Conta";
-                const valor = conta.valor || 0;
-                const userId = (_a = doc.ref.parent.parent) === null || _a === void 0 ? void 0 : _a.id;
+                const valorNumerico = Number((_a = conta.valor) === null || _a === void 0 ? void 0 : _a.replace('R$', '').replace('.', '').replace(',', '.').trim()) || 0;
+                const valorFormatado = new Intl.NumberFormat('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL'
+                }).format(valorNumerico);
+                const userId = (_b = doc.ref.parent.parent) === null || _b === void 0 ? void 0 : _b.id;
                 if (!userId)
                     continue;
-                let emailUsuario = authCache.get(userId);
-                if (emailUsuario === undefined) {
+                let authData = authCache.get(userId);
+                if (authData === undefined) {
                     try {
                         const authUser = await admin.auth().getUser(userId);
                         // Só guarda o e-mail se estiver verificado
-                        emailUsuario = authUser.emailVerified && authUser.email ? authUser.email : null;
+                        if (authUser.emailVerified && authUser.email) {
+                            const nomeCompleto = authUser.displayName || "Usuário";
+                            const primeiroNome = nomeCompleto.split(" ")[0];
+                            authData = { email: authUser.email, nome: primeiroNome };
+                        }
+                        else {
+                            authData = null;
+                        }
                     }
                     catch (error) {
                         logger.warn(`Erro ao buscar usuário ${userId} no Auth`, error);
-                        emailUsuario = null;
+                        authData = null;
                     }
-                    authCache.set(userId, emailUsuario);
+                    authCache.set(userId, authData);
                 }
                 // Se o usuário não tiver e-mail verificado, ignora
-                if (!emailUsuario)
+                if (!authData)
                     continue;
                 emails.push({
-                    to: emailUsuario,
+                    to: authData.email,
                     from: 'naoresponder@meu-cofrin.app.br',
-                    subject: titulo,
-                    text: `Olá! Lembrete: Sua conta de ${nomeConta} no valor de R$ ${valor} ${fraseContexto}. Não se esqueça de pagar para evitar juros.`,
-                    html: `<p>Olá!</p><p>Lembrete: Sua conta de <strong>${nomeConta}</strong> no valor de <strong>R$ ${valor}</strong> ${fraseContexto}.</p><p>Não se esqueça de pagar para evitar juros.</p>`,
+                    templateId: 'd-acf3eb353a97428c8acb4b66fa6923de',
+                    dynamicTemplateData: {
+                        id_conta: doc.id,
+                        nome_usuario: authData.nome,
+                        nome_conta: nomeConta,
+                        valor: valorFormatado,
+                        vencimento_texto: vencimentoTexto,
+                        ano_atual: new Date().getFullYear().toString()
+                    }
                 });
             }
         };
         // Processar contas de hoje
         if (!snapshotHoje.empty) {
-            await processarDocumentos(snapshotHoje.docs, "Conta vencendo HOJE! 🚨", "vence HOJE");
+            await processarDocumentos(snapshotHoje.docs, "HOJE");
         }
         // Processar contas de 3 dias
         if (!snapshot3Dias.empty) {
-            await processarDocumentos(snapshot3Dias.docs, "Conta vencendo em 3 dias! 📅", "vence em 3 dias");
+            await processarDocumentos(snapshot3Dias.docs, "EM 3 DIAS");
         }
         // Disparar e-mails via SendGrid
         if (emails.length > 0) {
