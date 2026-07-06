@@ -1,0 +1,28 @@
+<div class="feedback-container">
+  <!-- Estado de Carregamento -->
+  <div *ngIf="status() === 'loading'" class="feedback-card loading">
+    <div class="spinner"></div>
+    <h2>Processando pagamento...</h2>
+    <p>Aguarde enquanto atualizamos o status da sua conta.</p>
+  </div>
+
+  <!-- Estado de Sucesso -->
+  <div *ngIf="status() === 'success'" class="feedback-card success">
+    <div class="icon-container">
+      <i class="pi pi-check-circle"></i>
+    </div>
+    <h2>Conta Paga com Sucesso!</h2>
+    <p>O status da sua conta foi atualizado para pago. Bom trabalho em manter suas finanças em dia!</p>
+    <a routerLink="/dashboard" class="btn-primary">Ir para o Dashboard</a>
+  </div>
+
+  <!-- Estado de Erro -->
+  <div *ngIf="status() === 'error'" class="feedback-card error">
+    <div class="icon-container">
+      <i class="pi pi-times-circle"></i>
+    </div>
+    <h2>Oops! Algo deu errado.</h2>
+    <p>{{ errorMessage() }}</p>
+    <a routerLink="/dashboard" class="btn-secondary">Voltar ao Dashboard</a>
+  </div>
+</div>

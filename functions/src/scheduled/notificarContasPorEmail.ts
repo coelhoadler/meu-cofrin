@@ -99,6 +99,7 @@ export const notificarContasPorEmail = onSchedule({
           from: 'naoresponder@meu-cofrin.app.br',
           templateId: 'd-acf3eb353a97428c8acb4b66fa6923de',
           dynamicTemplateData: {
+            id_conta: doc.id,
             nome_usuario: authData.nome,
             nome_conta: nomeConta,
             valor: valorFormatado,
