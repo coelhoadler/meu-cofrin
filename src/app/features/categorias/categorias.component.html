@@ -1,6 +1,6 @@
 <div class="max-w-3xl mx-auto py-4">
   <a routerLink="/dashboard"
-    class="inline-flex items-center gap-2 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors text-sm font-medium mb-6">
+    class="items-center gap-2 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors text-sm font-medium mb-6 hidden sm:inline-flex">
     <span class="material-symbols-outlined text-base">arrow_back</span>
     Voltar
   </a>
@@ -161,4 +161,9 @@
     </div>
     }
   </div>
+  <!-- Floating Action Button (Mobile Only) -->
+  <a routerLink="/dashboard"
+    class="fixed bottom-6 right-6 z-40 sm:hidden flex items-center justify-center w-14 h-14 bg-[#421b7b] active:bg-[#341561] text-white rounded-full border-[2.5px] border-[#9d6bf3] shadow-[0_0_20px_rgba(157,107,243,0.4)] transition-transform active:scale-95">
+    <span class="material-symbols-outlined text-3xl">keyboard_backspace</span>
+  </a>
 </div>
