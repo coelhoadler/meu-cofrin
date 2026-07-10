@@ -161,7 +161,8 @@
             <span class="material-symbols-outlined text-[18px] text-amber-500">warning</span>
             <span>O número não foi verificado.</span>
           </div>
-          <button type="button" (click)="sendSmsVerification()" [disabled]="isSendingSms()"
+          <button type="button" (click)="sendSmsVerification()"
+            [disabled]="isSendingSms() || this.phoneNumber().length < 11"
             class="px-3 py-1.5 bg-white border border-amber-200 rounded-lg text-xs font-medium text-amber-700 hover:bg-amber-100 hover:text-amber-800 disabled:opacity-50 transition-colors shadow-sm whitespace-nowrap">
             {{ isSendingSms() ? 'Enviando...' : 'Verificar número' }}
           </button>
