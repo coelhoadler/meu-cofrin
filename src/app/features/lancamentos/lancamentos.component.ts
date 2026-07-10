@@ -22,8 +22,6 @@ export class LancamentosComponent implements OnInit {
     if (savedFiltros) {
       try {
         const parsed = JSON.parse(savedFiltros);
-        if (parsed.mesFiltro) this.mesFiltro.set(parsed.mesFiltro);
-        if (parsed.anoFiltro) this.anoFiltro.set(parsed.anoFiltro);
         if (parsed.tipoFiltro) this.tipoFiltro.set(parsed.tipoFiltro);
         if (parsed.categoriaFiltro) this.categoriaFiltro.set(parsed.categoriaFiltro);
         if (parsed.nomeFiltro !== undefined) this.nomeFiltro.set(parsed.nomeFiltro);
@@ -41,8 +39,6 @@ export class LancamentosComponent implements OnInit {
 
     effect(() => {
       const filtros = {
-        mesFiltro: this.mesFiltro(),
-        anoFiltro: this.anoFiltro(),
         tipoFiltro: this.tipoFiltro(),
         categoriaFiltro: this.categoriaFiltro(),
         nomeFiltro: this.nomeFiltro(),
@@ -55,27 +51,7 @@ export class LancamentosComponent implements OnInit {
     });
   }
 
-  meses = [
-    { valor: 'Todos', nome: 'Todos' },
-    { valor: '01', nome: 'Janeiro' },
-    { valor: '02', nome: 'Fevereiro' },
-    { valor: '03', nome: 'Março' },
-    { valor: '04', nome: 'Abril' },
-    { valor: '05', nome: 'Maio' },
-    { valor: '06', nome: 'Junho' },
-    { valor: '07', nome: 'Julho' },
-    { valor: '08', nome: 'Agosto' },
-    { valor: '09', nome: 'Setembro' },
-    { valor: '10', nome: 'Outubro' },
-    { valor: '11', nome: 'Novembro' },
-    { valor: '12', nome: 'Dezembro' },
-  ];
-
-  anos: string[] = [];
-
   // Filtros
-  mesFiltro = signal<string>('Todos');
-  anoFiltro = signal<string>(new Date().getFullYear().toString());
   tipoFiltro = signal<string>('Todos');
   categoriaFiltro = signal<string>('Todos');
   nomeFiltro = signal<string>('');
@@ -164,7 +140,6 @@ export class LancamentosComponent implements OnInit {
   });
 
   ngOnInit() {
-    this.gerarAnos();
     this.carregarCategorias();
 
     if (this.isBuscaGlobal() && this.nomeFiltro().trim()) {
@@ -175,11 +150,6 @@ export class LancamentosComponent implements OnInit {
       }
       this.carregarDados();
     }
-  }
-
-  gerarAnos() {
-    const anoAtual = new Date().getFullYear().toString();
-    this.anos = [anoAtual];
   }
 
   async carregarCategorias() {
@@ -196,12 +166,14 @@ export class LancamentosComponent implements OnInit {
     this.isLoading.set(true);
     try {
       let contas: Conta[] = [];
-      if (this.mesFiltro() === 'Todos') {
-        contas = await this.contaService.getContasByAno(this.anoFiltro(), 50);
-      } else {
-        const mesReferencia = `${this.anoFiltro()}-${this.mesFiltro()}`;
-        contas = await this.contaService.getContasByMesReferencia(mesReferencia);
+      const range = this.dataRangeFiltro();
+      let ano = new Date().getFullYear().toString();
+      
+      if (range && range[0]) {
+        ano = range[0].getFullYear().toString();
       }
+
+      contas = await this.contaService.getContasByAno(ano, 500);
       contas.sort((a, b) => a.diaVencimento - b.diaVencimento);
       this.contas.set(contas);
     } catch (e) {
@@ -212,30 +184,24 @@ export class LancamentosComponent implements OnInit {
   }
 
   atualizarDateRange() {
-    const ano = parseInt(this.anoFiltro());
-    const mes = new Date().getMonth();
-    let inicio: Date, fim: Date;
-
-    if (this.mesFiltro() === 'Todos') {
-      inicio = new Date(ano, mes, 1);
-      fim = new Date(ano, mes + 1, 0);
-    } else {
-      const mes = parseInt(this.mesFiltro()) - 1;
-      inicio = new Date(ano, mes, 1);
-      fim = new Date(ano, mes + 1, 0);
-    }
+    const dataAtual = new Date();
+    const ano = dataAtual.getFullYear();
+    const mes = dataAtual.getMonth();
+    const inicio = new Date(ano, mes, 1);
+    const fim = new Date(ano, mes + 1, 0);
 
     this.dataRangeFiltro.set([inicio, fim]);
   }
 
-  onFiltroMesAnoChange() {
-    this.atualizarDateRange();
-    this.carregarDados();
+  onDataRangeChange(event: any) {
+    this.dataRangeFiltro.set(event);
+    if (event && event[0] && event[1]) {
+      this.carregarDados();
+    }
   }
 
   limparFiltros() {
-    this.mesFiltro.set('Todos');
-    this.anoFiltro.set(new Date().getFullYear().toString());
+    localStorage.removeItem('lancamentosFiltros');
     this.tipoFiltro.set('Todos');
     this.categoriaFiltro.set('Todos');
     this.nomeFiltro.set('');
@@ -253,7 +219,6 @@ export class LancamentosComponent implements OnInit {
       return;
     }
 
-    this.mesFiltro.set('Todos');
     this.tipoFiltro.set('Todos');
     this.categoriaFiltro.set('Todos');
     this.dataRangeFiltro.set(null);
