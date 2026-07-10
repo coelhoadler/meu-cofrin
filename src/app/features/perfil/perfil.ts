@@ -185,9 +185,11 @@ export class Perfil implements OnInit, OnDestroy {
     this.successMessage.set('');
 
     try {
-      if (!this.recaptchaVerifier) {
-        this.recaptchaVerifier = this.authService.setupRecaptcha('recaptcha-container');
+      if (this.recaptchaVerifier) {
+        this.recaptchaVerifier.clear();
+        this.recaptchaVerifier = null;
       }
+      this.recaptchaVerifier = this.authService.setupRecaptcha('recaptcha-container');
 
       this.confirmationResult = await this.authService.linkPhoneNumber(fullNumber, this.recaptchaVerifier);
       this.showSmsInput.set(true);
@@ -195,8 +197,6 @@ export class Perfil implements OnInit, OnDestroy {
     } catch (error: any) {
       console.error(error);
       this.errorMessage.set(error.message || 'Erro ao enviar o SMS. Verifique o formato do número (+55...).');
-      // Firebase reCAPTCHA might be expired or failed, but recreating it on the same container causes the 'already rendered' error.
-      // We leave the instance intact so the user can try again.
     } finally {
       this.isSendingSms.set(false);
     }
