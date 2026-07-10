@@ -71,10 +71,11 @@
         class="flex items-center py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors gap-3 px-3 relative"
         [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center md:mx-1 md:gap-0 md:px-0' : ''" title="Meu Perfil">
         <span class="material-symbols-outlined text-xl">person</span>
-        <span class="text-sm flex-1 truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">Meu Perfil</span>
+        <span class="text-sm flex-1 truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">Meu
+          Perfil</span>
         @if (!user()?.emailVerified || !user()?.phoneNumber) {
-        <span class="material-symbols-outlined text-amber-500 text-[18px]"
-          [ngClass]="isDesktopSidebarCollapsed() ? 'absolute top-1.5 right-1.5 text-[14px]' : ''"
+        <span class="material-symbols-outlined text-amber-500"
+          [ngClass]="isDesktopSidebarCollapsed() ? 'absolute top-[0px] right-[-10px] text-[13px]' : 'text-[18px]'"
           title="Verificação pendente">warning</span>
         }
       </a>
