@@ -41,7 +41,6 @@ export class DashboardComponent {
   showValues = signal(localStorage.getItem('showValues') !== 'false');
 
   toggleVisibility() {
-    console.log('caindo aqui', this.showValues());
     const newValue = !this.showValues();
     this.showValues.set(newValue);
     localStorage.setItem('showValues', newValue.toString());
