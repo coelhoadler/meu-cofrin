@@ -38,6 +38,13 @@ export class DashboardComponent {
   totalAPagar = signal('R$ 0,00');
   totalPago = signal('R$ 0,00');
   statusConta = signal('');
+  showValues = signal(localStorage.getItem('showValues') !== 'false');
+
+  toggleVisibility() {
+    const newValue = !this.showValues();
+    this.showValues.set(newValue);
+    localStorage.setItem('showValues', newValue.toString());
+  }
 
   // Replicar Mês states
   showReplicarModal = signal(false);
