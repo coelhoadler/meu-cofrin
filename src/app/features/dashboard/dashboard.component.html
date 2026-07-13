@@ -15,21 +15,25 @@
   </div>
 
   <!-- Row 1: Summary Cards -->
-  <div class=" grid grid-cols-1 md:grid-cols-3 gap-6">
+  <div class=" grid grid-cols-1 md:grid-cols-3 gap-6 relative">
     <!-- Saldo Card -->
     <div
       class="bg-[#7941dc] text-white rounded-[20px] p-6 shadow-md shadow-purple-500/10 relative overflow-hidden flex flex-col justify-between h-[140px]">
       <div class="relative z-10">
         <p class="text-purple-200 text-sm font-medium mb-5">Saldo do mês</p>
-        <h3 class="text-3xl font-bold mb-4">{{ saldoMes() }}</h3>
+        <h3 class="text-3xl font-bold mb-4">{{ showValues() ? saldoMes() : 'R$ ••••' }}</h3>
       </div>
       <!-- <div class="relative z-10 mt-auto">
         <p class="text-purple-300 text-[11px] font-medium">Sem alteração</p>
       </div> -->
       <!-- Icon top right -->
-      <div
-        class="absolute top-5 right-5 w-10 h-10 bg-white/10 rounded-xl backdrop-blur-sm flex items-center justify-center">
-        <span class="material-symbols-outlined text-white text-xl">account_balance_wallet</span>
+      <div (click)="toggleVisibility()"
+        class="top-5 right-5 w-10 h-10 bg-white/10 rounded-xl backdrop-blur-sm flex items-center justify-center cursor-pointer hover:bg-white/20 transition-colors absolute z-10">
+        @if (showValues()) {
+        <span class="material-symbols-outlined text-white text-xl">visibility</span>
+        } @else {
+        <span class="material-symbols-outlined text-white text-xl">visibility_off</span>
+        }
       </div>
     </div>
 
@@ -38,7 +42,8 @@
       class="bg-white dark:bg-[#1a112c] rounded-[20px] p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/50 relative flex flex-col justify-between h-[140px] transition-colors duration-300">
       <div>
         <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mb-5">Receitas</p>
-        <h3 class="text-3xl font-bold text-slate-800 dark:text-white mb-4">{{ totalReceitas() }}</h3>
+        <h3 class="text-3xl font-bold text-slate-800 dark:text-white mb-4">{{ showValues() ? totalReceitas() : 'R$ ••••'
+          }}</h3>
       </div>
       <!-- <div class="mt-auto">
         <p class="text-slate-400 dark:text-slate-500 text-[11px] font-medium">Sem alteração</p>
@@ -54,7 +59,8 @@
       class="bg-white dark:bg-[#1a112c] rounded-[20px] p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/50 relative flex flex-col justify-between h-[140px] transition-colors duration-300">
       <div>
         <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mb-5">Despesas</p>
-        <h3 class="text-3xl font-bold text-slate-800 dark:text-white mb-4">{{ totalDespesas() }}</h3>
+        <h3 class="text-3xl font-bold text-slate-800 dark:text-white mb-4">{{ showValues() ? totalDespesas() : 'R$ ••••'
+          }}</h3>
       </div>
       <!-- <div class="mt-auto">
         <p class="text-slate-400 dark:text-slate-500 text-[11px] font-medium">Sem alteração</p>
@@ -201,12 +207,16 @@
             </td>
             <td class="py-4 text-right font-semibold pr-2"
               [ngClass]="item.tipo === 'Receita' ? 'text-emerald-600' : 'text-red-500'">
+              @if (showValues()) {
               @if (item.tipo === 'Receita') {
               <span>+ </span>
               } @else {
               <span>- </span>
               }
               {{ item.valor }}
+              } @else {
+              <span>R$ ••••</span>
+              }
             </td>
           </tr>
           }
@@ -224,14 +234,14 @@
         <p class="text-[11px] text-slate-500 font-medium uppercase tracking-wider mb-0.5">
           Resta a pagar (Mês)
         </p>
-        <p class="text-lg font-bold text-orange-500">{{ totalAPagar() }}</p>
+        <p class="text-lg font-bold text-orange-500">{{ showValues() ? totalAPagar() : 'R$ ••••' }}</p>
       </div>
-      <!-- Total a Pagar -->
+      <!-- Foi pago -->
       <div>
         <p class="text-[11px] text-slate-500 font-medium uppercase tracking-wider mb-0.5">
           Foi pago (Mês)
         </p>
-        <p class="text-lg font-bold text-green-500">{{ totalPago() }}</p>
+        <p class="text-lg font-bold text-green-500">{{ showValues() ? totalPago() : 'R$ ••••' }}</p>
       </div>
       <!-- Legenda -->
       <div class="flex flex-wrap items-center gap-6">
