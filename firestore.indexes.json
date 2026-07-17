@@ -9,15 +9,15 @@
           "order": "ASCENDING"
         },
         {
-          "fieldPath": "diaVencimento",
-          "order": "ASCENDING"
-        },
-        {
           "fieldPath": "statusPago",
           "order": "ASCENDING"
         },
         {
           "fieldPath": "tipo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "diaVencimento",
           "order": "ASCENDING"
         }
       ]
