@@ -103,7 +103,7 @@ export const notificarContasPorEmail = onSchedule({
             nome_usuario: authData.nome,
             nome_conta: nomeConta,
             valor: valorFormatado,
-            vencimento_texto: vencimentoTexto === "HOJE" ? vencimentoTexto : conta.dataPagamento.split('-').reverse().join('/'),
+            vencimento_texto: vencimentoTexto === "HOJE" ? vencimentoTexto : conta.diaVencimento + '/' + conta.mesReferencia.split('-')[1],
             ano_atual: new Date().getFullYear().toString()
           }
         });
