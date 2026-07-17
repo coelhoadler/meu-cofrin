@@ -37,10 +37,10 @@ exports.notificarContasPorEmail = (0, scheduler_1.onSchedule)({
             .where("statusPago", "==", false)
             .where("tipo", "==", "Despesa")
             .get();
-        // Consulta 2: Contas vencendo em 3 dias
+        // Consulta 2: Contas vencendo em até 3 dias
         const snapshot3Dias = await contasRef
             .where("mesReferencia", "==", daqui3DiasFormatado.mesReferencia)
-            .where("diaVencimento", "==", daqui3DiasFormatado.diaVencimento)
+            .where("diaVencimento", "<=", daqui3DiasFormatado.diaVencimento)
             .where("statusPago", "==", false)
             .where("tipo", "==", "Despesa")
             .get();
@@ -94,7 +94,7 @@ exports.notificarContasPorEmail = (0, scheduler_1.onSchedule)({
                         nome_usuario: authData.nome,
                         nome_conta: nomeConta,
                         valor: valorFormatado,
-                        vencimento_texto: vencimentoTexto,
+                        vencimento_texto: vencimentoTexto === "HOJE" ? vencimentoTexto : conta.dataPagamento.split('-').reverse().join('/'),
                         ano_atual: new Date().getFullYear().toString()
                     }
                 });
