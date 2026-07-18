@@ -64,7 +64,7 @@
         [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center md:mx-1 md:gap-0 md:px-0' : ''"
         title="Apoiar Projeto">
         <span class="material-symbols-outlined text-xl">favorite</span>
-        <span class="text-sm truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">Apoiar Projeto</span>
+        <span class="text-sm truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">Apoiar projeto</span>
       </button>
 
       <a routerLink="/perfil" routerLinkActive="bg-[#8b5cf6]/20 text-[#c4b5fd]" (click)="isSidebarOpen.set(false)"
@@ -72,13 +72,21 @@
         [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center md:mx-1 md:gap-0 md:px-0' : ''" title="Meu Perfil">
         <span class="material-symbols-outlined text-xl">person</span>
         <span class="text-sm flex-1 truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">Meu
-          Perfil</span>
+          perfil</span>
         @if (!user()?.emailVerified || !user()?.phoneNumber) {
         <span class="material-symbols-outlined text-amber-500"
           [ngClass]="isDesktopSidebarCollapsed() ? 'absolute top-[0px] right-[-10px] text-[13px]' : 'text-[18px]'"
           title="Verificação pendente">warning</span>
         }
       </a>
+
+      <button (click)="openContactModal(); isSidebarOpen.set(false)"
+        class="w-full flex items-center py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors gap-3 px-3"
+        [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center md:mx-1 md:gap-0 md:px-0' : ''"
+        title="Fale Conosco">
+        <span class="material-symbols-outlined text-xl">chat_bubble</span>
+        <span class="text-sm truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">Fale conosco</span>
+      </button>
     </nav>
 
     <!-- Sidebar Footer -->
@@ -182,6 +190,44 @@
         </div>
         <p class="text-xs text-slate-500 mt-2 font-medium">Escaneie o QR Code com o app do seu banco OU clique no QR
           Code.</p>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Contact Modal -->
+  @if (isContactModalOpen()) {
+  <div class="fixed inset-0 z-[60] flex items-center justify-center p-4">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" (click)="closeContactModal()"></div>
+
+    <!-- Modal Content -->
+    <div
+      class="relative bg-white dark:bg-[#1a112c] rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden flex flex-col border border-slate-200 dark:border-slate-700 animate-in fade-in zoom-in-95 duration-200">
+      <!-- Header -->
+      <div class="flex items-center justify-between p-4 border-b border-slate-100 dark:border-slate-800">
+        <h3 class="font-bold text-slate-800 dark:text-white flex items-center gap-2">
+          <span class="material-symbols-outlined text-indigo-500">chat_bubble</span>
+          Fale Conosco
+        </h3>
+        <button (click)="closeContactModal()"
+          class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+          <span class="material-symbols-outlined text-xl">close</span>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="p-6 flex flex-col items-center text-center">
+        <p class="text-sm text-slate-600 dark:text-slate-300 mb-6">
+          Tem alguma dúvida, sugestão ou encontrou algum problema? Entre em contato conosco através do e-mail:
+        </p>
+
+        <div
+          class="w-full flex items-center justify-center gap-3 py-3 px-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700">
+          <span class="material-symbols-outlined text-indigo-500 text-xl">mail</span>
+          <span class="text-slate-800 dark:text-slate-200 font-medium select-all"><a
+              href="mailto:contato@meu-cofrin.app.br">contato@meu-cofrin.app.br</a></span>
+        </div>
       </div>
     </div>
   </div>
