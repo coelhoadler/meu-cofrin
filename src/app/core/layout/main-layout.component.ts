@@ -19,6 +19,7 @@ export class MainLayoutComponent {
   isSidebarOpen = signal(false);
   isDesktopSidebarCollapsed = signal(false);
   isQrCodeModalOpen = signal(false);
+  isContactModalOpen = signal(false);
   user = this.authService.currentUser;
 
   private touchStartX = 0;
@@ -38,6 +39,14 @@ export class MainLayoutComponent {
 
   closeQrCodeModal() {
     this.isQrCodeModalOpen.set(false);
+  }
+
+  openContactModal() {
+    this.isContactModalOpen.set(true);
+  }
+
+  closeContactModal() {
+    this.isContactModalOpen.set(false);
   }
 
   onTouchStart(event: TouchEvent) {

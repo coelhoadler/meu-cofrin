@@ -94,7 +94,7 @@ exports.notificarContasPorEmail = (0, scheduler_1.onSchedule)({
                         nome_usuario: authData.nome,
                         nome_conta: nomeConta,
                         valor: valorFormatado,
-                        vencimento_texto: vencimentoTexto === "HOJE" ? vencimentoTexto : conta.diaVencimento + '/' + conta.mesReferencia.split('-')[1],
+                        vencimento_texto: (vencimentoTexto === "HOJE") ? vencimentoTexto : conta.diaVencimento + '/' + conta.mesReferencia.split('-')[1],
                         ano_atual: new Date().getFullYear().toString()
                     }
                 });
