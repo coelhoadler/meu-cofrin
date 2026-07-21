@@ -7,6 +7,15 @@ import { authGuard } from './core/auth/auth.guard';
 export const routes: Routes = [
   { path: 'login', component: LoginComponent, title: 'Meu Cofrin | Login' },
   {
+    path: 'verificar-email',
+    loadComponent: () => import('./features/verificar-email/verificar-email.component').then(m => m.VerificarEmailComponent),
+    title: 'Meu Cofrin | Verificar E-mail'
+  },
+  {
+    path: 'verify-email',
+    redirectTo: 'verificar-email'
+  },
+  {
     path: '',
     component: MainLayoutComponent,
     canActivate: [authGuard],
