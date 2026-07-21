@@ -73,10 +73,10 @@
         <span class="material-symbols-outlined text-xl">person</span>
         <span class="text-sm flex-1 truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">Meu
           perfil</span>
-        @if (!user()?.emailVerified || !user()?.phoneNumber) {
+        @if (!user()?.emailVerified) { <!-- @if (!user()?.emailVerified || !user()?.phoneNumber) { -->
         <span class="material-symbols-outlined text-amber-500"
           [ngClass]="isDesktopSidebarCollapsed() ? 'absolute top-[0px] right-[-10px] text-[13px]' : 'text-[18px]'"
-          title="Verificação pendente">warning</span>
+          title="Verificação de e-mail pendente">warning</span>
         }
       </a>
 
