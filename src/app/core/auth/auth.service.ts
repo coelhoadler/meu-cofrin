@@ -80,6 +80,12 @@ export class AuthService {
         await updateProfile(userCredential.user, { displayName });
       }
 
+      try {
+        await sendEmailVerification(userCredential.user);
+      } catch (emailError) {
+        console.error('Erro ao enviar e-mail de verificação no cadastro:', emailError);
+      }
+
       return userCredential;
     } catch (error) {
       throw error;
