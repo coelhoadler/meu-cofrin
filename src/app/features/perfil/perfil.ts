@@ -2,7 +2,6 @@ import { Component, inject, signal, OnInit, OnDestroy, effect } from '@angular/c
 
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { NgxMaskDirective } from 'ngx-mask';
 import { AuthService } from '../../core/auth/auth.service';
 import { Storage, ref, uploadBytes, getDownloadURL } from '@angular/fire/storage';
 import { WebauthnService } from '../../core/auth/webauthn.service';
@@ -10,7 +9,7 @@ import { WebauthnService } from '../../core/auth/webauthn.service';
 @Component({
   selector: 'app-perfil',
   standalone: true,
-  imports: [FormsModule, RouterModule, NgxMaskDirective],
+  imports: [FormsModule, RouterModule],
   templateUrl: './perfil.html',
 })
 export class Perfil implements OnInit, OnDestroy {
@@ -177,7 +176,7 @@ export class Perfil implements OnInit, OnDestroy {
       this.errorMessage.set('Informe um número de celular válido com DDD (ex: (11) 99999-9999).');
       return;
     }
-    
+
     const fullNumber = `+55${rawNumber}`;
 
     this.isSendingSms.set(true);
