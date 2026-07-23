@@ -87,6 +87,13 @@
         <span class="material-symbols-outlined text-xl">chat_bubble</span>
         <span class="text-sm truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">Fale conosco</span>
       </button>
+
+      <button (click)="startTour(); isSidebarOpen.set(false)"
+        class="w-full flex items-center py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors gap-3 px-3"
+        [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center md:mx-1 md:gap-0 md:px-0' : ''" title="Tour">
+        <span class="material-symbols-outlined text-xl">help</span>
+        <span class="text-sm truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">Tour</span>
+      </button>
     </nav>
 
     <!-- Sidebar Footer -->

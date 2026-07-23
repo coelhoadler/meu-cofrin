@@ -4,6 +4,7 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 import { ContaService } from '../services/conta.service';
 import { ThemeService } from '../services/theme.service';
+import { TourService } from '../services/tour.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -15,6 +16,7 @@ export class MainLayoutComponent {
   private authService = inject(AuthService);
   private contaService = inject(ContaService);
   public themeService = inject(ThemeService);
+  private tourService = inject(TourService);
 
   isSidebarOpen = signal(false);
   isDesktopSidebarCollapsed = signal(false);
@@ -49,6 +51,10 @@ export class MainLayoutComponent {
     this.isContactModalOpen.set(false);
   }
 
+  startTour() {
+    this.tourService.startDashboardTour(true);
+  }
+
   onTouchStart(event: TouchEvent) {
     this.touchStartX = event.changedTouches[0].screenX;
   }
@@ -60,13 +66,13 @@ export class MainLayoutComponent {
 
   private handleSwipe() {
     const swipeDistance = this.touchEndX - this.touchStartX;
-    
+
     // Swipe da esquerda para a direita (abrir menu)
     // O swipe deve começar próximo à borda esquerda (menos de 60px) para evitar toques acidentais
     if (swipeDistance > 50 && this.touchStartX < 60 && !this.isSidebarOpen()) {
       this.isSidebarOpen.set(true);
     }
-    
+
     // Swipe da direita para a esquerda (fechar menu)
     if (swipeDistance < -50 && this.isSidebarOpen()) {
       this.isSidebarOpen.set(false);

@@ -49,10 +49,6 @@ export class DashboardComponent implements AfterViewInit {
     }, 1200);
   }
 
-  startTour() {
-    this.tourService.startDashboardTour(true);
-  }
-
   toggleVisibility() {
     const newValue = !this.showValues();
     this.showValues.set(newValue);

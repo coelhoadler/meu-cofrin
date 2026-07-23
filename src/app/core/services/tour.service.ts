@@ -20,6 +20,24 @@ export class TourService {
 
     const steps: DriveStep[] = [
       {
+        element: '#tour-btn-replicar-mes',
+        popover: {
+          title: '🔁 Replicar mês',
+          description: 'Replique os lançamentos do mês anterior para o mês atual.',
+          side: 'bottom',
+          align: 'center'
+        }
+      },
+      {
+        element: '#tour-btn-nova-conta',
+        popover: {
+          title: '➕ Nova Conta / Lançamento',
+          description: 'Cadastre rapidamente novas despesas ou receitas na sua conta.',
+          side: 'left',
+          align: 'center'
+        }
+      },
+      {
         element: '#tour-saldo-card',
         popover: {
           title: '💰 Saldo do Mês',
@@ -56,20 +74,20 @@ export class TourService {
         }
       },
       {
-        element: '#tour-lancamentos-recents',
+        element: '#tour-dist-mes',
         popover: {
-          title: '📋 Lançamentos Recentes',
-          description: 'Veja suas últimas movimentações financeiras, altere status de pagamento ou anexe comprovantes.',
+          title: '🍕 Distribuição do mês',
+          description: 'Veja rapidamente a distribuição de receitas e despesas do mês.',
           side: 'top',
           align: 'center'
         }
       },
       {
-        element: '#tour-btn-nova-conta',
+        element: '#tour-lancamentos-recents',
         popover: {
-          title: '➕ Nova Conta / Lançamento',
-          description: 'Cadastre rapidamente novas despesas ou receitas na sua conta.',
-          side: 'left',
+          title: '📋 Lançamentos Recentes',
+          description: 'Veja suas últimas movimentações financeiras, altere status de pagamento ou anexe comprovantes.',
+          side: 'top',
           align: 'center'
         }
       }
