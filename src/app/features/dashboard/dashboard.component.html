@@ -1,15 +1,17 @@
 <div class="space-y-6">
   <!-- Dashboard Header Area -->
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
-    <div>
-      <h2 class="text-[28px] font-bold text-slate-900 dark:text-white tracking-tight">{{greetingUser()}}</h2>
-      <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 capitalize">{{ currentDate }}</p>
+    <div class="flex items-center justify-between w-full sm:w-auto">
+      <div>
+        <h2 class="text-[28px] font-bold text-slate-900 dark:text-white tracking-tight">{{greetingUser()}}</h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 capitalize">{{ currentDate }}</p>
+      </div>
     </div>
 
     <div class="flex gap-3 hidden md:flex">
-      <p-button label="Replicar mês" severity="secondary" variant="outlined" icon="pi pi-clone"
-        (onClick)="openReplicarModal()" />
-      <p-button label="Nova conta" severity="secondary" variant="outlined" icon="pi pi-plus"
+      <p-button id="tour-btn-replicar-mes" label="Replicar mês" severity="secondary" variant="outlined"
+        icon="pi pi-clone" (onClick)="openReplicarModal()" />
+      <p-button id="tour-btn-nova-conta" label="Nova conta" severity="secondary" variant="outlined" icon="pi pi-plus"
         [routerLink]="['/nova-conta']" routerLinkActive="router-link-active" />
     </div>
   </div>
@@ -17,7 +19,7 @@
   <!-- Row 1: Summary Cards -->
   <div class=" grid grid-cols-1 md:grid-cols-3 gap-6 relative">
     <!-- Saldo Card -->
-    <div
+    <div id="tour-saldo-card"
       class="bg-[#7941dc] text-white rounded-[20px] p-6 shadow-md shadow-purple-500/10 relative overflow-hidden flex flex-col justify-between h-[140px]">
       <div class="relative z-10">
         <p class="text-purple-200 text-sm font-medium mb-5">Saldo do mês</p>
@@ -38,7 +40,7 @@
     </div>
 
     <!-- Receitas Card -->
-    <div
+    <div id="tour-receitas-card"
       class="bg-white dark:bg-[#1a112c] rounded-[20px] p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/50 relative flex flex-col justify-between h-[140px] transition-colors duration-300 relative">
       <div>
         <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mb-5">Receitas</p>
@@ -55,7 +57,7 @@
     </div>
 
     <!-- Despesas Card -->
-    <div
+    <div id="tour-despesas-card"
       class="bg-white dark:bg-[#1a112c] rounded-[20px] p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/50 relative flex flex-col justify-between h-[140px] transition-colors duration-300 relative">
       <div>
         <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mb-5">Despesas</p>
@@ -76,7 +78,7 @@
   @if (lancamentos().length > 0) {
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Line Chart Placeholder (Spans 2 cols on lg) -->
-    <div
+    <div id="tour-grafico-resumo"
       class="bg-white dark:bg-[#1a112c] rounded-[20px] p-3 sm:p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/50 lg:col-span-2 flex flex-col h-[320px] transition-colors duration-300">
       <div class="mb-4">
         <h3 class="text-[15px] font-bold text-slate-800 dark:text-white">Últimos 6 meses</h3>
@@ -103,7 +105,7 @@
       </div>
     </div>
     <!-- Pie Chart Placeholder -->
-    <div
+    <div id="tour-dist-mes"
       class="bg-white dark:bg-[#1a112c] rounded-[20px] p-3 sm:p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/50 flex flex-col h-[320px] transition-colors duration-300">
       <div>
         <h3 class="text-[15px] font-bold text-slate-800 dark:text-white">Distribuição do mês</h3>
@@ -119,7 +121,7 @@
   }
 
   <!-- Row 3: Lançamentos Recentes -->
-  <div
+  <div id="tour-lancamentos-recents"
     class="bg-white dark:bg-[#1a112c] rounded-[20px] p-3 sm:p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/50 min-h-[280px] flex flex-col transition-colors duration-300">
     <div class="flex items-center justify-between mb-8">
       <h3 class="text-[15px] font-bold text-slate-800 dark:text-white">Lançamentos recentes</h3>

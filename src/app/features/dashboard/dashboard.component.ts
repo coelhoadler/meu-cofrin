@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, AfterViewInit, effect, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ChartConfiguration } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
@@ -12,6 +12,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { AuthService } from '../../core/auth/auth.service';
 import { Conta, ContaService } from '../../core/services/conta.service';
 import { MessagingService } from '../../core/services/messaging.service';
+import { TourService } from '../../core/services/tour.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,12 +21,13 @@ import { MessagingService } from '../../core/services/messaging.service';
   templateUrl: './dashboard.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DashboardComponent {
+export class DashboardComponent implements AfterViewInit {
   currentDate = new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' }).format(new Date());
 
   private contaService = inject(ContaService);
   private authService = inject(AuthService);
   private messagingService = inject(MessagingService);
+  private tourService = inject(TourService);
 
   lancamentos = signal<Conta[]>([]);
   isLoading = signal(true);
@@ -39,6 +41,13 @@ export class DashboardComponent {
   totalPago = signal('R$ 0,00');
   statusConta = signal('');
   showValues = signal(localStorage.getItem('showValues') !== 'false');
+
+  ngAfterViewInit() {
+    // Inicia o tour automaticamente na primeira visita do usuário (após renderizar a tela)
+    setTimeout(() => {
+      this.tourService.startDashboardTour(false);
+    }, 1200);
+  }
 
   toggleVisibility() {
     const newValue = !this.showValues();
