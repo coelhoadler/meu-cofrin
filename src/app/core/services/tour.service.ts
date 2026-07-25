@@ -5,6 +5,7 @@ import { driver, Driver, Config, DriveStep } from 'driver.js';
   providedIn: 'root'
 })
 export class TourService {
+  private isTour = false;
   private activeDriver: Driver | null = null;
   private readonly TOUR_KEY = 'meu_cofrin_dashboard_tour_seen';
 
@@ -13,12 +14,37 @@ export class TourService {
    * @param force Se verdadeiro, ignora se o usuário já fez o tour antes e força o início.
    */
   startDashboardTour(force: boolean = false): void {
+
     const hasSeenTour = localStorage.getItem(this.TOUR_KEY);
-    if (hasSeenTour && !force) {
+    if ((hasSeenTour && !force) || this.isTour) {
       return;
     }
 
+    this.isTour = true;
+
+    const isMobile = window.innerWidth <= 768;
+    const targetElement = isMobile ? '#tour-menu-mobile' : '#tour-menu';
+
     const steps: DriveStep[] = [
+      {
+        element: targetElement,
+        popover: {
+          title: '🪙 Menu de navegação',
+          description: `
+          <ul>
+              <li><b>Dashboard</b>: Visão geral das finanças (tela inicial).</li>
+              <li><b>Lançamentos</b>: Lista de lançamentos.</li>
+              <li><b>Nova conta</b>: Cadastro de novas contas.</li>
+              <li><b>Categorias</b>: Cadastro de categorias.</li>
+              <li><b>Apoiar projeto</b>: Doação para o projeto.</li>
+              <li><b>Meu perfil</b>: Dados do perfil.</li>
+              <li><b>Fale conosco</b>: Contato com o suporte.</li>
+              <li><b>Tour</b>: Inicie o tour pelo sistema quando quiser.</li>
+            </ul>`,
+          side: 'bottom',
+          align: 'center'
+        }
+      },
       {
         element: '#tour-btn-replicar-mes',
         popover: {
@@ -90,6 +116,24 @@ export class TourService {
           side: 'top',
           align: 'center'
         }
+      },
+      {
+        element: '#tour-cadastrar-primeira-conta',
+        popover: {
+          title: '➕ Cadastrar primeira conta',
+          description: 'Cadastre a sua primeira conta para colher os benefícios do Meu Cofrin.',
+          side: 'bottom',
+          align: 'center'
+        }
+      },
+      {
+        element: '#tour-fab-nova-conta',
+        popover: {
+          title: '➕ Nova Conta / Lançamento',
+          description: 'Cadastre rapidamente novas despesas ou receitas na sua conta.',
+          side: 'left',
+          align: 'center'
+        }
       }
     ];
 
@@ -109,7 +153,7 @@ export class TourService {
     const config: Config = {
       showProgress: true,
       animate: true,
-      allowClose: true,
+      allowClose: false,
       overlayColor: '#0f172a',
       overlayOpacity: 0.75,
       stagePadding: 6,
@@ -120,6 +164,7 @@ export class TourService {
       progressText: 'Passo {{current}} de {{total}}',
       onDestroyed: () => {
         localStorage.setItem(this.TOUR_KEY, 'true');
+        this.isTour = false;
       },
       steps: validSteps
     };
@@ -139,6 +184,7 @@ export class TourService {
    * Encerra o tour caso esteja em andamento.
    */
   stopTour(): void {
+    this.isTour = false;
     if (this.activeDriver) {
       this.activeDriver.destroy();
       this.activeDriver = null;

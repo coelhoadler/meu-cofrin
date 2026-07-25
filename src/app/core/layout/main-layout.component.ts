@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 import { ContaService } from '../services/conta.service';
 import { ThemeService } from '../services/theme.service';
@@ -13,9 +13,10 @@ import { TourService } from '../services/tour.service';
   templateUrl: './main-layout.component.html'
 })
 export class MainLayoutComponent {
+  public themeService = inject(ThemeService);
+  public router = inject(Router);
   private authService = inject(AuthService);
   private contaService = inject(ContaService);
-  public themeService = inject(ThemeService);
   private tourService = inject(TourService);
 
   isSidebarOpen = signal(false);
