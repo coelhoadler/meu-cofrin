@@ -8,12 +8,14 @@
       </div>
     </div>
 
+    @if (lancamentos().length > 0) {
     <div class="flex gap-3 hidden md:flex">
       <p-button id="tour-btn-replicar-mes" label="Replicar mês" severity="secondary" variant="outlined"
         icon="pi pi-clone" (onClick)="openReplicarModal()" />
       <p-button id="tour-btn-nova-conta" label="Nova conta" severity="secondary" variant="outlined" icon="pi pi-plus"
         [routerLink]="['/nova-conta']" routerLinkActive="router-link-active" />
     </div>
+    }
   </div>
 
   <!-- Row 1: Summary Cards -->
@@ -121,9 +123,9 @@
   }
 
   <!-- Row 3: Lançamentos Recentes -->
-  <div id="tour-lancamentos-recents"
+  <div
     class="bg-white dark:bg-[#1a112c] rounded-[20px] p-3 sm:p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/50 min-h-[280px] flex flex-col transition-colors duration-300">
-    <div class="flex items-center justify-between mb-8">
+    <div id="tour-lancamentos-recents" class="flex items-center justify-between mb-8">
       <h3 class="text-[15px] font-bold text-slate-800 dark:text-white">Lançamentos recentes</h3>
       <span class="text-xs font-medium text-slate-400 dark:text-slate-500">{{ lancamentos().length }} conta(s) no
         total</span>
@@ -138,7 +140,7 @@
 
     <!-- Empty State -->
     @if (!isLoading() && lancamentos().length === 0) {
-    <div class="flex-1 flex flex-col items-center justify-center space-y-4 py-8">
+    <div id="tour-cadastrar-primeira-conta" class="flex-1 flex flex-col items-center justify-center space-y-4 py-8">
       <p class="text-slate-500 text-[13px]">Nenhuma conta cadastrada ainda.</p>
       <a routerLink="/nova-conta"
         class="px-5 py-2 bg-[#421b7b] hover:bg-[#341561] text-white text-[13px] font-semibold rounded-xl shadow-sm transition-colors">
@@ -318,10 +320,12 @@
   }
 
   <!-- Floating Action Button (Mobile Only) -->
-  <a routerLink="/nova-conta"
+  @if (lancamentos().length > 0) {
+  <a routerLink="/nova-conta" id="tour-fab-nova-conta"
     class="fixed bottom-6 right-6 z-40 sm:hidden flex items-center justify-center w-14 h-14 bg-[#421b7b] active:bg-[#341561] text-white rounded-full border-[2.5px] border-[#9d6bf3] shadow-[0_0_20px_rgba(157,107,243,0.4)] transition-transform active:scale-95">
     <span class="material-symbols-outlined text-3xl">add</span>
   </a>
+  }
 
   <!-- Modal Replicar Mês -->
   @if (showReplicarModal()) {

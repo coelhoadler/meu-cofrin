@@ -34,14 +34,13 @@ body {
   padding: 18px !important;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
   font-family: var(--font-sans), sans-serif !important;
-  max-width: 340px !important;
-  border: 1px solid #e2e8f0 !important;
+  max-width: 412px !important;
 }
 
 .dark .driver-popover {
   background-color: #1a112c !important;
   color: #f8fafc !important;
-  border-color: #334155 !important;
+  border: 1px solid #334155 !important;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5) !important;
 }
 
@@ -96,13 +95,15 @@ body {
   transition: all 0.2s ease !important;
 }
 
-.driver-popover-next-btn, .driver-popover-close-btn {
+.driver-popover-next-btn,
+.driver-popover-close-btn {
   background-color: #7941dc !important;
   color: #ffffff !important;
   text-shadow: none !important;
 }
 
-.driver-popover-next-btn:hover, .driver-popover-close-btn:hover {
+.driver-popover-next-btn:hover,
+.driver-popover-close-btn:hover {
   background-color: #632ec4 !important;
 }
 
