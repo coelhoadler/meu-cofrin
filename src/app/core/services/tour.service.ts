@@ -166,7 +166,8 @@ export class TourService {
         localStorage.setItem(this.TOUR_KEY, 'true');
         this.isTour = false;
       },
-      steps: validSteps
+      steps: validSteps,
+      allowScroll: false
     };
 
     this.activeDriver = driver(config);
