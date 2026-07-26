@@ -36,6 +36,11 @@ export class Perfil implements OnInit, OnDestroy {
   recaptchaVerifier: any;
   confirmationResult: any;
 
+  showDeleteModal = signal(false);
+  isConfirmChecked = signal(false);
+  isDeletingAccount = signal(false);
+  deleteModalError = signal('');
+
   constructor() {
     effect(() => {
       const currentUser = this.user();
@@ -220,6 +225,38 @@ export class Perfil implements OnInit, OnDestroy {
       this.errorMessage.set('Código inválido ou expirado. Tente novamente.');
     } finally {
       this.isVerifyingSms.set(false);
+    }
+  }
+
+  openDeleteModal() {
+    this.showDeleteModal.set(true);
+    this.isConfirmChecked.set(false);
+    this.deleteModalError.set('');
+  }
+
+  closeDeleteModal() {
+    if (this.isDeletingAccount()) return;
+    this.showDeleteModal.set(false);
+    this.isConfirmChecked.set(false);
+    this.deleteModalError.set('');
+  }
+
+  async confirmDeleteAccount() {
+    if (!this.isConfirmChecked() || this.isDeletingAccount()) return;
+
+    this.isDeletingAccount.set(true);
+    this.deleteModalError.set('');
+
+    try {
+      await this.authService.deleteUserAccount();
+    } catch (error: any) {
+      console.error('Erro ao deletar conta:', error);
+      if (error?.code === 'auth/requires-recent-login') {
+        this.deleteModalError.set('Por motivos de segurança, esta ação requer um login recente. Faça logout e entre novamente para concluir a exclusão.');
+      } else {
+        this.deleteModalError.set(error?.message || 'Erro ao excluir a conta. Tente novamente mais tarde.');
+      }
+      this.isDeletingAccount.set(false);
     }
   }
 }
