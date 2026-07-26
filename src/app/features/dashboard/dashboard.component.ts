@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, AfterViewInit, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, AfterViewInit, computed, effect, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ChartConfiguration } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
@@ -22,7 +22,24 @@ import { TourService } from '../../core/services/tour.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardComponent implements AfterViewInit {
-  currentDate = new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' }).format(new Date());
+  selectedDate = signal<Date>(new Date());
+
+  selectedMesRef = computed(() => {
+    const d = this.selectedDate();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+  });
+
+  isCurrentMonth = computed(() => {
+    const d = this.selectedDate();
+    const now = new Date();
+    return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+  });
+
+  selectedMesExtenso = computed(() => {
+    const d = this.selectedDate();
+    const str = new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' }).format(d);
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  });
 
   private contaService = inject(ContaService);
   private authService = inject(AuthService);
@@ -41,6 +58,28 @@ export class DashboardComponent implements AfterViewInit {
   totalPago = signal('R$ 0,00');
   statusConta = signal('');
   showValues = signal(localStorage.getItem('showValues') !== 'false');
+
+  previousMonth() {
+    const current = this.selectedDate();
+    const prev = new Date(current.getFullYear(), current.getMonth() - 1, 1);
+    this.selectedDate.set(prev);
+  }
+
+  nextMonth() {
+    const current = this.selectedDate();
+    const next = new Date(current.getFullYear(), current.getMonth() + 1, 1);
+    this.selectedDate.set(next);
+  }
+
+  goToCurrentMonth() {
+    this.selectedDate.set(new Date());
+  }
+
+  onMonthSelect(date: Date) {
+    if (date) {
+      this.selectedDate.set(new Date(date.getFullYear(), date.getMonth(), 1));
+    }
+  }
 
   ngAfterViewInit() {
     // Inicia o tour automaticamente na primeira visita do usuário (após renderizar a tela)
@@ -133,10 +172,11 @@ export class DashboardComponent implements AfterViewInit {
   constructor() {
     effect(() => {
       const user = this.authService.currentUser();
-      if (user) {
+      const mesRef = this.selectedMesRef();
+      if (user && mesRef) {
         this.authService.saveUserProfile(user);
-        this.loadLancamentos();
-        this.loadResumoMes();
+        this.loadLancamentos(mesRef);
+        this.loadResumoMes(mesRef);
         this.loadResumoGrafico();
 
         // Pede permissão para notificações e salva o token (ideal ser chamado após login)
@@ -146,25 +186,26 @@ export class DashboardComponent implements AfterViewInit {
     });
   }
 
-  async loadLancamentos() {
+  async loadLancamentos(mesRef: string = this.selectedMesRef()) {
     this.isLoading.set(true);
     try {
-      const recentes = await this.contaService.getLancamentosRecentes();
-      this.lancamentos.set(recentes);
+      const items = await this.contaService.getContasByMesReferencia(mesRef);
+      items.sort((a, b) => {
+        if (a.statusPago === b.statusPago) {
+          return a.diaVencimento - b.diaVencimento;
+        }
+        return a.statusPago ? 1 : -1;
+      });
+      this.lancamentos.set(items);
     } catch (error) {
-      console.error('Erro ao buscar lançamentos recentes:', error);
+      console.error('Erro ao buscar lançamentos do mês:', error);
     } finally {
       this.isLoading.set(false);
     }
   }
 
-  async loadResumoMes() {
+  async loadResumoMes(mesRef: string = this.selectedMesRef()) {
     try {
-      const date = new Date();
-      const year = date.getFullYear();
-      const month = (date.getMonth() + 1).toString().padStart(2, '0');
-      const mesRef = `${year}-${month}`;
-
       const contasDoMes = await this.contaService.getContasByMesReferencia(mesRef);
 
       let somaDespesas = 0;
@@ -363,8 +404,8 @@ export class DashboardComponent implements AfterViewInit {
         await this.contaService.deleteConta(id);
         this.closeModal();
         // Recarregar os lançamentos após deletar
-        await this.loadLancamentos();
-        await this.loadResumoMes();
+        await this.loadLancamentos(this.selectedMesRef());
+        await this.loadResumoMes(this.selectedMesRef());
         await this.loadResumoGrafico();
       } catch (error) {
         console.error('Erro ao deletar lançamento:', error);
@@ -401,10 +442,10 @@ export class DashboardComponent implements AfterViewInit {
 
   // --- REPLICAR MÊS LOGIC ---
   openReplicarModal() {
-    const hoje = new Date();
-    const proximoMes = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 1);
+    const selected = this.selectedDate();
+    const proximoMes = new Date(selected.getFullYear(), selected.getMonth() + 1, 1);
 
-    this.mesOrigem.set(hoje);
+    this.mesOrigem.set(selected);
     this.mesDestino.set(proximoMes);
     this.showReplicarModal.set(true);
 
@@ -524,12 +565,10 @@ export class DashboardComponent implements AfterViewInit {
 
       this.closeReplicarModal();
 
-      // Recarregar os dados do dashboard se o destino for o mês atual
-      const date = new Date();
-      const currentMesRef = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-      if (mesDestinoStr === currentMesRef) {
-        await this.loadLancamentos();
-        await this.loadResumoMes();
+      // Recarregar os dados do dashboard se o destino for o mês atualmente visualizado
+      if (mesDestinoStr === this.selectedMesRef()) {
+        await this.loadLancamentos(this.selectedMesRef());
+        await this.loadResumoMes(this.selectedMesRef());
       }
       await this.loadResumoGrafico();
 
@@ -547,13 +586,13 @@ export class DashboardComponent implements AfterViewInit {
       await this.contaService.marcarComoPaga(id);
 
       this.closeModal();
-      // Recarregar os lançamentos após deletar
-      await this.loadLancamentos();
-      await this.loadResumoMes();
+      // Recarregar os lançamentos após atualizar
+      await this.loadLancamentos(this.selectedMesRef());
+      await this.loadResumoMes(this.selectedMesRef());
       await this.loadResumoGrafico();
     } catch (error) {
-      console.error('Erro ao deletar lançamento:', error);
-      alert('Erro ao deletar lançamento. Tente novamente.');
+      console.error('Erro ao marcar como paga:', error);
+      alert('Erro ao atualizar lançamento. Tente novamente.');
     }
   }
 
