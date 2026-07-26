@@ -86,7 +86,8 @@
             class="p-3 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl text-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div class="flex items-center gap-2">
               <span class="material-symbols-outlined text-[18px] text-amber-500">warning</span>
-              <span>O e-mail não foi verificado.</span>
+              <span>O e-mail não foi verificado. É importante verificar o e-mail para poder receber as notificações
+                de vencimento das contas.</span>
             </div>
             <button type="button" (click)="resendVerificationEmail()" [disabled]="isSendingEmail()"
               class="px-3 py-1.5 bg-white border border-amber-200 rounded-lg text-xs font-medium text-amber-700 hover:bg-amber-100 hover:text-amber-800 disabled:opacity-50 transition-colors shadow-sm whitespace-nowrap">
