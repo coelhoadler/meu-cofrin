@@ -49,7 +49,7 @@ export class TourService {
         element: '#tour-btn-replicar-mes',
         popover: {
           title: '🔁 Replicar mês',
-          description: 'Replique os lançamentos do mês anterior para o mês atual.',
+          description: 'Tenha mais agilidade usando a funcionalidade de replicar lançamentos do mês anterior.',
           side: 'bottom',
           align: 'center'
         }
