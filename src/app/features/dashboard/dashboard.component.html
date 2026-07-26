@@ -4,7 +4,36 @@
     <div class="flex items-center justify-between w-full sm:w-auto">
       <div>
         <h2 class="text-[28px] font-bold text-slate-900 dark:text-white tracking-tight">{{greetingUser()}}</h2>
-        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 capitalize">{{ currentDate }}</p>
+        <!-- Controles de Seleção de Mês -->
+        <div class="flex flex-wrap items-center gap-2 mt-2">
+          <div
+            class="inline-flex items-center bg-white dark:bg-[#1a112c] border border-slate-200 dark:border-slate-800 rounded-2xl p-1 shadow-sm transition-colors">
+            <button type="button" (click)="previousMonth()" title="Mês anterior"
+              class="w-8 h-8 flex items-center justify-center rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80 active:scale-95 transition-all">
+              <span class="material-symbols-outlined text-xl">chevron_left</span>
+            </button>
+
+            <div class="px-1 flex items-center">
+              <p-datepicker [ngModel]="selectedDate()" (ngModelChange)="onMonthSelect($event)" view="month"
+                dateFormat="MM yy"
+                inputStyleClass="w-36 text-center font-bold text-sm text-slate-800 dark:text-white bg-transparent border-0 focus:outline-none focus:ring-0 cursor-pointer capitalize">
+              </p-datepicker>
+            </div>
+
+            <button type="button" (click)="nextMonth()" title="Próximo mês"
+              class="w-8 h-8 flex items-center justify-center rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80 active:scale-95 transition-all">
+              <span class="material-symbols-outlined text-xl">chevron_right</span>
+            </button>
+          </div>
+
+          @if (!isCurrentMonth()) {
+          <button type="button" (click)="goToCurrentMonth()"
+            class="px-3 py-2 bg-[#421b7b]/10 dark:bg-[#9d6bf3]/15 text-[#421b7b] dark:text-[#9d6bf3] hover:bg-[#421b7b]/20 dark:hover:bg-[#9d6bf3]/25 text-xs font-bold rounded-2xl transition-all flex items-center gap-1 shadow-sm">
+            <span class="material-symbols-outlined text-base">today</span>
+            Mês atual
+          </button>
+          }
+        </div>
       </div>
     </div>
 
@@ -126,7 +155,7 @@
   <div
     class="bg-white dark:bg-[#1a112c] rounded-[20px] p-3 sm:p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/50 min-h-[280px] flex flex-col transition-colors duration-300">
     <div id="tour-lancamentos-recents" class="flex items-center justify-between mb-8">
-      <h3 class="text-[15px] font-bold text-slate-800 dark:text-white">Lançamentos recentes</h3>
+      <h3 class="text-[15px] font-bold text-slate-800 dark:text-white">Lançamentos de {{ selectedMesExtenso() }}</h3>
       <span class="text-xs font-medium text-slate-400 dark:text-slate-500">{{ lancamentos().length }} conta(s) no
         total</span>
     </div>
