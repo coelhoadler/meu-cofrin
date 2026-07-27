@@ -17,12 +17,60 @@ export class AuthService {
   currentUser = signal<User | null | undefined>(undefined);
 
   constructor() {
-    authState(this.auth).subscribe((user) => {
-      this.currentUser.set(user);
+    authState(this.auth).subscribe(async (user) => {
       if (user) {
+        const expired = await this.isSessionExpired(user);
+        if (expired) {
+          await this.logout();
+          return;
+        }
+        this.currentUser.set(user);
         this.updateLastAccessDate(user.uid);
+      } else {
+        this.currentUser.set(null);
       }
     });
+
+    this.initVisibilityListener();
+  }
+
+  async isSessionExpired(user: User): Promise<boolean> {
+    try {
+      const idTokenResult = await user.getIdTokenResult();
+      const authTime = Number(idTokenResult?.claims['auth_time'] || 0) * 1000;
+      const now = Date.now();
+      const maxDuration = 60 * 60 * 1000; // 1 hora em milissegundos
+
+      return authTime === 0 || (now - authTime > maxDuration);
+    } catch (error) {
+      console.error('Erro ao verificar validade da sessão:', error);
+      return true;
+    }
+  }
+
+  async checkAndHandleSessionExpiration(user?: User | null): Promise<boolean> {
+    const targetUser = user ?? this.auth.currentUser;
+    if (!targetUser) return false;
+
+    const expired = await this.isSessionExpired(targetUser);
+    if (expired) {
+      await this.logout();
+      return true;
+    }
+    return false;
+  }
+
+  private initVisibilityListener() {
+    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+      const handleVisibilityOrFocus = () => {
+        if (document.visibilityState === 'visible') {
+          this.checkAndHandleSessionExpiration();
+        }
+      };
+
+      document.addEventListener('visibilitychange', handleVisibilityOrFocus);
+      window.addEventListener('focus', handleVisibilityOrFocus);
+    }
   }
 
   private async updateLastAccessDate(uid: string) {
@@ -97,6 +145,7 @@ export class AuthService {
   async logout() {
     localStorage.removeItem('lancamentosFiltros');
     await signOut(this.auth);
+    this.currentUser.set(null);
     this.router.navigate(['/login']);
   }
 

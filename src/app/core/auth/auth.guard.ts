@@ -2,23 +2,20 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { Auth, authState } from '@angular/fire/auth';
 import { take, switchMap } from 'rxjs/operators';
+import { AuthService } from './auth.service';
 
 export const authGuard: CanActivateFn = (route, state) => {
   const auth = inject(Auth);
+  const authService = inject(AuthService);
   const router = inject(Router);
 
   return authState(auth).pipe(
     take(1),
     switchMap(async (user) => {
       if (user) {
-        const idTokenResult = await user.getIdTokenResult() || { claims: { auth_time: 0 } };
-        // auth_time vem em segundos, convertemos para milissegundos
-        const authTime = Number(idTokenResult.claims['auth_time']) * 1000;
-        const now = Date.now();
-        const maxDuration = 60 * 60 * 1000; // 1 hora em milissegundos
-
-        if (now - authTime > maxDuration) {
-          await auth.signOut(); // Força o logout se expirou
+        const isExpired = await authService.isSessionExpired(user);
+        if (isExpired) {
+          await authService.logout();
           return router.createUrlTree(['/login'], { queryParams: { returnUrl: state.url } });
         }
         return true;
