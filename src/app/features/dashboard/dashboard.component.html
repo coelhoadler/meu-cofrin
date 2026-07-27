@@ -5,7 +5,7 @@
       <div>
         <h2 class="text-[28px] font-bold text-slate-900 dark:text-white tracking-tight">{{greetingUser()}}</h2>
         <!-- Controles de Seleção de Mês -->
-        <div class="flex flex-wrap items-center gap-2 mt-2">
+        <div class="flex max-w-full items-center gap-2 mt-2">
           <div
             class="inline-flex items-center bg-white dark:bg-[#1a112c] border border-slate-200 dark:border-slate-800 rounded-2xl p-1 shadow-sm transition-colors">
             <button type="button" (click)="previousMonth()" title="Mês anterior"
@@ -13,9 +13,9 @@
               <span class="material-symbols-outlined text-xl">chevron_left</span>
             </button>
 
-            <div class="px-1 flex items-center">
+            <div id="tour-date-picker" class="px-1 flex items-center max-w-[180px]">
               <p-datepicker [ngModel]="selectedDate()" (ngModelChange)="onMonthSelect($event)" view="month"
-                dateFormat="MM yy"
+                dateFormat="M y"
                 inputStyleClass="w-36 text-center font-bold text-sm text-slate-800 dark:text-white bg-transparent border-0 focus:outline-none focus:ring-0 cursor-pointer capitalize">
               </p-datepicker>
             </div>

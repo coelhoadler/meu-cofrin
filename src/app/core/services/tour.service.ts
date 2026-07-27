@@ -46,6 +46,15 @@ export class TourService {
         }
       },
       {
+        element: '#tour-date-picker',
+        popover: {
+          title: '🗓️ Seleção de mês',
+          description: `Visualize facilitada para o mês de sua preferência.`,
+          side: 'bottom',
+          align: 'center'
+        }
+      },
+      {
         element: '#tour-btn-replicar-mes',
         popover: {
           title: '🔁 Replicar mês',
@@ -94,7 +103,7 @@ export class TourService {
         element: '#tour-grafico-resumo',
         popover: {
           title: '📊 Comparativo Financeiro',
-          description: 'Compare graficamente a evolução das suas receitas e despesas ao longo do tempo.',
+          description: 'Compare graficamente a evolução das suas receitas e despesas ao longo do tempo durante 6 meses.',
           side: 'top',
           align: 'center'
         }
