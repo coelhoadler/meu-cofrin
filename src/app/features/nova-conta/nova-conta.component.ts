@@ -43,21 +43,21 @@ export class NovaContaComponent implements OnInit {
   editId = signal<string | null>(null);
   existingReciboUrl = signal<string | null>(null);
   returnUrl = signal<string>('/dashboard');
-  
+
   valorAntigo = signal<number | null>(null);
   currentValorNum = signal<number>(0);
 
   diferencaValor = computed(() => {
     const antigo = this.valorAntigo();
     if (antigo === null) return null;
-    
+
     const atual = this.currentValorNum();
     const diff = atual - antigo;
-    
+
     if (diff === 0) return null;
-    
+
     const tipo = this.contaForm.get('tipo')?.value || 'Despesa';
-    
+
     let isPositiveChange = false;
     if (tipo === 'Despesa') {
       // Para despesa, aumento é ruim (isPositiveChange = false)
@@ -66,7 +66,7 @@ export class NovaContaComponent implements OnInit {
       // Para receita, aumento é bom
       isPositiveChange = diff > 0;
     }
-    
+
     return {
       valorAbsoluto: Math.abs(diff),
       isAumento: diff > 0,
@@ -141,7 +141,7 @@ export class NovaContaComponent implements OnInit {
     try {
       // Load categories first
       const cats = await this.categoriaService.getCategorias();
-      this.categorias.set(cats);
+      this.categorias.set(cats.sort((a, b) => a.nome.localeCompare(b.nome)));
 
       const from = this.route.snapshot.queryParamMap.get('from');
       if (from === 'lancamentos') {
