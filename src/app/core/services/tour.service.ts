@@ -73,15 +73,6 @@ export class TourService {
         }
       },
       {
-        element: '#tour-saldo-card',
-        popover: {
-          title: '💰 Saldo do Mês',
-          description: 'Acompanhe seu saldo total consolidado do mês atual em tempo real.',
-          side: 'bottom',
-          align: 'start'
-        }
-      },
-      {
         element: '#tour-receitas-card',
         popover: {
           title: '📈 Total de Receitas',
@@ -97,6 +88,15 @@ export class TourService {
           description: 'Controle os gastos do mês e fique atento para não estourar seu orçamento.',
           side: 'bottom',
           align: 'center'
+        }
+      },
+      {
+        element: '#tour-saldo-card',
+        popover: {
+          title: '💰 Saldo do Mês',
+          description: 'Acompanhe seu saldo total consolidado do mês atual em tempo real.',
+          side: 'bottom',
+          align: 'start'
         }
       },
       {
