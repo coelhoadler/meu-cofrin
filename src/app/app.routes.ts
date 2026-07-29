@@ -5,11 +5,11 @@ import { MainLayoutComponent } from './core/layout/main-layout.component';
 import { authGuard } from './core/auth/auth.guard';
 
 export const routes: Routes = [
-  { path: 'login', component: LoginComponent, title: 'Meu Cofrin | Login' },
+  { path: 'login', component: LoginComponent, title: 'Meu Cofrin - Entrar no Controle Financeiro' },
   {
     path: 'verificar-email',
     loadComponent: () => import('./features/verificar-email/verificar-email.component').then(m => m.VerificarEmailComponent),
-    title: 'Meu Cofrin | Verificar E-mail'
+    title: 'Meu Cofrin - Verificar E-mail'
   },
   {
     path: 'verify-email',
