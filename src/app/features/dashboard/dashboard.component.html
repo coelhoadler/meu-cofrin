@@ -51,10 +51,10 @@
   <div class=" grid grid-cols-1 md:grid-cols-3 gap-6 relative">
     <!-- Receitas Card -->
     <div id="tour-receitas-card"
-      class="bg-white dark:bg-[#1a112c] rounded-[20px] p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/50 relative flex flex-col justify-between h-[140px] transition-colors duration-300 relative">
+      class="bg-white dark:bg-[#1a112c] rounded-[20px] p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/50 relative flex flex-col justify-between h-[140px] transition-colors duration-300">
       <div>
         <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mb-5">Receitas</p>
-        <h3 class="text-3xl font-bold text-slate-800 dark:text-white mb-4">{{ showValues() ? totalReceitas() : 'R$ ••••'
+        <h3 class="text-[clamp(1.25rem,2.5vw,1.875rem)] font-bold text-slate-800 dark:text-white mb-4 truncate" [title]="showValues() ? totalReceitas() : ''">{{ showValues() ? totalReceitas() : 'R$ ••••'
           }}</h3>
       </div>
       <!-- <div class="mt-auto">
@@ -68,10 +68,10 @@
 
     <!-- Despesas Card -->
     <div id="tour-despesas-card"
-      class="bg-white dark:bg-[#1a112c] rounded-[20px] p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/50 relative flex flex-col justify-between h-[140px] transition-colors duration-300 relative">
+      class="bg-white dark:bg-[#1a112c] rounded-[20px] p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/50 relative flex flex-col justify-between h-[140px] transition-colors duration-300">
       <div>
         <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mb-5">Despesas</p>
-        <h3 class="text-3xl font-bold text-slate-800 dark:text-white mb-4">{{ showValues() ? totalDespesas() : 'R$ ••••'
+        <h3 class="text-[clamp(1.25rem,2.5vw,1.875rem)] font-bold text-slate-800 dark:text-white mb-4 truncate" [title]="showValues() ? totalDespesas() : ''">{{ showValues() ? totalDespesas() : 'R$ ••••'
           }}</h3>
       </div>
       <!-- <div class="mt-auto">
@@ -88,7 +88,7 @@
       class="bg-[#7941dc] text-white rounded-[20px] p-6 shadow-md shadow-purple-500/10 relative overflow-hidden flex flex-col justify-between h-[140px]">
       <div class="relative z-10">
         <p class="text-purple-200 text-sm font-medium mb-5">Saldo do mês</p>
-        <h3 class="text-3xl font-bold mb-4">{{ showValues() ? saldoMes() : 'R$ ••••' }}</h3>
+        <h3 class="text-[clamp(1.25rem,2.5vw,1.875rem)] font-bold mb-4 truncate" [title]="showValues() ? saldoMes() : ''">{{ showValues() ? saldoMes() : 'R$ ••••' }}</h3>
       </div>
       <!-- <div class="relative z-10 mt-auto">
         <p class="text-purple-300 text-[11px] font-medium">Sem alteração</p>
