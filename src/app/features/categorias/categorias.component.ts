@@ -34,7 +34,7 @@ export class CategoriasComponent implements OnInit {
 
   async loadCategorias() {
     try {
-      const data = await this.categoriaService.getCategorias();
+      const data = (await this.categoriaService.getCategorias()).sort((a, b) => a.nome.localeCompare(b.nome));
       this.categorias.set(data);
     } catch (error) {
       console.error('Erro ao carregar categorias', error);
