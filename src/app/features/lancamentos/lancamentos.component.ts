@@ -7,6 +7,29 @@ import { SelectModule } from 'primeng/select';
 import { ContaService, Conta } from '../../core/services/conta.service';
 import { CategoriaService, Categoria } from '../../core/services/categoria.service';
 
+export type VisaoModo = 'lista' | 'resumo';
+
+export interface ItemResumoMensal {
+  mesIndex: number;
+  mesNome: string;
+  receitas: number;
+  despesas: number;
+  saldo: number;
+}
+
+export interface ResumoAnual {
+  ano: number;
+  meses: ItemResumoMensal[];
+  totalReceitas: number;
+  totalDespesas: number;
+  saldoTotal: number;
+}
+
+const MESES_NOMES = [
+  'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+  'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+];
+
 @Component({
   selector: 'app-lancamentos',
   standalone: true,
@@ -28,6 +51,8 @@ export class LancamentosComponent implements OnInit {
         if (parsed.somentePagos !== undefined) this.somentePagos.set(parsed.somentePagos);
         if (parsed.somentePendentes !== undefined) this.somentePendentes.set(parsed.somentePendentes);
         if (parsed.isBuscaGlobal !== undefined) this.isBuscaGlobal.set(parsed.isBuscaGlobal);
+        if (parsed.visaoModo !== undefined) this.visaoModo.set(parsed.visaoModo);
+        if (parsed.resumoAno !== undefined) this.resumoAno.set(parsed.resumoAno);
         if (parsed.dataRangeFiltro) {
           const [start, end] = parsed.dataRangeFiltro;
           this.dataRangeFiltro.set([start ? new Date(start) : null, end ? new Date(end) : null] as any);
@@ -45,11 +70,17 @@ export class LancamentosComponent implements OnInit {
         dataRangeFiltro: this.dataRangeFiltro(),
         somentePagos: this.somentePagos(),
         somentePendentes: this.somentePendentes(),
-        isBuscaGlobal: this.isBuscaGlobal()
+        isBuscaGlobal: this.isBuscaGlobal(),
+        visaoModo: this.visaoModo(),
+        resumoAno: this.resumoAno()
       };
       localStorage.setItem('lancamentosFiltros', JSON.stringify(filtros));
     });
   }
+
+  // Modos de Visão
+  visaoModo = signal<VisaoModo>('lista');
+  resumoAno = signal<number>(new Date().getFullYear());
 
   // Filtros
   tipoFiltro = signal<string>('Todos');
@@ -76,6 +107,24 @@ export class LancamentosComponent implements OnInit {
       { label: 'Todas', value: 'Todos' },
       ...this.categorias().map(c => ({ label: c.nome, value: c.nome }))
     ];
+  });
+
+  anosOptions = computed(() => {
+    const currentYear = new Date().getFullYear();
+    const anosSet = new Set<number>();
+    anosSet.add(currentYear);
+    for (let i = -5; i <= 2; i++) {
+      anosSet.add(currentYear + i);
+    }
+    for (const conta of this.contas()) {
+      if (conta.mesReferencia) {
+        const yearNum = parseInt(conta.mesReferencia.split('-')[0]);
+        if (!isNaN(yearNum)) anosSet.add(yearNum);
+      }
+    }
+    return Array.from(anosSet)
+      .sort((a, b) => b - a)
+      .map(ano => ({ label: ano.toString(), value: ano }));
   });
 
   // Computeds
@@ -107,11 +156,9 @@ export class LancamentosComponent implements OnInit {
       const fim = range[1];
 
       filtradas = filtradas.filter(c => {
-        // Criar data baseada no mesReferencia e diaVencimento
         const [ano, mes] = c.mesReferencia.split('-');
         const dataVencimento = new Date(parseInt(ano), parseInt(mes) - 1, c.diaVencimento);
 
-        // Zera as horas para comparar apenas datas
         const dataVencZera = new Date(dataVencimento.getFullYear(), dataVencimento.getMonth(), dataVencimento.getDate());
         const inicioZera = new Date(inicio.getFullYear(), inicio.getMonth(), inicio.getDate());
         const fimZera = new Date(fim.getFullYear(), fim.getMonth(), fim.getDate());
@@ -137,6 +184,51 @@ export class LancamentosComponent implements OnInit {
 
   saldo = computed(() => {
     return this.totalReceitas() - this.totalDespesas();
+  });
+
+  resumoConsolidado = computed<ResumoAnual>(() => {
+    const ano = this.resumoAno();
+    const todasContas = this.contas();
+    const meses: ItemResumoMensal[] = [];
+
+    let totalReceitasAno = 0;
+    let totalDespesasAno = 0;
+
+    for (let mesIndex = 0; mesIndex < 12; mesIndex++) {
+      const mesStr = String(mesIndex + 1).padStart(2, '0');
+      const mesRef = `${ano}-${mesStr}`;
+
+      const contasDoMes = todasContas.filter(c => c.mesReferencia === mesRef);
+
+      const receitas = contasDoMes
+        .filter(c => c.tipo === 'Receita')
+        .reduce((acc, c) => acc + this.parseFloatValor(c.valor), 0);
+
+      const despesas = contasDoMes
+        .filter(c => c.tipo === 'Despesa')
+        .reduce((acc, c) => acc + this.parseFloatValor(c.valor), 0);
+
+      const saldo = receitas - despesas;
+
+      totalReceitasAno += receitas;
+      totalDespesasAno += despesas;
+
+      meses.push({
+        mesIndex,
+        mesNome: MESES_NOMES[mesIndex],
+        receitas,
+        despesas,
+        saldo
+      });
+    }
+
+    return {
+      ano,
+      meses,
+      totalReceitas: totalReceitasAno,
+      totalDespesas: totalDespesasAno,
+      saldoTotal: totalReceitasAno - totalDespesasAno
+    };
   });
 
   ngOnInit() {
@@ -167,7 +259,7 @@ export class LancamentosComponent implements OnInit {
     try {
       let contas: Conta[] = [];
       const range = this.dataRangeFiltro();
-      let ano = new Date().getFullYear().toString();
+      let ano = this.resumoAno().toString();
       
       if (range && range[0]) {
         ano = range[0].getFullYear().toString();
@@ -181,6 +273,42 @@ export class LancamentosComponent implements OnInit {
     } finally {
       this.isLoading.set(false);
     }
+  }
+
+  async carregarDadosPorAno(anoNum: number) {
+    this.isBuscaGlobal.set(false);
+    this.isLoading.set(true);
+    try {
+      const contas = await this.contaService.getContasByAno(anoNum.toString(), 500);
+      contas.sort((a, b) => a.diaVencimento - b.diaVencimento);
+      this.contas.set(contas);
+    } catch (e) {
+      console.error('Erro ao carregar contas por ano', e);
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
+
+  async setVisaoModo(modo: VisaoModo) {
+    this.visaoModo.set(modo);
+    if (modo === 'resumo') {
+      await this.carregarDadosPorAno(this.resumoAno());
+    }
+  }
+
+  async onResumoAnoChange(ano: number) {
+    this.resumoAno.set(ano);
+    await this.carregarDadosPorAno(ano);
+  }
+
+  async verMes(mesIndex: number) {
+    const ano = this.resumoAno();
+    const inicio = new Date(ano, mesIndex, 1);
+    const fim = new Date(ano, mesIndex + 1, 0);
+
+    this.dataRangeFiltro.set([inicio, fim]);
+    this.visaoModo.set('lista');
+    await this.carregarDadosPorAno(ano);
   }
 
   atualizarDateRange() {
@@ -260,3 +388,4 @@ export class LancamentosComponent implements OnInit {
     return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   }
 }
+

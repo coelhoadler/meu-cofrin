@@ -15,7 +15,7 @@
 
 **Purpose**: Type definitions and base signals initialization
 
-- [ ] T001 Define `VisaoModo` type and `ItemResumoMensal` interface in `src/app/features/lancamentos/lancamentos.component.ts`
+- [x] T001 Define `VisaoModo` type and `ItemResumoMensal` interface in `src/app/features/lancamentos/lancamentos.component.ts`
 
 ---
 
@@ -25,10 +25,10 @@
 
 **Independent Test**: Switch to "Resumo mensal" view and verify all 12 months and annual totals display accurately formatted in pt-BR currency (`R$`).
 
-- [ ] T002 [US1] Add `resumoAno` signal and `resumoConsolidado` computed aggregation signal in `src/app/features/lancamentos/lancamentos.component.ts`
-- [ ] T003 [US1] Add year options list (`anosOptions`) and `onResumoAnoChange` handler in `src/app/features/lancamentos/lancamentos.component.ts`
-- [ ] T004 [US1] Build Resumo Mensal card container, year dropdown header, and 12-month table template in `src/app/features/lancamentos/lancamentos.component.html`
-- [ ] T005 [US1] Render annual total row ("Balanço [Ano]") with green Receitas, red Despesas, and bold Saldo in `src/app/features/lancamentos/lancamentos.component.html`
+- [x] T002 [US1] Add `resumoAno` signal and `resumoConsolidado` computed aggregation signal in `src/app/features/lancamentos/lancamentos.component.ts`
+- [x] T003 [US1] Add year options list (`anosOptions`) and `onResumoAnoChange` handler in `src/app/features/lancamentos/lancamentos.component.ts`
+- [x] T004 [US1] Build Resumo Mensal card container, year dropdown header, and 12-month table template in `src/app/features/lancamentos/lancamentos.component.html`
+- [x] T005 [US1] Render annual total row ("Balanço [Ano]") with green Receitas, red Despesas, and bold Saldo in `src/app/features/lancamentos/lancamentos.component.html`
 
 **Checkpoint**: User Story 1 is functional - 12-month summary and annual totals render correctly for selected year.
 
@@ -40,8 +40,8 @@
 
 **Independent Test**: Click "Ver" next to "Junho" in the summary table and verify the view switches to "Lista" with the period filter set to 01/06/[Ano] - 30/06/[Ano].
 
-- [ ] T006 [US2] Implement `verMes(mesIndex: number)` navigation and filter handler in `src/app/features/lancamentos/lancamentos.component.ts`
-- [ ] T007 [US2] Bind "Ver" action button click handler in summary table rows in `src/app/features/lancamentos/lancamentos.component.html`
+- [x] T006 [US2] Implement `verMes(mesIndex: number)` navigation and filter handler in `src/app/features/lancamentos/lancamentos.component.ts`
+- [x] T007 [US2] Bind "Ver" action button click handler in summary table rows in `src/app/features/lancamentos/lancamentos.component.html`
 
 **Checkpoint**: User Story 2 is functional - clicking "Ver" transitions view and updates date range filters seamlessly.
 
@@ -53,8 +53,8 @@
 
 **Independent Test**: Click between "Lista" and "Resumo mensal" buttons and verify visual highlighting and template content switching.
 
-- [ ] T008 [US3] Add `visaoModo` signal state and `setVisaoModo` toggle method in `src/app/features/lancamentos/lancamentos.component.ts`
-- [ ] T009 [US3] Render Header view mode toggle buttons ("Lista" | "Resumo mensal") with active state styling in `src/app/features/lancamentos/lancamentos.component.html`
+- [x] T008 [US3] Add `visaoModo` signal state and `setVisaoModo` toggle method in `src/app/features/lancamentos/lancamentos.component.ts`
+- [x] T009 [US3] Render Header view mode toggle buttons ("Lista" | "Resumo mensal") with active state styling in `src/app/features/lancamentos/lancamentos.component.html`
 
 **Checkpoint**: User Story 3 is functional - view mode toggle buttons highlight correctly and toggle page content.
 
@@ -64,8 +64,8 @@
 
 **Purpose**: Verification, mobile layout polish, and final quality checks
 
-- [ ] T010 Run quickstart manual verification scenarios from `quickstart.md`
-- [ ] T011 Verify dark mode styling, responsive table wrapping, and pt-BR currency formatting
+- [x] T010 Run quickstart manual verification scenarios from `quickstart.md`
+- [x] T011 Verify dark mode styling, responsive table wrapping, and pt-BR currency formatting
 
 ---
 
