@@ -113,16 +113,17 @@ export class LancamentosComponent implements OnInit {
     const currentYear = new Date().getFullYear();
     const anosSet = new Set<number>();
     anosSet.add(currentYear);
-    for (let i = -5; i <= 2; i++) {
+    for (let i = -2; i <= 0; i++) {
       anosSet.add(currentYear + i);
     }
     for (const conta of this.contas()) {
       if (conta.mesReferencia) {
         const yearNum = parseInt(conta.mesReferencia.split('-')[0]);
-        if (!isNaN(yearNum)) anosSet.add(yearNum);
+        if (!isNaN(yearNum) && yearNum <= currentYear) anosSet.add(yearNum);
       }
     }
     return Array.from(anosSet)
+      .filter(ano => ano <= currentYear)
       .sort((a, b) => b - a)
       .map(ano => ({ label: ano.toString(), value: ano }));
   });
@@ -260,7 +261,7 @@ export class LancamentosComponent implements OnInit {
       let contas: Conta[] = [];
       const range = this.dataRangeFiltro();
       let ano = this.resumoAno().toString();
-      
+
       if (range && range[0]) {
         ano = range[0].getFullYear().toString();
       }
