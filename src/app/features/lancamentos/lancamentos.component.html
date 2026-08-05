@@ -11,11 +11,12 @@
 
     <!-- View Mode Toggle -->
     <div class="flex items-center gap-2 mt-4">
-      <div class="bg-slate-200/60 dark:bg-slate-800/60 p-1 rounded-xl inline-flex gap-1 border border-slate-200/50 dark:border-slate-700/50">
+      <div
+        class="bg-slate-200/60 dark:bg-slate-800/60 p-1 rounded-xl inline-flex gap-1 border border-slate-200/50 dark:border-slate-700/50">
         <button (click)="setVisaoModo('lista')"
           [ngClass]="visaoModo() === 'lista' ? 'bg-white dark:bg-[#1a112c] text-slate-800 dark:text-white shadow-sm font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 font-medium'"
           class="px-4 py-2 text-sm rounded-lg flex items-center gap-2 transition-all">
-          <span class="material-symbols-outlined text-[18px]">filter_alt</span>
+          <span class="material-symbols-outlined text-[18px]">event_list</span>
           Lista
         </button>
         <button (click)="setVisaoModo('resumo')"
@@ -29,245 +30,253 @@
   </div>
 
   @if (visaoModo() === 'lista') {
-    <!-- Filtros -->
-    <div
-      class="bg-white dark:bg-[#1a112c] rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800/50 transition-colors duration-300">
-      <div class="flex items-center gap-2 mb-4 text-slate-700 dark:text-slate-300 font-semibold">
-        <span class="material-symbols-outlined text-slate-400 dark:text-slate-500">filter_alt</span>
-        Filtros
-      </div>
+  <!-- Filtros -->
+  <div
+    class="bg-white dark:bg-[#1a112c] rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800/50 transition-colors duration-300">
+    <div class="flex items-center gap-2 mb-4 text-slate-700 dark:text-slate-300 font-semibold">
+      <span class="material-symbols-outlined text-slate-400 dark:text-slate-500">filter_alt</span>
+      Filtros
+    </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-        <!-- Pesquisa por Nome -->
-        <div>
-          <label
-            class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Nome</label>
-          <div class="flex gap-2">
-            <input type="text" [ngModel]="nomeFiltro()" (ngModelChange)="nomeFiltro.set($event)"
-              (keydown.enter)="pesquisaGlobal()" placeholder="Buscar por nome..."
-              class="w-full bg-slate-50 dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white text-sm rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition-colors" />
-            <button (click)="pesquisaGlobal()"
-              class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2.5 rounded-xl flex items-center justify-center transition-colors shadow-sm"
-              title="Pesquisa global pelo nome">
-              <span class="material-symbols-outlined text-[20px]">search</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Range de Datas -->
-        <div>
-          <label
-            class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Período</label>
-          <p-datepicker [ngModel]="dataRangeFiltro()" (ngModelChange)="onDataRangeChange($event)" selectionMode="range"
-            [readonlyInput]="true" placeholder="Selecionar intervalo..." dateFormat="dd/mm/yy" styleClass="w-full"
-            inputStyleClass="w-full bg-slate-50 dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white text-sm rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition-colors"></p-datepicker>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+      <!-- Pesquisa por Nome -->
+      <div>
+        <label
+          class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Nome</label>
+        <div class="flex gap-2">
+          <input type="text" [ngModel]="nomeFiltro()" (ngModelChange)="nomeFiltro.set($event)"
+            (keydown.enter)="pesquisaGlobal()" placeholder="Buscar por nome..."
+            class="w-full bg-slate-50 dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white text-sm rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition-colors" />
+          <button (click)="pesquisaGlobal()"
+            class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2.5 rounded-xl flex items-center justify-center transition-colors shadow-sm"
+            title="Pesquisa global pelo nome">
+            <span class="material-symbols-outlined text-[20px]">search</span>
+          </button>
         </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-        <!-- Tipo -->
-        <div>
-          <label
-            class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Tipo</label>
-          <p-select [options]="tiposOptions" optionLabel="label" optionValue="value" [ngModel]="tipoFiltro()"
-            (ngModelChange)="tipoFiltro.set($event)"
-            styleClass="w-full bg-slate-50 dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
-          </p-select>
-        </div>
-
-        <!-- Categoria -->
-        <div>
-          <label
-            class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Categoria</label>
-          <p-select [options]="categoriasOptions()" optionLabel="label" optionValue="value" [ngModel]="categoriaFiltro()"
-            (ngModelChange)="categoriaFiltro.set($event)"
-            styleClass="w-full bg-slate-50 dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
-          </p-select>
-        </div>
-      </div>
-
-      <div
-        class="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-6 gap-4 border-t border-slate-100 dark:border-slate-800/50 pt-4">
-        <div class="flex items-center gap-6">
-          <label class="flex items-center gap-2 cursor-pointer text-sm font-medium text-slate-700 dark:text-slate-300">
-            <input type="checkbox" [ngModel]="somentePagos()"
-              (ngModelChange)="somentePagos.set($event); somentePendentes.set(false)"
-              class="w-4.5 h-4.5 rounded border-slate-300 dark:border-slate-600 text-indigo-600 focus:ring-indigo-500 bg-slate-50 dark:bg-[#130c25]" />
-            Somente Pagos
-          </label>
-          <label class="flex items-center gap-2 cursor-pointer text-sm font-medium text-slate-700 dark:text-slate-300">
-            <input type="checkbox" [ngModel]="somentePendentes()"
-              (ngModelChange)="somentePendentes.set($event); somentePagos.set(false)"
-              class="w-4.5 h-4.5 rounded border-slate-300 dark:border-slate-600 text-indigo-600 focus:ring-indigo-500 bg-slate-50 dark:bg-[#130c25]" />
-            Somente Pendentes
-          </label>
-        </div>
-
-        <button (click)="limparFiltros()"
-          class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#130c25] hover:bg-slate-50 dark:hover:bg-slate-800/50 px-4 py-2 rounded-lg transition-colors w-full sm:w-auto">
-          Resetar Filtros
-        </button>
+      <!-- Range de Datas -->
+      <div>
+        <label
+          class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Período</label>
+        <p-datepicker [ngModel]="dataRangeFiltro()" (ngModelChange)="onDataRangeChange($event)" selectionMode="range"
+          [readonlyInput]="true" placeholder="Selecionar intervalo..." dateFormat="dd/mm/yy" styleClass="w-full"
+          inputStyleClass="w-full bg-slate-50 dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white text-sm rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 transition-colors"></p-datepicker>
       </div>
     </div>
 
-    <!-- Resumo -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <!-- Receitas -->
-      <div
-        class="bg-white dark:bg-[#1a112c] rounded-2xl p-5 shadow-sm border border-slate-200 dark:border-slate-800/50 flex flex-col justify-center transition-colors duration-300">
-        <p class="text-sm text-slate-500 dark:text-slate-400 font-medium mb-1">Receitas</p>
-        <p class="text-2xl font-bold text-emerald-500 dark:text-emerald-400">{{ formatarMoeda(totalReceitas()) }}</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+      <!-- Tipo -->
+      <div>
+        <label
+          class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Tipo</label>
+        <p-select [options]="tiposOptions" optionLabel="label" optionValue="value" [ngModel]="tipoFiltro()"
+          (ngModelChange)="tipoFiltro.set($event)"
+          styleClass="w-full bg-slate-50 dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
+        </p-select>
       </div>
 
-      <!-- Despesas -->
-      <div
-        class="bg-white dark:bg-[#1a112c] rounded-2xl p-5 shadow-sm border border-slate-200 dark:border-slate-800/50 flex flex-col justify-center transition-colors duration-300">
-        <p class="text-sm text-slate-500 dark:text-slate-400 font-medium mb-1">Despesas</p>
-        <p class="text-2xl font-bold text-rose-500 dark:text-rose-400">{{ formatarMoeda(totalDespesas()) }}</p>
-      </div>
-
-      <!-- Saldo -->
-      <div
-        class="bg-white dark:bg-[#1a112c] rounded-2xl p-5 shadow-sm border border-slate-200 dark:border-slate-800/50 flex flex-col justify-center transition-colors duration-300">
-        <p class="text-sm text-slate-500 dark:text-slate-400 font-medium mb-1">Saldo</p>
-        <p class="text-2xl font-bold text-slate-800 dark:text-white">{{ formatarMoeda(saldo()) }}</p>
+      <!-- Categoria -->
+      <div>
+        <label
+          class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Categoria</label>
+        <p-select [options]="categoriasOptions()" optionLabel="label" optionValue="value" [ngModel]="categoriaFiltro()"
+          (ngModelChange)="categoriaFiltro.set($event)"
+          styleClass="w-full bg-slate-50 dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
+        </p-select>
       </div>
     </div>
 
-    <!-- Resultados -->
     <div
-      class="bg-white dark:bg-[#1a112c] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800/50 overflow-hidden transition-colors duration-300">
-      <div class="p-5 border-b border-slate-100 dark:border-slate-800/50 flex items-center justify-between">
-        <h2 class="text-lg font-bold text-slate-800 dark:text-white">Resultados</h2>
-        <span class="text-sm text-slate-500 dark:text-slate-400">{{ contasFiltradas().length }} lançamento(s)</span>
+      class="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-6 gap-4 border-t border-slate-100 dark:border-slate-800/50 pt-4">
+      <div class="flex items-center gap-6">
+        <label class="flex items-center gap-2 cursor-pointer text-sm font-medium text-slate-700 dark:text-slate-300">
+          <input type="checkbox" [ngModel]="somentePagos()"
+            (ngModelChange)="somentePagos.set($event); somentePendentes.set(false)"
+            class="w-4.5 h-4.5 rounded border-slate-300 dark:border-slate-600 text-indigo-600 focus:ring-indigo-500 bg-slate-50 dark:bg-[#130c25]" />
+          Somente Pagos
+        </label>
+        <label class="flex items-center gap-2 cursor-pointer text-sm font-medium text-slate-700 dark:text-slate-300">
+          <input type="checkbox" [ngModel]="somentePendentes()"
+            (ngModelChange)="somentePendentes.set($event); somentePagos.set(false)"
+            class="w-4.5 h-4.5 rounded border-slate-300 dark:border-slate-600 text-indigo-600 focus:ring-indigo-500 bg-slate-50 dark:bg-[#130c25]" />
+          Somente Pendentes
+        </label>
       </div>
 
-      <div class="divide-y divide-slate-100 dark:divide-slate-800/50">
-        @if (isLoading()) {
-        <div class="p-8 text-center text-slate-500 dark:text-slate-400">
-          <span
-            class="material-symbols-outlined animate-spin text-3xl mb-2 text-indigo-500 dark:text-indigo-400">progress_activity</span>
-          <p>Carregando lançamentos...</p>
+      <button (click)="limparFiltros()"
+        class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#130c25] hover:bg-slate-50 dark:hover:bg-slate-800/50 px-4 py-2 rounded-lg transition-colors w-full sm:w-auto">
+        Resetar Filtros
+      </button>
+    </div>
+  </div>
+
+  <!-- Resumo -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <!-- Receitas -->
+    <div
+      class="bg-white dark:bg-[#1a112c] rounded-2xl p-5 shadow-sm border border-slate-200 dark:border-slate-800/50 flex flex-col justify-center transition-colors duration-300">
+      <p class="text-sm text-slate-500 dark:text-slate-400 font-medium mb-1">Receitas</p>
+      <p class="text-2xl font-bold text-emerald-500 dark:text-emerald-400">{{ formatarMoeda(totalReceitas()) }}</p>
+    </div>
+
+    <!-- Despesas -->
+    <div
+      class="bg-white dark:bg-[#1a112c] rounded-2xl p-5 shadow-sm border border-slate-200 dark:border-slate-800/50 flex flex-col justify-center transition-colors duration-300">
+      <p class="text-sm text-slate-500 dark:text-slate-400 font-medium mb-1">Despesas</p>
+      <p class="text-2xl font-bold text-rose-500 dark:text-rose-400">{{ formatarMoeda(totalDespesas()) }}</p>
+    </div>
+
+    <!-- Saldo -->
+    <div
+      class="bg-white dark:bg-[#1a112c] rounded-2xl p-5 shadow-sm border border-slate-200 dark:border-slate-800/50 flex flex-col justify-center transition-colors duration-300">
+      <p class="text-sm text-slate-500 dark:text-slate-400 font-medium mb-1">Saldo</p>
+      <p class="text-2xl font-bold text-slate-800 dark:text-white">{{ formatarMoeda(saldo()) }}</p>
+    </div>
+  </div>
+
+  <!-- Resultados -->
+  <div
+    class="bg-white dark:bg-[#1a112c] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800/50 overflow-hidden transition-colors duration-300">
+    <div class="p-5 border-b border-slate-100 dark:border-slate-800/50 flex items-center justify-between">
+      <h2 class="text-lg font-bold text-slate-800 dark:text-white">Resultados</h2>
+      <span class="text-sm text-slate-500 dark:text-slate-400">{{ contasFiltradas().length }} lançamento(s)</span>
+    </div>
+
+    <div class="divide-y divide-slate-100 dark:divide-slate-800/50">
+      @if (isLoading()) {
+      <div class="p-8 text-center text-slate-500 dark:text-slate-400">
+        <span
+          class="material-symbols-outlined animate-spin text-3xl mb-2 text-indigo-500 dark:text-indigo-400">progress_activity</span>
+        <p>Carregando lançamentos...</p>
+      </div>
+      } @else if (contasFiltradas().length === 0) {
+      <div class="p-8 text-center text-slate-500 dark:text-slate-400">
+        <div
+          class="w-16 h-16 bg-slate-100 dark:bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-3">
+          <span class="material-symbols-outlined text-3xl text-slate-400 dark:text-slate-500">receipt_long</span>
         </div>
-        } @else if (contasFiltradas().length === 0) {
-        <div class="p-8 text-center text-slate-500 dark:text-slate-400">
-          <div
-            class="w-16 h-16 bg-slate-100 dark:bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-3">
-            <span class="material-symbols-outlined text-3xl text-slate-400 dark:text-slate-500">receipt_long</span>
+        <p class="font-medium text-slate-700 dark:text-slate-300">Nenhum lançamento encontrado.</p>
+        <p class="text-sm">Tente ajustar os filtros acima.</p>
+      </div>
+      } @else {
+      @for (conta of contasFiltradas(); track conta.id) {
+      <a [routerLink]="['/editar-conta', conta.id]" [queryParams]="{ from: 'lancamentos' }"
+        class="block p-4 sm:p-5 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors cursor-pointer">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 hidden sm:flex"
+            [ngClass]="conta.tipo === 'Receita' ? 'bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-rose-100 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400'">
+            <span class="material-symbols-outlined">
+              {{ conta.tipo === 'Receita' ? 'trending_up' : 'trending_down' }}
+            </span>
           </div>
-          <p class="font-medium text-slate-700 dark:text-slate-300">Nenhum lançamento encontrado.</p>
-          <p class="text-sm">Tente ajustar os filtros acima.</p>
-        </div>
-        } @else {
-        @for (conta of contasFiltradas(); track conta.id) {
-        <a [routerLink]="['/editar-conta', conta.id]" [queryParams]="{ from: 'lancamentos' }"
-          class="block p-4 sm:p-5 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors cursor-pointer">
-          <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 hidden sm:flex"
-              [ngClass]="conta.tipo === 'Receita' ? 'bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-rose-100 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400'">
-              <span class="material-symbols-outlined">
-                {{ conta.tipo === 'Receita' ? 'trending_up' : 'trending_down' }}
+
+          <div>
+            <p class="font-bold text-slate-800 dark:text-slate-200" [ngClass]="{ 'line-through': conta.statusPago }">{{
+              conta.nome }}</p>
+            <div class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              <span class="truncate max-w-[120px] sm:max-w-none">{{ conta.categoria || 'Sem categoria' }}</span>
+              <span>•</span>
+              <span>Vence dia {{ conta.diaVencimento.toString().padStart(2, '0') }}{{ '/' +
+                conta.mesReferencia.split('-')[1] || '' }}/{{
+                conta.mesReferencia.split('-')[0] }}</span>
+            </div>
+            <div class="flex items-center gap-1.5 w-full text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              <span [ngClass]="conta.statusPago ? 'text-emerald-600 font-medium' : 'text-amber-500 font-medium'">
+                {{ conta.statusPago ? 'Pago' : 'Pendente' }}
               </span>
             </div>
-
-            <div>
-              <p class="font-bold text-slate-800 dark:text-slate-200" [ngClass]="{ 'line-through': conta.statusPago }">{{
-                conta.nome }}</p>
-              <div class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                <span class="truncate max-w-[120px] sm:max-w-none">{{ conta.categoria || 'Sem categoria' }}</span>
-                <span>•</span>
-                <span>Vence dia {{ conta.diaVencimento.toString().padStart(2, '0') }}{{ '/' +
-                  conta.mesReferencia.split('-')[1] || '' }}/{{
-                  conta.mesReferencia.split('-')[0] }}</span>
-              </div>
-              <div class="flex items-center gap-1.5 w-full text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                <span [ngClass]="conta.statusPago ? 'text-emerald-600 font-medium' : 'text-amber-500 font-medium'">
-                  {{ conta.statusPago ? 'Pago' : 'Pendente' }}
-                </span>
-              </div>
-            </div>
           </div>
+        </div>
 
-          <div class="text-right">
-            <p class="font-bold whitespace-nowrap"
-              [ngClass]="conta.tipo === 'Receita' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'">
-              {{ conta.tipo === 'Receita' ? '+ ' : '- ' }}
-              {{ formatarMoeda(parseFloatValor(conta.valor)) }}
-            </p>
-          </div>
-        </a>
-        }
-        }
-      </div>
+        <div class="text-right">
+          <p class="font-bold whitespace-nowrap"
+            [ngClass]="conta.tipo === 'Receita' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'">
+            {{ conta.tipo === 'Receita' ? '+ ' : '- ' }}
+            {{ formatarMoeda(parseFloatValor(conta.valor)) }}
+          </p>
+        </div>
+      </a>
+      }
+      }
     </div>
+  </div>
   } @else {
-    <!-- Visão Resumo Mensal -->
-    <div
-      class="bg-white dark:bg-[#1a112c] rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800/50 transition-colors duration-300">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <div>
-          <h2 class="text-xl font-bold text-slate-800 dark:text-white">Resumo mensal</h2>
-          <p class="text-sm text-slate-500 dark:text-slate-400">Receitas, despesas e saldo por mês.</p>
-        </div>
-        <div class="flex items-center gap-3 self-end sm:self-auto">
-          <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Ano</label>
-          <p-select [options]="anosOptions()" optionLabel="label" optionValue="value" [ngModel]="resumoAno()"
-            (ngModelChange)="onResumoAnoChange($event)"
-            styleClass="w-32 bg-slate-50 dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
-          </p-select>
-        </div>
+  <!-- Visão Resumo Mensal -->
+  <div
+    class="bg-white dark:bg-[#1a112c] rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800/50 transition-colors duration-300">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div>
+        <h2 class="text-xl font-bold text-slate-800 dark:text-white">Resumo mensal</h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400">Receitas, despesas e saldo por mês.</p>
       </div>
-
-      <!-- Tabela Resumo -->
-      <div class="overflow-x-auto">
-        <table class="w-full text-sm text-left">
-          <thead>
-            <tr class="border-b border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400 font-semibold">
-              <th class="py-3 px-4">Mês</th>
-              <th class="py-3 px-4 text-center">Receitas</th>
-              <th class="py-3 px-4 text-center">Despesas</th>
-              <th class="py-3 px-4 text-center">Saldo</th>
-              <th class="py-3 px-4 text-right"></th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50">
-            @if (isLoading()) {
-              <tr>
-                <td colspan="5" class="py-12 text-center text-slate-500 dark:text-slate-400">
-                  <span class="material-symbols-outlined animate-spin text-3xl mb-2 text-indigo-500 dark:text-indigo-400">progress_activity</span>
-                  <p>Carregando resumo mensal...</p>
-                </td>
-              </tr>
-            } @else {
-              @for (item of resumoConsolidado().meses; track item.mesIndex) {
-                <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors">
-                  <td class="py-3.5 px-4 font-medium text-slate-800 dark:text-slate-200">{{ item.mesNome }}</td>
-                  <td class="py-3.5 px-4 text-center font-medium text-emerald-600 dark:text-emerald-400">{{ formatarMoeda(item.receitas) }}</td>
-                  <td class="py-3.5 px-4 text-center font-medium text-rose-600 dark:text-rose-400">{{ formatarMoeda(item.despesas) }}</td>
-                  <td class="py-3.5 px-4 text-center font-bold text-slate-800 dark:text-white">{{ formatarMoeda(item.saldo) }}</td>
-                  <td class="py-3.5 px-4 text-right">
-                    <button (click)="verMes(item.mesIndex)"
-                      class="text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#130c25] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-1 rounded-lg transition-colors">
-                      Ver
-                    </button>
-                  </td>
-                </tr>
-              }
-
-              <!-- Linha Balanço Anual -->
-              <tr class="bg-indigo-50/40 dark:bg-indigo-950/20 font-bold border-t-2 border-slate-200 dark:border-slate-800">
-                <td class="py-4 px-4 text-slate-800 dark:text-white">Balanço {{ resumoAno() }}</td>
-                <td class="py-4 px-4 text-center text-emerald-600 dark:text-emerald-400">{{ formatarMoeda(resumoConsolidado().totalReceitas) }}</td>
-                <td class="py-4 px-4 text-center text-rose-600 dark:text-rose-400">{{ formatarMoeda(resumoConsolidado().totalDespesas) }}</td>
-                <td class="py-4 px-4 text-center text-slate-900 dark:text-white">{{ formatarMoeda(resumoConsolidado().saldoTotal) }}</td>
-                <td class="py-4 px-4"></td>
-              </tr>
-            }
-          </tbody>
-        </table>
+      <div class="flex items-center gap-3 self-end sm:self-auto">
+        <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Ano</label>
+        <p-select [options]="anosOptions()" optionLabel="label" optionValue="value" [ngModel]="resumoAno()"
+          (ngModelChange)="onResumoAnoChange($event)"
+          styleClass="w-32 bg-slate-50 dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
+        </p-select>
       </div>
     </div>
+
+    <!-- Tabela Resumo -->
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm text-left">
+        <thead>
+          <tr
+            class="border-b border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400 font-semibold">
+            <th class="py-3 px-4">Mês</th>
+            <th class="py-3 px-4 text-center">Receitas</th>
+            <th class="py-3 px-4 text-center">Despesas</th>
+            <th class="py-3 px-4 text-center">Saldo</th>
+            <th class="py-3 px-4 text-right"></th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50">
+          @if (isLoading()) {
+          <tr>
+            <td colspan="5" class="py-12 text-center text-slate-500 dark:text-slate-400">
+              <span
+                class="material-symbols-outlined animate-spin text-3xl mb-2 text-indigo-500 dark:text-indigo-400">progress_activity</span>
+              <p>Carregando resumo mensal...</p>
+            </td>
+          </tr>
+          } @else {
+          @for (item of resumoConsolidado().meses; track item.mesIndex) {
+          <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors">
+            <td class="py-3.5 px-4 font-medium text-slate-800 dark:text-slate-200">{{ item.mesNome }}</td>
+            <td class="py-3.5 px-4 text-center font-medium text-emerald-600 dark:text-emerald-400">{{
+              formatarMoeda(item.receitas) }}</td>
+            <td class="py-3.5 px-4 text-center font-medium text-rose-600 dark:text-rose-400">{{
+              formatarMoeda(item.despesas) }}</td>
+            <td class="py-3.5 px-4 text-center font-bold text-slate-800 dark:text-white">{{ formatarMoeda(item.saldo) }}
+            </td>
+            <td class="py-3.5 px-4 text-right">
+              <button (click)="verMes(item.mesIndex)"
+                class="text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#130c25] hover:bg-slate-50 dark:hover:bg-slate-800 px-3 py-1 rounded-lg transition-colors">
+                Ver
+              </button>
+            </td>
+          </tr>
+          }
+
+          <!-- Linha Balanço Anual -->
+          <tr class="bg-indigo-50/40 dark:bg-indigo-950/20 font-bold border-t-2 border-slate-200 dark:border-slate-800">
+            <td class="py-4 px-4 text-slate-800 dark:text-white">Balanço {{ resumoAno() }}</td>
+            <td class="py-4 px-4 text-center text-emerald-600 dark:text-emerald-400">{{
+              formatarMoeda(resumoConsolidado().totalReceitas) }}</td>
+            <td class="py-4 px-4 text-center text-rose-600 dark:text-rose-400">{{
+              formatarMoeda(resumoConsolidado().totalDespesas) }}</td>
+            <td class="py-4 px-4 text-center text-slate-900 dark:text-white">{{
+              formatarMoeda(resumoConsolidado().saldoTotal) }}</td>
+            <td class="py-4 px-4"></td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
   }
 
   <!-- Floating Action Button (Mobile Only) -->
@@ -275,4 +284,4 @@
     class="fixed bottom-6 right-6 z-40 sm:hidden flex items-center justify-center w-14 h-14 bg-[#421b7b] active:bg-[#341561] text-white rounded-full border-[2.5px] border-[#9d6bf3] shadow-[0_0_20px_rgba(157,107,243,0.4)] transition-transform active:scale-95">
     <span class="material-symbols-outlined text-3xl">keyboard_backspace</span>
   </a>
-</div>
+</div>
