@@ -49,7 +49,7 @@ export class TourService {
         element: '#tour-date-picker',
         popover: {
           title: '🗓️ Seleção de mês',
-          description: `Visualize facilitada para o mês de sua preferência.`,
+          description: `Visão facilitada para o mês de sua preferência.`,
           side: 'bottom',
           align: 'center'
         }
@@ -162,7 +162,9 @@ export class TourService {
     const config: Config = {
       showProgress: true,
       animate: true,
-      allowClose: false,
+      allowClose: true,
+      overlayClickBehavior: () => {},
+      showButtons: ['next', 'previous', 'close'],
       overlayColor: '#0f172a',
       overlayOpacity: 0.75,
       stagePadding: 6,
@@ -176,7 +178,8 @@ export class TourService {
         this.isTour = false;
       },
       steps: validSteps,
-      allowScroll: false
+      allowScroll: false,
+      allowKeyboardControl: true,
     };
 
     this.activeDriver = driver(config);
