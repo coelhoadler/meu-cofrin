@@ -113,9 +113,11 @@ export class LancamentosComponent implements OnInit {
     const currentYear = new Date().getFullYear();
     const anosSet = new Set<number>();
     anosSet.add(currentYear);
-    for (let i = -2; i <= 0; i++) {
-      anosSet.add(currentYear + i);
-    }
+    // adicionar anos anteriores
+    // for (let i = -2; i <= 0; i++) {
+    //   anosSet.add(currentYear + i);
+    // }
+
     for (const conta of this.contas()) {
       if (conta.mesReferencia) {
         const yearNum = parseInt(conta.mesReferencia.split('-')[0]);
