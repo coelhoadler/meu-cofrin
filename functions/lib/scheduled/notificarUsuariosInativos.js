@@ -38,7 +38,8 @@ exports.notificarUsuariosInativos = (0, scheduler_1.onSchedule)({
             try {
                 const authUser = await admin.auth().getUser(userId);
                 // Envia o e-mail apenas se o usuário possuir e-mail válido e verificado
-                if (authUser.email && authUser.emailVerified) {
+                // if (authUser.email && authUser.emailVerified) {
+                if (authUser.email) {
                     const nomeCompleto = authUser.displayName || userData.nome || "Usuário";
                     const primeiroNome = nomeCompleto.split(" ")[0];
                     emails.push({
