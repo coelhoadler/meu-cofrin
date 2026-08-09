@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -8,7 +8,8 @@ import { Categoria, CategoriaService } from '../../core/services/categoria.servi
   selector: 'app-categorias',
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule, RouterLink],
-  templateUrl: './categorias.component.html'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './categorias.component.html',
 })
 export class CategoriasComponent implements OnInit {
   private fb = inject(FormBuilder);
@@ -18,7 +19,7 @@ export class CategoriasComponent implements OnInit {
     nome: ['', [Validators.required]],
     descricao: [''],
     tipo: ['Despesa', [Validators.required]],
-    cor: ['#1a112c']
+    cor: ['#1a112c'],
   });
 
   isLoading = signal(false);
@@ -34,7 +35,9 @@ export class CategoriasComponent implements OnInit {
 
   async loadCategorias() {
     try {
-      const data = (await this.categoriaService.getCategorias()).sort((a, b) => a.nome.localeCompare(b.nome));
+      const data = (await this.categoriaService.getCategorias()).sort((a, b) =>
+        a.nome.localeCompare(b.nome),
+      );
       this.categorias.set(data);
     } catch (error) {
       console.error('Erro ao carregar categorias', error);
@@ -56,7 +59,7 @@ export class CategoriasComponent implements OnInit {
         nome: formValue.nome!,
         descricao: formValue.descricao || '',
         tipo: formValue.tipo as 'Despesa' | 'Receita',
-        cor: formValue.cor || ''
+        cor: formValue.cor || '',
       };
 
       if (this.isEditMode() && this.editId()) {
@@ -82,7 +85,7 @@ export class CategoriasComponent implements OnInit {
       nome: categoria.nome,
       descricao: categoria.descricao || '',
       tipo: categoria.tipo,
-      cor: categoria.cor || '#1a112c'
+      cor: categoria.cor || '#1a112c',
     });
     // Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' });

@@ -1,8 +1,10 @@
 <div class="max-w-8xl mx-auto py-4 space-y-6">
   <!-- Header -->
   <div>
-    <button routerLink="/dashboard"
-      class="text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 flex items-center gap-1 text-sm font-medium mb-6 hidden sm:inline-flex">
+    <button
+      routerLink="/dashboard"
+      class="text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 flex items-center gap-1 text-sm font-medium mb-6 hidden sm:inline-flex"
+    >
       <span class="material-symbols-outlined text-[18px]">arrow_back</span>
       Voltar
     </button>
@@ -12,111 +14,165 @@
 
   <!-- Card 1: Photo -->
   <div
-    class="bg-white dark:bg-[#1a112c] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800/50 p-6 flex flex-col sm:flex-row items-center sm:items-center gap-6 transition-colors duration-300">
+    class="bg-white dark:bg-[#1a112c] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800/50 p-6 flex flex-col sm:flex-row items-center sm:items-center gap-6 transition-colors duration-300"
+  >
     <div class="relative flex-shrink-0">
       @if (user()?.photoURL) {
-      <img [src]="user()?.photoURL" alt="Profile" class="w-36 h-36 rounded-full object-cover">
+        <img
+          [src]="$safeNavigationMigration(user()?.photoURL)"
+          alt="Profile"
+          class="w-36 h-36 rounded-full object-cover"
+        />
       } @else {
-      <div
-        class="w-36 h-36 rounded-full bg-slate-200 dark:bg-slate-800/50 flex items-center justify-center text-slate-500 dark:text-slate-400 text-3xl font-bold">
-        {{ user()?.displayName?.charAt(0)?.toUpperCase() || user()?.email?.charAt(0)?.toUpperCase() || 'U' }}
-      </div>
+        <div
+          class="w-36 h-36 rounded-full bg-slate-200 dark:bg-slate-800/50 flex items-center justify-center text-slate-500 dark:text-slate-400 text-3xl font-bold"
+        >
+          {{
+            user()?.displayName?.charAt(0)?.toUpperCase() ||
+              user()?.email?.charAt(0)?.toUpperCase() ||
+              'U'
+          }}
+        </div>
       }
 
-      <button (click)="fileInput.click()"
-        class="absolute bottom-0 right-0 w-8 h-8 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-full flex items-center justify-center text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 shadow-sm transition-colors">
+      <button
+        (click)="fileInput.click()"
+        class="absolute bottom-0 right-0 w-8 h-8 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-full flex items-center justify-center text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 shadow-sm transition-colors"
+      >
         <span class="material-symbols-outlined text-[16px]">photo_camera</span>
       </button>
 
       @if (isUploading()) {
-      <div class="absolute inset-0 bg-white/80 rounded-full flex items-center justify-center">
-        <span class="material-symbols-outlined animate-spin text-[#9b87f5] text-3xl">progress_activity</span>
-      </div>
+        <div class="absolute inset-0 bg-white/80 rounded-full flex items-center justify-center">
+          <span class="material-symbols-outlined animate-spin text-[#9b87f5] text-3xl"
+            >progress_activity</span
+          >
+        </div>
       }
 
-      <input type="file" #fileInput class="hidden" accept="image/jpeg, image/png, image/webp"
-        (change)="uploadProfileImage($event)">
+      <input
+        type="file"
+        #fileInput
+        class="hidden"
+        accept="image/jpeg, image/png, image/webp"
+        (change)="uploadProfileImage($event)"
+      />
     </div>
 
     <div class="text-center sm:text-left flex flex-col gap-1.5">
-      <h2 class="text-xl font-bold text-slate-900 dark:text-white leading-none">{{ user()?.displayName || 'Usuário sem
-        nome' }}</h2>
+      <h2 class="text-xl font-bold text-slate-900 dark:text-white leading-none">
+        {{
+          user()?.displayName ||
+            'Usuário sem
+        nome'
+        }}
+      </h2>
     </div>
   </div>
 
   <!-- Messages Geral -->
   @if (successMessage()) {
-  <div class="p-3 bg-emerald-50 text-emerald-700 rounded-xl text-sm flex items-center gap-2">
-    <span class="material-symbols-outlined text-emerald-500">check_circle</span>
-    {{ successMessage() }}
-  </div>
+    <div class="p-3 bg-emerald-50 text-emerald-700 rounded-xl text-sm flex items-center gap-2">
+      <span class="material-symbols-outlined text-emerald-500">check_circle</span>
+      {{ successMessage() }}
+    </div>
   }
   @if (errorMessage()) {
-  <div class="p-3 bg-red-50 text-red-700 rounded-xl text-sm flex items-center gap-2">
-    <span class="material-symbols-outlined text-red-500">error</span>
-    {{ errorMessage() }}
-  </div>
+    <div class="p-3 bg-red-50 text-red-700 rounded-xl text-sm flex items-center gap-2">
+      <span class="material-symbols-outlined text-red-500">error</span>
+      {{ errorMessage() }}
+    </div>
   }
 
   <!-- Card 2: Personal Info -->
   <div
-    class="bg-white dark:bg-[#1a112c] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800/50 p-6 transition-colors duration-300">
+    class="bg-white dark:bg-[#1a112c] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800/50 p-6 transition-colors duration-300"
+  >
     <form (ngSubmit)="saveProfile()" class="space-y-6">
-
       <div>
-        <label class="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+        <label
+          class="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300 mb-2"
+        >
           <span class="material-symbols-outlined text-[18px]">mail</span>
           E-mail
         </label>
-        <input type="email" [value]="user()?.email" readonly autocomplete="email"
-          class="block w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-500 dark:text-slate-400 bg-slate-50/50 dark:bg-slate-800/30 sm:text-sm">
-        <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">O e-mail de acesso não pode ser alterado por aqui.
+        <input
+          type="email"
+          [value]="$safeNavigationMigration(user()?.email)"
+          readonly
+          autocomplete="email"
+          class="block w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-500 dark:text-slate-400 bg-slate-50/50 dark:bg-slate-800/30 sm:text-sm"
+        />
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">
+          O e-mail de acesso não pode ser alterado por aqui.
         </p>
 
         <div class="mt-4">
           @if (user()?.emailVerified) {
-          <div
-            class="p-3 bg-emerald-50 border border-emerald-200 text-emerald-500 dark:text-emerald-700 dark:text-emerald-800 rounded-xl text-sm flex items-center gap-2">
-            <span
-              class="material-symbols-outlined text-[18px] text-emerald-500 dark:text-emerald-700">check_circle</span>
-            <span>O e-mail foi verificado.</span>
-          </div>
-          } @else {
-          <div
-            class="p-3 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl text-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-[18px] text-amber-500">warning</span>
-              <span>O e-mail não foi verificado. É importante verificar o e-mail para poder receber as notificações
-                de vencimento das contas.</span>
+            <div
+              class="p-3 bg-emerald-50 border border-emerald-200 text-emerald-500 dark:text-emerald-700 dark:text-emerald-800 rounded-xl text-sm flex items-center gap-2"
+            >
+              <span
+                class="material-symbols-outlined text-[18px] text-emerald-500 dark:text-emerald-700"
+                >check_circle</span
+              >
+              <span>O e-mail foi verificado.</span>
             </div>
-            <button type="button" (click)="resendVerificationEmail()" [disabled]="isSendingEmail()"
-              class="px-3 py-1.5 bg-white border border-amber-200 rounded-lg text-xs font-medium text-amber-700 hover:bg-amber-100 hover:text-amber-800 disabled:opacity-50 transition-colors shadow-sm whitespace-nowrap">
-              {{ isSendingEmail() ? 'Enviando...' : 'Reenviar verificação' }}
-            </button>
-          </div>
+          } @else {
+            <div
+              class="p-3 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl text-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+            >
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px] text-amber-500">warning</span>
+                <span
+                  >O e-mail não foi verificado. É importante verificar o e-mail para poder receber
+                  as notificações de vencimento das contas.</span
+                >
+              </div>
+              <button
+                type="button"
+                (click)="resendVerificationEmail()"
+                [disabled]="isSendingEmail()"
+                class="px-3 py-1.5 bg-white border border-amber-200 rounded-lg text-xs font-medium text-amber-700 hover:bg-amber-100 hover:text-amber-800 disabled:opacity-50 transition-colors shadow-sm whitespace-nowrap"
+              >
+                {{ isSendingEmail() ? 'Enviando...' : 'Reenviar verificação' }}
+              </button>
+            </div>
           }
         </div>
       </div>
 
       <div>
-        <label for="displayName"
-          class="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+        <label
+          for="displayName"
+          class="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300 mb-2"
+        >
           <span class="material-symbols-outlined text-[18px]">person</span>
           Nome de exibição
         </label>
-        <input type="text" id="displayName" name="displayName" [ngModel]="displayName()"
-          (ngModelChange)="displayName.set($event)" [value]="user()?.displayName" autocomplete="name"
+        <input
+          type="text"
+          id="displayName"
+          name="displayName"
+          [ngModel]="displayName()"
+          (ngModelChange)="displayName.set($event)"
+          [value]="$safeNavigationMigration(user()?.displayName)"
+          autocomplete="name"
           class="block w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white bg-white dark:bg-[#130c25] focus:ring-2 focus:ring-[#9b87f5] focus:border-[#9b87f5] sm:text-sm transition-colors"
-          placeholder="Seu nome">
+          placeholder="Seu nome"
+        />
       </div>
 
       <div class="flex justify-end pt-2">
-        <button type="submit" [disabled]="isLoading()"
-          class="px-6 py-2.5 bg-[#9b87f5] hover:bg-[#8a75e4] text-white font-medium rounded-xl shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#9b87f5] disabled:opacity-70 disabled:cursor-not-allowed">
+        <button
+          type="submit"
+          [disabled]="isLoading()"
+          class="px-6 py-2.5 bg-[#9b87f5] hover:bg-[#8a75e4] text-white font-medium rounded-xl shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#9b87f5] disabled:opacity-70 disabled:cursor-not-allowed"
+        >
           @if (isLoading()) {
-          Salvando...
+            Salvando...
           } @else {
-          Salvar alterações
+            Salvar alterações
           }
         </button>
       </div>
@@ -194,44 +250,58 @@
 
   <!-- Card 3: Biometrics -->
   <div
-    class="bg-white dark:bg-[#1a112c] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800/50 p-6 flex items-center justify-between gap-4 transition-colors duration-300">
+    class="bg-white dark:bg-[#1a112c] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800/50 p-6 flex items-center justify-between gap-4 transition-colors duration-300"
+  >
     <div class="flex items-start gap-4">
       <div
-        class="w-10 h-10 rounded-full bg-[#f3f0ff] dark:bg-[#9b87f5]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+        class="w-10 h-10 rounded-full bg-[#f3f0ff] dark:bg-[#9b87f5]/10 flex items-center justify-center flex-shrink-0 mt-0.5"
+      >
         <span class="material-symbols-outlined text-[#9b87f5] text-[20px]">fingerprint</span>
       </div>
       <div>
         <h3 class="text-[15px] font-semibold text-slate-900 dark:text-white">Acesso biométrico</h3>
-        <p class="text-[13px] text-slate-500 dark:text-slate-400 mt-0.5 max-w-sm">Use a digital, Face ID ou Windows
-          Hello deste dispositivo
-          para entrar mais rápido.</p>
+        <p class="text-[13px] text-slate-500 dark:text-slate-400 mt-0.5 max-w-sm">
+          Use a digital, Face ID ou Windows Hello deste dispositivo para entrar mais rápido.
+        </p>
       </div>
     </div>
 
-    <button type="button" (click)="toggleBiometrics()"
+    <button
+      type="button"
+      (click)="toggleBiometrics()"
       class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#9b87f5] focus:ring-offset-2"
-      [class.bg-[#9b87f5]]="biometricsEnabled()" [class.bg-slate-200]="!biometricsEnabled()" role="switch"
-      [attr.aria-checked]="biometricsEnabled()">
+      [class.bg-[#9b87f5]]="biometricsEnabled()"
+      [class.bg-slate-200]="!biometricsEnabled()"
+      role="switch"
+      [attr.aria-checked]="biometricsEnabled()"
+    >
       <span
         class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
-        [class.translate-x-5]="biometricsEnabled()" [class.translate-x-0]="!biometricsEnabled()"></span>
+        [class.translate-x-5]="biometricsEnabled()"
+        [class.translate-x-0]="!biometricsEnabled()"
+      ></span>
     </button>
 
     <!-- Floating Action Button (Mobile Only) -->
-    <a routerLink="/dashboard"
-      class="fixed bottom-6 right-6 z-40 sm:hidden flex items-center justify-center w-14 h-14 bg-[#421b7b] active:bg-[#341561] text-white rounded-full border-[2.5px] border-[#9d6bf3] shadow-[0_0_20px_rgba(157,107,243,0.4)] transition-transform active:scale-95">
+    <a
+      routerLink="/dashboard"
+      class="fixed bottom-6 right-6 z-40 sm:hidden flex items-center justify-center w-14 h-14 bg-[#421b7b] active:bg-[#341561] text-white rounded-full border-[2.5px] border-[#9d6bf3] shadow-[0_0_20px_rgba(157,107,243,0.4)] transition-transform active:scale-95"
+    >
       <span class="material-symbols-outlined text-3xl">keyboard_backspace</span>
     </a>
   </div>
 
-
   <!-- Card 4: Danger Zone -->
   <div
-    class="bg-white dark:bg-[#1a112c] rounded-2xl shadow-sm border border-rose-200 dark:border-rose-900/30 p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-colors duration-300">
+    class="bg-white dark:bg-[#1a112c] rounded-2xl shadow-sm border border-rose-200 dark:border-rose-900/30 p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-colors duration-300"
+  >
     <div class="flex items-start gap-4">
       <div
-        class="w-10 h-10 rounded-full bg-rose-50 dark:bg-rose-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-        <span class="material-symbols-outlined text-rose-500 dark:text-rose-400 text-[20px]">delete_forever</span>
+        class="w-10 h-10 rounded-full bg-rose-50 dark:bg-rose-500/10 flex items-center justify-center flex-shrink-0 mt-0.5"
+      >
+        <span class="material-symbols-outlined text-rose-500 dark:text-rose-400 text-[20px]"
+          >delete_forever</span
+        >
       </div>
       <div>
         <h3 class="text-[15px] font-semibold text-rose-700 dark:text-rose-400">Excluir conta</h3>
@@ -241,8 +311,11 @@
       </div>
     </div>
 
-    <button type="button" (click)="openDeleteModal()"
-      class="px-4 py-2.5 bg-rose-50 dark:bg-rose-900/20 hover:bg-rose-100 dark:hover:bg-rose-900/40 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800/50 font-medium rounded-xl text-sm transition-colors flex items-center justify-center gap-2 shrink-0">
+    <button
+      type="button"
+      (click)="openDeleteModal()"
+      class="px-4 py-2.5 bg-rose-50 dark:bg-rose-900/20 hover:bg-rose-100 dark:hover:bg-rose-900/40 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800/50 font-medium rounded-xl text-sm transition-colors flex items-center justify-center gap-2 shrink-0"
+    >
       <span class="material-symbols-outlined text-[18px]">delete</span>
       Excluir minha conta
     </button>
@@ -250,98 +323,138 @@
 
   <!-- Modal de Confirmação de Deleção de Conta -->
   @if (showDeleteModal()) {
-  <div
-    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm transition-opacity"
-    (click)="closeDeleteModal()">
     <div
-      class="bg-white dark:bg-[#1a112c] rounded-[24px] shadow-2xl w-full max-w-lg overflow-hidden border border-slate-200 dark:border-slate-800 flex flex-col transform transition-transform"
-      (click)="$event.stopPropagation()">
-
-      <!-- Modal Header -->
-      <div class="p-6 border-b border-slate-100 dark:border-slate-800/50 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div
-            class="w-10 h-10 rounded-full bg-rose-100 dark:bg-rose-900/30 flex items-center justify-center text-rose-600 dark:text-rose-400 shrink-0">
-            <span class="material-symbols-outlined text-2xl">warning</span>
-          </div>
-          <div>
-            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Excluir conta permanentemente</h3>
-            <p class="text-xs text-rose-600 dark:text-rose-400 font-medium">Esta ação não pode ser desfeita!</p>
-          </div>
-        </div>
-        <button (click)="closeDeleteModal()" [disabled]="isDeletingAccount()"
-          class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-700 dark:hover:text-slate-200 transition-colors disabled:opacity-50">
-          <span class="material-symbols-outlined text-xl">close</span>
-        </button>
-      </div>
-
-      <!-- Modal Body -->
-      <div class="p-6 space-y-4 text-sm text-slate-600 dark:text-slate-300">
-        <p>
-          Ao excluir sua conta, todos os seus dados armazenados no <strong>Meu Cofrin</strong> serão permanentemente
-          apagados dos nossos servidores no Firebase:
-        </p>
-
-        <ul class="space-y-2 pl-2">
-          <li class="flex items-start gap-2">
-            <span class="material-symbols-outlined text-rose-500 text-[18px] mt-0.5">account_circle</span>
-            <span><strong>Autenticação:</strong> Seu login e dados da conta de acesso.</span>
-          </li>
-          <li class="flex items-start gap-2">
-            <span class="material-symbols-outlined text-rose-500 text-[18px] mt-0.5">database</span>
-            <span><strong>Banco de dados:</strong> Suas contas, despesas, receitas, resumos mensais e categorias
-              cadastradas.</span>
-          </li>
-          <li class="flex items-start gap-2">
-            <span class="material-symbols-outlined text-rose-500 text-[18px] mt-0.5">folder_open</span>
-            <span><strong>Armazenamento:</strong> Sua foto de perfil e todos os comprovantes e recibos anexados.</span>
-          </li>
-        </ul>
-
-        @if (deleteModalError()) {
-        <div
-          class="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 text-rose-700 dark:text-rose-300 rounded-xl text-xs flex items-center gap-2">
-          <span class="material-symbols-outlined text-rose-500 shrink-0">error</span>
-          <span>{{ deleteModalError() }}</span>
-        </div>
-        }
-
-        <!-- Checkbox de confirmação -->
-        <div class="pt-3 border-t border-slate-100 dark:border-slate-800/50">
-          <label class="flex items-start gap-3 cursor-pointer group">
-            <input type="checkbox" [ngModel]="isConfirmChecked()"
-              (change)="isConfirmChecked.set($any($event.target).checked)" [disabled]="isDeletingAccount()"
-              class="mt-1 h-4 w-4 rounded border-slate-300 dark:border-slate-700 text-rose-600 focus:ring-rose-500 focus:ring-offset-0 dark:bg-[#130c25]">
-            <span
-              class="text-xs text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
-              Estou ciente de que todos os meus dados serão permanentemente excluídos e que esta ação é
-              <strong>irreversível</strong>.
-            </span>
-          </label>
-        </div>
-      </div>
-
-      <!-- Modal Footer -->
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm transition-opacity"
+      (click)="closeDeleteModal()"
+    >
       <div
-        class="p-4 bg-slate-50 dark:bg-slate-800/30 border-t border-slate-100 dark:border-slate-800/50 flex items-center justify-end gap-3">
-        <button type="button" (click)="closeDeleteModal()" [disabled]="isDeletingAccount()"
-          class="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-200/60 dark:hover:bg-slate-800 rounded-xl transition-colors disabled:opacity-50">
-          Cancelar
-        </button>
+        class="bg-white dark:bg-[#1a112c] rounded-[24px] shadow-2xl w-full max-w-lg overflow-hidden border border-slate-200 dark:border-slate-800 flex flex-col transform transition-transform"
+        (click)="$event.stopPropagation()"
+      >
+        <!-- Modal Header -->
+        <div
+          class="p-6 border-b border-slate-100 dark:border-slate-800/50 flex items-center justify-between"
+        >
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 rounded-full bg-rose-100 dark:bg-rose-900/30 flex items-center justify-center text-rose-600 dark:text-rose-400 shrink-0"
+            >
+              <span class="material-symbols-outlined text-2xl">warning</span>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-slate-900 dark:text-white">
+                Excluir conta permanentemente
+              </h3>
+              <p class="text-xs text-rose-600 dark:text-rose-400 font-medium">
+                Esta ação não pode ser desfeita!
+              </p>
+            </div>
+          </div>
+          <button
+            (click)="closeDeleteModal()"
+            [disabled]="isDeletingAccount()"
+            class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-700 dark:hover:text-slate-200 transition-colors disabled:opacity-50"
+          >
+            <span class="material-symbols-outlined text-xl">close</span>
+          </button>
+        </div>
 
-        <button type="button" (click)="confirmDeleteAccount()" [disabled]="!isConfirmChecked() || isDeletingAccount()"
-          class="px-5 py-2 text-sm font-medium text-white bg-rose-600 hover:bg-rose-700 dark:bg-rose-600 dark:hover:bg-rose-700 rounded-xl shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2">
-          @if (isDeletingAccount()) {
-          <span class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span>
-          <span>Excluindo dados...</span>
-          } @else {
-          <span class="material-symbols-outlined text-[18px]">delete_forever</span>
-          <span>Excluir conta permanentemente</span>
+        <!-- Modal Body -->
+        <div class="p-6 space-y-4 text-sm text-slate-600 dark:text-slate-300">
+          <p>
+            Ao excluir sua conta, todos os seus dados armazenados no
+            <strong>Meu Cofrin</strong> serão permanentemente apagados dos nossos servidores no
+            Firebase:
+          </p>
+
+          <ul class="space-y-2 pl-2">
+            <li class="flex items-start gap-2">
+              <span class="material-symbols-outlined text-rose-500 text-[18px] mt-0.5"
+                >account_circle</span
+              >
+              <span><strong>Autenticação:</strong> Seu login e dados da conta de acesso.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="material-symbols-outlined text-rose-500 text-[18px] mt-0.5"
+                >database</span
+              >
+              <span
+                ><strong>Banco de dados:</strong> Suas contas, despesas, receitas, resumos mensais e
+                categorias cadastradas.</span
+              >
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="material-symbols-outlined text-rose-500 text-[18px] mt-0.5"
+                >folder_open</span
+              >
+              <span
+                ><strong>Armazenamento:</strong> Sua foto de perfil e todos os comprovantes e
+                recibos anexados.</span
+              >
+            </li>
+          </ul>
+
+          @if (deleteModalError()) {
+            <div
+              class="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 text-rose-700 dark:text-rose-300 rounded-xl text-xs flex items-center gap-2"
+            >
+              <span class="material-symbols-outlined text-rose-500 shrink-0">error</span>
+              <span>{{ deleteModalError() }}</span>
+            </div>
           }
-        </button>
-      </div>
 
+          <!-- Checkbox de confirmação -->
+          <div class="pt-3 border-t border-slate-100 dark:border-slate-800/50">
+            <label class="flex items-start gap-3 cursor-pointer group">
+              <input
+                type="checkbox"
+                [ngModel]="isConfirmChecked()"
+                (change)="isConfirmChecked.set($any($event.target).checked)"
+                [disabled]="isDeletingAccount()"
+                class="mt-1 h-4 w-4 rounded border-slate-300 dark:border-slate-700 text-rose-600 focus:ring-rose-500 focus:ring-offset-0 dark:bg-[#130c25]"
+              />
+              <span
+                class="text-xs text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white transition-colors"
+              >
+                Estou ciente de que todos os meus dados serão permanentemente excluídos e que esta
+                ação é
+                <strong>irreversível</strong>.
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div
+          class="p-4 bg-slate-50 dark:bg-slate-800/30 border-t border-slate-100 dark:border-slate-800/50 flex items-center justify-end gap-3"
+        >
+          <button
+            type="button"
+            (click)="closeDeleteModal()"
+            [disabled]="isDeletingAccount()"
+            class="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-200/60 dark:hover:bg-slate-800 rounded-xl transition-colors disabled:opacity-50"
+          >
+            Cancelar
+          </button>
+
+          <button
+            type="button"
+            (click)="confirmDeleteAccount()"
+            [disabled]="!isConfirmChecked() || isDeletingAccount()"
+            class="px-5 py-2 text-sm font-medium text-white bg-rose-600 hover:bg-rose-700 dark:bg-rose-600 dark:hover:bg-rose-700 rounded-xl shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
+          >
+            @if (isDeletingAccount()) {
+              <span class="material-symbols-outlined animate-spin text-[18px]"
+                >progress_activity</span
+              >
+              <span>Excluindo dados...</span>
+            } @else {
+              <span class="material-symbols-outlined text-[18px]">delete_forever</span>
+              <span>Excluir conta permanentemente</span>
+            }
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
   }
 </div>

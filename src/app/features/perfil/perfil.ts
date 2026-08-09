@@ -1,4 +1,12 @@
-import { Component, inject, signal, OnInit, OnDestroy, effect } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  OnInit,
+  OnDestroy,
+  effect,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -10,6 +18,7 @@ import { WebauthnService } from '../../core/auth/webauthn.service';
   selector: 'app-perfil',
   standalone: true,
   imports: [FormsModule, RouterModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './perfil.html',
 })
 export class Perfil implements OnInit, OnDestroy {
@@ -195,12 +204,17 @@ export class Perfil implements OnInit, OnDestroy {
       }
       this.recaptchaVerifier = this.authService.setupRecaptcha('recaptcha-container');
 
-      this.confirmationResult = await this.authService.linkPhoneNumber(fullNumber, this.recaptchaVerifier);
+      this.confirmationResult = await this.authService.linkPhoneNumber(
+        fullNumber,
+        this.recaptchaVerifier,
+      );
       this.showSmsInput.set(true);
       this.successMessage.set('SMS enviado! Insira o código recebido.');
     } catch (error: any) {
       console.error(error);
-      this.errorMessage.set(error.message || 'Erro ao enviar o SMS. Verifique o formato do número (+55...).');
+      this.errorMessage.set(
+        error.message || 'Erro ao enviar o SMS. Verifique o formato do número (+55...).',
+      );
     } finally {
       this.isSendingSms.set(false);
     }
@@ -218,7 +232,9 @@ export class Perfil implements OnInit, OnDestroy {
 
     try {
       await this.confirmationResult.confirm(this.verificationCode());
-      this.successMessage.set('Celular verificado com sucesso! Notificações por WhatsApp poderão ser habilitadas.');
+      this.successMessage.set(
+        'Celular verificado com sucesso! Notificações por WhatsApp poderão ser habilitadas.',
+      );
       this.showSmsInput.set(false);
     } catch (error: any) {
       console.error(error);
@@ -252,9 +268,13 @@ export class Perfil implements OnInit, OnDestroy {
     } catch (error: any) {
       console.error('Erro ao deletar conta:', error);
       if (error?.code === 'auth/requires-recent-login') {
-        this.deleteModalError.set('Por motivos de segurança, esta ação requer um login recente. Faça logout e entre novamente para concluir a exclusão.');
+        this.deleteModalError.set(
+          'Por motivos de segurança, esta ação requer um login recente. Faça logout e entre novamente para concluir a exclusão.',
+        );
       } else {
-        this.deleteModalError.set(error?.message || 'Erro ao excluir a conta. Tente novamente mais tarde.');
+        this.deleteModalError.set(
+          error?.message || 'Erro ao excluir a conta. Tente novamente mais tarde.',
+        );
       }
       this.isDeletingAccount.set(false);
     }

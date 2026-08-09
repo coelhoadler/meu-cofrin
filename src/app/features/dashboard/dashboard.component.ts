@@ -8,7 +8,7 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { FormsModule } from '@angular/forms';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DialogModule } from 'primeng/dialog';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { ProgressSpinner, ProgressSpinnerModule } from 'primeng/progressspinner';
 import { AuthService } from '../../core/auth/auth.service';
 import { Conta, ContaService } from '../../core/services/conta.service';
 import { MessagingService } from '../../core/services/messaging.service';
@@ -17,7 +17,7 @@ import { TourService } from '../../core/services/tour.service';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [RouterLink, CommonModule, BaseChartDirective, ButtonModule, DatePickerModule, FormsModule, CheckboxModule, DialogModule, ProgressSpinnerModule],
+  imports: [RouterLink, CommonModule, BaseChartDirective, ButtonModule, DatePickerModule, FormsModule, CheckboxModule, DialogModule, ProgressSpinner, ProgressSpinnerModule],
   templateUrl: './dashboard.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })

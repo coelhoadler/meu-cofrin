@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
@@ -10,7 +10,8 @@ import { TourService } from '../services/tour.service';
   selector: 'app-main-layout',
   standalone: true,
   imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
-  templateUrl: './main-layout.component.html'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './main-layout.component.html',
 })
 export class MainLayoutComponent {
   public themeService = inject(ThemeService);
@@ -29,11 +30,11 @@ export class MainLayoutComponent {
   private touchEndX = 0;
 
   toggleSidebar() {
-    this.isSidebarOpen.update(v => !v);
+    this.isSidebarOpen.update((v) => !v);
   }
 
   toggleDesktopSidebar() {
-    this.isDesktopSidebarCollapsed.update(v => !v);
+    this.isDesktopSidebarCollapsed.update((v) => !v);
   }
 
   openQrCodeModal() {

@@ -1,4 +1,12 @@
-import { Component, inject, signal, ViewChild, ElementRef, OnInit } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  ViewChild,
+  ElementRef,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
@@ -10,7 +18,8 @@ import { InputTextModule } from 'primeng/inputtext';
   selector: 'app-login',
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule, InputTextModule],
-  templateUrl: './login.component.html'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './login.component.html',
 })
 export class LoginComponent implements OnInit {
   private fb = inject(FormBuilder);
@@ -22,7 +31,7 @@ export class LoginComponent implements OnInit {
   loginForm = this.fb.group({
     nome: [''],
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required]]
+    password: ['', [Validators.required]],
   });
 
   isLoading = signal(false);
@@ -56,7 +65,7 @@ export class LoginComponent implements OnInit {
   }
 
   togglePasswordVisibility() {
-    this.showPassword.update(v => !v);
+    this.showPassword.update((v) => !v);
   }
 
   async onSubmit() {

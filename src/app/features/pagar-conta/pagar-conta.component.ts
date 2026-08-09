@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ContaService } from '../../core/services/conta.service';
 import { CommonModule } from '@angular/common';
@@ -8,7 +8,8 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule, RouterLink],
   templateUrl: './pagar-conta.component.html',
-  styleUrls: ['./pagar-conta.component.css']
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrls: ['./pagar-conta.component.css'],
 })
 export class PagarContaComponent implements OnInit {
   private route = inject(ActivatedRoute);
@@ -35,7 +36,9 @@ export class PagarContaComponent implements OnInit {
     } catch (error: any) {
       console.error('Erro ao marcar conta como paga:', error);
       this.status.set('error');
-      this.errorMessage.set(error.message || 'Ocorreu um erro ao atualizar a conta. Tente novamente mais tarde.');
+      this.errorMessage.set(
+        error.message || 'Ocorreu um erro ao atualizar a conta. Tente novamente mais tarde.',
+      );
     }
   }
 }

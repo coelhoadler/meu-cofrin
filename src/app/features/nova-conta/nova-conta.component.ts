@@ -1,4 +1,11 @@
-import { Component, inject, signal, computed, OnInit } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  computed,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -12,8 +19,17 @@ import { SelectModule } from 'primeng/select';
 @Component({
   selector: 'app-nova-conta',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, RouterLink, NgxMaskDirective, DatePickerModule, CheckboxModule, SelectModule],
-  templateUrl: './nova-conta.component.html'
+  imports: [
+    ReactiveFormsModule,
+    CommonModule,
+    RouterLink,
+    NgxMaskDirective,
+    DatePickerModule,
+    CheckboxModule,
+    SelectModule,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './nova-conta.component.html',
 })
 export class NovaContaComponent implements OnInit {
   private fb = inject(FormBuilder);
@@ -28,11 +44,14 @@ export class NovaContaComponent implements OnInit {
     categoriaId: ['', [Validators.required]],
     tipo: ['Despesa', [Validators.required]],
     mesReferencia: [new Date(), [Validators.required]],
-    diaVencimento: [new Date().getDate(), [Validators.required, Validators.min(1), Validators.max(31)]],
+    diaVencimento: [
+      new Date().getDate(),
+      [Validators.required, Validators.min(1), Validators.max(31)],
+    ],
     statusPago: [false],
     isRecorrente: [false],
     dataPagamento: [{ value: null as any, disabled: true }],
-    valor: ['', [Validators.required]]
+    valor: ['', [Validators.required]],
   });
 
   selectedFile = signal<File | null>(null);
@@ -70,32 +89,34 @@ export class NovaContaComponent implements OnInit {
     return {
       valorAbsoluto: Math.abs(diff),
       isAumento: diff > 0,
-      isPositiveChange
+      isPositiveChange,
     };
   });
 
   categorias = signal<Categoria[]>([]);
-  categoriasOptions = computed(() => this.categorias().map(cat => ({
-    ...cat,
-    label: `${cat.nome} (${cat.tipo})`
-  })));
+  categoriasOptions = computed(() =>
+    this.categorias().map((cat) => ({
+      ...cat,
+      label: `${cat.nome} (${cat.tipo})`,
+    })),
+  );
 
   constructor() {
     // Listen to valor
-    this.contaForm.get('valor')?.valueChanges.subscribe(v => {
+    this.contaForm.get('valor')?.valueChanges.subscribe((v) => {
       this.currentValorNum.set(this.parseFloatValor(v));
     });
 
     // Listen to categoriaId to update tipo
-    this.contaForm.get('categoriaId')?.valueChanges.subscribe(catId => {
-      const selectedCat = this.categorias().find(c => c.id === catId);
+    this.contaForm.get('categoriaId')?.valueChanges.subscribe((catId) => {
+      const selectedCat = this.categorias().find((c) => c.id === catId);
       if (selectedCat) {
         this.contaForm.get('tipo')?.setValue(selectedCat.tipo);
       }
     });
 
     // Listen to tipo to handle validations
-    this.contaForm.get('tipo')?.valueChanges.subscribe(tipo => {
+    this.contaForm.get('tipo')?.valueChanges.subscribe((tipo) => {
       const statusPagoCtrl = this.contaForm.get('statusPago');
       const dataPagamentoCtrl = this.contaForm.get('dataPagamento');
 
@@ -117,7 +138,7 @@ export class NovaContaComponent implements OnInit {
     });
 
     // Listen to statusPago to enable/disable dataPagamento
-    this.contaForm.get('statusPago')?.valueChanges.subscribe(isPaid => {
+    this.contaForm.get('statusPago')?.valueChanges.subscribe((isPaid) => {
       if (this.contaForm.get('tipo')?.value === 'Receita') return;
 
       const dataPagamentoCtrl = this.contaForm.get('dataPagamento');
@@ -159,7 +180,7 @@ export class NovaContaComponent implements OnInit {
           // Pre-fill the form
           let catIdToSelect = '';
           if (conta.categoria) {
-            const matchedCat = cats.find(c => c.nome === conta.categoria);
+            const matchedCat = cats.find((c) => c.nome === conta.categoria);
             if (matchedCat) {
               catIdToSelect = matchedCat.id!;
             }
@@ -187,7 +208,7 @@ export class NovaContaComponent implements OnInit {
             statusPago: conta.statusPago,
             isRecorrente: conta.isRecorrente || false,
             dataPagamento: dataPagDate as any,
-            valor: conta.valor?.toString().replace('.', '')
+            valor: conta.valor?.toString().replace('.', ''),
           });
 
           if (conta.valorAntigo) {
@@ -212,7 +233,8 @@ export class NovaContaComponent implements OnInit {
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+      if (file.size > 5 * 1024 * 1024) {
+        // 5MB limit
         this.errorMessage.set('O arquivo deve ter no máximo 5MB.');
         return;
       }
@@ -232,7 +254,7 @@ export class NovaContaComponent implements OnInit {
 
     try {
       const formValue = this.contaForm.getRawValue();
-      const selectedCat = this.categorias().find(c => c.id === formValue.categoriaId);
+      const selectedCat = this.categorias().find((c) => c.id === formValue.categoriaId);
 
       let formattedMesRef = '';
       if (formValue.mesReferencia instanceof Date) {
@@ -254,7 +276,7 @@ export class NovaContaComponent implements OnInit {
         dataPagamento: formattedDataPag,
         categoria: selectedCat?.nome || '',
         tipo: selectedCat?.tipo || 'Despesa',
-        valor: formValue.valor
+        valor: formValue.valor,
       };
 
       delete contaData.categoriaId;

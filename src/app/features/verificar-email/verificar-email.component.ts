@@ -1,4 +1,11 @@
-import { Component, inject, OnInit, signal, OnDestroy } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  signal,
+  OnDestroy,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
@@ -7,7 +14,8 @@ import { AuthService } from '../../core/auth/auth.service';
   selector: 'app-verificar-email',
   standalone: true,
   imports: [CommonModule, RouterLink],
-  templateUrl: './verificar-email.component.html'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './verificar-email.component.html',
 })
 export class VerificarEmailComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);

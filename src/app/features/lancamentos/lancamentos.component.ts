@@ -1,4 +1,12 @@
-import { Component, OnInit, computed, inject, signal, effect } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  computed,
+  inject,
+  signal,
+  effect,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -26,14 +34,25 @@ export interface ResumoAnual {
 }
 
 const MESES_NOMES = [
-  'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-  'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+  'Janeiro',
+  'Fevereiro',
+  'Março',
+  'Abril',
+  'Maio',
+  'Junho',
+  'Julho',
+  'Agosto',
+  'Setembro',
+  'Outubro',
+  'Novembro',
+  'Dezembro',
 ];
 
 @Component({
   selector: 'app-lancamentos',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule, DatePickerModule, SelectModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './lancamentos.component.html',
 })
 export class LancamentosComponent implements OnInit {
@@ -49,13 +68,17 @@ export class LancamentosComponent implements OnInit {
         if (parsed.categoriaFiltro) this.categoriaFiltro.set(parsed.categoriaFiltro);
         if (parsed.nomeFiltro !== undefined) this.nomeFiltro.set(parsed.nomeFiltro);
         if (parsed.somentePagos !== undefined) this.somentePagos.set(parsed.somentePagos);
-        if (parsed.somentePendentes !== undefined) this.somentePendentes.set(parsed.somentePendentes);
+        if (parsed.somentePendentes !== undefined)
+          this.somentePendentes.set(parsed.somentePendentes);
         if (parsed.isBuscaGlobal !== undefined) this.isBuscaGlobal.set(parsed.isBuscaGlobal);
         if (parsed.visaoModo !== undefined) this.visaoModo.set(parsed.visaoModo);
         if (parsed.resumoAno !== undefined) this.resumoAno.set(parsed.resumoAno);
         if (parsed.dataRangeFiltro) {
           const [start, end] = parsed.dataRangeFiltro;
-          this.dataRangeFiltro.set([start ? new Date(start) : null, end ? new Date(end) : null] as any);
+          this.dataRangeFiltro.set([
+            start ? new Date(start) : null,
+            end ? new Date(end) : null,
+          ] as any);
         }
       } catch (e) {
         console.error('Erro ao recuperar filtros', e);
@@ -72,7 +95,7 @@ export class LancamentosComponent implements OnInit {
         somentePendentes: this.somentePendentes(),
         isBuscaGlobal: this.isBuscaGlobal(),
         visaoModo: this.visaoModo(),
-        resumoAno: this.resumoAno()
+        resumoAno: this.resumoAno(),
       };
       localStorage.setItem('lancamentosFiltros', JSON.stringify(filtros));
     });
@@ -99,13 +122,13 @@ export class LancamentosComponent implements OnInit {
   tiposOptions = [
     { label: 'Todos', value: 'Todos' },
     { label: 'Receitas', value: 'Receita' },
-    { label: 'Despesas', value: 'Despesa' }
+    { label: 'Despesas', value: 'Despesa' },
   ];
 
   categoriasOptions = computed(() => {
     return [
       { label: 'Todas', value: 'Todos' },
-      ...this.categorias().map(c => ({ label: c.nome, value: c.nome }))
+      ...this.categorias().map((c) => ({ label: c.nome, value: c.nome })),
     ];
   });
 
@@ -125,9 +148,9 @@ export class LancamentosComponent implements OnInit {
       }
     }
     return Array.from(anosSet)
-      .filter(ano => ano <= currentYear)
+      .filter((ano) => ano <= currentYear)
       .sort((a, b) => b - a)
-      .map(ano => ({ label: ano.toString(), value: ano }));
+      .map((ano) => ({ label: ano.toString(), value: ano }));
   });
 
   // Computeds
@@ -135,22 +158,22 @@ export class LancamentosComponent implements OnInit {
     let filtradas = this.contas();
 
     if (this.tipoFiltro() !== 'Todos') {
-      filtradas = filtradas.filter(c => c.tipo === this.tipoFiltro());
+      filtradas = filtradas.filter((c) => c.tipo === this.tipoFiltro());
     }
 
     if (this.categoriaFiltro() !== 'Todos') {
-      filtradas = filtradas.filter(c => c.categoria === this.categoriaFiltro());
+      filtradas = filtradas.filter((c) => c.categoria === this.categoriaFiltro());
     }
 
     if (this.nomeFiltro().trim()) {
       const termo = this.nomeFiltro().toLowerCase().trim();
-      filtradas = filtradas.filter(c => c.nome.toLowerCase().includes(termo));
+      filtradas = filtradas.filter((c) => c.nome.toLowerCase().includes(termo));
     }
 
     if (this.somentePagos()) {
-      filtradas = filtradas.filter(c => c.statusPago === true);
+      filtradas = filtradas.filter((c) => c.statusPago === true);
     } else if (this.somentePendentes()) {
-      filtradas = filtradas.filter(c => c.statusPago === false);
+      filtradas = filtradas.filter((c) => c.statusPago === false);
     }
 
     const range = this.dataRangeFiltro();
@@ -158,11 +181,15 @@ export class LancamentosComponent implements OnInit {
       const inicio = range[0];
       const fim = range[1];
 
-      filtradas = filtradas.filter(c => {
+      filtradas = filtradas.filter((c) => {
         const [ano, mes] = c.mesReferencia.split('-');
         const dataVencimento = new Date(parseInt(ano), parseInt(mes) - 1, c.diaVencimento);
 
-        const dataVencZera = new Date(dataVencimento.getFullYear(), dataVencimento.getMonth(), dataVencimento.getDate());
+        const dataVencZera = new Date(
+          dataVencimento.getFullYear(),
+          dataVencimento.getMonth(),
+          dataVencimento.getDate(),
+        );
         const inicioZera = new Date(inicio.getFullYear(), inicio.getMonth(), inicio.getDate());
         const fimZera = new Date(fim.getFullYear(), fim.getMonth(), fim.getDate());
 
@@ -175,13 +202,13 @@ export class LancamentosComponent implements OnInit {
 
   totalReceitas = computed(() => {
     return this.contasFiltradas()
-      .filter(c => c.tipo === 'Receita')
+      .filter((c) => c.tipo === 'Receita')
       .reduce((acc, c) => acc + this.parseFloatValor(c.valor), 0);
   });
 
   totalDespesas = computed(() => {
     return this.contasFiltradas()
-      .filter(c => c.tipo === 'Despesa')
+      .filter((c) => c.tipo === 'Despesa')
       .reduce((acc, c) => acc + this.parseFloatValor(c.valor), 0);
   });
 
@@ -201,14 +228,14 @@ export class LancamentosComponent implements OnInit {
       const mesStr = String(mesIndex + 1).padStart(2, '0');
       const mesRef = `${ano}-${mesStr}`;
 
-      const contasDoMes = todasContas.filter(c => c.mesReferencia === mesRef);
+      const contasDoMes = todasContas.filter((c) => c.mesReferencia === mesRef);
 
       const receitas = contasDoMes
-        .filter(c => c.tipo === 'Receita')
+        .filter((c) => c.tipo === 'Receita')
         .reduce((acc, c) => acc + this.parseFloatValor(c.valor), 0);
 
       const despesas = contasDoMes
-        .filter(c => c.tipo === 'Despesa')
+        .filter((c) => c.tipo === 'Despesa')
         .reduce((acc, c) => acc + this.parseFloatValor(c.valor), 0);
 
       const saldo = receitas - despesas;
@@ -221,7 +248,7 @@ export class LancamentosComponent implements OnInit {
         mesNome: MESES_NOMES[mesIndex],
         receitas,
         despesas,
-        saldo
+        saldo,
       });
     }
 
@@ -230,7 +257,7 @@ export class LancamentosComponent implements OnInit {
       meses,
       totalReceitas: totalReceitasAno,
       totalDespesas: totalDespesasAno,
-      saldoTotal: totalReceitasAno - totalDespesasAno
+      saldoTotal: totalReceitasAno - totalDespesasAno,
     };
   });
 
@@ -391,4 +418,3 @@ export class LancamentosComponent implements OnInit {
     return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   }
 }
-
