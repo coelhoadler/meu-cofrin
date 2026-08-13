@@ -7,9 +7,39 @@ export interface Categoria {
   nome: string;
   descricao?: string;
   tipo: 'Despesa' | 'Receita';
+  icone?: string;
   cor?: string;
   createdAt?: any;
 }
+
+export const CATEGORIA_ICONS: string[] = [
+  'sell',
+  'home',
+  'shopping_cart',
+  'directions_car',
+  'restaurant',
+  'favorite',
+  'school',
+  'flight',
+  'fitness_center',
+  'redeem',
+  'wifi',
+  'smartphone',
+  'bolt',
+  'water_drop',
+  'checkroom',
+  'pets',
+  'child_care',
+  'work',
+  'savings',
+  'credit_card',
+  'account_balance_wallet',
+  'movie',
+  'music_note',
+  'coffee',
+  'local_gas_station',
+  'build',
+];
 
 @Injectable({
   providedIn: 'root'
