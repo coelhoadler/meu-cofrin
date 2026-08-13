@@ -51,6 +51,7 @@ export interface ICategoriaService {
 | **Fechar / Cancelar** | Clique em `Cancelar`, botão `X` ou `Esc` | `isModalOpen.set(false)`, reseta form. |
 | **Salvar Categoria** | Submissão do formulário | Valida campos, salva via `CategoriaService`, fecha modal e recarrega lista. |
 | **Excluir Categoria** | Clique no ícone de lixeira em um cartão | Exibe confirmação amigável, exclui via `CategoriaService` e atualiza a lista. |
+| **Voltar ao Dashboard** | Clique no botão Voltar (desktop) ou botão flutuante FAB (mobile) | Redireciona para `/dashboard`. |
 
 ---
 

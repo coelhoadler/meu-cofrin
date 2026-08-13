@@ -3,7 +3,8 @@
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
     <div class="flex items-center justify-between w-full sm:w-auto">
       <div>
-        <h2 class="text-[28px] font-bold text-slate-900 dark:text-white tracking-tight">{{greetingUser()}}</h2>
+        <h2 class="text-[28px] font-bold text-slate-900 dark:text-white tracking-tight hidden md:block">
+          {{greetingUser()}}</h2>
         <!-- Controles de Seleção de Mês -->
         <div class="flex max-w-full items-center gap-2 mt-2">
           <div
@@ -54,7 +55,8 @@
       class="bg-white dark:bg-[#1a112c] rounded-[20px] p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/50 relative flex flex-col justify-between h-[140px] transition-colors duration-300">
       <div>
         <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mb-5">Receitas</p>
-        <h3 class="text-[clamp(1.25rem,2.5vw,1.875rem)] font-bold text-slate-800 dark:text-white mb-4 truncate" [title]="showValues() ? totalReceitas() : ''">{{ showValues() ? totalReceitas() : 'R$ ••••'
+        <h3 class="text-[clamp(1.25rem,2.5vw,1.875rem)] font-bold text-slate-800 dark:text-white mb-4 truncate"
+          [title]="showValues() ? totalReceitas() : ''">{{ showValues() ? totalReceitas() : 'R$ ••••'
           }}</h3>
       </div>
       <!-- <div class="mt-auto">
@@ -71,7 +73,8 @@
       class="bg-white dark:bg-[#1a112c] rounded-[20px] p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/50 relative flex flex-col justify-between h-[140px] transition-colors duration-300">
       <div>
         <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mb-5">Despesas</p>
-        <h3 class="text-[clamp(1.25rem,2.5vw,1.875rem)] font-bold text-slate-800 dark:text-white mb-4 truncate" [title]="showValues() ? totalDespesas() : ''">{{ showValues() ? totalDespesas() : 'R$ ••••'
+        <h3 class="text-[clamp(1.25rem,2.5vw,1.875rem)] font-bold text-slate-800 dark:text-white mb-4 truncate"
+          [title]="showValues() ? totalDespesas() : ''">{{ showValues() ? totalDespesas() : 'R$ ••••'
           }}</h3>
       </div>
       <!-- <div class="mt-auto">
@@ -88,7 +91,8 @@
       class="bg-gradient-to-br from-[#381174] via-[#581fa4] to-[#7941dc] text-white rounded-[20px] p-6 shadow-lg shadow-purple-900/15 relative overflow-hidden flex flex-col justify-between h-[140px] transition-all">
       <div class="relative z-10">
         <p class="text-purple-200/90 text-sm font-medium mb-5">Saldo do mês</p>
-        <h3 class="text-[clamp(1.25rem,2.5vw,1.875rem)] font-bold text-white mb-4 truncate tracking-tight" [title]="showValues() ? saldoMes() : ''">{{ showValues() ? saldoMes() : 'R$ ••••' }}</h3>
+        <h3 class="text-[clamp(1.25rem,2.5vw,1.875rem)] font-bold text-white mb-4 truncate tracking-tight"
+          [title]="showValues() ? saldoMes() : ''">{{ showValues() ? saldoMes() : 'R$ ••••' }}</h3>
       </div>
       <!-- <div class="relative z-10 mt-auto">
         <p class="text-purple-200/80 text-[11px] font-medium">Sem alteração</p>
