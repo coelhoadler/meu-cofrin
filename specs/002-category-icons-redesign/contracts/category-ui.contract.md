@@ -44,9 +44,10 @@ export interface ICategoriaService {
 
 | Ação do Usuário | Gatilho | Efeito no Estado / UI |
 | :--- | :--- | :--- |
-| **Abrir Nova Categoria** | Clique em `+ Nova categoria` | `isModalOpen.set(true)`, `isEditMode.set(false)`, `selectedIcon.set('sell')`, reseta form. |
-| **Abrir Edição** | Clique no ícone de lápis em um cartão | `isModalOpen.set(true)`, `isEditMode.set(true)`, `editingId.set(cat.id)`, `selectedIcon.set(cat.icone \|\| 'sell')`, popula form. |
-| **Selecionar Ícone** | Clique em qualquer ícone da grade | `selectedIcon.set(iconeEscolhido)` com destaque de borda ativa. |
+| **Abrir Nova Categoria** | Clique em `+ Nova categoria` | `isModalOpen.set(true)`, `isEditMode.set(false)`, `selectedIcon.set('sell')`, reseta form com `tipo: 'Despesa'`. |
+| **Abrir Edição** | Clique no ícone de lápis em um cartão | `isModalOpen.set(true)`, `isEditMode.set(true)`, `editId.set(cat.id)`, `selectedIcon.set(cat.icone \|\| 'sell')`, popula form com nome, descrição e tipo. |
+| **Alternar Tipo** | Clique em Despesa ou Receita no modal | Atualiza controle `tipo` no formulário com anel de foco e cor ativa correspondente. |
+| **Selecionar Ícone** | Clique em qualquer ícone da grade | `selectedIcon.set(iconeEscolhido)` com destaque de borda e fundo ativos. |
 | **Fechar / Cancelar** | Clique em `Cancelar`, botão `X` ou `Esc` | `isModalOpen.set(false)`, reseta form. |
 | **Salvar Categoria** | Submissão do formulário | Valida campos, salva via `CategoriaService`, fecha modal e recarrega lista. |
 | **Excluir Categoria** | Clique no ícone de lixeira em um cartão | Exibe confirmação amigável, exclui via `CategoriaService` e atualiza a lista. |
@@ -56,32 +57,49 @@ export interface ICategoriaService {
 ## 3. Curated Icon Options Contract
 
 ```typescript
-export const CATEGORIA_ICONS: string[] = [
-  'sell',                  // Tag padrão
-  'home',                  // Moradia
-  'shopping_cart',         // Compras / Supermercado
-  'directions_car',        // Carro / Transporte
-  'restaurant',            // Restaurante / Alimentação
-  'favorite',              // Saúde / Cuidados
-  'school',                // Educação
-  'flight',                // Viagens
-  'fitness_center',        // Academia / Exercícios
-  'redeem',                // Presentes
-  'wifi',                  // Internet
-  'smartphone',            // Celular / Telefonia
-  'bolt',                  // Luz / Energia
-  'water_drop',            // Água
-  'checkroom',             // Roupas / Vestuário
-  'pets',                  // Pets / Animais
-  'child_care',            // Bebê / Filhos
-  'work',                  // Trabalho / Emprego
-  'savings',               // Cofrinho / Poupança
-  'credit_card',           // Cartão de Crédito
-  'account_balance_wallet',// Carteira / Salário
-  'movie',                 // Cinema / Filmes
-  'music_note',            // Música
-  'coffee',                // Café / Lanche
-  'local_gas_station',     // Combustível
-  'build',                 // Manutenção / Ferramentas
+export interface CategoriaIconOption {
+  name: string;
+  title: string;
+}
+
+export const CATEGORIA_ICONS: CategoriaIconOption[] = [
+  { name: 'sell', title: 'Geral / Outros' },
+  { name: 'home', title: 'Moradia' },
+  { name: 'shopping_cart', title: 'Mercado / Compras' },
+  { name: 'directions_car', title: 'Transporte / Carro' },
+  { name: 'restaurant', title: 'Alimentação / Restaurante' },
+  { name: 'favorite', title: 'Saúde / Bem-estar' },
+  { name: 'school', title: 'Educação' },
+  { name: 'flight', title: 'Viagens' },
+  { name: 'fitness_center', title: 'Academia / Esportes' },
+  { name: 'redeem', title: 'Presentes / Doações' },
+  { name: 'wifi', title: 'Internet / Assinaturas' },
+  { name: 'smartphone', title: 'Celular / Telefonia' },
+  { name: 'bolt', title: 'Luz / Energia' },
+  { name: 'water_drop', title: 'Água / Saneamento' },
+  { name: 'checkroom', title: 'Vestuário / Roupas' },
+  { name: 'pets', title: 'Pets / Animais' },
+  { name: 'child_care', title: 'Filhos / Bebê' },
+  { name: 'work', title: 'Trabalho / Salário' },
+  { name: 'savings', title: 'Investimentos / Poupança' },
+  { name: 'credit_card', title: 'Cartão de Crédito' },
+  { name: 'account_balance_wallet', title: 'Carteira / Finanças' },
+  { name: 'movie', title: 'Entretenimento / Lazer' },
+  { name: 'music_note', title: 'Música / Shows' },
+  { name: 'coffee', title: 'Cafeteria / Lanches' },
+  { name: 'local_gas_station', title: 'Combustível' },
+  { name: 'build', title: 'Serviços / Manutenção' },
 ];
 ```
+
+---
+
+## 4. Theme & Color Token Contract
+
+- **Despesa**:
+  - Light Mode: `bg-rose-50 text-rose-600 border-rose-200/80`
+  - Dark Mode: `dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-900/60`
+- **Receita**:
+  - Light Mode: `bg-emerald-50 text-emerald-600 border-emerald-200/80`
+  - Dark Mode: `dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-900/60`
+

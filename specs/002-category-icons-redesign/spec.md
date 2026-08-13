@@ -10,33 +10,33 @@
 
 ## User Scenarios & Testing *(mandatory)*
 
-### User Story 1 - Visualização e Listagem de Categorias com Ícone Visual (Priority: P1)
+### User Story 1 - Visualização e Listagem de Categorias com Ícone Visual e Destaque de Tipo (Priority: P1)
 
-Como usuário do MeuCofrin, quero visualizar minhas categorias cadastradas em uma grade de cartões modernos e elegantes com ícones representativos, para que eu possa identificar rapidamente meus agrupamentos financeiros tanto no desktop quanto no celular.
+Como usuário do MeuCofrin, quero visualizar minhas categorias cadastradas em uma grade de cartões modernos e elegantes com ícones representativos e distinção de cor de alto contraste entre Despesas e Receitas (tanto no tema claro quanto no escuro), para que eu possa identificar rapidamente meus agrupamentos financeiros tanto no desktop quanto no celular.
 
-**Why this priority**: A listagem é o ponto de entrada e o componente visual central da tela de categorias. Exibir as categorias com seus respectivos ícones (ou um ícone padrão amigável para categorias legadas) estabelece a nova identidade visual sem quebrar dados existentes.
+**Why this priority**: A listagem é o ponto de entrada e o componente visual central da tela de categorias. Exibir as categorias com seus respectivos ícones (ou um ícone padrão amigável para categorias legadas) e diferenciação cromática de alto contraste (vermelho/rose para despesas e verde/emerald para receitas) estabelece clareza imediata e acessibilidade.
 
-**Independent Test**: Pode ser testado acessando a página `/categorias` com categorias existentes no Firestore. Cada cartão deve apresentar o ícone correspondente, o nome, a tag de tipo (Despesa/Receita), descrição (se houver) e ações de edição/exclusão.
+**Independent Test**: Pode ser testado acessando a página `/categorias` com categorias existentes no Firestore. Cada cartão deve apresentar o ícone com a paleta temática correspondente ao tipo, o nome, a tag de tipo (Despesa/Receita), descrição (se houver) e ações de edição/exclusão em ambos os temas (light e dark).
 
 **Acceptance Scenarios**:
-1. **Given** que o usuário possui categorias com um `icone` definido, **When** ele acessa a tela de categorias, **Then** cada categoria é exibida em um cartão contendo o ícone visual configurado, nome da categoria e botões de ação (editar e excluir).
+1. **Given** que o usuário possui categorias com um `icone` e `tipo` definidos, **When** ele acessa a tela de categorias, **Then** cada categoria é exibida em um cartão contendo o contêiner de ícone estilizado de acordo com o tipo (rose para Despesa, emerald para Receita), tag de tipo com alto contraste no tema claro e escuro, nome da categoria e botões de ação (editar e excluir).
 2. **Given** que o usuário possui categorias legadas que têm apenas `cor` e não possuem `icone`, **When** a listagem é renderizada, **Then** o sistema exibe automaticamente um ícone padrão (ex: etiqueta / tag `sell`) sem disparar erros.
 3. **Given** que o usuário não possui nenhuma categoria cadastrada, **When** ele acessa a tela, **Then** é exibido um estado vazio elegante e informativo incentivando a criação da primeira categoria.
 
 ---
 
-### User Story 2 - Cadastro de Nova Categoria com Seletor de Ícones em Modal (Priority: P1)
+### User Story 2 - Cadastro de Nova Categoria com Seletor de Tipo e Ícones em Modal (Priority: P1)
 
-Como usuário do MeuCofrin, quero clicar no botão "+ Nova categoria" para abrir uma janela modal intuitiva onde posso preencher nome, descrição, tipo e escolher um ícone em uma lista visual de ícones financeiros populares, para registrar minha categoria de forma prática.
+Como usuário do MeuCofrin, quero clicar no botão "+ Nova categoria" para abrir uma janela modal intuitiva onde posso selecionar o tipo (Despesa ou Receita), preencher nome, descrição e escolher um ícone em uma lista visual de ícones financeiros populares, para registrar minha categoria de forma prática.
 
-**Why this priority**: Permite que o usuário cadastre novas categorias no novo formato (persistindo o identificador do ícone e sem o campo de cor), viabilizando o fluxo principal de gerenciamento de categorias.
+**Why this priority**: Permite que o usuário cadastre novas categorias no novo formato (definindo tipo, persistindo o identificador do ícone e sem o campo de cor), viabilizando o fluxo principal de gerenciamento de categorias.
 
-**Independent Test**: Clicar no botão "+ Nova categoria", preencher os campos obrigatórios, selecionar um ícone na grade de ícones disponíveis e salvar. A modal deve fechar, a listagem deve atualizar imediatamente exibindo o novo cartão com o ícone selecionado.
+**Independent Test**: Clicar no botão "+ Nova categoria", selecionar o tipo (Despesa/Receita), preencher os campos obrigatórios, selecionar um ícone na grade de ícones disponíveis e salvar. A modal deve fechar, a listagem deve atualizar imediatamente exibindo o novo cartão com o ícone e cores condizentes ao tipo.
 
 **Acceptance Scenarios**:
-1. **Given** que o usuário está na tela de categorias, **When** ele clica no botão "+ Nova categoria", **Then** uma modal abre com os campos de Nome (obrigatório), Descrição (opcional) e uma grade de ícones pré-definidos para seleção.
-2. **Given** que a modal de nova categoria está aberta, **When** o usuário clica sobre um ícone na grade de ícones, **Then** o ícone selecionado ganha destaque visual imediato (borda e fundo diferenciados).
-3. **Given** que o usuário preenche o nome e seleciona um ícone, **When** ele clica no botão "Salvar", **Then** a categoria é gravada no banco de dados com o identificador do ícone, a modal fecha e a categoria aparece na lista.
+1. **Given** que o usuário está na tela de categorias, **When** ele clica no botão "+ Nova categoria", **Then** uma modal abre com o seletor de Tipo (Despesa/Receita), campos de Nome (obrigatório), Descrição (opcional) e uma grade de ícones pré-definidos para seleção.
+2. **Given** que a modal de nova categoria está aberta, **When** o usuário clica sobre um ícone na grade de ícones ou alterna o tipo, **Then** o item selecionado ganha destaque visual imediato com cores de alto contraste.
+3. **Given** que o usuário preenche o nome e seleciona o tipo e um ícone, **When** ele clica no botão "Salvar", **Then** a categoria é gravada no banco de dados com o identificador do ícone e tipo, a modal fecha e a categoria aparece na lista.
 4. **Given** que o usuário tenta salvar sem preencher o nome obrigatório, **When** ele clica em "Salvar", **Then** o sistema exibe mensagem de validação e não envia o formulário.
 5. **Given** que a modal está aberta, **When** o usuário clica em "Cancelar" ou no botão de fechar ("X"), **Then** a modal fecha sem persistir alterações e o formulário é limpo.
 
@@ -85,7 +85,7 @@ Como usuário do MeuCofrin, quero excluir uma categoria que não utilizo mais, c
 - **FR-001**: O sistema DEVE exibir a lista de categorias em uma grade responsiva de cartões, apresentando o ícone correspondente à esquerda, o nome da categoria e as ações de edição e exclusão à direita.
 - **FR-002**: O sistema DEVE fornecer um botão "+ Nova categoria" destacado no cabeçalho da página para abrir a modal de criação.
 - **FR-003**: O sistema DEVE disponibilizar uma janela modal reutilizável para operações de criação ("Nova categoria") e edição ("Editar categoria").
-- **FR-004**: O formulário da modal DEVE conter os campos: `Nome` (texto, obrigatório), `Descrição` (área de texto, opcional) e `Ícone` (seletor visual interativo).
+- **FR-004**: O formulário da modal DEVE conter os campos: `Tipo` (seletor interativo 'Despesa' | 'Receita'), `Nome` (texto, obrigatório), `Descrição` (área de texto, opcional) e `Ícone` (seletor visual interativo).
 - **FR-005**: O seletor de ícones DEVE apresentar uma coleção curada de ícones populares representativos para finanças pessoais (ex: alimentação, moradia, transporte, saúde, educação, lazer, compras, salário, investimentos, contas, presentes, pet, viagens, etc.).
 - **FR-006**: O sistema DEVE permitir a seleção de exatamente um ícone por categoria, destacando visualmente o item selecionado.
 - **FR-007**: O sistema DEVE remover completamente o seletor de cores (`cor`) e suas referências na interface de criação e edição de categorias.
@@ -94,6 +94,7 @@ Como usuário do MeuCofrin, quero excluir uma categoria que não utilizo mais, c
 - **FR-010**: O sistema DEVE validar o preenchimento obrigatório do campo `Nome` antes de submeter o formulário.
 - **FR-011**: O sistema DEVE permitir o cancelamento da criação/edição através de botão "Cancelar", ícone "X" de fechar ou tecla Escape, fechando a modal e resetando o estado.
 - **FR-012**: O sistema DEVE solicitar confirmação do usuário antes de realizar a exclusão definitiva de uma categoria.
+- **FR-013**: O sistema DEVE aplicar estilização de alto contraste compatível com os temas Claro (Light) e Escuro (Dark), diferenciando `Despesa` (tons de rose/vermelho acessíveis) e `Receita` (tons de emerald/verde acessíveis) tanto no contêiner do ícone quanto na tag de tipo do cartão e nos botões do seletor da modal.
 
 ### Key Entities *(include if feature involves data)*
 

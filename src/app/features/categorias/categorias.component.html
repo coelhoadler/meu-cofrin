@@ -52,17 +52,28 @@
     @for (cat of categorias(); track cat.id || cat.nome) {
     <div
       class="bg-white dark:bg-[#1a112c] rounded-[20px] shadow-sm border border-slate-200/80 dark:border-slate-800/50 p-4 flex items-center justify-between hover:border-[#421b7b]/40 dark:hover:border-[#421b7b]/60 transition-all group">
-      
+
       <!-- Icon + Name -->
       <div class="flex items-center gap-3.5 min-w-0 pr-2">
         <div
-          class="w-11 h-11 shrink-0 rounded-2xl bg-[#f4effc] dark:bg-purple-950/50 text-[#421b7b] dark:text-purple-300 flex items-center justify-center transition-colors">
+          class="w-11 h-11 shrink-0 rounded-2xl flex items-center justify-center transition-colors"
+          [ngClass]="cat.tipo === 'Despesa'
+            ? 'bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400'
+            : 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400'">
           <span class="material-symbols-outlined text-2xl">{{ cat.icone || defaultIcon }}</span>
         </div>
         <div class="min-w-0">
-          <span class="font-semibold text-slate-800 dark:text-slate-100 text-[15px] truncate block" [title]="cat.nome">
-            {{ cat.nome }}
-          </span>
+          <div class="flex items-center gap-2">
+            <span class="font-semibold text-slate-800 dark:text-slate-100 text-[15px] truncate block" [title]="cat.nome">
+              {{ cat.nome }}
+            </span>
+            <span class="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md shrink-0"
+              [ngClass]="cat.tipo === 'Despesa'
+                ? 'bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 border border-rose-200/80 dark:border-rose-900/60'
+                : 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 border border-emerald-200/80 dark:border-emerald-900/60'">
+              {{ cat.tipo }}
+            </span>
+          </div>
           @if (cat.descricao) {
           <span class="text-xs text-slate-500 dark:text-slate-400 truncate block mt-0.5" [title]="cat.descricao">
             {{ cat.descricao }}
@@ -89,22 +100,50 @@
 
   <!-- Modal Dialog -->
   @if (isModalOpen()) {
-  <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
     <!-- Click outside backdrop to close -->
     <div class="absolute inset-0" (click)="closeModal()"></div>
 
     <!-- Modal Content Card -->
-    <div class="relative bg-white dark:bg-[#1a112c] rounded-[24px] shadow-2xl border border-slate-200/80 dark:border-slate-800/80 max-w-lg w-full p-6 sm:p-7 z-10 animate-in zoom-in-95 duration-200">
+    <div
+      class="relative bg-white dark:bg-[#1a112c] rounded-[24px] shadow-2xl border border-slate-200/80 dark:border-slate-800/80 max-w-lg w-full p-6 sm:p-7 z-10 animate-in zoom-in-95 duration-200">
       <div class="flex items-center justify-between pb-4 mb-5 border-b border-slate-100 dark:border-slate-800">
         <h3 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
           {{ isEditMode() ? 'Editar categoria' : 'Nova categoria' }}
         </h3>
-        <button type="button" (click)="closeModal()" class="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer">
+        <button type="button" (click)="closeModal()"
+          class="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer">
           <span class="material-symbols-outlined text-[22px]">close</span>
         </button>
       </div>
 
       <form [formGroup]="categoriaForm" (ngSubmit)="onSubmit()" class="space-y-4">
+        <!-- Tipo (Despesa / Receita) -->
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+            Tipo <span class="text-red-500">*</span>
+          </label>
+          <div class="grid grid-cols-2 gap-3">
+            <label class="flex items-center justify-center gap-2 p-2.5 rounded-xl border cursor-pointer transition-all"
+              [ngClass]="categoriaForm.get('tipo')?.value === 'Despesa'
+                ? 'border-rose-500/50 bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 font-semibold ring-2 ring-rose-500/20'
+                : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50'">
+              <input type="radio" formControlName="tipo" value="Despesa" class="sr-only" />
+              <span class="material-symbols-outlined text-lg">trending_down</span>
+              <span>Despesa</span>
+            </label>
+            <label class="flex items-center justify-center gap-2 p-2.5 rounded-xl border cursor-pointer transition-all"
+              [ngClass]="categoriaForm.get('tipo')?.value === 'Receita'
+                ? 'border-emerald-500/50 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 font-semibold ring-2 ring-emerald-500/20'
+                : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50'">
+              <input type="radio" formControlName="tipo" value="Receita" class="sr-only" />
+              <span class="material-symbols-outlined text-lg">trending_up</span>
+              <span>Receita</span>
+            </label>
+          </div>
+        </div>
+
         <!-- Nome -->
         <div>
           <label for="modal-nome" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
@@ -122,8 +161,7 @@
           <label for="modal-descricao" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
             Descrição
           </label>
-          <textarea id="modal-descricao" formControlName="descricao" rows="2"
-            placeholder="Detalhes sobre a categoria"
+          <textarea id="modal-descricao" formControlName="descricao" rows="2" placeholder="Detalhes sobre a categoria"
             class="w-full px-4 py-2.5 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/50 focus:border-[#421b7b] transition-all text-sm resize-none"></textarea>
         </div>
 
@@ -132,15 +170,15 @@
           <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
             Ícone
           </label>
-          <div class="border border-slate-200 dark:border-slate-700 rounded-2xl p-3 bg-white dark:bg-[#130c25] max-h-48 overflow-y-auto grid grid-cols-6 sm:grid-cols-7 gap-2">
-            @for (icon of availableIcons; track icon) {
-            <button type="button" (click)="selectIcon(icon)"
-              [title]="icon"
+          <div
+            class="border border-slate-200 dark:border-slate-700 rounded-2xl p-3 bg-white dark:bg-[#130c25] max-h-48 overflow-y-auto grid grid-cols-6 sm:grid-cols-7 gap-2">
+            @for (icon of availableIcons; track icon.name) {
+            <button type="button" (click)="selectIcon(icon.name)" [title]="icon.title"
               class="w-10 h-10 rounded-xl flex items-center justify-center transition-all cursor-pointer"
-              [ngClass]="selectedIcon() === icon 
+              [ngClass]="selectedIcon() === icon.name 
                 ? 'border-2 border-[#421b7b] bg-[#f4effc] dark:bg-purple-950/60 text-[#421b7b] dark:text-purple-300 shadow-xs scale-105' 
                 : 'border border-transparent text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white'">
-              <span class="material-symbols-outlined text-[22px]">{{ icon }}</span>
+              <span class="material-symbols-outlined text-[22px]">{{ icon.name }}</span>
             </button>
             }
           </div>
@@ -148,7 +186,8 @@
 
         <!-- Error message -->
         @if (errorMessage()) {
-        <div class="p-3 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm font-medium flex items-center gap-2">
+        <div
+          class="p-3 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm font-medium flex items-center gap-2">
           <span class="material-symbols-outlined text-lg">error</span>
           {{ errorMessage() }}
         </div>

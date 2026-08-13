@@ -6,7 +6,7 @@
 
 ## Summary
 
-Reformular a tela de gerenciamento de categorias do MeuCofrin para adotar uma experiência moderna e visualmente atraente. A interface passa a contar com um cabeçalho limpo contendo o botão `+ Nova categoria`, uma grade de cartões elegantes para a listagem das categorias com ícones em destaque e botões de ação rápida (editar e excluir), e uma janela modal responsiva para cadastro e edição contendo um seletor visual de ícones financeiros curados (`material-symbols`). O campo obsoleto de cor (`cor`) é removido do fluxo de criação e edição, persistindo o identificador textual do ícone no Firestore com fallback automático para o ícone padrão (`sell`) em categorias legadas.
+Reformular a tela de gerenciamento de categorias do MeuCofrin para adotar uma experiência moderna, visualmente atraente e de alto contraste cromático nos temas Claro (Light) e Escuro (Dark). A interface passa a contar com um cabeçalho limpo contendo o botão `+ Nova categoria`, uma grade de cartões elegantes para a listagem das categorias com ícones em destaque diferenciados por tipo (`rose` para Despesa, `emerald` para Receita), tag de tipo com alto contraste e botões de ação rápida (editar e excluir). A janela modal responsiva suporta tanto criação quanto edição, contendo o seletor de tipo (`Despesa` / `Receita`), campos de nome/descrição e um catálogo visual curado de 26 ícones financeiros (`material-symbols`). O campo obsoleto de cor (`cor`) é removido do fluxo de criação e edição, persistindo o identificador textual do ícone no Firestore com fallback automático para o ícone padrão (`sell`) em categorias legadas.
 
 ## Technical Context
 

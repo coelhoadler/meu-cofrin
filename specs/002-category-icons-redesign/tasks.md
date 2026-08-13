@@ -45,25 +45,25 @@
 
 ### Implementation for User Story 1
 - [X] T005 [US1] Implement new page header with "Voltar" link, title, subtitle, and "+ Nova categoria" button in `src/app/features/categorias/categorias.component.html`
-- [X] T006 [US1] Implement responsive category card grid with icon badge container, name, and action buttons in `src/app/features/categorias/categorias.component.html` and `src/app/features/categorias/categorias.component.ts`
+- [X] T006 [US1] Implement responsive category card grid with high-contrast icon container and type badge (`rose` for Despesa, `emerald` for Receita), name, and action buttons in `src/app/features/categorias/categorias.component.html` and `src/app/features/categorias/categorias.component.ts`
 - [X] T007 [US1] Implement empty state visual card when no categories exist in `src/app/features/categorias/categorias.component.html`
 
 **Checkpoint**: User Story 1 is functional and can be tested independently.
 
 ---
 
-## Phase 4: User Story 2 - Cadastro de Nova Categoria com Seletor de Ícones em Modal (Priority: P1)
+## Phase 4: User Story 2 - Cadastro de Nova Categoria com Seletor de Tipo e Ícones em Modal (Priority: P1)
 
-**Goal**: Abrir modal ao clicar em "+ Nova categoria", permitindo informar nome, descrição e escolher um ícone na grade visual de ícones com persistência no Firestore.
+**Goal**: Abrir modal ao clicar em "+ Nova categoria", permitindo selecionar o tipo (Despesa/Receita), informar nome, descrição e escolher um ícone na grade visual de ícones com persistência no Firestore.
 
-**Independent Test**: Clicar em "+ Nova categoria", preencher o nome, selecionar um ícone na grade e salvar. A modal fecha e a nova categoria aparece na lista com o ícone escolhido.
+**Independent Test**: Clicar em "+ Nova categoria", selecionar o tipo, preencher o nome, selecionar um ícone na grade e salvar. A modal fecha e a nova categoria aparece na lista com o ícone e cores do tipo escolhidos.
 
 ### Tests for User Story 2
 - [X] T008 [P] [US2] Unit test for category creation flow with icon selection in `src/app/features/categorias/categorias.component.spec.ts`
 
 ### Implementation for User Story 2
 - [X] T009 [US2] Implement modal state signals (`isModalOpen`, `selectedIcon`, `isLoading`, `errorMessage`) and methods in `src/app/features/categorias/categorias.component.ts`
-- [X] T010 [US2] Build modal dialog layout with backdrop, close button, Nome/Descrição inputs, and scrollable icon selector grid in `src/app/features/categorias/categorias.component.html`
+- [X] T010 [US2] Build modal dialog layout with backdrop, close button, Tipo selector buttons (Despesa/Receita), Nome/Descrição inputs, and scrollable icon selector grid in `src/app/features/categorias/categorias.component.html`
 - [X] T011 [US2] Implement `onSubmit` creation handler in `src/app/features/categorias/categorias.component.ts` saving `icone` and resetting form/modal state
 
 **Checkpoint**: User Story 2 is functional and can be tested independently.

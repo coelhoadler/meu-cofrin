@@ -19,28 +19,31 @@ Acesse no navegador: `http://localhost:4200/categorias` (ou navegue até a tela 
 
 ## 2. Cenários de Validação Manual
 
-### Cenário 1: Listagem Inicial e Fallback de Ícones
+### Cenário 1: Listagem Inicial, Destaque de Tipo e Fallback de Ícones
 1. Acesse a rota `/categorias`.
 2. Verifique se o botão `+ Nova categoria` está visível no topo direito.
 3. Observe os cartões de categorias existentes:
-   - Categorias com ícone salvo exibem seu ícone específico.
-   - Categorias legadas (sem o campo `icone`) exibem o ícone padrão de etiqueta (`sell`) com fundo lilás e sem quebras visuais.
+   - Categorias do tipo **Despesa** exibem ícone e tag com paleta `rose` (vermelho) de alto contraste.
+   - Categorias do tipo **Receita** exibem ícone e tag com paleta `emerald` (verde) de alto contraste.
+   - Alterne entre os temas **Claro** e **Escuro** e confirme que as cores permanecem perfeitamente legíveis.
+   - Categorias legadas (sem o campo `icone`) exibem o ícone padrão de etiqueta (`sell`) sem quebras visuais.
    - Cada cartão exibe o nome, o botão de edição (lápis) e o botão de exclusão (lixeira).
 
-### Cenário 2: Cadastro de Nova Categoria com Ícone
+### Cenário 2: Cadastro de Nova Categoria com Tipo e Ícone
 1. Clique no botão `+ Nova categoria`.
 2. A janela modal deve abrir com foco suave e fundo escurecido.
-3. Preencha o campo **Nome** (ex: "Academia").
-4. (Opcional) Preencha o campo **Descrição** (ex: "Mensalidade e suplementos").
-5. Na grade de **Ícones**, clique sobre o ícone de haltere (`fitness_center`).
-6. Verifique se o ícone clicado fica selecionado com destaque de borda roxa e fundo suave.
-7. Clique em **Salvar**.
-8. A modal deve fechar e a nova categoria deve aparecer imediatamente na listagem com o ícone de haltere.
+3. Selecione o **Tipo** clicando em **Despesa** ou **Receita** (observe o destaque interativo na opção ativa).
+4. Preencha o campo **Nome** (ex: "Academia").
+5. (Opcional) Preencha o campo **Descrição** (ex: "Mensalidade e suplementos").
+6. Na grade de **Ícones**, clique sobre o ícone de haltere (`fitness_center`).
+7. Verifique se o ícone clicado fica selecionado com destaque de borda roxa e fundo suave.
+8. Clique em **Salvar**.
+9. A modal deve fechar e a nova categoria deve aparecer imediatamente na listagem com o tipo e ícone escolhidos.
 
 ### Cenário 3: Edição de Categoria Existente
 1. Em qualquer cartão de categoria, clique no botão de lápis (Editar).
-2. A modal deve abrir com o título "Editar categoria", o campo Nome preenchido e o ícone atual selecionado.
-3. Altere o ícone (ex: escolha `shopping_cart`) ou ajuste o nome.
+2. A modal deve abrir com o título "Editar categoria", o tipo e o campo Nome preenchidos e o ícone atual selecionado.
+3. Altere o tipo (ex: de Despesa para Receita), o ícone (ex: `shopping_cart`) ou ajuste o nome.
 4. Clique em **Salvar**.
 5. A modal deve fechar e o cartão da categoria deve refletir a alteração imediatamente.
 
