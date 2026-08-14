@@ -1,166 +1,214 @@
 <div class="max-w-8xl mx-auto py-4">
+  <!-- Back Link (Desktop Only) -->
   <a routerLink="/dashboard"
     class="items-center gap-2 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors text-sm font-medium mb-6 hidden sm:inline-flex">
     <span class="material-symbols-outlined text-base">arrow_back</span>
     Voltar
   </a>
 
-  <div class="mb-8">
-    <h2 class="text-[32px] font-bold text-slate-900 dark:text-white tracking-tight leading-tight">
-      {{ isEditMode() ? 'Editar Categoria' : 'Nova Categoria' }}
-    </h2>
-    <p class="text-slate-500 dark:text-slate-400 text-[15px] mt-1">
-      {{
-      isEditMode()
-      ? 'Atualize os dados desta categoria.'
-      : 'Cadastre uma nova categoria para organizar suas contas e finanças.'
-      }}
-    </p>
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+    <div>
+      <h2 class="text-[32px] font-bold text-slate-900 dark:text-white tracking-tight leading-tight">
+        Categorias
+      </h2>
+      <p class="text-slate-500 dark:text-slate-400 text-[15px] mt-1">
+        Organize suas contas em categorias.
+      </p>
+    </div>
+
+    <button type="button" (click)="openNewModal()"
+      class="inline-flex items-center justify-center gap-2 bg-[#321764] hover:bg-[#25104d] text-white py-3 px-5 rounded-2xl text-sm font-semibold shadow-sm hover:shadow-md transition-all self-start sm:self-auto cursor-pointer">
+      <span class="material-symbols-outlined text-lg">add</span>
+      Nova categoria
+    </button>
   </div>
 
-  <!-- Form Card -->
+  <!-- Empty State -->
+  @if (categorias().length === 0) {
   <div
-    class="bg-white dark:bg-[#1a112c] rounded-[20px] shadow-sm border border-slate-200/80 dark:border-slate-800/50 p-3 sm:p-8 transition-colors duration-300">
-    <form [formGroup]="categoriaForm" (ngSubmit)="onSubmit()" class="space-y-6">
-      <!-- Nome -->
-      <div>
-        <label for="nome" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-          Nome da categoria <span class="text-red-500">*</span>
-        </label>
-        <input id="nome" type="text" formControlName="nome" placeholder="Ex: Alimentação, Transporte, Salário..."
-          class="w-full px-4 py-2.5 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/50 focus:border-[#421b7b] transition-all text-sm" />
-        @if (categoriaForm.get('nome')?.touched && categoriaForm.get('nome')?.invalid) {
-        <div class="text-red-500 text-xs mt-1 font-medium">O nome é obrigatório.</div>
-        }
+    class="bg-white dark:bg-[#1a112c] rounded-[24px] shadow-sm border border-slate-200/80 dark:border-slate-800/50 p-8 sm:p-12 text-center transition-colors">
+    <div
+      class="w-16 h-16 rounded-2xl bg-[#f4effc] dark:bg-purple-950/50 text-[#421b7b] dark:text-purple-300 flex items-center justify-center mx-auto mb-4">
+      <span class="material-symbols-outlined text-3xl">category</span>
+    </div>
+    <h3 class="text-lg font-bold text-slate-800 dark:text-slate-200 mb-1">
+      Nenhuma categoria cadastrada
+    </h3>
+    <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 max-w-sm mx-auto">
+      Cadastre categorias com ícones personalizados para organizar suas finanças.
+    </p>
+    <button type="button" (click)="openNewModal()"
+      class="inline-flex items-center gap-2 bg-[#321764] hover:bg-[#25104d] text-white py-2.5 px-5 rounded-xl text-sm font-semibold shadow-sm transition-all cursor-pointer">
+      <span class="material-symbols-outlined text-lg">add</span>
+      Criar primeira categoria
+    </button>
+  </div>
+  }
+
+  <!-- Cards Grid -->
+  @if (categorias().length > 0) {
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+    @for (cat of categorias(); track cat.id || cat.nome) {
+    <div
+      class="bg-white dark:bg-[#1a112c] rounded-[20px] shadow-sm border border-slate-200/80 dark:border-slate-800/50 p-4 flex items-center justify-between hover:border-[#421b7b]/40 dark:hover:border-[#421b7b]/60 transition-all group">
+
+      <!-- Icon + Name -->
+      <div class="flex items-center gap-3.5 min-w-0 pr-2">
+        <div
+          class="w-11 h-11 shrink-0 rounded-2xl flex items-center justify-center transition-colors"
+          [ngClass]="cat.tipo === 'Despesa'
+            ? 'bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400'
+            : 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400'">
+          <span class="material-symbols-outlined text-2xl">{{ cat.icone || defaultIcon }}</span>
+        </div>
+        <div class="min-w-0">
+          <div class="flex items-center gap-2">
+            <span class="font-semibold text-slate-800 dark:text-slate-100 text-[15px] truncate block" [title]="cat.nome">
+              {{ cat.nome }}
+            </span>
+            <span class="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md shrink-0"
+              [ngClass]="cat.tipo === 'Despesa'
+                ? 'bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 border border-rose-200/80 dark:border-rose-900/60'
+                : 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 border border-emerald-200/80 dark:border-emerald-900/60'">
+              {{ cat.tipo }}
+            </span>
+          </div>
+          @if (cat.descricao) {
+          <span class="text-xs text-slate-500 dark:text-slate-400 truncate block mt-0.5" [title]="cat.descricao">
+            {{ cat.descricao }}
+          </span>
+          }
+        </div>
       </div>
 
-      <!-- Descrição -->
-      <div>
-        <label for="descricao"
-          class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Descrição</label>
-        <textarea id="descricao" formControlName="descricao" rows="3"
-          placeholder="Detalhes sobre a categoria (opcional)"
-          class="w-full px-4 py-3 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/50 focus:border-[#421b7b] transition-all text-sm resize-none"></textarea>
+      <!-- Actions -->
+      <div class="flex items-center gap-1 shrink-0">
+        <button type="button" (click)="openEditModal(cat)" title="Editar"
+          class="p-2 text-slate-400 dark:text-slate-500 hover:text-[#421b7b] dark:hover:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-950/40 rounded-xl transition-colors flex items-center justify-center cursor-pointer">
+          <span class="material-symbols-outlined text-[20px]">edit</span>
+        </button>
+        <button type="button" (click)="deleteCategoria(cat.id!)" title="Excluir"
+          class="p-2 text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-xl transition-colors flex items-center justify-center cursor-pointer">
+          <span class="material-symbols-outlined text-[20px]">delete</span>
+        </button>
+      </div>
+    </div>
+    }
+  </div>
+  }
+
+  <!-- Modal Dialog -->
+  @if (isModalOpen()) {
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+    <!-- Click outside backdrop to close -->
+    <div class="absolute inset-0" (click)="closeModal()"></div>
+
+    <!-- Modal Content Card -->
+    <div
+      class="relative bg-white dark:bg-[#1a112c] rounded-[24px] shadow-2xl border border-slate-200/80 dark:border-slate-800/80 max-w-lg w-full p-6 sm:p-7 z-10 animate-in zoom-in-95 duration-200">
+      <div class="flex items-center justify-between pb-4 mb-5 border-b border-slate-100 dark:border-slate-800">
+        <h3 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
+          {{ isEditMode() ? 'Editar categoria' : 'Nova categoria' }}
+        </h3>
+        <button type="button" (click)="closeModal()"
+          class="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-[22px]">close</span>
+        </button>
       </div>
 
-      <!-- Row: Tipo, Cor -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <form [formGroup]="categoriaForm" (ngSubmit)="onSubmit()" class="space-y-4">
+        <!-- Tipo (Despesa / Receita) -->
         <div>
-          <label for="tipo" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+          <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
             Tipo <span class="text-red-500">*</span>
           </label>
-          <select id="tipo" formControlName="tipo"
-            class="w-full px-4 py-2.5 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#421b7b]/50 focus:border-[#421b7b] transition-all text-sm appearance-none">
-            <option value="Despesa">Despesa</option>
-            <option value="Receita">Receita</option>
-          </select>
+          <div class="grid grid-cols-2 gap-3">
+            <label class="flex items-center justify-center gap-2 p-2.5 rounded-xl border cursor-pointer transition-all"
+              [ngClass]="categoriaForm.get('tipo')?.value === 'Despesa'
+                ? 'border-rose-500/50 bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 font-semibold ring-2 ring-rose-500/20'
+                : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50'">
+              <input type="radio" formControlName="tipo" value="Despesa" class="sr-only" />
+              <span class="material-symbols-outlined text-lg">trending_down</span>
+              <span>Despesa</span>
+            </label>
+            <label class="flex items-center justify-center gap-2 p-2.5 rounded-xl border cursor-pointer transition-all"
+              [ngClass]="categoriaForm.get('tipo')?.value === 'Receita'
+                ? 'border-emerald-500/50 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 font-semibold ring-2 ring-emerald-500/20'
+                : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50'">
+              <input type="radio" formControlName="tipo" value="Receita" class="sr-only" />
+              <span class="material-symbols-outlined text-lg">trending_up</span>
+              <span>Receita</span>
+            </label>
+          </div>
         </div>
 
+        <!-- Nome -->
         <div>
-          <label for="cor" class="block text-sm font-semibold text-slate-700 mb-1.5 dark:text-slate-300">
-            Cor de identificação
+          <label for="modal-nome" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+            Nome <span class="text-red-500">*</span>
           </label>
-          <div class="flex items-center gap-3">
-            <input id="cor" type="color" formControlName="cor"
-              class="h-11 w-11 p-1 bg-white border border-slate-200 rounded-xl cursor-pointer" />
-            <span class="text-sm text-slate-500 dark:text-slate-400">Escolha uma cor de destaque</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Error Message -->
-      @if (errorMessage()) {
-      <div
-        class="p-4 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm font-medium flex items-center gap-2">
-        <span class="material-symbols-outlined text-xl">error</span>
-        {{ errorMessage() }}
-      </div>
-      }
-
-      <!-- Buttons -->
-      <div class="flex flex-col gap-3 pt-4">
-        <div class="flex items-center gap-4">
-          <button type="submit" [disabled]="isLoading()"
-            class="flex-1 bg-[#321764] hover:bg-[#25104d] text-white py-3 px-4 rounded-xl text-sm font-semibold shadow-sm transition-all disabled:opacity-70 disabled:cursor-not-allowed">
-            {{
-            isLoading()
-            ? 'Salvando...'
-            : isEditMode()
-            ? 'Atualizar categoria'
-            : 'Salvar categoria'
-            }}
-          </button>
-
-          @if (isEditMode()) {
-          <button type="button" (click)="cancelEdit()"
-            class="px-6 py-3 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-xl text-sm font-semibold transition-colors">
-            Cancelar Edição
-          </button>
-          }
-          @if (!isEditMode()) {
-          <a routerLink="/dashboard"
-            class="px-6 py-3 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-xl text-sm font-semibold transition-colors">
-            Voltar
-          </a>
+          <input id="modal-nome" type="text" formControlName="nome" placeholder="Ex: Moradia, Alimentação..."
+            class="w-full px-4 py-2.5 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/50 focus:border-[#421b7b] transition-all text-sm" />
+          @if (categoriaForm.get('nome')?.touched && categoriaForm.get('nome')?.invalid) {
+          <div class="text-red-500 text-xs mt-1 font-medium">O nome é obrigatório.</div>
           }
         </div>
-      </div>
-    </form>
-  </div>
 
-  <!-- Lista de Categorias -->
-  <div
-    class="mt-8 bg-white dark:bg-[#1a112c] rounded-[20px] shadow-sm border border-slate-200/80 dark:border-slate-800/50 p-3 sm:p-8 transition-colors duration-300">
-    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-6">Categorias Cadastradas</h3>
+        <!-- Descrição -->
+        <div>
+          <label for="modal-descricao" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+            Descrição
+          </label>
+          <textarea id="modal-descricao" formControlName="descricao" rows="2" placeholder="Detalhes sobre a categoria"
+            class="w-full px-4 py-2.5 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/50 focus:border-[#421b7b] transition-all text-sm resize-none"></textarea>
+        </div>
 
-    @if (categorias().length === 0) {
-    <div
-      class="text-center py-8 text-slate-500 dark:text-slate-400 text-sm bg-slate-50 dark:bg-slate-800/30 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">
-      Nenhuma categoria cadastrada ainda.
-    </div>
-    }
-
-    @if (categorias().length > 0) {
-    <div class="space-y-3">
-      @for (cat of categorias(); track cat) {
-      <div
-        class="flex flex-col gap-2 p-3 border border-slate-200 dark:border-slate-800/50 rounded-xl hover:border-[#421b7b]/30 dark:hover:border-[#421b7b]/50 transition-colors bg-white dark:bg-[#130c25]">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-4">
-            <div class="w-3 h-3 shrink-0 rounded-full shadow-sm"
-              [ngStyle]="{ 'background-color': cat.cor || '#1a112c' }">
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="font-medium text-slate-800 dark:text-slate-200 w-[100px] sm:w-[200px] truncate"
-                [title]="cat.nome">{{ cat.nome }}</span>
-              <span class="text-[11px] font-semibold px-2 py-0.5 rounded-md" [ngClass]="
-                      cat.tipo === 'Despesa' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                    ">
-                {{ cat.tipo }}
-              </span>
-            </div>
-          </div>
-          <div class="flex items-center gap-2">
-            <button type="button" (click)="editCategoria(cat)" title="Editar"
-              class="p-2 text-slate-400 dark:text-slate-500 hover:text-[#421b7b] dark:hover:text-[#a78bfa] hover:bg-[#421b7b]/5 dark:hover:bg-[#421b7b]/20 rounded-lg transition-colors flex items-center justify-center">
-              <span class="material-symbols-outlined text-[20px]">edit</span>
+        <!-- Ícone -->
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+            Ícone
+          </label>
+          <div
+            class="border border-slate-200 dark:border-slate-700 rounded-2xl p-3 bg-white dark:bg-[#130c25] max-h-48 overflow-y-auto grid grid-cols-6 sm:grid-cols-7 gap-2">
+            @for (icon of availableIcons; track icon.name) {
+            <button type="button" (click)="selectIcon(icon.name)" [title]="icon.title"
+              class="w-10 h-10 rounded-xl flex items-center justify-center transition-all cursor-pointer"
+              [ngClass]="selectedIcon() === icon.name 
+                ? 'border-2 border-[#421b7b] bg-[#f4effc] dark:bg-purple-950/60 text-[#421b7b] dark:text-purple-300 shadow-xs scale-105' 
+                : 'border border-transparent text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white'">
+              <span class="material-symbols-outlined text-[22px]">{{ icon.name }}</span>
             </button>
-            <button type="button" (click)="deleteCategoria(cat.id!)" title="Excluir"
-              class="p-2 text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors flex items-center justify-center">
-              <span class="material-symbols-outlined text-[20px]">delete</span>
-            </button>
+            }
           </div>
         </div>
-        @if (cat.descricao) {
-        <div class="text-[13px] text-slate-500 dark:text-slate-400 pl-7 w-full break-words">
-          {{ cat.descricao }}
+
+        <!-- Error message -->
+        @if (errorMessage()) {
+        <div
+          class="p-3 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm font-medium flex items-center gap-2">
+          <span class="material-symbols-outlined text-lg">error</span>
+          {{ errorMessage() }}
         </div>
         }
-      </div>
-      }
+
+        <!-- Actions -->
+        <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+          <button type="button" (click)="closeModal()"
+            class="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold text-sm transition-colors cursor-pointer">
+            Cancelar
+          </button>
+          <button type="submit" [disabled]="isLoading()"
+            class="px-6 py-2.5 rounded-xl bg-[#321764] hover:bg-[#25104d] text-white font-semibold text-sm shadow-sm transition-all disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer">
+            {{ isLoading() ? 'Salvando...' : 'Salvar' }}
+          </button>
+        </div>
+      </form>
     </div>
-    }
   </div>
+  }
+
   <!-- Floating Action Button (Mobile Only) -->
   <a routerLink="/dashboard"
     class="fixed bottom-6 right-6 z-40 sm:hidden flex items-center justify-center w-14 h-14 bg-[#421b7b] active:bg-[#341561] text-white rounded-full border-[2.5px] border-[#9d6bf3] shadow-[0_0_20px_rgba(157,107,243,0.4)] transition-transform active:scale-95">

@@ -2,7 +2,7 @@ import { Component, inject, signal, OnInit, ChangeDetectionStrategy } from '@ang
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { Categoria, CategoriaService } from '../../core/services/categoria.service';
+import { Categoria, CategoriaService, CATEGORIA_ICONS } from '../../core/services/categoria.service';
 
 @Component({
   selector: 'app-categorias',
@@ -15,19 +15,23 @@ export class CategoriasComponent implements OnInit {
   private fb = inject(FormBuilder);
   private categoriaService = inject(CategoriaService);
 
+  readonly availableIcons = CATEGORIA_ICONS;
+  readonly defaultIcon = 'sell';
+
   categoriaForm = this.fb.group({
     nome: ['', [Validators.required]],
     descricao: [''],
     tipo: ['Despesa', [Validators.required]],
-    cor: ['#1a112c'],
   });
 
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
 
   categorias = signal<Categoria[]>([]);
+  isModalOpen = signal(false);
   isEditMode = signal(false);
   editId = signal<string | null>(null);
+  selectedIcon = signal<string>(this.defaultIcon);
 
   ngOnInit() {
     this.loadCategorias();
@@ -35,13 +39,47 @@ export class CategoriasComponent implements OnInit {
 
   async loadCategorias() {
     try {
-      const data = (await this.categoriaService.getCategorias()).sort((a, b) =>
-        a.nome.localeCompare(b.nome),
-      );
+      const raw = await this.categoriaService.getCategorias();
+      const data = [...raw].sort((a, b) => a.nome.localeCompare(b.nome));
       this.categorias.set(data);
     } catch (error) {
       console.error('Erro ao carregar categorias', error);
     }
+  }
+
+  openNewModal() {
+    this.isEditMode.set(false);
+    this.editId.set(null);
+    this.selectedIcon.set(this.defaultIcon);
+    this.categoriaForm.reset({ tipo: 'Despesa', nome: '', descricao: '' });
+    this.errorMessage.set(null);
+    this.isModalOpen.set(true);
+  }
+
+  openEditModal(categoria: Categoria) {
+    this.isEditMode.set(true);
+    this.editId.set(categoria.id || null);
+    this.selectedIcon.set(categoria.icone || this.defaultIcon);
+    this.categoriaForm.patchValue({
+      nome: categoria.nome,
+      descricao: categoria.descricao || '',
+      tipo: categoria.tipo || 'Despesa',
+    });
+    this.errorMessage.set(null);
+    this.isModalOpen.set(true);
+  }
+
+  closeModal() {
+    this.isModalOpen.set(false);
+    this.isEditMode.set(false);
+    this.editId.set(null);
+    this.selectedIcon.set(this.defaultIcon);
+    this.categoriaForm.reset({ tipo: 'Despesa', nome: '', descricao: '' });
+    this.errorMessage.set(null);
+  }
+
+  selectIcon(iconName: string) {
+    this.selectedIcon.set(iconName);
   }
 
   async onSubmit() {
@@ -56,10 +94,10 @@ export class CategoriasComponent implements OnInit {
     try {
       const formValue = this.categoriaForm.value;
       const categoriaData: Categoria = {
-        nome: formValue.nome!,
-        descricao: formValue.descricao || '',
-        tipo: formValue.tipo as 'Despesa' | 'Receita',
-        cor: formValue.cor || '',
+        nome: formValue.nome!.trim(),
+        descricao: formValue.descricao?.trim() || '',
+        tipo: (formValue.tipo as 'Despesa' | 'Receita') || 'Despesa',
+        icone: this.selectedIcon(),
       };
 
       if (this.isEditMode() && this.editId()) {
@@ -68,7 +106,7 @@ export class CategoriasComponent implements OnInit {
         await this.categoriaService.addCategoria(categoriaData);
       }
 
-      this.cancelEdit();
+      this.closeModal();
       await this.loadCategorias();
     } catch (error) {
       console.error(error);
@@ -78,38 +116,18 @@ export class CategoriasComponent implements OnInit {
     }
   }
 
-  editCategoria(categoria: Categoria) {
-    this.isEditMode.set(true);
-    this.editId.set(categoria.id!);
-    this.categoriaForm.patchValue({
-      nome: categoria.nome,
-      descricao: categoria.descricao || '',
-      tipo: categoria.tipo,
-      cor: categoria.cor || '#1a112c',
-    });
-    // Scroll to top
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
   async deleteCategoria(id: string) {
     if (confirm('Tem certeza que deseja excluir esta categoria?')) {
       try {
         await this.categoriaService.deleteCategoria(id);
         await this.loadCategorias();
-        if (this.isEditMode() && this.editId() === id) {
-          this.cancelEdit();
+        if (this.isModalOpen() && this.editId() === id) {
+          this.closeModal();
         }
       } catch (error) {
         console.error(error);
         alert('Erro ao excluir categoria.');
       }
     }
-  }
-
-  cancelEdit() {
-    this.isEditMode.set(false);
-    this.editId.set(null);
-    this.categoriaForm.reset({ tipo: 'Despesa', cor: '#1a112c' });
-    this.errorMessage.set(null);
   }
 }

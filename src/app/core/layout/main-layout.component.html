@@ -34,6 +34,13 @@
         <span class="text-sm truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">Dashboard</span>
       </a>
 
+      <a routerLink="/nova-conta" routerLinkActive="bg-[#8b5cf6]/20 text-[#c4b5fd]" (click)="isSidebarOpen.set(false)"
+        class="flex items-center py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors gap-3 px-3"
+        [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center md:mx-1 md:gap-0 md:px-0' : ''" title="Nova conta">
+        <span class="material-symbols-outlined text-xl">add</span>
+        <span class="text-sm truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">Nova conta</span>
+      </a>
+
       <a routerLink="/lancamentos" routerLinkActive="bg-[#8b5cf6]/20 text-[#c4b5fd]" (click)="isSidebarOpen.set(false)"
         class="flex items-center py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors gap-3 px-3"
         [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center md:mx-1 md:gap-0 md:px-0' : ''"
@@ -41,13 +48,6 @@
         <span class="material-symbols-outlined text-xl">receipt_long</span>
         <span class="text-sm truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">Meus
           lançamentos</span>
-      </a>
-
-      <a routerLink="/nova-conta" routerLinkActive="bg-[#8b5cf6]/20 text-[#c4b5fd]" (click)="isSidebarOpen.set(false)"
-        class="flex items-center py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors gap-3 px-3"
-        [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center md:mx-1 md:gap-0 md:px-0' : ''" title="Nova conta">
-        <span class="material-symbols-outlined text-xl">add</span>
-        <span class="text-sm truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">Nova conta</span>
       </a>
 
       <a routerLink="/categorias" routerLinkActive="bg-[#8b5cf6]/20 text-[#c4b5fd]" (click)="isSidebarOpen.set(false)"
@@ -157,21 +157,17 @@
     class="flex-1 flex flex-col min-w-0 overflow-hidden h-screen overflow-y-auto bg-slate-50 dark:bg-[#130c25] transition-colors duration-300">
     <!-- Top Header Mobile Toggle -->
     <header
-      class="md:hidden flex items-center justify-between p-4 bg-white dark:bg-[#1a112c] border-b border-slate-200 dark:border-slate-800/50 sticky top-0 z-30 transition-colors duration-300">
+      class="md:hidden flex items-center justify-between p-2 bg-white dark:bg-[#1a112c] border-b border-slate-200 dark:border-slate-800/50 sticky top-0 z-30 transition-colors duration-300">
       <button (click)="toggleSidebar()" id="tour-menu-mobile"
         class="p-2 -mr-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
         <span class="material-symbols-outlined text-2xl">menu</span>
       </button>
-      <!-- <div class="flex items-center gap-2" [routerLink]="['/dashboard']">
-        <div
-          class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 via-purple-500 to-fuchsia-500 flex items-center justify-center">
-          <span class="material-symbols-outlined text-white text-base">savings</span>
-        </div>
-        <span class="font-bold text-slate-800 dark:text-white">Meu Cofrin</span>
-      </div> -->
+      <div class="flex items-center gap-2" [routerLink]="['/dashboard']">
+        <span class="font-bold text-slate-800 dark:text-white">{{ greetingUser() }}</span>
+      </div>
     </header>
 
-    <div class="flex-1 p-4 md:p-10 xl:px-16 w-full max-w[90%] mx-auto">
+    <div class="flex-1 p-4 pb-0 md:p-10 md:pb-0 w-full max-w[90%] mx-auto">
       <router-outlet></router-outlet>
     </div>
   </main>

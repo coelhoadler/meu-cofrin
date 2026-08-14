@@ -33,8 +33,8 @@ export class TourService {
           description: `
           <ul>
               <li><b>Dashboard</b>: Visão geral das finanças (tela inicial).</li>
-              <li><b>Lançamentos</b>: Lista de lançamentos.</li>
               <li><b>Nova conta</b>: Cadastro de novas contas.</li>
+              <li><b>Meus lançamentos</b>: Lista de lançamentos.</li>
               <li><b>Categorias</b>: Cadastro de categorias.</li>
               <li><b>Apoiar projeto</b>: Doação para o projeto.</li>
               <li><b>Meu perfil</b>: Dados do perfil.</li>
@@ -163,7 +163,7 @@ export class TourService {
       showProgress: true,
       animate: true,
       allowClose: true,
-      overlayClickBehavior: () => {},
+      overlayClickBehavior: () => { },
       showButtons: ['next', 'previous', 'close'],
       overlayColor: '#0f172a',
       overlayOpacity: 0.75,

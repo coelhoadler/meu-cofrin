@@ -1,5 +1,5 @@
 <div
-  class="min-h-screen flex flex-col items-center justify-center p-6 relative font-sans text-slate-800 overflow-hidden">
+  class="min-h-screen flex flex-col items-center justify-center p-4 relative font-sans text-slate-800 overflow-hidden">
   <!-- Fundo com a imagem e Blur -->
   <div class="absolute inset-0 -z-20 scale-110" style="
       background-image: url('/auth-hero.jpg');
@@ -78,8 +78,8 @@
         </div>
         <div class="relative">
           <input id="password" [type]="showPassword() ? 'text' : 'password'" formControlName="password"
-            [attr.autocomplete]="isLoginMode() ? 'current-password' : 'new-password'"
-            placeholder="••••••••" pInputText
+            [attr.autocomplete]="isLoginMode() ? 'current-password' : 'new-password'" placeholder="Insira sua senha"
+            pInputText
             class="w-full px-4 py-3 !bg-white !border !border-slate-200 rounded-2xl !text-slate-900 placeholder:!text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm pr-12" />
           <button type="button" (click)="togglePasswordVisibility()"
             class="absolute inset-y-0 right-0 flex items-center px-4 text-slate-400 hover:text-indigo-500 transition-colors focus:outline-none">

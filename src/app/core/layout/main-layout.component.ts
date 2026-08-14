@@ -66,6 +66,20 @@ export class MainLayoutComponent {
     this.handleSwipe();
   }
 
+  public greetingUser(): string {
+    const data = new Date();
+    const hora = data.getHours();
+    const userName = this.authService.currentUser()?.displayName?.split(' ')[0] || '';
+
+    if (hora < 12) {
+      return `Bom dia, ${userName}!`;
+    } else if (hora < 18) {
+      return `Boa tarde, ${userName}!`;
+    } else {
+      return `Boa noite, ${userName}!`;
+    }
+  }
+
   private handleSwipe() {
     const swipeDistance = this.touchEndX - this.touchStartX;
 
