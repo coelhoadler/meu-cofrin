@@ -1,4 +1,4 @@
-<div class="space-y-6 max-w-8xl mx-auto pb-10">
+<div class="space-y-6 max-w-8xl mx-auto pb-1">
   <!-- Header -->
   <div class="max-w-8xl py-4">
     <a routerLink="/dashboard"
@@ -168,7 +168,7 @@
           <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 hidden sm:flex"
             [ngClass]="conta.tipo === 'Receita' ? 'bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-rose-100 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400'">
             <span class="material-symbols-outlined">
-              {{ conta.tipo === 'Receita' ? 'trending_up' : 'trending_down' }}
+              {{ getCategoriaIcon(conta) }}
             </span>
           </div>
 
