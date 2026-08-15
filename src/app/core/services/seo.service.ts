@@ -18,8 +18,8 @@ export class SeoService {
 
   private defaultTitle = 'Meu Cofrin - Controle Financeiro Pessoal Simples e Eficiente';
   private defaultDescription = 'Meu Cofrin ajuda você a controlar e gerenciar suas finanças pessoais de forma simples, rápida e transparente.';
-  private defaultImage = 'https://meu-cofrin.web.app/thumb.jpg';
-  private defaultUrl = 'https://meu-cofrin.web.app/';
+  private defaultImage = 'https://meu-cofrin.app.br/thumb.jpg';
+  private defaultUrl = 'https://meu-cofrin.app.br/';
 
   public updateSeo(config: SeoConfig): void {
     const title = config.title ? `${config.title} | Meu Cofrin` : this.defaultTitle;

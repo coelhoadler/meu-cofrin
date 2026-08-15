@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, computed, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -28,6 +28,10 @@ export class CategoriasComponent implements OnInit {
   errorMessage = signal<string | null>(null);
 
   categorias = signal<Categoria[]>([]);
+  totalCategorias = computed(() => this.categorias().length);
+  totalDespesas = computed(() => this.categorias().filter((c) => c.tipo === 'Despesa').length);
+  totalReceitas = computed(() => this.categorias().filter((c) => c.tipo === 'Receita').length);
+
   isModalOpen = signal(false);
   isEditMode = signal(false);
   editId = signal<string | null>(null);
