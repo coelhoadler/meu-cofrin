@@ -65,14 +65,15 @@
         </div>
         <div class="min-w-0 flex-1">
           <div class="mb-1">
-            <span class="font-bold text-lg sm:text-xl truncate block" [ngClass]="cat.tipo === 'Despesa'
+            <span class="font-bold text-sm sm:text-lg truncate block" [ngClass]="cat.tipo === 'Despesa'
                 ? 'text-rose-600 dark:text-rose-400'
                 : 'text-emerald-600 dark:text-emerald-400'" [title]="cat.nome">
               {{ cat.nome }}
             </span>
           </div>
           @if (cat.descricao) {
-          <span class="text-sm text-slate-500 dark:text-slate-400 line-clamp-2 block" [title]="cat.descricao">
+          <span class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 line-clamp-2 block"
+            [title]="cat.descricao">
             {{ cat.descricao }}
           </span>
           }
