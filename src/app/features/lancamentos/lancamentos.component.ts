@@ -132,6 +132,24 @@ export class LancamentosComponent implements OnInit {
     ];
   });
 
+  categoriaIconMap = computed(() => {
+    const map = new Map<string, string>();
+    for (const cat of this.categorias()) {
+      if (cat.nome && cat.icone) {
+        map.set(cat.nome.trim().toLowerCase(), cat.icone);
+      }
+    }
+    return map;
+  });
+
+  getCategoriaIcon(conta: Conta): string {
+    if (conta.categoria) {
+      const icone = this.categoriaIconMap().get(conta.categoria.trim().toLowerCase());
+      if (icone) return icone;
+    }
+    return conta.tipo === 'Receita' ? 'trending_up' : 'trending_down';
+  }
+
   anosOptions = computed(() => {
     const currentYear = new Date().getFullYear();
     const anosSet = new Set<number>();
