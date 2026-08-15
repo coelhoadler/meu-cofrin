@@ -3,4 +3,4 @@ User-agent: *
 Allow: /
 
 # Sitemap URL
-Sitemap: https://meu-cofrin.web.app/sitemap.xml
+Sitemap: https://meu-cofrin.app.br/sitemap.xml
