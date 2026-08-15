@@ -51,26 +51,24 @@
   <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
     @for (cat of categorias(); track cat.id || cat.nome) {
     <div
-      class="bg-white dark:bg-[#1a112c] rounded-[24px] shadow-sm border border-slate-200/80 dark:border-slate-800/50 p-5 sm:p-6 flex items-center justify-between h-[150px] hover:border-[#421b7b]/40 dark:hover:border-[#421b7b]/60 hover:shadow-md transition-all group">
+      class="bg-white dark:bg-[#1a112c] rounded-[24px] shadow-sm border border-slate-200/80 dark:border-slate-800/50 p-5 sm:p-6 flex items-center justify-between h-[150px] hover:shadow-md transition-all group"
+      [ngClass]="cat.tipo === 'Despesa'
+        ? 'hover:border-rose-400/50 dark:hover:border-rose-700/60'
+        : 'hover:border-emerald-400/50 dark:hover:border-emerald-700/60'">
 
       <!-- Icon + Name -->
-      <div class="flex items-center gap-4 sm:gap-5 min-w-0 pr-3">
+      <div class="flex items-center gap-4 sm:gap-5 min-w-0 pr-3 flex-1">
         <div class="w-14 h-14 shrink-0 rounded-2xl flex items-center justify-center transition-colors" [ngClass]="cat.tipo === 'Despesa'
             ? 'bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400'
             : 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400'">
           <span class="material-symbols-outlined text-3xl">{{ cat.icone || defaultIcon }}</span>
         </div>
-        <div class="min-w-0">
-          <div class="flex items-center gap-2.5 mb-1">
-            <span class="font-bold text-slate-800 dark:text-slate-100 text-lg sm:text-xl truncate block"
-              [title]="cat.nome">
+        <div class="min-w-0 flex-1">
+          <div class="mb-1">
+            <span class="font-bold text-lg sm:text-xl truncate block" [ngClass]="cat.tipo === 'Despesa'
+                ? 'text-rose-600 dark:text-rose-400'
+                : 'text-emerald-600 dark:text-emerald-400'" [title]="cat.nome">
               {{ cat.nome }}
-            </span>
-            <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md shrink-0"
-              [ngClass]="cat.tipo === 'Despesa'
-                ? 'bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 border border-rose-200/80 dark:border-rose-900/60'
-                : 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 border border-emerald-200/80 dark:border-emerald-900/60'">
-              {{ cat.tipo }}
             </span>
           </div>
           @if (cat.descricao) {
