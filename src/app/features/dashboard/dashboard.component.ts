@@ -372,6 +372,44 @@ export class DashboardComponent implements AfterViewInit {
     return `${dia} de ${mesNome}`?.toUpperCase();
   }
 
+  formatDataPagamento(dataPagamento?: string | null): string {
+    if (!dataPagamento) return '';
+    try {
+      if (dataPagamento.includes('T') || dataPagamento.includes(' ')) {
+        const date = new Date(dataPagamento);
+        if (!isNaN(date.getTime())) {
+          const dia = String(date.getDate()).padStart(2, '0');
+          const mes = String(date.getMonth() + 1).padStart(2, '0');
+          const ano = date.getFullYear();
+          const horas = String(date.getHours()).padStart(2, '0');
+          const minutos = String(date.getMinutes()).padStart(2, '0');
+          return `${dia}/${mes}/${ano} ${horas}:${minutos}`;
+        }
+      }
+
+      const parts = dataPagamento.split('-');
+      if (parts.length === 3) {
+        const ano = parts[0];
+        const mes = parts[1].padStart(2, '0');
+        const dia = parts[2].padStart(2, '0');
+        return `${dia}/${mes}/${ano}`;
+      }
+
+      const date = new Date(dataPagamento);
+      if (!isNaN(date.getTime())) {
+        const dia = String(date.getDate()).padStart(2, '0');
+        const mes = String(date.getMonth() + 1).padStart(2, '0');
+        const ano = date.getFullYear();
+        const horas = String(date.getHours()).padStart(2, '0');
+        const minutos = String(date.getMinutes()).padStart(2, '0');
+        return `${dia}/${mes}/${ano} ${horas}:${minutos}`;
+      }
+    } catch {
+      // ignore
+    }
+    return dataPagamento;
+  }
+
   closeModal() {
     this.selectedConta.set(null);
   }

@@ -10,7 +10,7 @@
     <p class="text-slate-500 dark:text-slate-400">Filtre suas receitas e despesas ou veja o resumo mensal do ano.</p>
 
     <!-- View Mode Toggle -->
-    <div class="flex items-center gap-2 mt-4">
+    <div class="flex flex-wrap items-center justify-between gap-3 mt-4">
       <div
         class="bg-slate-200/60 dark:bg-slate-800/60 p-1 rounded-xl inline-flex gap-1 border border-slate-200/50 dark:border-slate-700/50">
         <button (click)="setVisaoModo('lista')"
@@ -26,6 +26,14 @@
           Resumo mensal
         </button>
       </div>
+
+      <!-- Toggle ocultar/mostrar valores -->
+      <button type="button" (click)="toggleVisibility()"
+        class="px-3.5 py-2 bg-white dark:bg-[#1a112c] border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-xl flex items-center gap-2 text-xs font-semibold transition-all shadow-sm active:scale-95"
+        title="Ocultar / Mostrar valores">
+        <span class="material-symbols-outlined text-base">{{ showValues() ? 'visibility' : 'visibility_off' }}</span>
+        <span>{{ showValues() ? 'Ocultar valores' : 'Mostrar valores' }}</span>
+      </button>
     </div>
   </div>
 
@@ -113,26 +121,56 @@
   </div>
 
   <!-- Resumo -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <!-- Receitas -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+    <!-- Receitas Card -->
     <div
-      class="bg-white dark:bg-[#1a112c] rounded-2xl p-5 shadow-sm border border-slate-200 dark:border-slate-800/50 flex flex-col justify-center transition-colors duration-300">
-      <p class="text-sm text-slate-500 dark:text-slate-400 font-medium mb-1">Receitas</p>
-      <p class="text-2xl font-bold text-emerald-500 dark:text-emerald-400">{{ formatarMoeda(totalReceitas()) }}</p>
+      class="bg-white dark:bg-[#1a112c] rounded-[20px] p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/50 relative flex flex-col justify-between h-[140px] transition-colors duration-300">
+      <div>
+        <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mb-5">Receitas</p>
+        <h3 class="text-[clamp(1.25rem,2.5vw,1.875rem)] font-bold text-slate-800 dark:text-white mb-4 truncate"
+          [title]="showValues() ? formatarMoeda(totalReceitas()) : ''">{{ showValues() ? formatarMoeda(totalReceitas())
+          : 'R$ ••••' }}</h3>
+      </div>
+      <div
+        class="absolute top-5 right-5 w-8 h-8 bg-emerald-50 dark:bg-emerald-500/10 rounded-lg flex items-center justify-center">
+        <span class="material-symbols-outlined text-emerald-500 dark:text-emerald-400 text-base">trending_up</span>
+      </div>
     </div>
 
-    <!-- Despesas -->
+    <!-- Despesas Card -->
     <div
-      class="bg-white dark:bg-[#1a112c] rounded-2xl p-5 shadow-sm border border-slate-200 dark:border-slate-800/50 flex flex-col justify-center transition-colors duration-300">
-      <p class="text-sm text-slate-500 dark:text-slate-400 font-medium mb-1">Despesas</p>
-      <p class="text-2xl font-bold text-rose-500 dark:text-rose-400">{{ formatarMoeda(totalDespesas()) }}</p>
+      class="bg-white dark:bg-[#1a112c] rounded-[20px] p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/50 relative flex flex-col justify-between h-[140px] transition-colors duration-300">
+      <div>
+        <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mb-5">Despesas</p>
+        <h3 class="text-[clamp(1.25rem,2.5vw,1.875rem)] font-bold text-slate-800 dark:text-white mb-4 truncate"
+          [title]="showValues() ? formatarMoeda(totalDespesas()) : ''">{{ showValues() ? formatarMoeda(totalDespesas())
+          : 'R$ ••••' }}</h3>
+      </div>
+      <div
+        class="absolute top-5 right-5 w-8 h-8 bg-rose-50 dark:bg-rose-500/10 rounded-lg flex items-center justify-center">
+        <span class="material-symbols-outlined text-rose-500 dark:text-rose-400 text-base">trending_down</span>
+      </div>
     </div>
 
-    <!-- Saldo -->
+    <!-- Saldo Card -->
     <div
-      class="bg-white dark:bg-[#1a112c] rounded-2xl p-5 shadow-sm border border-slate-200 dark:border-slate-800/50 flex flex-col justify-center transition-colors duration-300">
-      <p class="text-sm text-slate-500 dark:text-slate-400 font-medium mb-1">Saldo</p>
-      <p class="text-2xl font-bold text-slate-800 dark:text-white">{{ formatarMoeda(saldo()) }}</p>
+      class="bg-gradient-to-br from-[#381174] via-[#581fa4] to-[#7941dc] text-white rounded-[20px] p-6 shadow-lg shadow-purple-900/15 relative overflow-hidden flex flex-col justify-between h-[140px] transition-all">
+      <div class="relative z-10">
+        <p class="text-purple-200/90 text-sm font-medium mb-5">Saldo</p>
+        <h3 class="text-[clamp(1.25rem,2.5vw,1.875rem)] font-bold text-white mb-4 truncate tracking-tight"
+          [title]="showValues() ? formatarMoeda(saldo()) : ''">{{ showValues() ? formatarMoeda(saldo()) : 'R$ ••••' }}
+        </h3>
+      </div>
+      <!-- Icon top right -->
+      <div (click)="toggleVisibility()"
+        class="top-5 right-5 w-10 h-10 bg-white/15 hover:bg-white/25 active:scale-95 rounded-2xl backdrop-blur-md border border-white/10 flex items-center justify-center cursor-pointer transition-all absolute z-10 shadow-sm"
+        title="Ocultar / Mostrar valores">
+        @if (showValues()) {
+        <span class="material-symbols-outlined text-white text-xl">visibility</span>
+        } @else {
+        <span class="material-symbols-outlined text-white text-xl">visibility_off</span>
+        }
+      </div>
     </div>
   </div>
 
@@ -183,8 +221,13 @@
                 conta.mesReferencia.split('-')[0] }}</span>
             </div>
             <div class="flex items-center gap-1.5 w-full text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              <span [ngClass]="conta.statusPago ? 'text-emerald-600 font-medium' : 'text-amber-500 font-medium'">
-                {{ conta.statusPago ? 'Pago' : 'Pendente' }}
+              <span
+                [ngClass]="conta.statusPago ? 'text-emerald-600 dark:text-emerald-400 font-medium' : 'text-amber-500 dark:text-amber-400 font-medium'">
+                @if (conta.statusPago) {
+                {{ conta.dataPagamento ? 'Pago no dia ' + formatDataPagamento(conta.dataPagamento) : 'Pago' }}
+                } @else {
+                Pendente
+                }
               </span>
             </div>
           </div>
@@ -193,8 +236,11 @@
         <div class="text-right">
           <p class="font-bold whitespace-nowrap"
             [ngClass]="conta.tipo === 'Receita' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'">
-            {{ conta.tipo === 'Receita' ? '+ ' : '- ' }}
-            {{ formatarMoeda(parseFloatValor(conta.valor)) }}
+            @if (showValues()) {
+            {{ conta.tipo === 'Receita' ? '+ ' : '- ' }}{{ formatarMoeda(parseFloatValor(conta.valor)) }}
+            } @else {
+            R$ ••••
+            }
           </p>
         </div>
       </a>
@@ -246,11 +292,14 @@
           @for (item of resumoConsolidado().meses; track item.mesIndex) {
           <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors">
             <td class="py-3.5 px-4 font-medium text-slate-800 dark:text-slate-200">{{ item.mesNome }}</td>
-            <td class="py-3.5 px-4 text-center font-medium text-emerald-600 dark:text-emerald-400">{{
-              formatarMoeda(item.receitas) }}</td>
-            <td class="py-3.5 px-4 text-center font-medium text-rose-600 dark:text-rose-400">{{
-              formatarMoeda(item.despesas) }}</td>
-            <td class="py-3.5 px-4 text-center font-bold text-slate-800 dark:text-white">{{ formatarMoeda(item.saldo) }}
+            <td class="py-3.5 px-4 text-center font-medium text-emerald-600 dark:text-emerald-400">
+              {{ showValues() ? formatarMoeda(item.receitas) : 'R$ ••••' }}
+            </td>
+            <td class="py-3.5 px-4 text-center font-medium text-rose-600 dark:text-rose-400">
+              {{ showValues() ? formatarMoeda(item.despesas) : 'R$ ••••' }}
+            </td>
+            <td class="py-3.5 px-4 text-center font-bold text-slate-800 dark:text-white">
+              {{ showValues() ? formatarMoeda(item.saldo) : 'R$ ••••' }}
             </td>
             @if (item.saldo !== 0) {
             <td class="py-3.5 px-4 text-right">
@@ -266,12 +315,15 @@
           <!-- Linha Balanço Anual -->
           <tr class="bg-indigo-50/40 dark:bg-indigo-950/20 font-bold border-t-2 border-slate-200 dark:border-slate-800">
             <td class="py-4 px-4 text-slate-800 dark:text-white">Balanço {{ resumoAno() }}</td>
-            <td class="py-4 px-4 text-center text-emerald-600 dark:text-emerald-400">{{
-              formatarMoeda(resumoConsolidado().totalReceitas) }}</td>
-            <td class="py-4 px-4 text-center text-rose-600 dark:text-rose-400">{{
-              formatarMoeda(resumoConsolidado().totalDespesas) }}</td>
-            <td class="py-4 px-4 text-center text-slate-900 dark:text-white">{{
-              formatarMoeda(resumoConsolidado().saldoTotal) }}</td>
+            <td class="py-4 px-4 text-center text-emerald-600 dark:text-emerald-400">
+              {{ showValues() ? formatarMoeda(resumoConsolidado().totalReceitas) : 'R$ ••••' }}
+            </td>
+            <td class="py-4 px-4 text-center text-rose-600 dark:text-rose-400">
+              {{ showValues() ? formatarMoeda(resumoConsolidado().totalDespesas) : 'R$ ••••' }}
+            </td>
+            <td class="py-4 px-4 text-center text-slate-900 dark:text-white">
+              {{ showValues() ? formatarMoeda(resumoConsolidado().saldoTotal) : 'R$ ••••' }}
+            </td>
             <td class="py-4 px-4"></td>
           </tr>
           }

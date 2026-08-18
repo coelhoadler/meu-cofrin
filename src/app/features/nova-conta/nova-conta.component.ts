@@ -43,14 +43,10 @@ export class NovaContaComponent implements OnInit {
     descricao: [''],
     categoriaId: ['', [Validators.required]],
     tipo: ['Despesa', [Validators.required]],
-    mesReferencia: [new Date(), [Validators.required]],
-    diaVencimento: [
-      new Date().getDate(),
-      [Validators.required, Validators.min(1), Validators.max(31)],
-    ],
+    dataVencimento: [new Date(), [Validators.required]],
     statusPago: [false],
     isRecorrente: [false],
-    dataPagamento: [{ value: null as any, disabled: true }],
+    dataPagamento: [null as any],
     valor: ['', [Validators.required]],
   });
 
@@ -122,38 +118,22 @@ export class NovaContaComponent implements OnInit {
 
       if (tipo === 'Receita') {
         statusPagoCtrl?.setValue(false, { emitEvent: false });
-        dataPagamentoCtrl?.disable({ emitEvent: false });
-        dataPagamentoCtrl?.clearValidators();
         dataPagamentoCtrl?.setValue(null, { emitEvent: false });
-      } else {
-        if (statusPagoCtrl?.value) {
-          dataPagamentoCtrl?.enable({ emitEvent: false });
-          dataPagamentoCtrl?.setValidators([Validators.required]);
-        } else {
-          dataPagamentoCtrl?.disable({ emitEvent: false });
-          dataPagamentoCtrl?.clearValidators();
-        }
       }
-      dataPagamentoCtrl?.updateValueAndValidity({ emitEvent: false });
     });
 
-    // Listen to statusPago to enable/disable dataPagamento
+    // Listen to statusPago to manage dataPagamento
     this.contaForm.get('statusPago')?.valueChanges.subscribe((isPaid) => {
       if (this.contaForm.get('tipo')?.value === 'Receita') return;
 
       const dataPagamentoCtrl = this.contaForm.get('dataPagamento');
       if (isPaid) {
-        dataPagamentoCtrl?.enable();
-        dataPagamentoCtrl?.setValidators([Validators.required]);
         if (!dataPagamentoCtrl?.value) {
           dataPagamentoCtrl?.setValue(new Date());
         }
       } else {
-        dataPagamentoCtrl?.disable();
-        dataPagamentoCtrl?.clearValidators();
         dataPagamentoCtrl?.setValue(null);
       }
-      dataPagamentoCtrl?.updateValueAndValidity();
     });
   }
 
@@ -186,10 +166,13 @@ export class NovaContaComponent implements OnInit {
             }
           }
 
-          let mesRefDate = new Date();
-          if (conta.mesReferencia) {
+          let vencimentoDate = new Date();
+          if (conta.mesReferencia && conta.diaVencimento) {
             const [y, m] = conta.mesReferencia.split('-');
-            mesRefDate = new Date(parseInt(y), parseInt(m) - 1, 1);
+            vencimentoDate = new Date(parseInt(y), parseInt(m) - 1, conta.diaVencimento);
+          } else if (conta.mesReferencia) {
+            const [y, m] = conta.mesReferencia.split('-');
+            vencimentoDate = new Date(parseInt(y), parseInt(m) - 1, 1);
           }
 
           let dataPagDate = null;
@@ -203,8 +186,7 @@ export class NovaContaComponent implements OnInit {
             descricao: conta.descricao || '',
             categoriaId: catIdToSelect,
             tipo: conta.tipo,
-            mesReferencia: mesRefDate as any,
-            diaVencimento: conta.diaVencimento,
+            dataVencimento: vencimentoDate as any,
             statusPago: conta.statusPago,
             isRecorrente: conta.isRecorrente || false,
             dataPagamento: dataPagDate as any,
@@ -257,22 +239,36 @@ export class NovaContaComponent implements OnInit {
       const selectedCat = this.categorias().find((c) => c.id === formValue.categoriaId);
 
       let formattedMesRef = '';
-      if (formValue.mesReferencia instanceof Date) {
-        formattedMesRef = `${formValue.mesReferencia.getFullYear()}-${String(formValue.mesReferencia.getMonth() + 1).padStart(2, '0')}`;
-      } else {
-        formattedMesRef = formValue.mesReferencia as any;
+      let diaVenc = new Date().getDate();
+
+      if (formValue.dataVencimento instanceof Date) {
+        const d = formValue.dataVencimento;
+        diaVenc = d.getDate();
+        formattedMesRef = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      } else if (formValue.dataVencimento) {
+        const d = new Date(formValue.dataVencimento);
+        if (!isNaN(d.getTime())) {
+          diaVenc = d.getDate();
+          formattedMesRef = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+        }
       }
 
-      let formattedDataPag = '';
-      if (formValue.dataPagamento instanceof Date) {
-        formattedDataPag = `${formValue.dataPagamento.getFullYear()}-${String(formValue.dataPagamento.getMonth() + 1).padStart(2, '0')}-${String(formValue.dataPagamento.getDate()).padStart(2, '0')}`;
-      } else if (formValue.dataPagamento) {
-        formattedDataPag = formValue.dataPagamento as any;
+      let formattedDataPag: string | null = null;
+      if (formValue.statusPago) {
+        if (formValue.dataPagamento instanceof Date) {
+          formattedDataPag = `${formValue.dataPagamento.getFullYear()}-${String(formValue.dataPagamento.getMonth() + 1).padStart(2, '0')}-${String(formValue.dataPagamento.getDate()).padStart(2, '0')}`;
+        } else if (typeof formValue.dataPagamento === 'string' && formValue.dataPagamento) {
+          formattedDataPag = formValue.dataPagamento;
+        } else {
+          const hoje = new Date();
+          formattedDataPag = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}-${String(hoje.getDate()).padStart(2, '0')}`;
+        }
       }
 
       const contaData: any = {
         ...formValue,
         mesReferencia: formattedMesRef,
+        diaVencimento: diaVenc,
         dataPagamento: formattedDataPag,
         categoria: selectedCat?.nome || '',
         tipo: selectedCat?.tipo || 'Despesa',
@@ -280,6 +276,7 @@ export class NovaContaComponent implements OnInit {
       };
 
       delete contaData.categoriaId;
+      delete contaData.dataVencimento;
 
       if (this.isEditMode() && this.editId()) {
         await this.contaService.updateConta(this.editId()!, contaData, this.selectedFile());
@@ -328,6 +325,14 @@ export class NovaContaComponent implements OnInit {
 
   removeSelectedFile() {
     this.selectedFile.set(null);
+  }
+
+  desmarcarComoPaga() {
+    this.contaForm.get('statusPago')?.setValue(false);
+  }
+
+  marcarComoPaga() {
+    this.contaForm.get('statusPago')?.setValue(true);
   }
 
   parseFloatValor(valor: any): number {
