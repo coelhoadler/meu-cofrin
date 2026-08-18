@@ -2,7 +2,7 @@ import { onSchedule } from "firebase-functions/v2/scheduler";
 import * as admin from "firebase-admin";
 import * as logger from "firebase-functions/logger";
 import { defineSecret } from "firebase-functions/params";
-import * as sgMail from "@sendgrid/mail";
+import * as postmark from "postmark";
 
 const emailApiKey = defineSecret("POSTMARK_MEU_COFRIN_SERVER_TOKEN");
 
@@ -52,9 +52,6 @@ export const notificarContasPorEmail = onSchedule({
 
     const emails = new Array();
 
-    // Configura a API Key do SendGrid usando o Secret
-    sgMail.setApiKey(emailApiKey.value());
-
     // Cache para evitar requisições repetidas ao Firebase Auth para o mesmo usuário
     const authCache = new Map<string, { email: string; nome: string } | null>();
 
@@ -95,17 +92,19 @@ export const notificarContasPorEmail = onSchedule({
         if (!authData) continue;
 
         emails.push({
-          to: authData.email,
-          from: 'naoresponder@meu-cofrin.app.br',
-          templateId: 'd-acf3eb353a97428c8acb4b66fa6923de',
-          dynamicTemplateData: {
-            id_conta: doc.id,
-            nome_usuario: authData.nome,
+          From: "naoresponder@meu-cofrin.app.br",
+          To: authData.email,
+          TemplateId: 46142870,
+          TemplateModel: {
+            vencimento_texto: (vencimentoTexto === "HOJE") ? vencimentoTexto : conta.diaVencimento.toString().padStart(2, '0') + '/' + conta.mesReferencia.split('-')[1],
             nome_conta: nomeConta,
             valor: valorFormatado,
-            vencimento_texto: (vencimentoTexto === "HOJE") ? vencimentoTexto : conta.diaVencimento.toString().padStart(2, '0') + '/' + conta.mesReferencia.split('-')[1],
+            nome_usuario: authData.nome,
+            id_conta: doc.id,
+            unsubscribe: "https://meu-cofrin.app.br",
             ano_atual: new Date().getFullYear().toString()
-          }
+          },
+          MessageStream: "outbound"
         });
       }
     };
@@ -120,16 +119,14 @@ export const notificarContasPorEmail = onSchedule({
       await processarDocumentos(snapshot3Dias.docs, "EM 3 DIAS");
     }
 
-    // Disparar e-mails via SendGrid
+    // Disparar e-mails via Postmark
     if (emails.length > 0) {
       try {
-        await sgMail.send(emails);
-        logger.info(`E-mails enviados com sucesso para ${emails.length} destinatários.`);
+        const client = new postmark.ServerClient(emailApiKey.value());
+        await client.sendEmailBatchWithTemplates(emails);
+        logger.info(`E-mails enviados com sucesso para ${emails.length} destinatários via Postmark.`);
       } catch (error: any) {
-        logger.error("Erro ao enviar e-mails via SendGrid:", error);
-        if (error.response) {
-          logger.error("Detalhes do erro do SendGrid:", error.response.body);
-        }
+        logger.error("Erro ao enviar e-mails via Postmark:", error);
       }
     } else {
       logger.info("Nenhuma conta encontrada para notificar por e-mail hoje ou daqui a 3 dias.");

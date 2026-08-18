@@ -5,7 +5,7 @@ const scheduler_1 = require("firebase-functions/v2/scheduler");
 const admin = require("firebase-admin");
 const logger = require("firebase-functions/logger");
 const params_1 = require("firebase-functions/params");
-const sgMail = require("@sendgrid/mail");
+const postmark = require("postmark");
 const emailApiKey = (0, params_1.defineSecret)("POSTMARK_MEU_COFRIN_SERVER_TOKEN");
 exports.notificarContasPorEmail = (0, scheduler_1.onSchedule)({
     schedule: "0 6 * * *",
@@ -45,8 +45,6 @@ exports.notificarContasPorEmail = (0, scheduler_1.onSchedule)({
             .where("tipo", "==", "Despesa")
             .get();
         const emails = new Array();
-        // Configura a API Key do SendGrid usando o Secret
-        sgMail.setApiKey(emailApiKey.value());
         // Cache para evitar requisições repetidas ao Firebase Auth para o mesmo usuário
         const authCache = new Map();
         const processarDocumentos = async (docs, vencimentoTexto) => {
@@ -86,17 +84,19 @@ exports.notificarContasPorEmail = (0, scheduler_1.onSchedule)({
                 if (!authData)
                     continue;
                 emails.push({
-                    to: authData.email,
-                    from: 'naoresponder@meu-cofrin.app.br',
-                    templateId: 'd-acf3eb353a97428c8acb4b66fa6923de',
-                    dynamicTemplateData: {
-                        id_conta: doc.id,
-                        nome_usuario: authData.nome,
+                    From: "naoresponder@meu-cofrin.app.br",
+                    To: authData.email,
+                    TemplateId: 46142870,
+                    TemplateModel: {
+                        vencimento_texto: (vencimentoTexto === "HOJE") ? vencimentoTexto : conta.diaVencimento.toString().padStart(2, '0') + '/' + conta.mesReferencia.split('-')[1],
                         nome_conta: nomeConta,
                         valor: valorFormatado,
-                        vencimento_texto: (vencimentoTexto === "HOJE") ? vencimentoTexto : conta.diaVencimento.toString().padStart(2, '0') + '/' + conta.mesReferencia.split('-')[1],
+                        nome_usuario: authData.nome,
+                        id_conta: doc.id,
+                        unsubscribe: "https://meu-cofrin.app.br",
                         ano_atual: new Date().getFullYear().toString()
-                    }
+                    },
+                    MessageStream: "outbound"
                 });
             }
         };
@@ -108,17 +108,15 @@ exports.notificarContasPorEmail = (0, scheduler_1.onSchedule)({
         if (!snapshot3Dias.empty) {
             await processarDocumentos(snapshot3Dias.docs, "EM 3 DIAS");
         }
-        // Disparar e-mails via SendGrid
+        // Disparar e-mails via Postmark
         if (emails.length > 0) {
             try {
-                await sgMail.send(emails);
-                logger.info(`E-mails enviados com sucesso para ${emails.length} destinatários.`);
+                const client = new postmark.ServerClient(emailApiKey.value());
+                await client.sendEmailBatchWithTemplates(emails);
+                logger.info(`E-mails enviados com sucesso para ${emails.length} destinatários via Postmark.`);
             }
             catch (error) {
-                logger.error("Erro ao enviar e-mails via SendGrid:", error);
-                if (error.response) {
-                    logger.error("Detalhes do erro do SendGrid:", error.response.body);
-                }
+                logger.error("Erro ao enviar e-mails via Postmark:", error);
             }
         }
         else {

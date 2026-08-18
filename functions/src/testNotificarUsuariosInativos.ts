@@ -1,7 +1,7 @@
 import { onRequest } from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
 import { defineSecret } from "firebase-functions/params";
-import * as sgMail from "@sendgrid/mail";
+import * as postmark from "postmark";
 
 const emailApiKey = defineSecret("POSTMARK_MEU_COFRIN_SERVER_TOKEN");
 
@@ -16,15 +16,15 @@ export const testNotificarUsuariosInativos = onRequest({
   const targetEmail = (req.query.email as string) || "adlercoelhosantos12@gmail.com";
 
   try {
-    sgMail.setApiKey(emailApiKey.value());
+    const client = new postmark.ServerClient(emailApiKey.value());
 
     const primeiroNome = "Adler";
 
-    await sgMail.send({
-      to: targetEmail,
-      from: "naoresponder@meu-cofrin.app.br",
-      subject: `${primeiroNome}, sentimos sua falta no Meu Cofrin! [TESTE]`,
-      html: `
+    const result = await client.sendEmail({
+      From: "naoresponder@meu-cofrin.app.br",
+      To: targetEmail,
+      Subject: `${primeiroNome}, sentimos sua falta no Meu Cofrin! [TESTE]`,
+      HtmlBody: `
         <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 8px;">
           <h2 style="color: #4F46E5;">Olá, ${primeiroNome}! 👋</h2>
           <p>Notamos que você não acessa o <strong>Meu Cofrin</strong> há mais de 15 dias.</p>
@@ -34,11 +34,12 @@ export const testNotificarUsuariosInativos = onRequest({
           </div>
           <p style="font-size: 12px; color: #777; text-align: center;">Este é um disparo de teste gerado para validação do modelo de e-mail.</p>
         </div>
-      `
+      `,
+      MessageStream: "outbound"
     });
 
-    logger.info(`E-mail de teste enviado com sucesso para ${targetEmail}`);
-    res.status(200).json({ success: true, message: `E-mail de teste enviado com sucesso para ${targetEmail}` });
+    logger.info(`E-mail de teste enviado com sucesso via Postmark para ${targetEmail}. MessageID: ${result.MessageID}`);
+    res.status(200).json({ success: true, message: `E-mail de teste enviado com sucesso para ${targetEmail}`, messageId: result.MessageID });
   } catch (error: any) {
     logger.error("Erro ao enviar e-mail de teste:", error);
     res.status(500).json({ success: false, error: error.message || error });
