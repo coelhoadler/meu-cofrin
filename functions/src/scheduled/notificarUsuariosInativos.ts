@@ -2,9 +2,9 @@ import { onSchedule } from "firebase-functions/v2/scheduler";
 import * as admin from "firebase-admin";
 import * as logger from "firebase-functions/logger";
 import { defineSecret } from "firebase-functions/params";
-import * as sgMail from "@sendgrid/mail";
+import * as postmark from "postmark";
 
-const sendgridApiKey = defineSecret("SENDGRID_MEU_COFRIN");
+const emailApiKey = defineSecret("POSTMARK_MEU_COFRIN_SERVER_TOKEN");
 
 /**
  * Cloud Function agendada para rodar de 15 em 15 dias (dias 1 e 15 de cada mês às 09:00 BRT).
@@ -14,7 +14,7 @@ const sendgridApiKey = defineSecret("SENDGRID_MEU_COFRIN");
 export const notificarUsuariosInativos = onSchedule({
   schedule: "0 9 1,15 * *",
   timeZone: "America/Sao_Paulo",
-  secrets: [sendgridApiKey],
+  secrets: [emailApiKey],
 }, async (event: any) => {
   const db = admin.firestore();
 
@@ -33,8 +33,6 @@ export const notificarUsuariosInativos = onSchedule({
       return;
     }
 
-    sgMail.setApiKey(sendgridApiKey.value());
-
     const emails = [];
 
     for (const doc of snapshot.docs) {
@@ -51,10 +49,10 @@ export const notificarUsuariosInativos = onSchedule({
           const primeiroNome = nomeCompleto.split(" ")[0];
 
           emails.push({
-            to: authUser.email,
-            from: "naoresponder@meu-cofrin.app.br",
-            subject: `${primeiroNome}, sentimos sua falta no Meu Cofrin!`,
-            html: `
+            From: "naoresponder@meu-cofrin.app.br",
+            To: authUser.email,
+            Subject: `${primeiroNome}, sentimos sua falta no Meu Cofrin!`,
+            HtmlBody: `
               <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 8px;">
                 <h2 style="color: #4F46E5;">Olá, ${primeiroNome}! 👋</h2>
                 <p>Notamos que você não acessa o <strong>Meu Cofrin</strong> há mais de 15 dias.</p>
@@ -64,7 +62,8 @@ export const notificarUsuariosInativos = onSchedule({
                 </div>
                 <p style="font-size: 12px; color: #777; text-align: center;">Se você já acessou recentemente, pode desconsiderar esta mensagem.</p>
               </div>
-            `
+            `,
+            MessageStream: "outbound"
           });
         }
       } catch (authError) {
@@ -73,8 +72,9 @@ export const notificarUsuariosInativos = onSchedule({
     }
 
     if (emails.length > 0) {
-      await sgMail.send(emails);
-      logger.info(`E-mails de reengajamento enviados com sucesso para ${emails.length} usuário(s) inativo(s).`);
+      const client = new postmark.ServerClient(emailApiKey.value());
+      await client.sendEmailBatch(emails);
+      logger.info(`E-mails de reengajamento enviados com sucesso via Postmark para ${emails.length} usuário(s) inativo(s).`);
     } else {
       logger.info("Nenhum usuário com e-mail verificado para notificar.");
     }
