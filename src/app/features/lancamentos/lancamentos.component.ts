@@ -104,6 +104,13 @@ export class LancamentosComponent implements OnInit {
   // Modos de Visão
   visaoModo = signal<VisaoModo>('lista');
   resumoAno = signal<number>(new Date().getFullYear());
+  showValues = signal(localStorage.getItem('showValues') !== 'false');
+
+  toggleVisibility() {
+    const newValue = !this.showValues();
+    this.showValues.set(newValue);
+    localStorage.setItem('showValues', newValue.toString());
+  }
 
   // Filtros
   tipoFiltro = signal<string>('Todos');
