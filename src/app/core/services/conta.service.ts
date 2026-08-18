@@ -357,11 +357,7 @@ export class ContaService {
     const user = await this.authService.getCurrentUserAsync();
     if (!user) throw new Error('Usuário não autenticado');
 
-    const hoje = new Date();
-    const ano = hoje.getFullYear();
-    const mes = String(hoje.getMonth() + 1).padStart(2, '0');
-    const dia = String(hoje.getDate()).padStart(2, '0');
-    const dataPagamentoStr = `${ano}-${mes}-${dia}`;
+    const dataPagamentoStr = new Date().toISOString();
 
     const docRef = doc(this.firestore, `users/${user.uid}/contas`, id);
     await updateDoc(docRef, { statusPago: true, dataPagamento: dataPagamentoStr });

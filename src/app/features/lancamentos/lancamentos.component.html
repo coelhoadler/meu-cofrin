@@ -183,8 +183,12 @@
                 conta.mesReferencia.split('-')[0] }}</span>
             </div>
             <div class="flex items-center gap-1.5 w-full text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              <span [ngClass]="conta.statusPago ? 'text-emerald-600 font-medium' : 'text-amber-500 font-medium'">
-                {{ conta.statusPago ? 'Pago' : 'Pendente' }}
+              <span [ngClass]="conta.statusPago ? 'text-emerald-600 dark:text-emerald-400 font-medium' : 'text-amber-500 dark:text-amber-400 font-medium'">
+                @if (conta.statusPago) {
+                  {{ conta.dataPagamento ? 'Pago no dia ' + formatDataPagamento(conta.dataPagamento) : 'Pago' }}
+                } @else {
+                  Pendente
+                }
               </span>
             </div>
           </div>
