@@ -62,40 +62,16 @@
         </div>
 
         <div>
-          <label for="mesReferencia" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-            Mês de referência <span class="text-red-500">*</span>
+          <label for="dataVencimento" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+            Data de vencimento <span class="text-red-500">*</span>
           </label>
-          <p-datepicker id="mesReferencia" formControlName="mesReferencia" view="month" dateFormat="mm/yy"
+          <p-datepicker id="dataVencimento" formControlName="dataVencimento" dateFormat="dd/mm/yy"
             styleClass="w-full"
             inputStyleClass="w-full px-4 py-2.5 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#421b7b]/50 focus:border-[#421b7b] transition-all text-sm"></p-datepicker>
-          @if (contaForm.get('mesReferencia')?.touched && contaForm.get('mesReferencia')?.invalid) {
-          <div class="text-red-500 text-xs mt-2 font-medium">Obrigatório.</div>
+          @if (contaForm.get('dataVencimento')?.touched && contaForm.get('dataVencimento')?.invalid) {
+          <div class="text-red-500 text-xs mt-2 font-medium">A data de vencimento é obrigatória.</div>
           }
         </div>
-      </div>
-
-      <!-- Row: Vencimento, Data Pagamento -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label for="diaVencimento" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-            Dia do vencimento <span class="text-red-500">*</span>
-          </label>
-          <input id="diaVencimento" type="number" formControlName="diaVencimento" placeholder="1-31" min="1" max="31"
-            class="w-full px-4 py-2.5 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#421b7b]/50 focus:border-[#421b7b] transition-all text-sm" />
-          @if (contaForm.get('diaVencimento')?.touched && contaForm.get('diaVencimento')?.invalid) {
-          <div class="text-red-500 text-xs mt-1 font-medium">Insira um dia válido (1-31).</div>
-          }
-        </div>
-
-        @if (contaForm.get('tipo')?.value === 'Despesa') {
-        <div>
-          <label for="dataPagamento" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-            Dia que foi paga
-          </label>
-          <p-datepicker id="dataPagamento" formControlName="dataPagamento" dateFormat="dd/mm/yy" styleClass="w-full"
-            inputStyleClass="w-full px-4 py-2.5 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#421b7b]/50 focus:border-[#421b7b] transition-all text-sm disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:opacity-60"></p-datepicker>
-        </div>
-        }
       </div>
 
       <!-- Valor -->
@@ -129,7 +105,35 @@
         }
       </div>
 
-      <!-- Conta já foi paga (Checkbox block) -->
+      <!-- Conta já foi paga -->
+
+      @if (contaForm.get('statusPago')?.value) {
+      <div
+        class="flex items-center justify-between w-full px-4 py-3.5 bg-emerald-50/60 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/40 rounded-xl transition-all">
+        <div class="flex items-center gap-3">
+          <div
+            class="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-xl">check_circle</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="text-sm font-semibold text-emerald-800 dark:text-emerald-300">
+              Conta já foi paga
+            </span>
+            @if (contaForm.get('dataPagamento')?.value) {
+            <span class="text-xs text-emerald-600 dark:text-emerald-400 mt-0.5">
+              Pagamento registrado para {{ contaForm.get('dataPagamento')?.value | date: 'dd/MM/yyyy' }}
+            </span>
+            }
+          </div>
+        </div>
+        <button type="button" (click)="desmarcarComoPaga()"
+          class="text-xs font-semibold text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 transition-colors flex items-center gap-1 px-2.5 py-1.5 rounded-lg hover:bg-emerald-100/50 dark:hover:bg-slate-800/60"
+          title="Desmarcar pagamento">
+          <span class="material-symbols-outlined text-sm">undo</span>
+          <span>Desmarcar</span>
+        </button>
+      </div>
+      } @else {
       <div>
         <label
           class="flex items-center gap-3 cursor-pointer w-full px-4 py-3.5 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl transition-all hover:border-[#421b7b]/50 dark:hover:border-[#421b7b]/50">
@@ -137,6 +141,7 @@
           <span class="text-sm font-semibold text-slate-800 dark:text-slate-200">Conta já foi paga</span>
         </label>
       </div>
+      }
 
       <!-- Conta recorrente (Checkbox block) -->
       <div>
@@ -146,7 +151,7 @@
           <div class="flex flex-col">
             <span class="text-sm font-semibold text-slate-800 dark:text-slate-200">Esta é uma conta recorrente</span>
             <span class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Significa que você usando a funcionalidade
-              de "Replicar" essa conta vai estar listada
+              de <strong>Replicar</strong> (apenas desktop por enquanto), essa conta vai estar listada
               para você.</span>
           </div>
         </label>
