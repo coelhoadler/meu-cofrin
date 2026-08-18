@@ -5,18 +5,18 @@ const https_1 = require("firebase-functions/v2/https");
 const logger = require("firebase-functions/logger");
 const params_1 = require("firebase-functions/params");
 const sgMail = require("@sendgrid/mail");
-const sendgridApiKey = (0, params_1.defineSecret)("SENDGRID_MEU_COFRIN");
+const emailApiKey = (0, params_1.defineSecret)("POSTMARK_MEU_COFRIN_SERVER_TOKEN");
 /**
  * Cloud Function HTTP de Teste.
  * Permite disparar manualmente o e-mail de reengajamento para teste.
  * Exemplo de uso: GET /testNotificarUsuariosInativos?email=adlercoelhosantos12@gmail.com
  */
 exports.testNotificarUsuariosInativos = (0, https_1.onRequest)({
-    secrets: [sendgridApiKey],
+    secrets: [emailApiKey],
 }, async (req, res) => {
     const targetEmail = req.query.email || "adlercoelhosantos12@gmail.com";
     try {
-        sgMail.setApiKey(sendgridApiKey.value());
+        sgMail.setApiKey(emailApiKey.value());
         const primeiroNome = "Adler";
         await sgMail.send({
             to: targetEmail,

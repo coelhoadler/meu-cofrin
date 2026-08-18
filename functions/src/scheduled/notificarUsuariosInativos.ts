@@ -4,7 +4,7 @@ import * as logger from "firebase-functions/logger";
 import { defineSecret } from "firebase-functions/params";
 import * as sgMail from "@sendgrid/mail";
 
-const sendgridApiKey = defineSecret("SENDGRID_MEU_COFRIN");
+const emailApiKey = defineSecret("POSTMARK_MEU_COFRIN_SERVER_TOKEN");
 
 /**
  * Cloud Function agendada para rodar de 15 em 15 dias (dias 1 e 15 de cada mês às 09:00 BRT).
@@ -14,7 +14,7 @@ const sendgridApiKey = defineSecret("SENDGRID_MEU_COFRIN");
 export const notificarUsuariosInativos = onSchedule({
   schedule: "0 9 1,15 * *",
   timeZone: "America/Sao_Paulo",
-  secrets: [sendgridApiKey],
+  secrets: [emailApiKey],
 }, async (event: any) => {
   const db = admin.firestore();
 
@@ -33,7 +33,7 @@ export const notificarUsuariosInativos = onSchedule({
       return;
     }
 
-    sgMail.setApiKey(sendgridApiKey.value());
+    sgMail.setApiKey(emailApiKey.value());
 
     const emails = [];
 

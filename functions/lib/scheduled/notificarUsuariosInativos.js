@@ -6,7 +6,7 @@ const admin = require("firebase-admin");
 const logger = require("firebase-functions/logger");
 const params_1 = require("firebase-functions/params");
 const sgMail = require("@sendgrid/mail");
-const sendgridApiKey = (0, params_1.defineSecret)("SENDGRID_MEU_COFRIN");
+const emailApiKey = (0, params_1.defineSecret)("POSTMARK_MEU_COFRIN_SERVER_TOKEN");
 /**
  * Cloud Function agendada para rodar de 15 em 15 dias (dias 1 e 15 de cada mês às 09:00 BRT).
  * Busca usuários na coleção 'users' que possuem 'lastAccessAt' há mais de 15 dias
@@ -15,7 +15,7 @@ const sendgridApiKey = (0, params_1.defineSecret)("SENDGRID_MEU_COFRIN");
 exports.notificarUsuariosInativos = (0, scheduler_1.onSchedule)({
     schedule: "0 9 1,15 * *",
     timeZone: "America/Sao_Paulo",
-    secrets: [sendgridApiKey],
+    secrets: [emailApiKey],
 }, async (event) => {
     const db = admin.firestore();
     // Data limite: 15 dias atrás a partir de agora
@@ -30,7 +30,7 @@ exports.notificarUsuariosInativos = (0, scheduler_1.onSchedule)({
             logger.info("Nenhum usuário inativo há mais de 15 dias foi encontrado.");
             return;
         }
-        sgMail.setApiKey(sendgridApiKey.value());
+        sgMail.setApiKey(emailApiKey.value());
         const emails = [];
         for (const doc of snapshot.docs) {
             const userData = doc.data();

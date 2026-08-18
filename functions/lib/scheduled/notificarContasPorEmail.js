@@ -6,11 +6,11 @@ const admin = require("firebase-admin");
 const logger = require("firebase-functions/logger");
 const params_1 = require("firebase-functions/params");
 const sgMail = require("@sendgrid/mail");
-const sendgridApiKey = (0, params_1.defineSecret)("SENDGRID_MEU_COFRIN");
+const emailApiKey = (0, params_1.defineSecret)("POSTMARK_MEU_COFRIN_SERVER_TOKEN");
 exports.notificarContasPorEmail = (0, scheduler_1.onSchedule)({
     schedule: "0 6 * * *",
     timeZone: "America/Sao_Paulo",
-    secrets: [sendgridApiKey],
+    secrets: [emailApiKey],
 }, async (event) => {
     const db = admin.firestore();
     // Datas
@@ -46,7 +46,7 @@ exports.notificarContasPorEmail = (0, scheduler_1.onSchedule)({
             .get();
         const emails = new Array();
         // Configura a API Key do SendGrid usando o Secret
-        sgMail.setApiKey(sendgridApiKey.value());
+        sgMail.setApiKey(emailApiKey.value());
         // Cache para evitar requisições repetidas ao Firebase Auth para o mesmo usuário
         const authCache = new Map();
         const processarDocumentos = async (docs, vencimentoTexto) => {

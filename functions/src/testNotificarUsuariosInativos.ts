@@ -3,7 +3,7 @@ import * as logger from "firebase-functions/logger";
 import { defineSecret } from "firebase-functions/params";
 import * as sgMail from "@sendgrid/mail";
 
-const sendgridApiKey = defineSecret("SENDGRID_MEU_COFRIN");
+const emailApiKey = defineSecret("POSTMARK_MEU_COFRIN_SERVER_TOKEN");
 
 /**
  * Cloud Function HTTP de Teste.
@@ -11,12 +11,12 @@ const sendgridApiKey = defineSecret("SENDGRID_MEU_COFRIN");
  * Exemplo de uso: GET /testNotificarUsuariosInativos?email=adlercoelhosantos12@gmail.com
  */
 export const testNotificarUsuariosInativos = onRequest({
-  secrets: [sendgridApiKey],
+  secrets: [emailApiKey],
 }, async (req, res) => {
   const targetEmail = (req.query.email as string) || "adlercoelhosantos12@gmail.com";
 
   try {
-    sgMail.setApiKey(sendgridApiKey.value());
+    sgMail.setApiKey(emailApiKey.value());
 
     const primeiroNome = "Adler";
 
