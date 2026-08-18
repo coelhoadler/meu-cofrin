@@ -61,6 +61,12 @@
       "skillPath": "skills/firebase-security-rules-auditor/SKILL.md",
       "computedHash": "5a90e991bb9acfd3e43bfb570498dee60b9cef94cbb80cfb99257c7e4f61c1a0"
     },
+    "postmark": {
+      "source": "ActiveCampaign/postmark-skills",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "4370e9820f7c49d00ad455ad74c33d912dc404b6251ad9d659ad95b72216bc62"
+    },
     "xcode-project-setup": {
       "source": "firebase/agent-skills",
       "sourceType": "github",
