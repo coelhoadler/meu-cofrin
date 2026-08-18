@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { DatePickerModule } from 'primeng/datepicker';
 import { SelectModule } from 'primeng/select';
+import { PanelModule } from 'primeng/panel';
 import { ContaService, Conta } from '../../core/services/conta.service';
 import { CategoriaService, Categoria } from '../../core/services/categoria.service';
 
@@ -51,7 +52,7 @@ const MESES_NOMES = [
 @Component({
   selector: 'app-lancamentos',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, DatePickerModule, SelectModule],
+  imports: [CommonModule, FormsModule, RouterModule, DatePickerModule, SelectModule, PanelModule],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './lancamentos.component.html',
 })

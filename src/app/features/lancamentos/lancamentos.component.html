@@ -29,7 +29,7 @@
 
       <!-- Toggle ocultar/mostrar valores -->
       <button type="button" (click)="toggleVisibility()"
-        class="px-3.5 py-2 bg-white dark:bg-[#1a112c] border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-xl flex items-center gap-2 text-xs font-semibold transition-all shadow-sm active:scale-95"
+        class="px-3.5 py-2 bg-white dark:bg-[#1a112c] hidden md:flex border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-xl flex items-center gap-2 text-xs font-semibold transition-all shadow-sm active:scale-95"
         title="Ocultar / Mostrar valores">
         <span class="material-symbols-outlined text-base">{{ showValues() ? 'visibility' : 'visibility_off' }}</span>
         <span>{{ showValues() ? 'Ocultar valores' : 'Mostrar valores' }}</span>
@@ -39,14 +39,15 @@
 
   @if (visaoModo() === 'lista') {
   <!-- Filtros -->
-  <div
-    class="bg-white dark:bg-[#1a112c] rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800/50 transition-colors duration-300">
-    <div class="flex items-center gap-2 mb-4 text-slate-700 dark:text-slate-300 font-semibold">
-      <span class="material-symbols-outlined text-slate-400 dark:text-slate-500">filter_alt</span>
-      Filtros
-    </div>
+  <p-panel header="" [toggleable]="true" [collapsed]="true" styleClass="filter-panel">
+    <ng-template #header>
+      <div class="flex items-center gap-2 text-slate-700 dark:text-slate-300 font-semibold">
+        <span class="material-symbols-outlined text-slate-400 dark:text-slate-500">filter_alt</span>
+        <span>Filtros</span>
+      </div>
+    </ng-template>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 pt-2">
       <!-- Pesquisa por Nome -->
       <div>
         <label
@@ -118,7 +119,7 @@
         Resetar Filtros
       </button>
     </div>
-  </div>
+  </p-panel>
 
   <!-- Resumo -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
