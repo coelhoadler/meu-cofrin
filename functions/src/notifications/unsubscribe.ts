@@ -11,40 +11,59 @@ const emailApiKey = defineSecret("POSTMARK_MEU_COFRIN_SERVER_TOKEN");
  */
 async function atualizarStatusNotificacaoPorEmail(email: string, userId: string | undefined, habilitado: boolean) {
   const db = admin.firestore();
+  const normalizedEmail = email.toLowerCase().trim();
 
-  // 1. Se userId foi fornecido diretamente
-  if (userId) {
+  let resolvedUserId = userId?.trim() || null;
+
+  // 1. Se userId não foi fornecido, tenta buscar no Firebase Auth pelo e-mail
+  if (!resolvedUserId) {
     try {
-      await db.collection("users").doc(userId).set({
+      const authUser = await admin.auth().getUserByEmail(normalizedEmail).catch(() => null);
+      if (authUser?.uid) {
+        resolvedUserId = authUser.uid;
+      }
+    } catch (e) {
+      logger.warn(`Aviso ao buscar authUser para ${normalizedEmail}:`, e);
+    }
+  }
+
+  // 2. Se ainda não encontrou, busca no Firestore na coleção 'users'
+  if (!resolvedUserId) {
+    try {
+      const userByEmailSnap = await db.collection("users").where("email", "==", normalizedEmail).limit(1).get();
+      if (!userByEmailSnap.empty) {
+        resolvedUserId = userByEmailSnap.docs[0].id;
+      } else {
+        const userByPerfilSnap = await db.collection("users").where("perfil.email", "==", normalizedEmail).limit(1).get();
+        if (!userByPerfilSnap.empty) {
+          resolvedUserId = userByPerfilSnap.docs[0].id;
+        }
+      }
+    } catch (e) {
+      logger.warn(`Aviso ao buscar documento de usuário no Firestore para ${normalizedEmail}:`, e);
+    }
+  }
+
+  // 3. Se temos o userId (fornecido ou resolvido), atualiza as preferências no documento do usuário
+  if (resolvedUserId) {
+    try {
+      await db.collection("users").doc(resolvedUserId).set({
         notificacoesEmail: habilitado,
         emailNotificationsEnabled: habilitado,
       }, { merge: true });
     } catch (e) {
-      logger.warn(`Erro ao atualizar usuário pelo userId ${userId}:`, e);
+      logger.warn(`Erro ao atualizar preferências do usuário ${resolvedUserId}:`, e);
     }
   }
 
-  // 2. Busca também no Auth / Firestore por e-mail para garantir consistência
-  try {
-    const authUser = await admin.auth().getUserByEmail(email).catch(() => null);
-    if (authUser) {
-      await db.collection("users").doc(authUser.uid).set({
-        notificacoesEmail: habilitado,
-        emailNotificationsEnabled: habilitado,
-      }, { merge: true });
-    }
-  } catch (e) {
-    logger.warn(`Erro ao sincronizar Auth para o e-mail ${email}:`, e);
-  }
-
-  // 3. Atualizar coleção de controle geral 'unsubscribed_emails'
-  const unsubDocRef = db.collection("unsubscribed_emails").doc(email.toLowerCase().trim());
+  // 4. Atualizar coleção de controle geral 'unsubscribed_emails' com o userId resolvido
+  const unsubDocRef = db.collection("unsubscribed_emails").doc(normalizedEmail);
   if (habilitado) {
     await unsubDocRef.delete().catch(() => {});
   } else {
     await unsubDocRef.set({
-      email: email.toLowerCase().trim(),
-      userId: userId || null,
+      email: normalizedEmail,
+      userId: resolvedUserId,
       unsubscribedAt: admin.firestore.FieldValue.serverTimestamp(),
     }, { merge: true });
   }
