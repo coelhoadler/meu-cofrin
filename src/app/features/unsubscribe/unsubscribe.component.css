@@ -1,0 +1,5 @@
+/* Estilos complementares para a página de unsubscribe */
+:host {
+  display: block;
+  width: 100%;
+}

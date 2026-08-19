@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
 import { Storage, ref, uploadBytes, getDownloadURL } from '@angular/fire/storage';
+import { Firestore, doc, getDoc, setDoc } from '@angular/fire/firestore';
 import { WebauthnService } from '../../core/auth/webauthn.service';
 
 @Component({
@@ -24,6 +25,7 @@ import { WebauthnService } from '../../core/auth/webauthn.service';
 export class Perfil implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private storage = inject(Storage);
+  private firestore = inject(Firestore);
   private webauthnService = inject(WebauthnService);
 
   user = this.authService.currentUser;
@@ -35,6 +37,8 @@ export class Perfil implements OnInit, OnDestroy {
 
   isUploading = signal(false);
   biometricsEnabled = signal(false);
+  emailNotificationsEnabled = signal(true);
+  isTogglingNotifications = signal(false);
   isSendingEmail = signal(false);
 
   phoneNumber = signal('');
@@ -51,7 +55,7 @@ export class Perfil implements OnInit, OnDestroy {
   deleteModalError = signal('');
 
   constructor() {
-    effect(() => {
+    effect(async () => {
       const currentUser = this.user();
       if (currentUser) {
         if (currentUser.displayName && !this.displayName()) {
@@ -60,6 +64,19 @@ export class Perfil implements OnInit, OnDestroy {
         if (currentUser.phoneNumber && !this.phoneNumber()) {
           const phone = currentUser.phoneNumber;
           this.phoneNumber.set(phone.startsWith('+55') ? phone.replace('+55', '') : phone);
+        }
+
+        // Carregar preferências de e-mail do usuário
+        try {
+          const userDocSnap = await getDoc(doc(this.firestore, `users/${currentUser.uid}`));
+          if (userDocSnap.exists()) {
+            const data = userDocSnap.data();
+            if (data?.['notificacoesEmail'] !== undefined) {
+              this.emailNotificationsEnabled.set(data['notificacoesEmail']);
+            }
+          }
+        } catch (err) {
+          console.warn('Erro ao carregar preferências de notificação:', err);
         }
       }
     });
@@ -161,6 +178,51 @@ export class Perfil implements OnInit, OnDestroy {
       localStorage.setItem('biometricsEnabled', 'false');
       localStorage.removeItem('biometricEmail');
       this.successMessage.set('Biometria desabilitada para este dispositivo.');
+    }
+  }
+
+  async toggleEmailNotifications() {
+    const currentUser = this.user();
+    if (!currentUser?.uid) return;
+
+    const newState = !this.emailNotificationsEnabled();
+    this.emailNotificationsEnabled.set(newState);
+    this.isTogglingNotifications.set(true);
+
+    try {
+      await setDoc(
+        doc(this.firestore, `users/${currentUser.uid}`),
+        {
+          notificacoesEmail: newState,
+          emailNotificationsEnabled: newState,
+        },
+        { merge: true }
+      );
+
+      // Sincronizar em background com o Postmark Suppressions
+      const endpoint = newState ? 'resubscribeFn' : 'unsubscribeFn';
+      if (currentUser.email) {
+        fetch(`https://us-central1-meu-cofrin.cloudfunctions.net/${endpoint}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: currentUser.email,
+            userId: currentUser.uid,
+          }),
+        }).catch(err => console.warn('Aviso ao sincronizar Postmark:', err));
+      }
+
+      this.successMessage.set(
+        newState
+          ? 'Notificações por e-mail ativadas com sucesso!'
+          : 'Notificações por e-mail desativadas com sucesso.'
+      );
+    } catch (e: any) {
+      console.error('Erro ao atualizar preferências de notificação:', e);
+      this.emailNotificationsEnabled.set(!newState); // reverte
+      this.errorMessage.set('Erro ao salvar preferências de e-mail.');
+    } finally {
+      this.isTogglingNotifications.set(false);
     }
   }
 

@@ -16,6 +16,11 @@ export const routes: Routes = [
     redirectTo: 'verificar-email'
   },
   {
+    path: 'unsubscribe',
+    loadComponent: () => import('./features/unsubscribe/unsubscribe.component').then(m => m.UnsubscribeComponent),
+    title: 'Meu Cofrin | Cancelar Notificações'
+  },
+  {
     path: '',
     component: MainLayoutComponent,
     canActivate: [authGuard],
