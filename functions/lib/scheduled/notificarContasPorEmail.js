@@ -40,16 +40,20 @@ exports.notificarContasPorEmail = (0, scheduler_1.onSchedule)({
         // Consulta 2: Contas vencendo em até 3 dias
         const snapshot3Dias = await contasRef
             .where("mesReferencia", "==", daqui3DiasFormatado.mesReferencia)
-            .where("diaVencimento", "<=", daqui3DiasFormatado.diaVencimento)
+            .where("diaVencimento", "<", daqui3DiasFormatado.diaVencimento)
             .where("statusPago", "==", false)
             .where("tipo", "==", "Despesa")
             .get();
         const emails = new Array();
         // Cache para evitar requisições repetidas ao Firebase Auth para o mesmo usuário
         const authCache = new Map();
+        const docsIdEnviados = new Set();
         const processarDocumentos = async (docs, vencimentoTexto) => {
             var _a, _b;
             for (const doc of docs) {
+                if (docsIdEnviados.has(doc.id))
+                    continue;
+                docsIdEnviados.add(doc.id);
                 const conta = doc.data();
                 const nomeConta = conta.nome || "Conta";
                 const valorNumerico = Number((_a = conta.valor) === null || _a === void 0 ? void 0 : _a.replace('R$', '').replace('.', '').replace(',', '.').trim()) || 0;
@@ -85,15 +89,15 @@ exports.notificarContasPorEmail = (0, scheduler_1.onSchedule)({
                     continue;
                 emails.push({
                     From: "naoresponder@meu-cofrin.app.br",
-                    To: authData.email,
+                    To: authData === null || authData === void 0 ? void 0 : authData.email,
                     TemplateId: 46142870,
                     TemplateModel: {
                         vencimento_texto: (vencimentoTexto === "HOJE") ? vencimentoTexto : conta.diaVencimento.toString().padStart(2, '0') + '/' + conta.mesReferencia.split('-')[1],
                         nome_conta: nomeConta,
                         valor: valorFormatado,
-                        nome_usuario: authData.nome,
+                        nome_usuario: authData === null || authData === void 0 ? void 0 : authData.nome,
                         id_conta: doc.id,
-                        unsubscribe: "https://meu-cofrin.app.br",
+                        unsubscribe: `https://meu-cofrin.app.br/unsubscribe?userEmail=${authData === null || authData === void 0 ? void 0 : authData.email}&id_conta=${doc.id}`,
                         ano_atual: new Date().getFullYear().toString()
                     },
                     MessageStream: "outbound"

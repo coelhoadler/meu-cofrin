@@ -45,7 +45,7 @@ export const notificarContasPorEmail = onSchedule({
     // Consulta 2: Contas vencendo em até 3 dias
     const snapshot3Dias = await contasRef
       .where("mesReferencia", "==", daqui3DiasFormatado.mesReferencia)
-      .where("diaVencimento", "<=", daqui3DiasFormatado.diaVencimento)
+      .where("diaVencimento", "<", daqui3DiasFormatado.diaVencimento)
       .where("statusPago", "==", false)
       .where("tipo", "==", "Despesa")
       .get();
@@ -54,9 +54,13 @@ export const notificarContasPorEmail = onSchedule({
 
     // Cache para evitar requisições repetidas ao Firebase Auth para o mesmo usuário
     const authCache = new Map<string, { email: string; nome: string } | null>();
+    const docsIdEnviados = new Set<string>();
 
     const processarDocumentos = async (docs: any[], vencimentoTexto: string) => {
       for (const doc of docs) {
+        if (docsIdEnviados.has(doc.id)) continue;
+        docsIdEnviados.add(doc.id);
+
         const conta = doc.data();
         const nomeConta = conta.nome || "Conta";
         const valorNumerico = Number(conta.valor?.replace('R$', '').replace('.', '').replace(',', '.').trim()) || 0;
@@ -93,15 +97,15 @@ export const notificarContasPorEmail = onSchedule({
 
         emails.push({
           From: "naoresponder@meu-cofrin.app.br",
-          To: authData.email,
+          To: authData?.email,
           TemplateId: 46142870,
           TemplateModel: {
             vencimento_texto: (vencimentoTexto === "HOJE") ? vencimentoTexto : conta.diaVencimento.toString().padStart(2, '0') + '/' + conta.mesReferencia.split('-')[1],
             nome_conta: nomeConta,
             valor: valorFormatado,
-            nome_usuario: authData.nome,
+            nome_usuario: authData?.nome,
             id_conta: doc.id,
-            unsubscribe: "https://meu-cofrin.app.br",
+            unsubscribe: `https://meu-cofrin.app.br/unsubscribe?userEmail=${authData?.email}&id_conta=${doc.id}`,
             ano_atual: new Date().getFullYear().toString()
           },
           MessageStream: "outbound"
