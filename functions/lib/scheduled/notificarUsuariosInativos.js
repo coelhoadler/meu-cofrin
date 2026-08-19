@@ -34,13 +34,16 @@ exports.notificarUsuariosInativos = (0, scheduler_1.onSchedule)({
         for (const doc of snapshot.docs) {
             const userData = doc.data();
             const userId = doc.id;
+            // Pular usuários que optaram por desativar notificações por e-mail
+            if (userData.notificacoesEmail === false || userData.emailNotificationsEnabled === false) {
+                continue;
+            }
             try {
                 const authUser = await admin.auth().getUser(userId);
-                // Envia o e-mail apenas se o usuário possuir e-mail válido e verificado
-                // if (authUser.email && authUser.emailVerified) {
                 if (authUser.email) {
                     const nomeCompleto = authUser.displayName || userData.nome || "Usuário";
                     const primeiroNome = nomeCompleto.split(" ")[0];
+                    const unsubscribeUrl = `https://meu-cofrin.app.br/unsubscribe?email=${encodeURIComponent(authUser.email)}&userId=${userId}`;
                     emails.push({
                         From: "naoresponder@meu-cofrin.app.br",
                         To: authUser.email,
@@ -54,8 +57,21 @@ exports.notificarUsuariosInativos = (0, scheduler_1.onSchedule)({
                   <a href="https://meu-cofrin.app.br" style="background-color: #4F46E5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Acessar Meu Cofrin</a>
                 </div>
                 <p style="font-size: 12px; color: #777; text-align: center;">Se você já acessou recentemente, pode desconsiderar esta mensagem.</p>
+                <p style="font-size: 11px; color: #999; text-align: center; margin-top: 20px;">
+                  Não deseja mais receber estes e-mails? <a href="${unsubscribeUrl}" style="color: #999; text-decoration: underline;">Cancelar inscrição</a>.
+                </p>
               </div>
             `,
+                        Headers: [
+                            {
+                                Name: "List-Unsubscribe",
+                                Value: `<https://meu-cofrin.app.br/unsubscribe?email=${encodeURIComponent(authUser.email)}&userId=${userId}>`
+                            },
+                            {
+                                Name: "List-Unsubscribe-Post",
+                                Value: "List-Unsubscribe=One-Click"
+                            }
+                        ],
                         MessageStream: "outbound"
                     });
                 }

@@ -1,0 +1,166 @@
+<div class="min-h-screen bg-slate-50 dark:bg-[#0d0714] text-slate-900 dark:text-slate-100 flex flex-col justify-between py-8 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
+  <!-- Top brand header -->
+  <div class="max-w-md w-full mx-auto text-center">
+    <a routerLink="/" class="inline-flex items-center gap-2 text-2xl font-black tracking-tight text-slate-900 dark:text-white group">
+      <span class="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-purple-500/20 group-hover:scale-105 transition-transform duration-300">
+        <span class="material-symbols-outlined text-[24px]">savings</span>
+      </span>
+      <span>Meu <span class="text-purple-600 dark:text-[#9b87f5]">Cofrin</span></span>
+    </a>
+  </div>
+
+  <!-- Main card container -->
+  <main class="max-w-lg w-full mx-auto my-auto">
+    <div class="bg-white dark:bg-[#1a112c] rounded-3xl p-8 sm:p-10 shadow-xl border border-slate-200/80 dark:border-slate-800/60 transition-all duration-300 relative overflow-hidden">
+      <!-- Glow background effect -->
+      <div class="absolute -top-24 -right-24 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <!-- State 1: Confirm Unsubscribe -->
+      @if (state() === 'confirm') {
+        <div class="text-center space-y-6">
+          <div class="w-16 h-16 bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 rounded-2xl flex items-center justify-center mx-auto shadow-inner border border-amber-200/60 dark:border-amber-900/40">
+            <span class="material-symbols-outlined text-3xl">notifications_off</span>
+          </div>
+
+          <div class="space-y-2">
+            <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Cancelar notificações por e-mail?</h1>
+            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              Você está prestes a desativar os alertas automáticos de contas a vencer e avisos da sua conta para o endereço:
+            </p>
+            <div class="inline-block bg-slate-100 dark:bg-slate-800/80 text-purple-600 dark:text-[#9b87f5] font-semibold text-sm px-4 py-2 rounded-xl mt-2 border border-slate-200 dark:border-slate-700/50 break-all">
+              {{ email() }}
+            </div>
+          </div>
+
+          <div class="pt-4 flex flex-col sm:flex-row gap-3">
+            <button
+              (click)="confirmUnsubscribe()"
+              class="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-6 rounded-xl transition-all shadow-md shadow-red-600/20 active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <span class="material-symbols-outlined text-[18px]">unsubscribe</span>
+              Confirmar cancelamento
+            </button>
+            <a
+              routerLink="/dashboard"
+              class="flex-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium py-3 px-6 rounded-xl transition-all active:scale-95 flex items-center justify-center gap-2"
+            >
+              Manter ativas
+            </a>
+          </div>
+        </div>
+      }
+
+      <!-- State 2: Loading -->
+      @if (state() === 'loading') {
+        <div class="text-center py-12 space-y-4">
+          <div class="w-16 h-16 rounded-full border-4 border-purple-200 dark:border-purple-900 border-t-purple-600 dark:border-t-[#9b87f5] animate-spin mx-auto"></div>
+          <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Processando sua solicitação...</h2>
+          <p class="text-sm text-slate-500 dark:text-slate-400">Por favor, aguarde alguns instantes.</p>
+        </div>
+      }
+
+      <!-- State 3: Unsubscribed Successfully -->
+      @if (state() === 'unsubscribed') {
+        <div class="text-center space-y-6">
+          <div class="w-16 h-16 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center mx-auto shadow-inner border border-emerald-200/60 dark:border-emerald-900/40 animate-bounce">
+            <span class="material-symbols-outlined text-3xl">check_circle</span>
+          </div>
+
+          <div class="space-y-2">
+            <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Inscrição cancelada com sucesso</h1>
+            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              O e-mail <strong class="text-slate-800 dark:text-slate-200">{{ email() }}</strong> foi removido da lista de envio de notificações e adicionado à lista de supressão do Postmark.
+            </p>
+            <p class="text-xs text-slate-500 dark:text-slate-500">
+              Você não receberá mais lembretes diários de contas por e-mail.
+            </p>
+          </div>
+
+          <div class="pt-4 space-y-3">
+            <button
+              (click)="resubscribe()"
+              class="w-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-purple-600 dark:text-[#9b87f5] font-medium py-3 px-6 rounded-xl transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <span class="material-symbols-outlined text-[18px]">undo</span>
+              Cancelou por engano? Reativar notificações
+            </button>
+            <a
+              routerLink="/"
+              class="block text-center text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors py-2"
+            >
+              Voltar ao Meu Cofrin
+            </a>
+          </div>
+        </div>
+      }
+
+      <!-- State 4: Resubscribed Successfully -->
+      @if (state() === 'resubscribed') {
+        <div class="text-center space-y-6">
+          <div class="w-16 h-16 bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-[#9b87f5] rounded-2xl flex items-center justify-center mx-auto shadow-inner border border-purple-200/60 dark:border-purple-900/40">
+            <span class="material-symbols-outlined text-3xl">mark_email_read</span>
+          </div>
+
+          <div class="space-y-2">
+            <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Notificações reativadas!</h1>
+            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              O e-mail <strong class="text-slate-800 dark:text-slate-200">{{ email() }}</strong> voltará a receber lembretes de contas e avisos importantes.
+            </p>
+          </div>
+
+          <div class="pt-4">
+            <a
+              routerLink="/dashboard"
+              class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-medium py-3 px-6 rounded-xl transition-all shadow-md shadow-purple-500/20 active:scale-95 flex items-center justify-center gap-2"
+            >
+              <span class="material-symbols-outlined text-[18px]">home</span>
+              Ir para o Meu Cofrin
+            </a>
+          </div>
+        </div>
+      }
+
+      <!-- State 5: Error -->
+      @if (state() === 'error') {
+        <div class="text-center space-y-6">
+          <div class="w-16 h-16 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 rounded-2xl flex items-center justify-center mx-auto shadow-inner border border-red-200/60 dark:border-red-900/40">
+            <span class="material-symbols-outlined text-3xl">error_outline</span>
+          </div>
+
+          <div class="space-y-2">
+            <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Ops, algo deu errado</h1>
+            <p class="text-sm text-red-600 dark:text-red-400 leading-relaxed">
+              {{ errorMessage() || 'Não foi possível processar a solicitação.' }}
+            </p>
+          </div>
+
+          <div class="pt-4 space-y-3">
+            @if (email()) {
+              <button
+                (click)="confirmUnsubscribe()"
+                class="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-6 rounded-xl transition-all shadow-md shadow-purple-500/20 active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <span class="material-symbols-outlined text-[18px]">refresh</span>
+                Tentar novamente
+              </button>
+            }
+            <a
+              routerLink="/"
+              class="block text-center text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors py-2"
+            >
+              Ir para a página inicial
+            </a>
+          </div>
+        </div>
+      }
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="max-w-md w-full mx-auto text-center py-4">
+    <p class="text-xs text-slate-500 dark:text-slate-500">
+      &copy; {{ currentYear }} Meu Cofrin. Todos os direitos reservados.
+    </p>
+  </footer>
+</div>

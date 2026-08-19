@@ -67,39 +67,58 @@ exports.notificarContasPorEmail = (0, scheduler_1.onSchedule)({
                 let authData = authCache.get(userId);
                 if (authData === undefined) {
                     try {
-                        const authUser = await admin.auth().getUser(userId);
-                        // Só guarda o e-mail se estiver verificado
-                        if (authUser.emailVerified && authUser.email) {
-                            const nomeCompleto = authUser.displayName || "Usuário";
-                            const primeiroNome = nomeCompleto.split(" ")[0];
-                            authData = { email: authUser.email, nome: primeiroNome };
+                        // Verificar preferências no Firestore antes de enviar
+                        const userDoc = await db.collection("users").doc(userId).get();
+                        const userData = userDoc.data();
+                        if ((userData === null || userData === void 0 ? void 0 : userData.notificacoesEmail) === false || (userData === null || userData === void 0 ? void 0 : userData.emailNotificationsEnabled) === false) {
+                            authData = null;
                         }
                         else {
-                            authData = null;
+                            const authUser = await admin.auth().getUser(userId);
+                            // Só guarda o e-mail se estiver verificado
+                            if (authUser.emailVerified && authUser.email) {
+                                const nomeCompleto = authUser.displayName || "Usuário";
+                                const primeiroNome = nomeCompleto.split(" ")[0];
+                                authData = { email: authUser.email, nome: primeiroNome };
+                            }
+                            else {
+                                authData = null;
+                            }
                         }
                     }
                     catch (error) {
-                        logger.warn(`Erro ao buscar usuário ${userId} no Auth`, error);
+                        logger.warn(`Erro ao buscar usuário ${userId} no Auth/Firestore`, error);
                         authData = null;
                     }
                     authCache.set(userId, authData);
                 }
-                // Se o usuário não tiver e-mail verificado, ignora
+                // Se o usuário não tiver e-mail verificado ou estiver descadastrado, ignora
                 if (!authData)
                     continue;
+                const unsubscribeUrl = `https://meu-cofrin.app.br/unsubscribe?email=${encodeURIComponent(authData.email)}&userId=${userId}&id_conta=${doc.id}`;
                 emails.push({
                     From: "naoresponder@meu-cofrin.app.br",
-                    To: authData === null || authData === void 0 ? void 0 : authData.email,
+                    To: authData.email,
                     TemplateId: 46142870,
                     TemplateModel: {
                         vencimento_texto: (vencimentoTexto === "HOJE") ? vencimentoTexto : conta.diaVencimento.toString().padStart(2, '0') + '/' + conta.mesReferencia.split('-')[1],
                         nome_conta: nomeConta,
                         valor: valorFormatado,
-                        nome_usuario: authData === null || authData === void 0 ? void 0 : authData.nome,
+                        nome_usuario: authData.nome,
                         id_conta: doc.id,
-                        unsubscribe: `https://meu-cofrin.app.br/unsubscribe?userEmail=${authData === null || authData === void 0 ? void 0 : authData.email}&id_conta=${doc.id}`,
+                        unsubscribe: unsubscribeUrl,
                         ano_atual: new Date().getFullYear().toString()
                     },
+                    Headers: [
+                        {
+                            Name: "List-Unsubscribe",
+                            Value: `<https://meu-cofrin.app.br/unsubscribe?email=${encodeURIComponent(authData.email)}&userId=${userId}>`
+                        },
+                        {
+                            Name: "List-Unsubscribe-Post",
+                            Value: "List-Unsubscribe=One-Click"
+                        }
+                    ],
                     MessageStream: "outbound"
                 });
             }

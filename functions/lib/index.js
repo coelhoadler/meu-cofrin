@@ -23,4 +23,5 @@ __exportStar(require("./scheduled/notificarUsuariosInativos"), exports);
 __exportStar(require("./testNotificarUsuariosInativos"), exports);
 __exportStar(require("./auth/webauthn"), exports);
 __exportStar(require("./triggers/onContaWritten"), exports);
+__exportStar(require("./notifications/unsubscribe"), exports);
 //# sourceMappingURL=index.js.map
