@@ -28,12 +28,14 @@
       </div>
 
       <!-- Toggle ocultar/mostrar valores -->
+      @if (visaoModo() === 'resumo') {
       <button type="button" (click)="toggleVisibility()"
         class="px-3.5 py-2 bg-white dark:bg-[#1a112c] hidden md:flex border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-xl flex items-center gap-2 text-xs font-semibold transition-all shadow-sm active:scale-95"
         title="Ocultar / Mostrar valores">
         <span class="material-symbols-outlined text-base">{{ showValues() ? 'visibility' : 'visibility_off' }}</span>
         <span>{{ showValues() ? 'Ocultar valores' : 'Mostrar valores' }}</span>
       </button>
+      }
     </div>
   </div>
 
