@@ -12,6 +12,7 @@ export const authGuard: CanActivateFn = (route, state) => {
   return authState(auth).pipe(
     take(1),
     switchMap(async (user) => {
+      debugger
       if (user) {
         const isExpired = await authService.isSessionExpired(user);
         if (isExpired) {

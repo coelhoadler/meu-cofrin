@@ -26,30 +26,30 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: 'dashboard', component: DashboardComponent, title: 'Meu Cofrin | Dashboard' },
-      { 
-        path: 'lancamentos', 
+      {
+        path: 'lancamentos',
         loadComponent: () => import('./features/lancamentos/lancamentos.component').then(m => m.LancamentosComponent),
-        title: 'Meu Cofrin | Lançamentos' 
+        title: 'Meu Cofrin | Lançamentos'
       },
-      { 
-        path: 'nova-conta', 
+      {
+        path: 'nova-conta',
         loadComponent: () => import('./features/nova-conta/nova-conta.component').then(m => m.NovaContaComponent),
-        title: 'Meu Cofrin | Nova Conta' 
+        title: 'Meu Cofrin | Nova Conta'
       },
-      { 
-        path: 'editar-conta/:id', 
+      {
+        path: 'editar-conta/:id',
         loadComponent: () => import('./features/nova-conta/nova-conta.component').then(m => m.NovaContaComponent),
-        title: 'Meu Cofrin | Editar Conta' 
+        title: 'Meu Cofrin | Editar Conta'
       },
-      { 
-        path: 'categorias', 
+      {
+        path: 'categorias',
         loadComponent: () => import('./features/categorias/categorias.component').then(m => m.CategoriasComponent),
-        title: 'Meu Cofrin | Categorias' 
+        title: 'Meu Cofrin | Categorias'
       },
-      { 
-        path: 'perfil', 
+      {
+        path: 'perfil',
         loadComponent: () => import('./features/perfil/perfil').then(m => m.Perfil),
-        title: 'Meu Cofrin | Meu Perfil' 
+        title: 'Meu Cofrin | Meu Perfil'
       },
       {
         path: 'conta/:id',
