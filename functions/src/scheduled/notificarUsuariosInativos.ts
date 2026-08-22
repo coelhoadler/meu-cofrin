@@ -55,21 +55,11 @@ export const notificarUsuariosInativos = onSchedule({
           emails.push({
             From: "naoresponder@meu-cofrin.app.br",
             To: authUser.email,
-            Subject: `${primeiroNome}, sentimos sua falta no Meu Cofrin!`,
-            HtmlBody: `
-              <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 8px;">
-                <h2 style="color: #4F46E5;">Olá, ${primeiroNome}! 👋</h2>
-                <p>Notamos que você não acessa o <strong>Meu Cofrin</strong> há mais de 15 dias.</p>
-                <p>Manter o controle das suas finanças em dia é essencial para atingir suas metas. Que tal dar uma passadinha rápida hoje para atualizar suas movimentações?</p>
-                <div style="text-align: center; margin: 30px 0;">
-                  <a href="https://meu-cofrin.app.br" style="background-color: #4F46E5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Acessar Meu Cofrin</a>
-                </div>
-                <p style="font-size: 12px; color: #777; text-align: center;">Se você já acessou recentemente, pode desconsiderar esta mensagem.</p>
-                <p style="font-size: 11px; color: #999; text-align: center; margin-top: 20px;">
-                  Não deseja mais receber estes e-mails? <a href="${unsubscribeUrl}" style="color: #999; text-decoration: underline;">Cancelar inscrição</a>.
-                </p>
-              </div>
-            `,
+            TemplateId: 46163306,
+            TemplateModel: {
+              primeiro_nome: primeiroNome,
+              unsubscribe_url: unsubscribeUrl,
+            },
             Headers: [
               {
                 Name: "List-Unsubscribe",
@@ -90,7 +80,7 @@ export const notificarUsuariosInativos = onSchedule({
 
     if (emails.length > 0) {
       const client = new postmark.ServerClient(emailApiKey.value());
-      await client.sendEmailBatch(emails);
+      await client.sendEmailBatchWithTemplates(emails);
       logger.info(`E-mails de reengajamento enviados com sucesso via Postmark para ${emails.length} usuário(s) inativo(s).`);
     } else {
       logger.info("Nenhum usuário com e-mail verificado para notificar.");
