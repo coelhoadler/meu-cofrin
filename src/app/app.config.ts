@@ -133,6 +133,6 @@ export const appConfig: ApplicationConfig = {
       useFactory: () => () => {},
       deps: [Sentry.TraceService],
       multi: true,
-    },
+    }, provideClientHydration(),
   ],
 };
