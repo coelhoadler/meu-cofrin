@@ -1,14 +1,17 @@
 {
   "hosting": {
-    "source": ".",
+    "public": "dist/meu-cofrin/browser",
     "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
     ],
-    "frameworksBackend": {
-      "region": "us-central1"
-    }
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
   },
   "functions": {
     "source": "functions"
