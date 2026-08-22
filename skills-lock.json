@@ -1,6 +1,18 @@
 {
   "version": 1,
   "skills": {
+    "ask-matt": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/ask-matt/SKILL.md",
+      "computedHash": "0cd14026efa0330083cbc7adf590976c162b60e02f696a8dcce96f0b4dab8a72"
+    },
+    "code-review": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/code-review/SKILL.md",
+      "computedHash": "caa9a086baaf9e0f7cd71f64edfa83da6821c05e826b083221f3d02e3d6a1905"
+    },
     "firebase-ai-logic-basics": {
       "source": "firebase/agent-skills",
       "sourceType": "github",
@@ -61,11 +73,47 @@
       "skillPath": "skills/firebase-security-rules-auditor/SKILL.md",
       "computedHash": "5a90e991bb9acfd3e43bfb570498dee60b9cef94cbb80cfb99257c7e4f61c1a0"
     },
+    "grill-me": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/productivity/grill-me/SKILL.md",
+      "computedHash": "9cdbb4b8f7a3aeaef82e6230c9e823500d4a8a1214c726cf342cf9829d34fc7d"
+    },
+    "grill-with-docs": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/grill-with-docs/SKILL.md",
+      "computedHash": "35e62aa423aaeab6a414bcac273f56dfb17802ef2334b41b6a3b00f28196c8cf"
+    },
+    "grilling": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/productivity/grilling/SKILL.md",
+      "computedHash": "4dd886b0196bf43729d954ae326016f2bd9f5f79d892500b407c33a753362f14"
+    },
+    "implement": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/implement/SKILL.md",
+      "computedHash": "2139cfedf24791adbc839aaab6019cff158af1e28bfead020ec6e0ce01b3e74d"
+    },
+    "loop-me": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/in-progress/loop-me/SKILL.md",
+      "computedHash": "72e01a16929dbf6583afc469a49d64b28b1be4a6034c900decd94cd5a69ba6e6"
+    },
     "postmark": {
       "source": "ActiveCampaign/postmark-skills",
       "sourceType": "github",
       "skillPath": "SKILL.md",
       "computedHash": "4370e9820f7c49d00ad455ad74c33d912dc404b6251ad9d659ad95b72216bc62"
+    },
+    "prototype": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/prototype/SKILL.md",
+      "computedHash": "d3fc74689bd993e39c44bfae510d014eecffbeec2922764b065377fd1327c0f6"
     },
     "xcode-project-setup": {
       "source": "firebase/agent-skills",
