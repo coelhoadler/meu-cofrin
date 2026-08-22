@@ -6,6 +6,13 @@
       "**/.*",
       "**/node_modules/**"
     ],
+    "redirects": [
+      {
+        "source": "/:path*",
+        "destination": "https://meu-cofrin.app.br/:path",
+        "type": 301
+      }
+    ],
     "frameworksBackend": {
       "region": "us-central1"
     }
