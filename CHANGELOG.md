@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.0.0...v1.1.0) (2026-08-22)
+
+
+### Features
+
+* add email templates for account expiration reminders and user inactivity notifications ([286ec39](https://github.com/coelhoadler/meu-cofrin/commit/286ec39abaefcf180baf3e802521946a346e35ff))
+
 # 1.0.0 (2026-08-22)
 
 
