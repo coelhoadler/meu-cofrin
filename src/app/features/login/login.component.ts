@@ -13,6 +13,7 @@ import { AuthService } from '../../core/auth/auth.service';
 import { WebauthnService } from '../../core/auth/webauthn.service';
 import { CommonModule } from '@angular/common';
 import { InputTextModule } from 'primeng/inputtext';
+import * as packageJson from '../../../../package.json';
 
 @Component({
   selector: 'app-login',
@@ -39,6 +40,7 @@ export class LoginComponent implements OnInit {
   isLoginMode = signal(true);
   showPassword = signal(false);
   hasBiometricsConfigured = signal(typeof localStorage !== 'undefined' && localStorage.getItem('biometricsEnabled') === 'true');
+  version = signal(packageJson.version);
 
   @ViewChild('nomeInput') nomeInput?: ElementRef<HTMLInputElement>;
   @ViewChild('emailInput') emailInput?: ElementRef<HTMLInputElement>;
