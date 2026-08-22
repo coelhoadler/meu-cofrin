@@ -38,7 +38,7 @@ export class LoginComponent implements OnInit {
   errorMessage = signal<string | null>(null);
   isLoginMode = signal(true);
   showPassword = signal(false);
-  hasBiometricsConfigured = signal(localStorage.getItem('biometricsEnabled') === 'true');
+  hasBiometricsConfigured = signal(typeof localStorage !== 'undefined' && localStorage.getItem('biometricsEnabled') === 'true');
 
   @ViewChild('nomeInput') nomeInput?: ElementRef<HTMLInputElement>;
   @ViewChild('emailInput') emailInput?: ElementRef<HTMLInputElement>;
