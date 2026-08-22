@@ -14,7 +14,8 @@
     "importHelpers": true,
     "target": "ES2022",
     "lib": ["ES2022", "dom", "dom.iterable"],
-    "module": "preserve"
+    "module": "preserve",
+    "resolveJsonModule": true
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
