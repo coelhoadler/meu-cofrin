@@ -322,7 +322,12 @@ export class LancamentosComponent implements OnInit {
       }
 
       contas = await this.contaService.getContasByAno(ano, 500);
-      contas.sort((a, b) => a.diaVencimento - b.diaVencimento);
+      contas.sort((a, b) => {
+        if (a.statusPago === b.statusPago) {
+          return Number(b.diaVencimento) - Number(a.diaVencimento);
+        }
+        return a.statusPago ? 1 : -1;
+      });
       this.contas.set(contas);
     } catch (e) {
       console.error('Erro ao carregar contas', e);
@@ -336,7 +341,12 @@ export class LancamentosComponent implements OnInit {
     this.isLoading.set(true);
     try {
       const contas = await this.contaService.getContasByAno(anoNum.toString(), 500);
-      contas.sort((a, b) => a.diaVencimento - b.diaVencimento);
+      contas.sort((a, b) => {
+        if (a.statusPago === b.statusPago) {
+          return Number(b.diaVencimento) - Number(a.diaVencimento);
+        }
+        return a.statusPago ? 1 : -1;
+      });
       this.contas.set(contas);
     } catch (e) {
       console.error('Erro ao carregar contas por ano', e);
@@ -419,9 +429,12 @@ export class LancamentosComponent implements OnInit {
     try {
       const contas = await this.contaService.buscarContasPorNome(termo);
       contas.sort((a, b) => {
-        const dateA = new Date(`${a.mesReferencia}-${String(a.diaVencimento).padStart(2, '0')}`);
-        const dateB = new Date(`${b.mesReferencia}-${String(b.diaVencimento).padStart(2, '0')}`);
-        return dateB.getTime() - dateA.getTime();
+        if (a.statusPago === b.statusPago) {
+          const dateA = new Date(`${a.mesReferencia}-${String(a.diaVencimento).padStart(2, '0')}`);
+          const dateB = new Date(`${b.mesReferencia}-${String(b.diaVencimento).padStart(2, '0')}`);
+          return dateB.getTime() - dateA.getTime();
+        }
+        return a.statusPago ? 1 : -1;
       });
       this.contas.set(contas);
     } catch (e) {
