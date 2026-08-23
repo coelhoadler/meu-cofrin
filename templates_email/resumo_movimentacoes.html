@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <meta name="supported-color-schemes" content="light" />
+    <title>{{titulo_email}}</title>
+    <!--[if mso]>
+    <style>body,table,td,div,p,a{font-family:Arial,Helvetica,sans-serif !important;}</style>
+    <![endif]-->
+</head>
+
+<body
+    style="margin:0;padding:0;background:#f4f0fb;font-family:'Manrope','Segoe UI',Arial,sans-serif;color:#1b1230;-webkit-font-smoothing:antialiased;">
+    <!-- Preheader (oculto) -->
+    <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;">
+        {{titulo_email}} - Veja o resumo das suas movimentações de {{mes_ano}}.
+    </div>
+
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f4f0fb;">
+        <tr>
+            <td align="center" style="padding:32px 16px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+                    style="max-width:560px;background:#ffffff;border-radius:20px;overflow:hidden;box-shadow:0 10px 40px -10px rgba(70,30,140,0.25);">
+
+                    <!-- Header -->
+                    <tr>
+                        <td align="center"
+                            style="background:linear-gradient(135deg,#3a1c73 0%,#7a3ee0 100%);padding:36px 24px 28px;">
+                            <div
+                                style="margin-top:14px;font-family:'Sora','Segoe UI',Arial,sans-serif;font-size:22px;font-weight:700;color:#ffffff;letter-spacing:-0.02em;">
+                                Meu Cofrin
+                            </div>
+                            <div style="margin-top:6px;font-size:13px;color:#e5d9ff;">
+                                Seu resumo financeiro
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Corpo -->
+                    <tr>
+                        <td style="padding:32px 32px 8px;">
+                            <h1
+                                style="margin:0 0 8px;font-family:'Sora','Segoe UI',Arial,sans-serif;font-size:24px;font-weight:700;line-height:1.25;color:#1b1230;letter-spacing:-0.02em;">
+                                Olá, {{primeiro_nome}} 👋
+                            </h1>
+                            <p style="margin:0 0 20px;font-size:15px;line-height:1.6;color:#4a3a66;">
+                                {{texto_introdutorio}} Aqui está um resumo de como andam as suas finanças em <strong>{{mes_ano}}</strong>.
+                            </p>
+
+                            <!-- Resumo Consolidado -->
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+                                style="background:#faf7ff;border:1px solid #ece2ff;border-radius:14px;margin-bottom:24px;">
+                                <tr>
+                                    <td style="padding:20px 22px;text-align:center;">
+                                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                            <tr>
+                                                <td style="padding:10px;vertical-align:top;width:33%;">
+                                                    <div style="font-size:12px;color:#8072a0;text-transform:uppercase;letter-spacing:0.05em;">Receitas</div>
+                                                    <div style="margin-top:4px;font-family:'Sora','Segoe UI',Arial,sans-serif;font-size:16px;font-weight:700;color:#10B981;">
+                                                        {{total_receitas}}
+                                                    </div>
+                                                </td>
+                                                <td style="padding:10px;vertical-align:top;width:33%;border-left:1px solid #ece2ff;border-right:1px solid #ece2ff;">
+                                                    <div style="font-size:12px;color:#8072a0;text-transform:uppercase;letter-spacing:0.05em;">Despesas</div>
+                                                    <div style="margin-top:4px;font-family:'Sora','Segoe UI',Arial,sans-serif;font-size:16px;font-weight:700;color:#EF4444;">
+                                                        {{total_despesas}}
+                                                    </div>
+                                                </td>
+                                                <td style="padding:10px;vertical-align:top;width:33%;">
+                                                    <div style="font-size:12px;color:#8072a0;text-transform:uppercase;letter-spacing:0.05em;">Saldo</div>
+                                                    <div style="margin-top:4px;font-family:'Sora','Segoe UI',Arial,sans-serif;font-size:16px;font-weight:700;color:#3a1c73;">
+                                                        {{saldo}}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <h2 style="font-family:'Sora','Segoe UI',Arial,sans-serif;font-size:18px;font-weight:600;color:#1b1230;margin:0 0 16px;">
+                                Últimas Movimentações
+                            </h2>
+
+                            <!-- Lista de Transações (Iteração usando Handlebars/Mustache) -->
+                            {{#each transacoes}}
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+                                style="border-bottom:1px solid #ece2ff;margin-bottom:12px;padding-bottom:12px;">
+                                <tr>
+                                    <td style="vertical-align:middle;width:60%;">
+                                        <div style="font-family:'Sora','Segoe UI',Arial,sans-serif;font-size:15px;font-weight:600;color:#1b1230;">
+                                            {{nome}}
+                                        </div>
+                                        <div style="font-size:13px;color:#8072a0;margin-top:2px;">
+                                            {{data_formatada}}
+                                        </div>
+                                    </td>
+                                    <td align="right" style="vertical-align:middle;width:40%;">
+                                        <div style="font-family:'Sora','Segoe UI',Arial,sans-serif;font-size:15px;font-weight:700;color:{{cor_valor}};">
+                                            {{valor}}
+                                        </div>
+                                        <div style="margin-top:4px;">
+                                            <!-- Badge de Status -->
+                                            <span style="display:inline-block;padding:4px 8px;border-radius:4px;font-size:11px;font-weight:700;text-transform:uppercase;background-color:{{cor_fundo_status}};color:{{cor_texto_status}};">
+                                                {{status}}
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                            {{/each}}
+
+                            <!-- CTA -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center"
+                                style="margin:32px auto 16px;">
+                                <tr>
+                                    <td align="center"
+                                        style="border-radius:12px;background:linear-gradient(135deg,#3a1c73 0%,#7a3ee0 100%);">
+                                        <a href="https://meu-cofrin.web.app/"
+                                            style="display:inline-block;padding:14px 28px;font-family:'Sora','Segoe UI',Arial,sans-serif;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:12px;">
+                                            Ver todas no app
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td align="center"
+                            style="padding:24px 32px 32px;background:#faf7ff;border-top:1px solid #ece2ff;">
+                            <div
+                                style="font-family:'Sora','Segoe UI',Arial,sans-serif;font-size:13px;font-weight:600;color:#3a1c73;">
+                                Equipe Meu Cofrin
+                            </div>
+                            <div style="margin-top:6px;font-size:12px;color:#8072a0;line-height:1.5;">
+                                Você está recebendo este e-mail porque movimentou sua conta neste mês.<br />
+                                <a href="https://meu-cofrin.app.br/perfil"
+                                    style="color:#7a3ee0;text-decoration:none;">Gerenciar preferências</a>
+                                &nbsp;·&nbsp;
+                                <a href="{{{unsubscribe}}}" style="color:#7a3ee0;text-decoration:none;">Cancelar
+                                    inscrição</a>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+                <div style="margin-top:16px;font-size:11px;color:#8072a0;">
+                    © {{ano_atual}} Meu Cofrin — organizando suas finanças com carinho.
+                </div>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>
