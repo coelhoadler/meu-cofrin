@@ -1,3 +1,11 @@
+# [1.3.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.2.0...v1.3.0) (2026-08-23)
+
+
+### Features
+
+* add scheduled Cloud Function to send monthly financial summaries via Postmark ([0e23434](https://github.com/coelhoadler/meu-cofrin/commit/0e23434f5f2409a078fe533309964b7b24dea561))
+* implement LancamentosComponent with filtering, summary views, and local storage persistence ([bedbd6b](https://github.com/coelhoadler/meu-cofrin/commit/bedbd6b6c86d901e38ed9d2a35eaf26aeef7c586))
+
 # [1.2.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.1.0...v1.2.0) (2026-08-23)
 
 
