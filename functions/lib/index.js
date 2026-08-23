@@ -20,6 +20,7 @@ __exportStar(require("./scheduled/notificarContasVencendo"), exports);
 __exportStar(require("./scheduled/notificarContasPorEmail"), exports);
 __exportStar(require("./scheduled/consolidarResumosMensais"), exports);
 __exportStar(require("./scheduled/notificarUsuariosInativos"), exports);
+__exportStar(require("./scheduled/enviarResumoMovimentacoes"), exports);
 __exportStar(require("./testNotificarUsuariosInativos"), exports);
 __exportStar(require("./auth/webauthn"), exports);
 __exportStar(require("./triggers/onContaWritten"), exports);
