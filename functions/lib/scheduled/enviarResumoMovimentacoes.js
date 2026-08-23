@@ -22,14 +22,14 @@ exports.enviarResumoMovimentacoes = (0, scheduler_1.onSchedule)({
     const ano = dataAtual.getFullYear();
     const mes = dataAtual.getMonth() + 1; // 1-12
     // Lógica simples para garantir que o envio do fim do mês ocorra apenas no último dia
-    // const ultimoDiaDoMes = new Date(ano, mes, 0).getDate();
-    // if (dia !== 15 && dia !== ultimoDiaDoMes) {
-    //   logger.info("Não é dia 15 nem o último dia do mês. Pulando execução.");
-    //   return;
-    // }
-    // Define o mêsReferencia, ex: "08-2026" ou "08/2026" - adapte conforme o padrão do seu banco
+    const ultimoDiaDoMes = new Date(ano, mes, 0).getDate();
+    if (dia !== 15 && dia !== ultimoDiaDoMes) {
+        logger.info("Não é dia 15 nem o último dia do mês. Pulando execução.");
+        return;
+    }
+    // Define o mêsReferencia no padrão YYYY-MM (ex: "2026-08") para bater com o banco
     const mesFormatado = String(mes).padStart(2, '0');
-    const mesReferencia = `${mesFormatado}-${ano}`; // Ou outro formato que seu App usa
+    const mesReferencia = `${ano}-${mesFormatado}`;
     const nomeMes = dataAtual.toLocaleString('pt-BR', { month: 'long' });
     const mesAnoFormatado = `${nomeMes.charAt(0).toUpperCase() + nomeMes.slice(1)} de ${ano}`;
     const tituloEmail = dia === 15
@@ -83,30 +83,30 @@ exports.enviarResumoMovimentacoes = (0, scheduler_1.onSchedule)({
                 // Ajuste os status possíveis conforme a regra do seu App ('Paga', 'Pendente', 'Atrasada')
                 let corFundoStatus = '#fef3c7'; // Amarelo (pendente) padrão
                 let corTextoStatus = '#d97706';
-                let statusTexto = conta.status || 'Pendente';
-                if (statusTexto.toLowerCase() === 'paga' || statusTexto.toLowerCase() === 'pago') {
+                if (conta.statusPago) {
                     corFundoStatus = '#d1fae5'; // Verde
                     corTextoStatus = '#059669';
-                }
-                else if (statusTexto.toLowerCase() === 'atrasada' || statusTexto.toLowerCase() === 'atrasado') {
-                    corFundoStatus = '#fee2e2'; // Vermelho
-                    corTextoStatus = '#dc2626';
                 }
                 transacoes.push({
                     nome: conta.nome || conta.descricao || 'Sem Nome',
                     valor: conta.valor,
                     tipo: conta.tipo,
-                    status: statusTexto,
-                    dataParaOrdenacao: conta.vencimento ? new Date(conta.vencimento) : new Date(0),
-                    data_formatada: conta.vencimento || '--',
+                    status: conta.statusPago ? 'Paga' : 'Pendente',
+                    statusPago: conta.statusPago || false,
+                    diaVencimento: Number(conta.diaVencimento) || 0,
+                    data_formatada: 'Dia de vencimento: ' + (conta.diaVencimento || '--'),
                     cor_valor: conta.tipo === 'Receita' ? '#10B981' : '#1b1230',
                     cor_fundo_status: corFundoStatus,
                     cor_texto_status: corTextoStatus
                 });
             });
-            // Ordenar pelas transações mais recentes (assumindo que tem dataParaOrdenacao)
-            transacoes.sort((a, b) => b.dataParaOrdenacao.getTime() - a.dataParaOrdenacao.getTime());
-            const ultimasTransacoes = transacoes.slice(0, 5);
+            const contasNaoPagas = transacoes.filter(t => !t.statusPago);
+            const contasPagas = transacoes.filter(t => t.statusPago);
+            // Ordenar decrescente pelo dia de vencimento
+            contasNaoPagas.sort((a, b) => b.diaVencimento - a.diaVencimento);
+            contasPagas.sort((a, b) => b.diaVencimento - a.diaVencimento);
+            // Priorizar contas não pagas. Se não atingir 5, preenche com as pagas
+            const ultimasTransacoes = [...contasNaoPagas, ...contasPagas].slice(0, 5);
             const formatarMoeda = (valor) => {
                 return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
             };
