@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.1.0...v1.2.0) (2026-08-23)
+
+
+### Features
+
+* add scheduled function to send monthly financial summaries via email ([3e0b13a](https://github.com/coelhoadler/meu-cofrin/commit/3e0b13ac2ffcb166b1ce64ea2cdee431a5a16dcb))
+
 # [1.1.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.0.0...v1.1.0) (2026-08-22)
 
 
