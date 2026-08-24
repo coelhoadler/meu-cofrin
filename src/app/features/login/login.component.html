@@ -25,6 +25,7 @@
   <div
     class="w-full max-w-[420px] bg-white rounded-3xl shadow-2xl shadow-indigo-900/10 overflow-hidden p-8 z-10 border border-slate-100">
     <!-- Toggle Slide -->
+    @if (!isLoginMode() || loginStep() === 1) {
     <div class="bg-slate-100 rounded-full p-1 flex relative mb-8">
       <!-- Fundo Deslizante -->
       <div
@@ -45,6 +46,7 @@
         Criar conta
       </button>
     </div>
+    }
 
     <!-- Formulário -->
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-4">
@@ -63,14 +65,24 @@
         <label for="email" class="text-xs font-semibold text-slate-600 ml-1">E-mail <span
             class="text-red-500">*</span></label>
         <input #emailInput id="email" type="email" formControlName="email" placeholder="Insira seu e-mail" pInputText
-          autocomplete="username"
+          autocomplete="username" [readonly]="isLoginMode() && loginStep() === 2"
+          [ngClass]="{'opacity-60 cursor-not-allowed bg-slate-50 text-slate-500': isLoginMode() && loginStep() === 2}"
           class="w-full px-4 py-3 !bg-white !border !border-slate-200 rounded-2xl !text-slate-900 placeholder:!text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm" />
         @if (loginForm.get('email')?.touched && loginForm.get('email')?.invalid && loginForm.get('email')?.dirty) {
         <div class="text-red-500 text-xs ml-1 mt-1 font-medium">Insira um e-mail válido.</div>
         }
+        @if (isLoginMode() && loginStep() === 2) {
+        <div class="flex justify-end mt-1">
+          <button type="button" (click)="switchAccount()"
+            class="text-xs font-semibold text-indigo-600 hover:text-indigo-800 transition-colors">
+            Entrar com outra conta
+          </button>
+        </div>
+        }
       </div>
 
       <!-- Senha -->
+      @if (!isLoginMode() || loginStep() === 2) {
       <div class="space-y-1">
         <div class="flex items-center justify-between ml-1">
           <label for="password" class="text-xs font-semibold text-slate-600">Senha <span
@@ -91,10 +103,12 @@
             }
           </button>
         </div>
-        @if (loginForm.get('password')?.touched && loginForm.get('password')?.invalid) {
+        @if (loginForm.get('password')?.touched && loginForm.get('password')?.invalid &&
+        loginForm.get('password')?.dirty) {
         <div class="text-red-500 text-xs ml-1 mt-1 font-medium">A senha é obrigatória.</div>
         }
       </div>
+      }
 
       <!-- Mensagem de Erro -->
       @if (errorMessage()) {
@@ -104,24 +118,29 @@
       }
 
       <!-- Botão de Ação -->
-      <button type="submit" [disabled]="loginForm.invalid || isLoading()"
+      <button type="submit"
+        [disabled]="(isLoginMode() && loginStep() === 1 ? loginForm.get('email')?.invalid : loginForm.invalid) || isLoading()"
         class="w-full mt-6 px-8 py-3.5 rounded-2xl bg-[#311B65] hover:bg-[#3f2482] text-white font-semibold shadow-md shadow-indigo-900/20 transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center h-12 text-sm">
         @if (!isLoading()) {
-        {{ isLoginMode() ? 'Entrar' : 'Criar conta' }}
+        {{ isLoginMode() ? (loginStep() === 1 ? 'Continuar' : 'Entrar') : 'Criar conta' }}
         }
         @if (isLoading()) {
         <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
         }
       </button>
 
-      <!-- Botão de Biometria -->
+      <!-- Botões Secundários -->
       <ng-container>
+        @if (!isLoginMode() || loginStep() === 1 || (isLoginMode() && loginStep() === 2 && hasBiometricsConfigured())) {
         <div class="flex items-center gap-3 mt-4 mb-2">
           <div class="h-px bg-slate-200 flex-1"></div>
           <span class="text-xs font-medium text-slate-400">OU</span>
           <div class="h-px bg-slate-200 flex-1"></div>
         </div>
-        @if (isLoginMode() && hasBiometricsConfigured()) {
+        }
+
+        @if (isLoginMode() && loginStep() === 2 && hasBiometricsConfigured()) {
+        <!-- Botão de Biometria -->
         <button type="button" (click)="loginWithBiometrics()" [disabled]="isLoading()"
           class="w-full px-8 py-3.5 rounded-2xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold shadow-sm transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center h-12 text-sm gap-2">
           <span class="material-symbols-outlined text-[20px] text-indigo-500">fingerprint</span>
@@ -129,6 +148,7 @@
         </button>
         }
 
+        @if (!isLoginMode() || loginStep() === 1) {
         <!-- Botão Google -->
         <button type="button" (click)="loginWithGoogle()" [disabled]="isLoading()"
           class="w-full mt-3 px-8 py-3.5 rounded-2xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold shadow-sm transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center h-12 text-sm gap-2">
@@ -136,12 +156,14 @@
             class="w-5 h-5" />
           {{ isLoginMode() ? 'Entrar com Google' : 'Criar conta com Google' }}
         </button>
+        }
       </ng-container>
     </form>
   </div>
 
   <!-- App Version Footer -->
-  <div class="fixed bottom-2 right-2 text-xs font-mono text-slate-500 bg-white/80 px-2 py-1 rounded pointer-events-none z-[9999]">
+  <div
+    class="fixed bottom-2 right-2 text-xs font-mono text-slate-500 bg-white/80 px-2 py-1 rounded pointer-events-none z-[9999]">
     v{{ version() }}
   </div>
 </div>
