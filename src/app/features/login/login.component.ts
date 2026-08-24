@@ -38,6 +38,7 @@ export class LoginComponent implements OnInit {
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
   isLoginMode = signal(true);
+  loginStep = signal<1 | 2>(1);
   showPassword = signal(false);
   hasBiometricsConfigured = signal(typeof localStorage !== 'undefined' && localStorage.getItem('biometricsEnabled') === 'true');
   version = signal(packageJson.version);
@@ -46,13 +47,23 @@ export class LoginComponent implements OnInit {
   @ViewChild('emailInput') emailInput?: ElementRef<HTMLInputElement>;
 
   ngOnInit(): void {
+    if (typeof localStorage !== 'undefined') {
+      const lastEmail = localStorage.getItem('lastLoggedEmail');
+      if (lastEmail) {
+        this.loginForm.patchValue({ email: lastEmail });
+        this.loginStep.set(2);
+      }
+    }
     setTimeout(() => {
-      this.emailInput?.nativeElement.focus();
+      if (this.loginStep() === 1) {
+        this.emailInput?.nativeElement.focus();
+      }
     }, 0);
   }
 
   toggleMode(mode: 'login' | 'signup') {
     this.isLoginMode.set(mode === 'login');
+    this.loginStep.set(1);
     this.errorMessage.set(null);
     this.loginForm.reset();
     this.showPassword.set(false);
@@ -70,7 +81,31 @@ export class LoginComponent implements OnInit {
     this.showPassword.update((v) => !v);
   }
 
+  switchAccount() {
+    this.loginStep.set(1);
+    this.loginForm.patchValue({ email: '', password: '' });
+    this.errorMessage.set(null);
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem('lastLoggedEmail');
+    }
+    setTimeout(() => {
+      this.emailInput?.nativeElement.focus();
+    }, 0);
+  }
+
   async onSubmit() {
+    if (this.isLoginMode() && this.loginStep() === 1) {
+      if (this.loginForm.get('email')?.invalid) {
+        this.loginForm.get('email')?.markAsTouched();
+        return;
+      }
+      this.loginStep.set(2);
+      setTimeout(() => {
+        document.getElementById('password')?.focus();
+      }, 0);
+      return;
+    }
+
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
       return;
@@ -87,6 +122,11 @@ export class LoginComponent implements OnInit {
       } else {
         await this.authService.signup(email!, password!, nome);
       }
+      
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('lastLoggedEmail', email!);
+      }
+
       const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
       this.router.navigateByUrl(returnUrl);
     } catch (error: any) {
@@ -102,7 +142,7 @@ export class LoginComponent implements OnInit {
 
   async loginWithBiometrics() {
     this.errorMessage.set(null);
-    const email = localStorage.getItem('biometricEmail');
+    const email = this.loginForm.get('email')?.value || localStorage.getItem('biometricEmail') || localStorage.getItem('lastLoggedEmail');
 
     if (!email) {
       this.errorMessage.set('Nenhum e-mail salvo para biometria. Faça login com senha primeiro.');
@@ -113,6 +153,11 @@ export class LoginComponent implements OnInit {
 
     try {
       await this.webauthnService.authenticateWithPasskey(email);
+      
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('lastLoggedEmail', email);
+      }
+
       const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
       this.router.navigateByUrl(returnUrl);
     } catch (error: any) {
@@ -129,6 +174,12 @@ export class LoginComponent implements OnInit {
 
     try {
       await this.authService.loginWithGoogle();
+      
+      // Attempt to save email if we could extract it from user profile, but since we use authService, we'll just save the email if it's there
+      if (this.loginForm.get('email')?.value && typeof localStorage !== 'undefined') {
+        localStorage.setItem('lastLoggedEmail', this.loginForm.get('email')?.value!);
+      }
+
       const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
       this.router.navigateByUrl(returnUrl);
     } catch (error: any) {
