@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.3.0...v1.4.0) (2026-08-24)
+
+
+### Features
+
+* implement responsive login and sign-up component with biometrics and Google authentication ([b59b534](https://github.com/coelhoadler/meu-cofrin/commit/b59b5348754d3cfb6e2a7d47175fc1e07bc3e9e5))
+
 # [1.3.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.2.0...v1.3.0) (2026-08-23)
 
 
