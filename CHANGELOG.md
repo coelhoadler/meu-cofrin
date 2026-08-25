@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/coelhoadler/meu-cofrin/compare/v1.4.0...v1.4.1) (2026-08-25)
+
+
+### Bug Fixes
+
+* update firebase rewrite destination to index.csr.html ([fcb34d7](https://github.com/coelhoadler/meu-cofrin/commit/fcb34d7311893f3f0fdffae3f902158689577993))
+
 # [1.4.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.3.0...v1.4.0) (2026-08-24)
 
 
