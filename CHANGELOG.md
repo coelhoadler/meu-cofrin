@@ -1,3 +1,11 @@
+# [1.5.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.4.1...v1.5.0) (2026-08-26)
+
+
+### Features
+
+* add dashboard component with financial summaries and charts ([d112f9c](https://github.com/coelhoadler/meu-cofrin/commit/d112f9c16fce8f71f1d35d1d5c09ae53f6105b0d))
+* create dashboard component with summary cards, charts, and transaction list ([1205203](https://github.com/coelhoadler/meu-cofrin/commit/1205203b03efe570ef9dc1bebb2ef6a5bc24649c))
+
 ## [1.4.1](https://github.com/coelhoadler/meu-cofrin/compare/v1.4.0...v1.4.1) (2026-08-25)
 
 
