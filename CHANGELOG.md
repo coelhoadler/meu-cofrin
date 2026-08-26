@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.5.0...v1.6.0) (2026-08-26)
+
+
+### Features
+
+* add UI layouts for transaction listing and new account creation components ([53ef38e](https://github.com/coelhoadler/meu-cofrin/commit/53ef38e7f00f1183a7fa25bb3c9f4a0a99b2234a))
+
 # [1.5.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.4.1...v1.5.0) (2026-08-26)
 
 
