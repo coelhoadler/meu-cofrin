@@ -22,7 +22,14 @@ import { TourService } from '../../core/services/tour.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardComponent implements AfterViewInit {
-  selectedDate = signal<Date>(new Date());
+  selectedDate = signal<Date>((() => {
+    const saved = localStorage.getItem('dashboard_selected_month');
+    if (saved) {
+      const parsed = new Date(saved);
+      if (!isNaN(parsed.getTime())) return parsed;
+    }
+    return new Date();
+  })());
 
   selectedMesRef = computed(() => {
     const d = this.selectedDate();
@@ -63,21 +70,26 @@ export class DashboardComponent implements AfterViewInit {
     const current = this.selectedDate();
     const prev = new Date(current.getFullYear(), current.getMonth() - 1, 1);
     this.selectedDate.set(prev);
+    localStorage.setItem('dashboard_selected_month', prev.toISOString());
   }
 
   nextMonth() {
     const current = this.selectedDate();
     const next = new Date(current.getFullYear(), current.getMonth() + 1, 1);
     this.selectedDate.set(next);
+    localStorage.setItem('dashboard_selected_month', next.toISOString());
   }
 
   goToCurrentMonth() {
     this.selectedDate.set(new Date());
+    localStorage.removeItem('dashboard_selected_month');
   }
 
   onMonthSelect(date: Date) {
     if (date) {
-      this.selectedDate.set(new Date(date.getFullYear(), date.getMonth(), 1));
+      const newDate = new Date(date.getFullYear(), date.getMonth(), 1);
+      this.selectedDate.set(newDate);
+      localStorage.setItem('dashboard_selected_month', newDate.toISOString());
     }
   }
 
