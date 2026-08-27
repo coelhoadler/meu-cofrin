@@ -53,3 +53,6 @@ playwright-video/*
 playwright-trace/*
 playwright-debug.log
 test-results/*
+
+# Environments
+src/environments/environment.ts
