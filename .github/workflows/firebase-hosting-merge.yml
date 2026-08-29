@@ -15,6 +15,23 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22.23.1'
+      - name: Create environment.ts
+        run: |
+          mkdir -p src/environments
+          cat << EOF > src/environments/environment.ts
+          export const environment = {
+            production: true,
+            firebase: {
+              apiKey: '${{ secrets.FIREBASE_API_KEY }}',
+              authDomain: 'meu-cofrin.firebaseapp.com',
+              projectId: 'meu-cofrin',
+              storageBucket: 'meu-cofrin.firebasestorage.app',
+              messagingSenderId: '570567455946',
+              appId: '1:570567455946:web:ea39f614bd1397991f7033',
+              measurementId: 'G-QHZ9Q0MRZS',
+            }
+          };
+          EOF
       - run: npm i --legacy-peer-deps && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
