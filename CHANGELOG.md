@@ -1,3 +1,16 @@
+# [1.10.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.9.0...v1.10.0) (2026-08-29)
+
+
+### Features
+
+* add evolution tracking feature for investments with chart visualization and history management ([22d30af](https://github.com/coelhoadler/meu-cofrin/commit/22d30afa7b112ab016c60739cd9cbf0469feb3e5))
+* create investments list component with grid view and total patrimony summary ([e93773d](https://github.com/coelhoadler/meu-cofrin/commit/e93773d255b1646f0b2cc29392c4fe7cd54c69d0))
+* implement InvestimentosComponent to manage and display user investments ([9515c9a](https://github.com/coelhoadler/meu-cofrin/commit/9515c9a429dfdf53028383d11ec2c77435b6fec8))
+* implement investment evolution visualization and history tracking with chart support ([b207510](https://github.com/coelhoadler/meu-cofrin/commit/b2075106b224ab66145c45a3893a5fb66088e346))
+* implement investment module with CRUD operations, evolution tracking, and UI integration ([ef0a6ea](https://github.com/coelhoadler/meu-cofrin/commit/ef0a6ea0430fb66c1aca7cc2cab110f16150f915))
+* implement investments dashboard and evolution tracking components ([7e1b052](https://github.com/coelhoadler/meu-cofrin/commit/7e1b052ffb099c2c51fb5f1059a48b44122aac43))
+* implement investments dashboard with CRUD and performance tracking functionality ([1ca2360](https://github.com/coelhoadler/meu-cofrin/commit/1ca2360ff0557b9b5690a8568784a6d4288201f1))
+
 # [1.9.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.8.0...v1.9.0) (2026-08-29)
 
 
