@@ -37,7 +37,7 @@ export class InvestimentosComponent implements OnInit {
     async loadInvestimentos() {
         this.isLoading.set(true);
         try {
-            const items = await this.investimentoService.getInvestimentos();
+            const items = (await this.investimentoService.getInvestimentos())?.sort((a, b) => a.nome.localeCompare(b.nome));
             this.investimentos.set(items);
         } catch (error) {
             console.error('Erro ao buscar investimentos', error);
