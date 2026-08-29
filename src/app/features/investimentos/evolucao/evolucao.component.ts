@@ -10,11 +10,13 @@ import { DialogModule } from 'primeng/dialog';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { InvestimentoService } from '../../../core/services/investimento.service';
 import { Investimento, RegistroInvestimento } from '../../../core/models/investimento.model';
+import { NgxCurrencyDirective } from 'ngx-currency';
+import { NgxMaskDirective } from 'ngx-mask';
 
 @Component({
   selector: 'app-evolucao',
   standalone: true,
-  imports: [CommonModule, RouterLink, BaseChartDirective, ProgressSpinnerModule, DialogModule, ReactiveFormsModule, ButtonModule, DatePickerModule],
+  imports: [CommonModule, RouterLink, BaseChartDirective, ProgressSpinnerModule, DialogModule, ReactiveFormsModule, ButtonModule, NgxCurrencyDirective, NgxMaskDirective],
   templateUrl: './evolucao.component.html'
 })
 export class EvolucaoComponent implements OnInit {
@@ -71,8 +73,13 @@ export class EvolucaoComponent implements OnInit {
   });
 
   ngOnInit() {
+    const hoje = new Date();
+    const dia = String(hoje.getDate()).padStart(2, '0');
+    const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+    const ano = hoje.getFullYear();
+
     this.formRegistro = this.fb.group({
-      data: [new Date(), Validators.required],
+      data: [`${dia}${mes}${ano}`, Validators.required],
       valor: [0, [Validators.required, Validators.min(0)]],
       anotacao: ['']
     });
@@ -152,9 +159,13 @@ export class EvolucaoComponent implements OnInit {
   }
 
   openNovoRegistro() {
-    // Pre-fill valor com o valor atual do investimento
+    const hoje = new Date();
+    const dia = String(hoje.getDate()).padStart(2, '0');
+    const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+    const ano = hoje.getFullYear();
+
     this.formRegistro.patchValue({
-      data: new Date(),
+      data: `${dia}${mes}${ano}`,
       valor: this.investimento()?.valorAtual || 0,
       anotacao: ''
     });
@@ -177,8 +188,18 @@ export class EvolucaoComponent implements OnInit {
     this.isSaving.set(true);
     try {
       const raw = this.formRegistro.getRawValue();
+      
+      let isoDate = new Date().toISOString();
+      if (raw.data && typeof raw.data === 'string' && raw.data.length === 8) {
+        const d = raw.data;
+        const dia = parseInt(d.substring(0, 2), 10);
+        const mes = parseInt(d.substring(2, 4), 10) - 1;
+        const ano = parseInt(d.substring(4, 8), 10);
+        isoDate = new Date(ano, mes, dia).toISOString();
+      }
+
       const registro: RegistroInvestimento = {
-        data: new Date(raw.data).toISOString(),
+        data: isoDate,
         valor: Number(raw.valor),
         anotacao: raw.anotacao
       };

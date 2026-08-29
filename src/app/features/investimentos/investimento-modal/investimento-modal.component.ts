@@ -6,11 +6,13 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { DialogModule } from 'primeng/dialog';
 import { InvestimentoService } from '../../../core/services/investimento.service';
 import { Investimento } from '../../../core/models/investimento.model';
+import { NgxCurrencyDirective } from 'ngx-currency';
+import { NgxMaskDirective } from 'ngx-mask';
 
 @Component({
   selector: 'app-investimento-modal',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, DialogModule, ButtonModule, DatePickerModule],
+  imports: [CommonModule, ReactiveFormsModule, DialogModule, ButtonModule, NgxCurrencyDirective, NgxMaskDirective],
   templateUrl: './investimento-modal.component.html'
 })
 export class InvestimentoModalComponent implements OnInit {
@@ -24,8 +26,8 @@ export class InvestimentoModalComponent implements OnInit {
   isLoading = false;
   form!: FormGroup;
 
-  tipos = ['CDB', 'Criptomoedas', 'Poupança', 'Tesouro Direto', 'Previdência Privada'];
-  instituicoes = ['Banco XP', 'Nubank', 'Itaú', 'Inter', 'Clear', 'Rico', 'Outros'];
+  tipos = ['Ações', 'Cofrinhos', 'CDB', 'Criptomoedas', 'Fundos mobiliários', 'Fundos de investimento', 'Poupança', 'Tesouro Direto', 'Previdência privada'].sort((a: string, b: string) => a.localeCompare(b));
+  instituicoes = ['Banco XP', 'Nubank', 'Itaú', 'Inter', 'Banco do Brasil', 'Rico', 'Outros'].sort((a: string, b: string) => a.localeCompare(b));
 
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -61,7 +63,13 @@ export class InvestimentoModalComponent implements OnInit {
       });
 
       if (this.investimento.dataVencimento) {
-        this.form.patchValue({ dataVencimento: new Date(this.investimento.dataVencimento) });
+        const dateObj = new Date(this.investimento.dataVencimento);
+        if (!isNaN(dateObj.getTime())) {
+          const dia = String(dateObj.getDate()).padStart(2, '0');
+          const mes = String(dateObj.getMonth() + 1).padStart(2, '0');
+          const ano = dateObj.getFullYear();
+          this.form.patchValue({ dataVencimento: `${dia}${mes}${ano}` });
+        }
       }
 
       // Desabilitar aporte inicial na edição (para não complicar o histórico gerado)
@@ -82,7 +90,7 @@ export class InvestimentoModalComponent implements OnInit {
     this.isLoading = true;
     try {
       const rawValues = this.form.getRawValue();
-      
+
       const invData: Investimento = {
         nome: rawValues.nome,
         descricao: rawValues.descricao,
@@ -94,8 +102,12 @@ export class InvestimentoModalComponent implements OnInit {
         criadoEm: this.investimento ? this.investimento.criadoEm : new Date().toISOString()
       };
 
-      if (rawValues.dataVencimento) {
-        invData.dataVencimento = new Date(rawValues.dataVencimento).toISOString();
+      if (rawValues.dataVencimento && typeof rawValues.dataVencimento === 'string' && rawValues.dataVencimento.length === 8) {
+        const d = rawValues.dataVencimento;
+        const dia = parseInt(d.substring(0, 2), 10);
+        const mes = parseInt(d.substring(2, 4), 10) - 1;
+        const ano = parseInt(d.substring(4, 8), 10);
+        invData.dataVencimento = new Date(ano, mes, dia).toISOString();
       }
 
       if (this.investimento && this.investimento.id) {

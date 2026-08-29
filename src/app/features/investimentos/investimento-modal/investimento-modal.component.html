@@ -41,13 +41,9 @@
 
       <div class="flex flex-col gap-1.5">
         <label class="text-sm font-medium">Data de vencimento</label>
-        <p-datepicker formControlName="dataVencimento" 
-          [showIcon]="true" 
-          dateFormat="dd/mm/yy"
-          placeholder="dd/mm/aaaa"
-          styleClass="w-full"
-          inputStyleClass="w-full bg-transparent border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all dark:bg-[#1a112c] text-slate-700 dark:text-slate-300">
-        </p-datepicker>
+        <input type="text" formControlName="dataVencimento" mask="d0/M0/0000" [leadZeroDateTime]="true" placeholder="dd/mm/aaaa"
+          class="w-full bg-transparent border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all placeholder:text-slate-400"
+          [ngClass]="{'border-rose-500': form.get('dataVencimento')?.invalid && form.get('dataVencimento')?.touched}" />
       </div>
     </div>
 
@@ -55,7 +51,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="flex flex-col gap-1.5">
         <label class="text-sm font-medium">Aporte inicial (R$) *</label>
-        <input type="number" formControlName="aporteInicial" step="0.01" min="0" placeholder="0.00"
+        <input type="text" formControlName="aporteInicial" currencyMask [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', align: 'left', allowNegative: false }" placeholder="R$ 0,00"
           class="w-full bg-transparent border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all placeholder:text-slate-400 disabled:opacity-50"
           [ngClass]="{'border-rose-500': form.get('aporteInicial')?.invalid && form.get('aporteInicial')?.touched}" />
       </div>
