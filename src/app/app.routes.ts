@@ -56,6 +56,16 @@ export const routes: Routes = [
         loadComponent: () => import('./features/pagar-conta/pagar-conta.component').then(m => m.PagarContaComponent),
         title: 'Meu Cofrin | Atualizar Conta'
       },
+      {
+        path: 'investimentos',
+        loadComponent: () => import('./features/investimentos/investimentos.component').then(m => m.InvestimentosComponent),
+        title: 'Meu Cofrin | Investimentos'
+      },
+      {
+        path: 'investimentos/:id/evolucao',
+        loadComponent: () => import('./features/investimentos/evolucao/evolucao.component').then(m => m.EvolucaoComponent),
+        title: 'Meu Cofrin | Evolução do Investimento'
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },

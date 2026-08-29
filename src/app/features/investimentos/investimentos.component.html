@@ -1,0 +1,138 @@
+<div class="flex flex-col h-full fade-in">
+  <!-- Header -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+    <div>
+      <a routerLink="/dashboard"
+        class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 flex items-center gap-2 mb-2 text-sm font-medium transition-colors">
+        <span class="material-symbols-outlined text-lg">arrow_back</span>
+        Voltar
+      </a>
+      <h2 class="text-2xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
+        Investimentos
+      </h2>
+      <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Acompanhe a evolução e rentabilidade dos seus
+        investimentos.</p>
+    </div>
+    <button (click)="openNovoInvestimento()"
+      class="bg-[#421b7b] hover:bg-[#341561] text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
+      <span class="material-symbols-outlined text-lg">add</span>
+      Novo investimento
+    </button>
+  </div>
+
+  @if (isLoading()) {
+  <div class="flex-1 flex justify-center items-center">
+    <p-progressSpinner strokeWidth="4" animationDuration=".5s"></p-progressSpinner>
+  </div>
+  } @else {
+  <!-- Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+    @for (inv of investimentos(); track inv.id) {
+    <div
+      class="bg-white dark:bg-[#1a112c] rounded-2xl p-5 border border-slate-200 dark:border-slate-800/50 shadow-sm hover:shadow-md transition-all flex flex-col gap-4 group">
+
+      <!-- Top Row -->
+      <div class="flex justify-between items-start gap-2">
+        <div class="min-w-0 flex-1">
+          <h3 class="font-bold text-slate-800 dark:text-white truncate" [title]="inv.nome">{{ inv.nome }}</h3>
+          <div class="flex flex-wrap items-center gap-2 mt-1">
+            <span class="inline-flex text-[11px] font-medium px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
+              {{ inv.tipo }}
+            </span>
+            @if (inv.dataVencimento) {
+              <span class="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300" title="Data de vencimento">
+                <span class="material-symbols-outlined text-[11px]">event</span>
+                Vence em {{ inv.dataVencimento | date:'dd/MM/yyyy' }}
+              </span>
+            }
+          </div>
+        </div>
+        <!-- Actions -->
+        <div class="flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
+          <button (click)="openEditarInvestimento(inv, $event)"
+            class="text-slate-400 hover:text-indigo-500 p-1 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800">
+            <span class="material-symbols-outlined text-sm">edit</span>
+          </button>
+          <button (click)="deleteInvestimento(inv.id, $event)"
+            class="text-slate-400 hover:text-rose-500 p-1 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800">
+            <span class="material-symbols-outlined text-sm">delete</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Valores -->
+      <div class="mt-2">
+        <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Valor atual</p>
+        <p class="text-xl font-bold text-slate-800 dark:text-white">{{ inv.valorAtual | currency:'BRL' }}</p>
+      </div>
+
+      <!-- Aporte e Rentabilidade -->
+      <div class="flex justify-between items-end border-t border-slate-100 dark:border-slate-800/50 pt-3">
+        <div>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400">Aporte inicial</p>
+          <p class="text-xs font-semibold text-slate-700 dark:text-slate-300">{{ inv.aporteInicial | currency:'BRL' }}
+          </p>
+        </div>
+        <div class="text-right">
+          @let rentabilidade = getRentabilidade(inv);
+          <div class="flex items-center gap-1 text-xs font-bold justify-end"
+            [ngClass]="rentabilidade.positiva ? 'text-emerald-500' : 'text-rose-500'">
+            <span class="material-symbols-outlined text-xs">
+              {{ rentabilidade.positiva ? 'trending_up' : 'trending_down' }}
+            </span>
+            {{ rentabilidade.positiva ? '+' : '' }}{{ rentabilidade.valor | currency:'BRL' }} ({{ rentabilidade.positiva
+            ? '+' : '' }}{{ rentabilidade.percentual | number:'1.1-2' }}%)
+          </div>
+        </div>
+      </div>
+
+      <!-- Botão Evolução -->
+      <button (click)="goToEvolucao(inv.id)"
+        class="w-full mt-2 py-2 rounded-xl text-sm font-semibold border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+        Ver evolução
+      </button>
+    </div>
+    }
+    @empty {
+    <div
+      class="col-span-full py-12 flex flex-col items-center justify-center text-center bg-white dark:bg-[#1a112c] rounded-2xl border border-slate-200 dark:border-slate-800/50 border-dashed">
+      <span class="material-symbols-outlined text-4xl text-slate-300 dark:text-slate-600 mb-3">savings</span>
+      <h3 class="text-slate-800 dark:text-white font-medium mb-1">Nenhum investimento cadastrado</h3>
+      <p class="text-sm text-slate-500 dark:text-slate-400 max-w-sm">Comece a acompanhar seu patrimônio clicando em
+        "Novo investimento".</p>
+    </div>
+    }
+  </div>
+
+  @if (investimentos().length > 0) {
+  <div
+    class="mt-6 absolute sticky bottom-4 z-20 bg-gradient-to-r from-[#421b7b] to-[#5927a4] rounded-2xl p-6 shadow-2xl flex justify-between items-center text-white relative overflow-hidden group">
+    <!-- Decoration -->
+    <div
+      class="absolute -right-10 -top-10 w-40 h-40 bg-white/5 rounded-full blur-2xl group-hover:bg-white/10 transition-colors">
+    </div>
+    <div
+      class="absolute right-20 -bottom-10 w-24 h-24 bg-white/5 rounded-full blur-xl group-hover:bg-white/10 transition-colors">
+    </div>
+
+    <div class="relative z-10">
+      <p class="text-sm font-medium text-white/80 mb-1">Patrimônio Total Investido</p>
+      <p class="text-3xl font-bold">{{ showValues() ? (totalInvestido() | currency:'BRL') : 'R$ •••••' }}</p>
+    </div>
+
+    <div (click)="toggleVisibility()" class="relative z-10 bg-white/10 p-4 rounded-xl border border-white/10 backdrop-blur-sm cursor-pointer hover:bg-white/20 transition-colors flex items-center justify-center">
+      <span class="material-symbols-outlined text-3xl md:text-4xl">
+        {{ showValues() ? 'visibility' : 'visibility_off' }}
+      </span>
+    </div>
+  </div>
+  }
+  }
+</div>
+
+
+
+@if(showModal()) {
+<app-investimento-modal [investimento]="selectedInvestimento()" (closeModal)="onModalClose($event)">
+</app-investimento-modal>
+}
