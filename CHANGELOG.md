@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.6.0...v1.7.0) (2026-08-29)
+
+
+### Features
+
+* initialize application configuration with Firebase, Sentry, and environment management support ([8e9d109](https://github.com/coelhoadler/meu-cofrin/commit/8e9d109b458f1cfc79361dffeba53cc08bfe2518))
+
 # [1.6.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.5.0...v1.6.0) (2026-08-26)
 
 
