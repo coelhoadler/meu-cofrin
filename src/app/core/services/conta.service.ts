@@ -353,6 +353,19 @@ export class ContaService {
     return items;
   }
 
+  async getResumoMensalById(id: string): Promise<ResumoMensal | null> {
+    const user = await this.authService.getCurrentUserAsync();
+    if (!user) return null;
+
+    const docRef = doc(this.firestore, `users/${user.uid}/resumosMensais`, id);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      return { id: docSnap.id, ...docSnap.data() } as ResumoMensal;
+    }
+    return null;
+  }
+
   async marcarComoPaga(id: string): Promise<void> {
     const user = await this.authService.getCurrentUserAsync();
     if (!user) throw new Error('Usuário não autenticado');

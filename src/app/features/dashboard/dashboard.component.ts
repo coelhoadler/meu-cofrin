@@ -14,6 +14,8 @@ import { Conta, ContaService } from '../../core/services/conta.service';
 import { MessagingService } from '../../core/services/messaging.service';
 import { TourService } from '../../core/services/tour.service';
 
+export type Variacao = { percent: number; direction: 'up' | 'down' | 'none' } | null;
+
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -65,6 +67,10 @@ export class DashboardComponent implements AfterViewInit {
   totalPago = signal('R$ 0,00');
   statusConta = signal('');
   showValues = signal(localStorage.getItem('showValues') !== 'false');
+
+  variacaoReceitas = signal<Variacao>(null);
+  variacaoDespesas = signal<Variacao>(null);
+  variacaoSaldo = signal<Variacao>(null);
 
   previousMonth() {
     const current = this.selectedDate();
@@ -287,6 +293,23 @@ export class DashboardComponent implements AfterViewInit {
       this.totalAPagar.set(formatter.format(somaAPagar));
       this.totalPago.set(formatter.format(somaDespesas - somaAPagar));
 
+      // Busca mês anterior para calcular variação
+      const [ano, mes] = mesRef.split('-');
+      const currentDate = new Date(parseInt(ano), parseInt(mes) - 1, 1);
+      const prevDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+      const prevMesRef = `${prevDate.getFullYear()}-${String(prevDate.getMonth() + 1).padStart(2, '0')}`;
+
+      const prevResumo = await this.contaService.getResumoMensalById(prevMesRef);
+      if (prevResumo) {
+        this.variacaoReceitas.set(this.calcularVariacao(prevResumo.totalReceitas || 0, somaReceitas));
+        this.variacaoDespesas.set(this.calcularVariacao(prevResumo.totalDespesas || 0, somaDespesas));
+        this.variacaoSaldo.set(this.calcularVariacao(prevResumo.saldo || 0, saldo));
+      } else {
+        this.variacaoReceitas.set(null);
+        this.variacaoDespesas.set(null);
+        this.variacaoSaldo.set(null);
+      }
+
     } catch (error) {
       console.error('Erro ao buscar resumo do mês:', error);
     }
@@ -474,6 +497,19 @@ export class DashboardComponent implements AfterViewInit {
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
     return diffDays;
+  }
+
+  public calcularVariacao(oldValue: number, newValue: number): Variacao {
+    if (oldValue === 0) {
+      if (newValue === 0) return { percent: 0, direction: 'none' };
+      return null;
+    }
+    const percent = ((newValue - oldValue) / Math.abs(oldValue)) * 100;
+    
+    return {
+      percent: Math.abs(percent),
+      direction: percent > 0 ? 'up' : percent < 0 ? 'down' : 'none'
+    };
   }
 
   public greetingUser(): string {
