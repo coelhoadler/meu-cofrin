@@ -1,0 +1,100 @@
+<p-dialog 
+  [header]="investimento ? 'Editar investimento' : 'Novo investimento'" 
+  [(visible)]="visible"
+  [modal]="true" 
+  [draggable]="false"
+  [resizable]="false"
+  (onHide)="onHide()"
+  styleClass="w-[95%] md:w-full md:max-w-xl mx-auto rounded-2xl overflow-hidden shadow-2xl"
+  contentStyleClass="bg-white dark:bg-[#1a112c] p-6 rounded-b-2xl"
+  headerStyleClass="bg-white dark:bg-[#1a112c] border-b border-slate-100 dark:border-slate-800 text-slate-800 dark:text-white px-6 py-4 font-bold"
+  [closeOnEscape]="true">
+
+  <form [formGroup]="form" (ngSubmit)="save()" class="flex flex-col gap-4 mt-2 text-slate-700 dark:text-slate-300">
+    
+    <!-- Nome -->
+    <div class="flex flex-col gap-1.5">
+      <label class="text-sm font-medium">Nome *</label>
+      <input type="text" formControlName="nome" placeholder="Ex: CDB Banco X, Tesouro Selic..."
+        class="w-full bg-transparent border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all placeholder:text-slate-400"
+        [ngClass]="{'border-rose-500': form.get('nome')?.invalid && form.get('nome')?.touched}" />
+    </div>
+
+    <!-- Descrição -->
+    <div class="flex flex-col gap-1.5">
+      <label class="text-sm font-medium">Descrição</label>
+      <textarea formControlName="descricao" rows="2" placeholder="Detalhes sobre o investimento"
+        class="w-full bg-transparent border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all placeholder:text-slate-400"></textarea>
+    </div>
+
+    <!-- Tipo & Vencimento -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="flex flex-col gap-1.5">
+        <label class="text-sm font-medium">Tipo *</label>
+        <select formControlName="tipo"
+          class="w-full bg-transparent border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all dark:bg-[#1a112c]">
+          @for(tipo of tipos; track tipo) {
+            <option [value]="tipo">{{ tipo }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <label class="text-sm font-medium">Data de vencimento</label>
+        <p-datepicker formControlName="dataVencimento" 
+          [showIcon]="true" 
+          dateFormat="dd/mm/yy"
+          placeholder="dd/mm/aaaa"
+          styleClass="w-full"
+          inputStyleClass="w-full bg-transparent border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all dark:bg-[#1a112c] text-slate-700 dark:text-slate-300">
+        </p-datepicker>
+      </div>
+    </div>
+
+    <!-- Aporte Inicial & Instituição -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="flex flex-col gap-1.5">
+        <label class="text-sm font-medium">Aporte inicial (R$) *</label>
+        <input type="number" formControlName="aporteInicial" step="0.01" min="0" placeholder="0.00"
+          class="w-full bg-transparent border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all placeholder:text-slate-400 disabled:opacity-50"
+          [ngClass]="{'border-rose-500': form.get('aporteInicial')?.invalid && form.get('aporteInicial')?.touched}" />
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <label class="text-sm font-medium">Instituição *</label>
+        <select formControlName="instituicao"
+          class="w-full bg-transparent border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all dark:bg-[#1a112c]">
+          @for(inst of instituicoes; track inst) {
+            <option [value]="inst">{{ inst }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <!-- Instituição Outros (Condicional) -->
+    @if(form.get('instituicao')?.value === 'Outros') {
+      <div class="flex flex-col gap-1.5 animate-in fade-in slide-in-from-top-2 duration-200">
+        <label class="text-sm font-medium">Nome da Instituição *</label>
+        <input type="text" formControlName="instituicaoOutros" placeholder="Digite o nome da instituição"
+          class="w-full bg-transparent border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all placeholder:text-slate-400"
+          [ngClass]="{'border-rose-500': form.get('instituicaoOutros')?.invalid && form.get('instituicaoOutros')?.touched}" />
+      </div>
+    }
+
+    <!-- Footer Actions -->
+    <div class="flex justify-end gap-3 mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+      <button type="button" (click)="onHide()"
+        class="px-5 py-2.5 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+        Cancelar
+      </button>
+      <button type="submit" [disabled]="isLoading"
+        class="bg-[#421b7b] hover:bg-[#341561] text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-md">
+        @if(isLoading) {
+          <i class="pi pi-spinner pi-spin"></i>
+        }
+        Salvar
+      </button>
+    </div>
+
+  </form>
+</p-dialog>

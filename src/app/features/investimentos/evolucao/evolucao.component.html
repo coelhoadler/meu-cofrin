@@ -1,0 +1,141 @@
+<div class="flex flex-col h-full fade-in">
+  <!-- Header -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+    <div>
+      <a routerLink="/investimentos" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 flex items-center gap-2 mb-2 text-sm font-medium transition-colors">
+        <span class="material-symbols-outlined text-lg">arrow_back</span>
+        Voltar
+      </a>
+      <h2 class="text-2xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
+        {{ investimento()?.nome }}
+      </h2>
+      <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Evolução e histórico de rentabilidade.</p>
+    </div>
+    
+    @if (!isLoading()) {
+      <div class="flex gap-4 items-center">
+        @let rentabilidade = getRentabilidade();
+        <div class="text-right">
+          <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Valor atual</p>
+          <p class="text-xl font-bold text-slate-800 dark:text-white">{{ investimento()?.valorAtual | currency:'BRL' }}</p>
+          <div class="flex items-center gap-1 text-xs font-bold justify-end"
+               [ngClass]="rentabilidade.positiva ? 'text-emerald-500' : 'text-rose-500'">
+            <span class="material-symbols-outlined text-xs">
+              {{ rentabilidade.positiva ? 'trending_up' : 'trending_down' }}
+            </span>
+            {{ rentabilidade.positiva ? '+' : '' }}{{ rentabilidade.valor | currency:'BRL' }} ({{ rentabilidade.positiva ? '+' : '' }}{{ rentabilidade.percentual | number:'1.1-2' }}%)
+          </div>
+        </div>
+        <button (click)="openNovoRegistro()"
+          class="bg-[#421b7b] hover:bg-[#341561] text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined text-lg">add</span>
+          Novo registro
+        </button>
+      </div>
+    }
+  </div>
+
+  @if (isLoading()) {
+    <div class="flex-1 flex justify-center items-center">
+      <p-progressSpinner strokeWidth="4" animationDuration=".5s"></p-progressSpinner>
+    </div>
+  } @else {
+    
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- Chart -->
+      <div class="lg:col-span-2 bg-white dark:bg-[#1a112c] p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col">
+        <h3 class="font-bold text-slate-800 dark:text-white mb-4">Gráfico de Evolução</h3>
+        
+        <div class="flex-1 min-h-[300px] w-full relative">
+          @if (registros().length > 1) {
+            <canvas baseChart
+              [data]="lineChartData()"
+              [options]="lineChartOptions"
+              type="line">
+            </canvas>
+          } @else {
+            <div class="absolute inset-0 flex flex-col items-center justify-center text-slate-400">
+              <span class="material-symbols-outlined text-4xl mb-2 opacity-50">show_chart</span>
+              <p class="text-sm">Adicione mais registros para ver o gráfico.</p>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- History List -->
+      <div class="bg-white dark:bg-[#1a112c] p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col">
+        <h3 class="font-bold text-slate-800 dark:text-white mb-4">Histórico de Registros</h3>
+        
+        <div class="flex flex-col gap-3 overflow-y-auto max-h-[400px] pr-2">
+          @for (reg of registros().slice().reverse(); track reg.id) {
+            <div class="flex items-center justify-between p-3 rounded-xl border border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors group">
+              <div>
+                <p class="text-sm font-semibold text-slate-800 dark:text-white">{{ reg.valor | currency:'BRL' }}</p>
+                <p class="text-xs text-slate-500">{{ reg.data | date:'dd/MM/yyyy' }}</p>
+                @if (reg.anotacao) {
+                  <p class="text-[11px] text-slate-400 mt-1 italic">{{ reg.anotacao }}</p>
+                }
+              </div>
+              <button (click)="deleteRegistro(reg.id)" class="text-slate-300 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                <span class="material-symbols-outlined text-sm">delete</span>
+              </button>
+            </div>
+          } @empty {
+            <p class="text-sm text-slate-400 text-center py-4">Nenhum registro encontrado.</p>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>
+
+<!-- Modal Novo Registro -->
+<p-dialog 
+  header="Adicionar Registro de Evolução" 
+  [(visible)]="showModal"
+  [modal]="true" 
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="w-[95%] md:w-full md:max-w-md mx-auto rounded-2xl overflow-hidden shadow-2xl"
+  contentStyleClass="bg-white dark:bg-[#1a112c] p-6 rounded-b-2xl"
+  headerStyleClass="bg-white dark:bg-[#1a112c] border-b border-slate-100 dark:border-slate-800 text-slate-800 dark:text-white px-6 py-4 font-bold">
+
+  <form [formGroup]="formRegistro" (ngSubmit)="saveRegistro()" class="flex flex-col gap-4 mt-2 text-slate-700 dark:text-slate-300">
+    
+    <div class="flex flex-col gap-1.5">
+      <label class="text-sm font-medium">Data do registro *</label>
+      <p-datepicker formControlName="data" 
+        [showIcon]="true" 
+        dateFormat="dd/mm/yy"
+        styleClass="w-full"
+        inputStyleClass="w-full bg-transparent border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all dark:bg-[#1a112c] text-slate-700 dark:text-slate-300">
+      </p-datepicker>
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label class="text-sm font-medium">Valor total nesta data (R$) *</label>
+      <input type="number" formControlName="valor" step="0.01" min="0"
+        class="w-full bg-transparent border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+        [ngClass]="{'border-rose-500': formRegistro.get('valor')?.invalid && formRegistro.get('valor')?.touched}" />
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label class="text-sm font-medium">Anotação (Opcional)</label>
+      <input type="text" formControlName="anotacao" placeholder="Ex: Rendimento do mês"
+        class="w-full bg-transparent border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all" />
+    </div>
+
+    <div class="flex justify-end gap-3 mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+      <button type="button" (click)="closeModal()"
+        class="px-5 py-2.5 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+        Cancelar
+      </button>
+      <button type="submit" [disabled]="isSaving()"
+        class="bg-[#421b7b] hover:bg-[#341561] text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition-colors disabled:opacity-50 flex items-center gap-2">
+        @if(isSaving()) { <i class="pi pi-spinner pi-spin"></i> }
+        Salvar
+      </button>
+    </div>
+  </form>
+</p-dialog>
