@@ -34,6 +34,7 @@ import {
 import * as Sentry from '@sentry/angular';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { routes } from './app.routes';
+import { environment } from '../environments/environment';
 
 registerLocaleData(ptBr);
 
@@ -95,17 +96,7 @@ export const appConfig: ApplicationConfig = {
     }),
     provideRouter(routes),
     { provide: LOCALE_ID, useValue: 'pt' },
-    provideFirebaseApp(() =>
-      initializeApp({
-        apiKey: 'AIzaSyAPDHqVLWlphds13yTj_YK_P2irI_lVLG0',
-        authDomain: 'meu-cofrin.firebaseapp.com',
-        projectId: 'meu-cofrin',
-        storageBucket: 'meu-cofrin.firebasestorage.app',
-        messagingSenderId: '570567455946',
-        appId: '1:570567455946:web:ea39f614bd1397991f7033',
-        measurementId: 'G-QHZ9Q0MRZS',
-      }),
-    ),
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
     provideStorage(() => getStorage()),
