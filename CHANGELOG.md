@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.7.0...v1.8.0) (2026-08-29)
+
+
+### Features
+
+* implement login page UI and configure global styles with Tailwind and theme fonts ([decbbc7](https://github.com/coelhoadler/meu-cofrin/commit/decbbc710515de8945d90ba0aab4a849fe6a240c))
+
 # [1.7.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.6.0...v1.7.0) (2026-08-29)
 
 
