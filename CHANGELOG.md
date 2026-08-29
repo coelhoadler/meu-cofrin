@@ -1,3 +1,12 @@
+# [1.9.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.8.0...v1.9.0) (2026-08-29)
+
+
+### Features
+
+* create dashboard component with summary cards and performance charts ([e7ea9e3](https://github.com/coelhoadler/meu-cofrin/commit/e7ea9e3e87e5f2da84b4bfca11512af96d2409a3))
+* create dashboard layout with summary cards and monthly navigation ([002eb85](https://github.com/coelhoadler/meu-cofrin/commit/002eb85128e74bcfeb636e175f6fddaf507ad86e))
+* implement ContaService with Firestore caching and add skeleton dashboard components ([79d36db](https://github.com/coelhoadler/meu-cofrin/commit/79d36db994246c08423d3c2859efe37bf3377ec0))
+
 # [1.8.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.7.0...v1.8.0) (2026-08-29)
 
 
