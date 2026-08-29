@@ -110,11 +110,13 @@
 
     <div class="relative z-10">
       <p class="text-sm font-medium text-white/80 mb-1">Patrimônio Total Investido</p>
-      <p class="text-3xl font-bold">{{ totalInvestido() | currency:'BRL' }}</p>
+      <p class="text-3xl font-bold">{{ showValues() ? (totalInvestido() | currency:'BRL') : 'R$ •••••' }}</p>
     </div>
 
-    <div class="relative z-10 bg-white/10 p-4 rounded-xl border border-white/10 backdrop-blur-sm">
-      <span class="material-symbols-outlined text-4xl">account_balance_wallet</span>
+    <div (click)="toggleVisibility()" class="relative z-10 bg-white/10 p-4 rounded-xl border border-white/10 backdrop-blur-sm cursor-pointer hover:bg-white/20 transition-colors flex items-center justify-center">
+      <span class="material-symbols-outlined text-3xl md:text-4xl">
+        {{ showValues() ? 'visibility' : 'visibility_off' }}
+      </span>
     </div>
   </div>
   }

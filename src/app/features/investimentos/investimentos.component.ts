@@ -24,6 +24,8 @@ export class InvestimentosComponent implements OnInit {
     showModal = signal(false);
     selectedInvestimento = signal<Investimento | null>(null);
 
+    showValues = signal(localStorage.getItem('showValues') !== 'false');
+
     totalInvestido = computed(() => {
         return this.investimentos().reduce((acc, curr) => acc + (curr.valorAtual || 0), 0);
     });
@@ -90,5 +92,11 @@ export class InvestimentosComponent implements OnInit {
         if (id) {
             this.router.navigate(['/investimentos', id, 'evolucao']);
         }
+    }
+
+    toggleVisibility() {
+        const newValue = !this.showValues();
+        this.showValues.set(newValue);
+        localStorage.setItem('showValues', newValue.toString());
     }
 }
