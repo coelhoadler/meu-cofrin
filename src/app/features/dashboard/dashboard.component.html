@@ -64,10 +64,10 @@
       <div class="mt-auto flex items-center gap-1">
         @if (vr.direction === 'up') {
         <span class="material-symbols-outlined text-emerald-500 text-[14px]">trending_up</span>
-        <p class="text-emerald-500 text-[12px] font-medium">+{{ vr.percent | number:'1.0-1' }}%</p>
+        <p class="text-emerald-500 text-[12px] font-medium">+{{ vr.percent | number:'1.0-1' }}% <span class="font-normal text-slate-400 dark:text-slate-500 ml-0.5">em comparação ao mês passado</span></p>
         } @else if (vr.direction === 'down') {
         <span class="material-symbols-outlined text-rose-500 text-[14px]">trending_down</span>
-        <p class="text-rose-500 text-[12px] font-medium">-{{ vr.percent | number:'1.0-1' }}%</p>
+        <p class="text-rose-500 text-[12px] font-medium">-{{ vr.percent | number:'1.0-1' }}% <span class="font-normal text-slate-400 dark:text-slate-500 ml-0.5">em comparação ao mês passado</span></p>
         } @else {
         <p class="text-slate-400 dark:text-slate-500 text-[12px] font-medium">Sem alteração</p>
         }
@@ -92,10 +92,10 @@
       <div class="mt-auto flex items-center gap-1">
         @if (vd.direction === 'up') {
         <span class="material-symbols-outlined text-rose-500 text-[14px]">trending_up</span>
-        <p class="text-rose-500 text-[12px] font-medium">+{{ vd.percent | number:'1.0-1' }}%</p>
+        <p class="text-rose-500 text-[12px] font-medium">+{{ vd.percent | number:'1.0-1' }}% <span class="font-normal text-slate-400 dark:text-slate-500 ml-0.5">em comparação ao mês passado</span></p>
         } @else if (vd.direction === 'down') {
         <span class="material-symbols-outlined text-emerald-500 text-[14px]">trending_down</span>
-        <p class="text-emerald-500 text-[12px] font-medium">-{{ vd.percent | number:'1.0-1' }}%</p>
+        <p class="text-emerald-500 text-[12px] font-medium">-{{ vd.percent | number:'1.0-1' }}% <span class="font-normal text-slate-400 dark:text-slate-500 ml-0.5">em comparação ao mês passado</span></p>
         } @else {
         <p class="text-slate-400 dark:text-slate-500 text-[12px] font-medium">Sem alteração</p>
         }
@@ -119,10 +119,10 @@
       <div class="relative z-10 mt-auto flex items-center gap-1">
         @if (vs.direction === 'up') {
         <span class="material-symbols-outlined text-emerald-400 text-[14px]">trending_up</span>
-        <p class="text-emerald-400 text-[12px] font-medium">+{{ vs.percent | number:'1.0-1' }}%</p>
+        <p class="text-emerald-400 text-[12px] font-medium">+{{ vs.percent | number:'1.0-1' }}% <span class="font-normal text-purple-200/80 ml-0.5">em comparação ao mês passado</span></p>
         } @else if (vs.direction === 'down') {
         <span class="material-symbols-outlined text-rose-400 text-[14px]">trending_down</span>
-        <p class="text-rose-400 text-[12px] font-medium">-{{ vs.percent | number:'1.0-1' }}%</p>
+        <p class="text-rose-400 text-[12px] font-medium">-{{ vs.percent | number:'1.0-1' }}% <span class="font-normal text-purple-200/80 ml-0.5">em comparação ao mês passado</span></p>
         } @else {
         <p class="text-purple-200/80 text-[12px] font-medium">Sem alteração</p>
         }
