@@ -196,7 +196,9 @@ export class EvolucaoComponent implements OnInit {
         const dia = parseInt(d.substring(0, 2), 10);
         const mes = parseInt(d.substring(2, 4), 10) - 1;
         const ano = parseInt(d.substring(4, 8), 10);
-        isoDate = new Date(ano, mes, dia).toISOString();
+        
+        const now = new Date();
+        isoDate = new Date(ano, mes, dia, now.getHours(), now.getMinutes(), now.getSeconds()).toISOString();
       }
 
       const registro: RegistroInvestimento = {

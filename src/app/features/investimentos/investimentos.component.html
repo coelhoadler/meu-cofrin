@@ -32,8 +32,8 @@
       class="bg-white dark:bg-[#1a112c] rounded-2xl p-5 border border-slate-200 dark:border-slate-800/50 shadow-sm hover:shadow-md transition-all flex flex-col gap-4 group">
 
       <!-- Top Row -->
-      <div class="flex justify-between items-start">
-        <div>
+      <div class="flex justify-between items-start gap-2">
+        <div class="min-w-0 flex-1">
           <h3 class="font-bold text-slate-800 dark:text-white truncate" [title]="inv.nome">{{ inv.nome }}</h3>
           <span
             class="inline-flex mt-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
@@ -96,6 +96,28 @@
     </div>
     }
   </div>
+
+  @if (investimentos().length > 0) {
+  <div
+    class="mt-6 absolute sticky bottom-4 z-20 bg-gradient-to-r from-[#421b7b] to-[#5927a4] rounded-2xl p-6 shadow-2xl flex justify-between items-center text-white relative overflow-hidden group">
+    <!-- Decoration -->
+    <div
+      class="absolute -right-10 -top-10 w-40 h-40 bg-white/5 rounded-full blur-2xl group-hover:bg-white/10 transition-colors">
+    </div>
+    <div
+      class="absolute right-20 -bottom-10 w-24 h-24 bg-white/5 rounded-full blur-xl group-hover:bg-white/10 transition-colors">
+    </div>
+
+    <div class="relative z-10">
+      <p class="text-sm font-medium text-white/80 mb-1">Patrimônio Total Investido</p>
+      <p class="text-3xl font-bold">{{ totalInvestido() | currency:'BRL' }}</p>
+    </div>
+
+    <div class="relative z-10 bg-white/10 p-4 rounded-xl border border-white/10 backdrop-blur-sm">
+      <span class="material-symbols-outlined text-4xl">account_balance_wallet</span>
+    </div>
+  </div>
+  }
   }
 </div>
 

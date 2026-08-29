@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, signal, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, computed, OnInit } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { InvestimentoService } from '../../core/services/investimento.service';
 import { Investimento } from '../../core/models/investimento.model';
@@ -23,6 +23,10 @@ export class InvestimentosComponent implements OnInit {
     // Modal State
     showModal = signal(false);
     selectedInvestimento = signal<Investimento | null>(null);
+
+    totalInvestido = computed(() => {
+        return this.investimentos().reduce((acc, curr) => acc + (curr.valorAtual || 0), 0);
+    });
 
     async ngOnInit() {
         await this.loadInvestimentos();
