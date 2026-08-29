@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ChartConfiguration } from 'chart.js';
@@ -28,6 +28,7 @@ export class EvolucaoComponent implements OnInit {
   investimentoId = signal<string | null>(null);
   investimento = signal<Investimento | null>(null);
   registros = signal<RegistroInvestimento[]>([]);
+  registrosDesc = computed(() => [...this.registros()].reverse());
   isLoading = signal(true);
 
   // Modal Novo Registro

@@ -115,7 +115,21 @@ export class InvestimentoService {
     const docRef = doc(this.firestore, `users/${user.uid}/investimentos/${investimentoId}/registros`, registroId);
     await deleteDoc(docRef);
     
-    // Opcional: Re-calcular o valorAtual baseado no último registro restante se desejado,
-    // mas por simplicidade podemos manter como está ou pegar o último de `getRegistros`.
+    // Recalcular o valorAtual baseado no último registro restante
+    const registrosRestantes = await this.getRegistros(investimentoId);
+    let novoValorAtual = 0;
+
+    if (registrosRestantes.length > 0) {
+      novoValorAtual = registrosRestantes[registrosRestantes.length - 1].valor;
+    } else {
+      // Se não sobrou nenhum registro, volta para o aporte inicial
+      const investimento = await this.getInvestimentoById(investimentoId);
+      if (investimento) {
+        novoValorAtual = investimento.aporteInicial;
+      }
+    }
+
+    const investimentoRef = doc(this.firestore, `users/${user.uid}/investimentos`, investimentoId);
+    await updateDoc(investimentoRef, { valorAtual: novoValorAtual });
   }
 }
