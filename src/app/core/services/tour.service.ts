@@ -35,9 +35,10 @@ export class TourService {
               <li><b>Dashboard</b>: Visão geral das finanças (tela inicial).</li>
               <li><b>Nova conta</b>: Cadastro de novas contas.</li>
               <li><b>Meus lançamentos</b>: Lista de lançamentos.</li>
+              <li><b>Investimentos</b>: Controle seus investimentos.</li>
               <li><b>Categorias</b>: Cadastro de categorias.</li>
               <li><b>Apoiar projeto</b>: Doação para o projeto.</li>
-              <li><b>Meu perfil</b>: Dados do perfil.</li>
+              <li><b>Meu perfil</b>: Dados do usuário e configurações do app.</li>
               <li><b>Fale conosco</b>: Contato com o suporte.</li>
               <li><b>Tour</b>: Inicie o tour pelo sistema quando quiser.</li>
             </ul>`,

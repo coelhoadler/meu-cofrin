@@ -26,7 +26,7 @@ export class InvestimentoModalComponent implements OnInit {
   isLoading = false;
   form!: FormGroup;
 
-  tipos = ['Ações', 'Cofrinhos', 'CDB', 'Criptomoedas', 'Fundos mobiliários', 'Fundos de investimento', 'Poupança', 'Tesouro Direto', 'Previdência privada'].sort((a: string, b: string) => a.localeCompare(b));
+  tipos = ['Ações', 'Cofrinhos', 'CDB', 'Criptomoedas', 'Fundos imobiliários', 'Fundos de investimento', 'Poupança', 'Tesouro Direto', 'Previdência privada', 'Outros'].sort((a: string, b: string) => a.localeCompare(b));
   instituicoes = ['Banco XP', 'Nubank', 'Itaú', 'Inter', 'Banco do Brasil', 'Rico', 'Outros'].sort((a: string, b: string) => a.localeCompare(b));
 
   ngOnInit(): void {
