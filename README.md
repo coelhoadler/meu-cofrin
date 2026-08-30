@@ -1,59 +1,40 @@
-# MeuCofrin
+# 🐷 Meu Cofrin
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.13.
+**Meu Cofrin** é um aplicativo moderno, seguro e intuitivo de gestão financeira pessoal. Desenhado para quem deseja ter o controle total de suas finanças de maneira descomplicada, ele oferece uma visão completa e simplificada do seu dinheiro. 
 
-## Development server
+Esqueça as planilhas complexas! Com o Meu Cofrin, você acompanha suas receitas, despesas e a evolução dos seus investimentos de forma visual, elegante e direto ao ponto.
 
-To start a local development server, run:
+---
 
-```bash
-ng serve
-```
+## ✨ Principais Funcionalidades
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- 📊 **Dashboard Interativo**: Uma visão geral do seu mês com gráficos (pizza e barras) para fácil entendimento. Saiba instantaneamente o quanto você recebeu, gastou, e qual o seu saldo atual.
+- 💸 **Controle de Lançamentos**: Registre suas receitas e despesas com poucos cliques. É possível categorizar os lançamentos, definir datas de vencimento e marcar contas fixas como "recorrentes".
+- 🔄 **Replicação Inteligente de Meses**: Não perca tempo recadastrando despesas mensais (como internet, aluguel, condomínio). Com a função de replicar o mês, o sistema puxa todas as contas recorrentes para o próximo mês automaticamente.
+- 📈 **Gestão de Investimentos**: Acompanhe de perto o crescimento do seu patrimônio! Separe seus investimentos por categoria (Poupança, CDB, Criptomoedas, Tesouro Direto), veja o cálculo da rentabilidade e visualize gráficos lindos mostrando a evolução histórica do seu dinheiro.
+- 🛡️ **Privacidade em 1 clique**: Com o botão de "ocultar valores" no rodapé, você transforma todos os números do sistema em pontos (`••••`), permitindo que você use o aplicativo em locais públicos com total privacidade.
+- 🌙 **Design Premium & Dark Mode**: Uma interface moderna de alto contraste, com animações sutis, feita sob medida para proporcionar uma experiência fluida e não cansar sua visão.
 
-## Code scaffolding
+---
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## 🚀 Tecnologias Utilizadas
 
-```bash
-ng generate component component-name
-```
+Este projeto foi construído pensando em velocidade, segurança e experiência de usuário:
+- **Angular 19+ (Signals)**: Framework principal focado em alta performance e reatividade.
+- **Tailwind CSS**: Biblioteca de estilização utilizada para criar toda a interface fluida e moderna do aplicativo.
+- **Firebase**: O motor que mantém tudo sincronizado de forma segura, cuidando de toda a autenticação de contas de usuário e o armazenamento do banco de dados na nuvem (Firestore).
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+---
 
-```bash
-ng generate --help
-```
+## 🛠️ Para Desenvolvedores (Rodando Localmente)
 
-## Building
+Se você quiser baixar o código e rodar o Meu Cofrin no seu computador:
 
-To build the project run:
+1. Clone o repositório.
+2. No terminal, instale as dependências usando `npm install`.
+3. Configure os dados do seu projeto Firebase no arquivo de ambiente (`src/environments`).
+4. Rode a aplicação utilizando `npm start` ou `ng serve`.
+5. Acesse `http://localhost:4200/` no seu navegador. O aplicativo recarrega sozinho a cada mudança no código.
 
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+---
+*Transforme a maneira como você cuida do seu dinheiro.*
