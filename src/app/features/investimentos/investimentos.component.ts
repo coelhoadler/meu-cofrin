@@ -30,6 +30,40 @@ export class InvestimentosComponent implements OnInit {
         return this.investimentos().reduce((acc, curr) => acc + (curr.valorAtual || 0), 0);
     });
 
+    investimentosPorCategoria = computed(() => {
+        const list = [...this.investimentos()];
+
+        // Ordenar por data de vencimento (mais próxima primeiro)
+        list.sort((a, b) => {
+            const hasDataA = !!a.dataVencimento;
+            const hasDataB = !!b.dataVencimento;
+
+            if (hasDataA && hasDataB) {
+                const dateA = new Date(a.dataVencimento!).getTime();
+                const dateB = new Date(b.dataVencimento!).getTime();
+                if (dateA !== dateB) return dateA - dateB;
+            } else if (hasDataA && !hasDataB) {
+                return -1;
+            } else if (!hasDataA && hasDataB) {
+                return 1;
+            }
+            // Fallback para ordem alfabética se não tiverem data
+            return a.nome.localeCompare(b.nome);
+        });
+
+        const grouped = new Map<string, Investimento[]>();
+        for (const inv of list) {
+            if (!grouped.has(inv.tipo)) {
+                grouped.set(inv.tipo, []);
+            }
+            grouped.get(inv.tipo)!.push(inv);
+        }
+
+        return Array.from(grouped.entries())
+            .map(([tipo, investimentos]) => ({ tipo, investimentos }))
+            .sort((a, b) => a.tipo.localeCompare(b.tipo));
+    });
+
     async ngOnInit() {
         await this.loadInvestimentos();
     }
@@ -37,8 +71,8 @@ export class InvestimentosComponent implements OnInit {
     async loadInvestimentos() {
         this.isLoading.set(true);
         try {
-            const items = (await this.investimentoService.getInvestimentos())?.sort((a, b) => a.nome.localeCompare(b.nome));
-            this.investimentos.set(items);
+            const items = await this.investimentoService.getInvestimentos();
+            this.investimentos.set(items || []);
         } catch (error) {
             console.error('Erro ao buscar investimentos', error);
         } finally {
