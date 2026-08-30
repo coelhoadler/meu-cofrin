@@ -60,7 +60,10 @@ export class InvestimentosComponent implements OnInit {
         }
 
         return Array.from(grouped.entries())
-            .map(([tipo, investimentos]) => ({ tipo, investimentos }))
+            .map(([tipo, investimentos]) => {
+                const total = investimentos.reduce((acc, inv) => acc + (inv.valorAtual || 0), 0);
+                return { tipo, investimentos, total };
+            })
             .sort((a, b) => a.tipo.localeCompare(b.tipo));
     });
 

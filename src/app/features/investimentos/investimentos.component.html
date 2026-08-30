@@ -29,10 +29,15 @@
   <div class="flex flex-col gap-8 pb-4">
     @for (categoria of investimentosPorCategoria(); track categoria.tipo) {
     <div class="flex flex-col gap-3">
-      <h3 class="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
-        <span class="w-1.5 h-5 rounded-full bg-gradient-to-b from-[#421b7b] to-[#7941dc]"></span>
-        {{ categoria.tipo }}
-      </h3>
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
+          <span class="w-1.5 h-5 rounded-full bg-gradient-to-b from-[#421b7b] to-[#7941dc]"></span>
+          {{ categoria.tipo }}
+        </h3>
+        <p class="text-sm font-semibold text-slate-600 dark:text-slate-300">
+          {{ showValues() ? (categoria.total | currency:'BRL') : 'R$ •••••' }}
+        </p>
+      </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         @for (inv of categoria.investimentos; track inv.id) {
