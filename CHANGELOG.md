@@ -1,3 +1,14 @@
+# [1.11.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.10.0...v1.11.0) (2026-08-30)
+
+
+### Features
+
+* add guided dashboard tour service and implement investment management modal component ([d697984](https://github.com/coelhoadler/meu-cofrin/commit/d697984872bc7312835da6f4a87debfcfdc29f9d))
+* create investimentos component UI to display and manage investment portfolio ([c961d3f](https://github.com/coelhoadler/meu-cofrin/commit/c961d3f5b1062e80f1103cdf1407427be8f3ce62))
+* create investment evolution component with performance tracking and history management ([6b027d1](https://github.com/coelhoadler/meu-cofrin/commit/6b027d15270704dc6784b4f63d2589ddc24d42c5))
+* create investments page with categorization, total balance tracking, and modal integration ([5cd6541](https://github.com/coelhoadler/meu-cofrin/commit/5cd654108a43dc7c80622e4453538e5d15edce46))
+* implement investments feature component with categorization, total tracking ([847dce9](https://github.com/coelhoadler/meu-cofrin/commit/847dce9c5c539ed625c08637028560ccabe0909a))
+
 # [1.10.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.9.0...v1.10.0) (2026-08-29)
 
 
