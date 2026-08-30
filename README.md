@@ -4,6 +4,9 @@
 
 Esqueça as planilhas complexas! Com o Meu Cofrin, você acompanha suas receitas, despesas e a evolução dos seus investimentos de forma visual, elegante e direto ao ponto.
 
+🌍 **Acesse online:** [https://meu-cofrin.app.br](https://meu-cofrin.app.br)  
+*(Não quer baixar o código ou subir seu próprio ambiente? Sem problemas! Você pode simplesmente acessar o link oficial, criar sua conta gratuita e começar a controlar suas finanças agora mesmo.)*
+
 ---
 
 ## ✨ Principais Funcionalidades
