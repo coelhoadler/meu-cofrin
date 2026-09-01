@@ -27,107 +27,113 @@
   } @else {
   <!-- Categories -->
   <div class="flex flex-col gap-8 pb-4">
-    @for (categoria of investimentosPorCategoria(); track categoria.tipo) {
-    <div class="flex flex-col gap-3">
-      <div class="flex items-center justify-between">
-        <h3 class="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
-          <span class="w-1.5 h-5 rounded-full bg-gradient-to-b from-[#421b7b] to-[#7941dc]"></span>
-          {{ categoria.tipo }}
-        </h3>
-        <p class="text-sm font-semibold text-slate-600 dark:text-slate-300">
-          {{ showValues() ? (categoria.total | currency:'BRL') : 'R$ •••••' }}
-        </p>
-      </div>
+    <p-accordion [multiple]="true" class="w-full flex flex-col gap-4">
+      @for (categoria of investimentosPorCategoria(); track categoria.tipo) {
+      <p-accordion-panel [value]="categoria.tipo" class="!bg-transparent !border-none">
+        <p-accordion-header>
+          <div class="flex items-center justify-between w-full pr-4">
+            <h3 class="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
+              <span class="w-1.5 h-5 rounded-full bg-gradient-to-b from-[#421b7b] to-[#7941dc]"></span>
+              {{ categoria.tipo }}
+            </h3>
+            <p class="text-sm font-semibold text-slate-600 dark:text-slate-300">
+              {{ showValues() ? (categoria.total | currency:'BRL') : 'R$ •••••' }}
+            </p>
+          </div>
+        </p-accordion-header>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        @for (inv of categoria.investimentos; track inv.id) {
-        <div
-          class="bg-white dark:bg-[#1a112c] rounded-2xl p-5 border border-slate-200 dark:border-slate-800/50 shadow-sm hover:shadow-md transition-all flex flex-col gap-4 group">
+        <p-accordion-content class="!bg-transparent !border-none !p-0">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-4">
+            @for (inv of categoria.investimentos; track inv.id) {
+            <div
+              class="bg-white dark:bg-[#1a112c] rounded-2xl p-5 border border-slate-200 dark:border-slate-800/50 shadow-sm hover:shadow-md transition-all flex flex-col gap-4 group">
 
-          <!-- Top Row -->
-          <div class="flex justify-between items-start gap-2">
-            <div class="min-w-0 flex-1">
-              <h3 class="font-bold text-slate-800 dark:text-white truncate" [title]="inv.nome">{{ inv.nome }}</h3>
-              <div class="flex flex-wrap items-center gap-2 mt-1">
-                <span
-                  class="inline-flex text-[11px] font-medium px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
-                  {{ inv.instituicao }}
-                </span>
-                @if (inv.dataVencimento) {
-                <span
-                  class="inline-flex items-center gap-1 text-[11px] font-medium text-orange-700 dark:text-orange-300"
-                  title="Data de vencimento">
-                  <span class="material-symbols-outlined text-[11px]">event</span>
-                  Vence em {{ inv.dataVencimento | date:'dd/MM/yyyy' }}
-                </span>
-                }
+              <!-- Top Row -->
+              <div class="flex justify-between items-start gap-2">
+                <div class="min-w-0 flex-1">
+                  <h3 class="font-bold text-slate-800 dark:text-white truncate" [title]="inv.nome">{{ inv.nome }}</h3>
+                  <div class="flex flex-wrap items-center gap-2 mt-1">
+                    <span
+                      class="inline-flex text-[11px] font-medium px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
+                      {{ inv.instituicao }}
+                    </span>
+                    @if (inv.dataVencimento) {
+                    <span
+                      class="inline-flex items-center gap-1 text-[11px] font-medium text-orange-700 dark:text-orange-300"
+                      title="Data de vencimento">
+                      <span class="material-symbols-outlined text-[11px]">event</span>
+                      Vence em {{ inv.dataVencimento | date:'dd/MM/yyyy' }}
+                    </span>
+                    }
+                  </div>
+                </div>
+                <!-- Actions -->
+                <div class="flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button (click)="openEditarInvestimento(inv, $event)"
+                    class="text-slate-400 hover:text-indigo-500 p-1 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800">
+                    <span class="material-symbols-outlined text-sm">edit</span>
+                  </button>
+                  <button (click)="deleteInvestimento(inv.id, $event)"
+                    class="text-slate-400 hover:text-rose-500 p-1 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800">
+                    <span class="material-symbols-outlined text-sm">delete</span>
+                  </button>
+                </div>
               </div>
-            </div>
-            <!-- Actions -->
-            <div class="flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
-              <button (click)="openEditarInvestimento(inv, $event)"
-                class="text-slate-400 hover:text-indigo-500 p-1 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800">
-                <span class="material-symbols-outlined text-sm">edit</span>
-              </button>
-              <button (click)="deleteInvestimento(inv.id, $event)"
-                class="text-slate-400 hover:text-rose-500 p-1 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800">
-                <span class="material-symbols-outlined text-sm">delete</span>
-              </button>
-            </div>
-          </div>
 
-          <!-- Valores -->
-          <div class="mt-2">
-            <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Valor atual</p>
-            <p class="text-xl font-bold text-slate-800 dark:text-white">{{ showValues() ? (inv.valorAtual |
-              currency:'BRL') : 'R$ •••••' }}</p>
-          </div>
-
-          <!-- Aporte e Rentabilidade -->
-          <div class="flex justify-between items-end border-t border-slate-100 dark:border-slate-800/50 pt-3">
-            <div>
-              <p class="text-[11px] text-slate-500 dark:text-slate-400">Aporte inicial</p>
-              <p class="text-xs font-semibold text-slate-700 dark:text-slate-300">
-                {{ showValues() ? (inv.aporteInicial | currency:'BRL') : 'R$ •••••' }}
-              </p>
-            </div>
-            <div class="text-right">
-              @let rentabilidade = getRentabilidade(inv);
-              <div class="flex items-center gap-1 text-xs font-bold justify-end"
-                [ngClass]="showValues() ? (rentabilidade.positiva ? 'text-emerald-500' : 'text-rose-500') : 'text-slate-400'">
-                <span class="material-symbols-outlined text-xs">
-                  {{ showValues() ? (rentabilidade.positiva ? 'trending_up' : 'trending_down') : 'remove' }}
-                </span>
-                @if (showValues()) {
-                {{ rentabilidade.positiva ? '+' : '' }}{{ rentabilidade.valor | currency:'BRL' }} ({{
-                rentabilidade.positiva
-                ? '+' : '' }}{{ rentabilidade.percentual | number:'1.1-2' }}%)
-                } @else {
-                ••••
-                }
+              <!-- Valores -->
+              <div class="mt-2">
+                <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Valor atual</p>
+                <p class="text-xl font-bold text-slate-800 dark:text-white">{{ showValues() ? (inv.valorAtual |
+                  currency:'BRL') : 'R$ •••••' }}</p>
               </div>
-            </div>
-          </div>
 
-          <!-- Botão Evolução -->
-          <button (click)="goToEvolucao(inv.id)"
-            class="w-full mt-2 py-2 rounded-xl text-sm font-semibold border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-            Ver evolução
-          </button>
-        </div>
-        }
+              <!-- Aporte e Rentabilidade -->
+              <div class="flex justify-between items-end border-t border-slate-100 dark:border-slate-800/50 pt-3">
+                <div>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400">Aporte inicial</p>
+                  <p class="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                    {{ showValues() ? (inv.aporteInicial | currency:'BRL') : 'R$ •••••' }}
+                  </p>
+                </div>
+                <div class="text-right">
+                  @let rentabilidade = getRentabilidade(inv);
+                  <div class="flex items-center gap-1 text-xs font-bold justify-end"
+                    [ngClass]="showValues() ? (rentabilidade.positiva ? 'text-emerald-500' : 'text-rose-500') : 'text-slate-400'">
+                    <span class="material-symbols-outlined text-xs">
+                      {{ showValues() ? (rentabilidade.positiva ? 'trending_up' : 'trending_down') : 'remove' }}
+                    </span>
+                    @if (showValues()) {
+                    {{ rentabilidade.positiva ? '+' : '' }}{{ rentabilidade.valor | currency:'BRL' }} ({{
+                    rentabilidade.positiva
+                    ? '+' : '' }}{{ rentabilidade.percentual | number:'1.1-2' }}%)
+                    } @else {
+                    ••••
+                    }
+                  </div>
+                </div>
+              </div>
+
+              <!-- Botão Evolução -->
+              <button (click)="goToEvolucao(inv.id)"
+                class="w-full mt-2 py-2 rounded-xl text-sm font-semibold border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                Ver evolução
+              </button>
+            </div>
+            }
+          </div>
+        </p-accordion-content>
+      </p-accordion-panel>
+      }
+      @empty {
+      <div
+        class="col-span-full py-12 flex flex-col items-center justify-center text-center bg-white dark:bg-[#1a112c] rounded-2xl border border-slate-200 dark:border-slate-800/50 border-dashed">
+        <span class="material-symbols-outlined text-4xl text-slate-300 dark:text-slate-600 mb-3">savings</span>
+        <h3 class="text-slate-800 dark:text-white font-medium mb-1">Nenhum investimento cadastrado</h3>
+        <p class="text-sm text-slate-500 dark:text-slate-400 max-w-sm">Comece a acompanhar seu patrimônio clicando em
+          "Novo investimento".</p>
       </div>
-    </div>
-    }
-    @empty {
-    <div
-      class="col-span-full py-12 flex flex-col items-center justify-center text-center bg-white dark:bg-[#1a112c] rounded-2xl border border-slate-200 dark:border-slate-800/50 border-dashed">
-      <span class="material-symbols-outlined text-4xl text-slate-300 dark:text-slate-600 mb-3">savings</span>
-      <h3 class="text-slate-800 dark:text-white font-medium mb-1">Nenhum investimento cadastrado</h3>
-      <p class="text-sm text-slate-500 dark:text-slate-400 max-w-sm">Comece a acompanhar seu patrimônio clicando em
-        "Novo investimento".</p>
-    </div>
-    }
+      }
+    </p-accordion>
   </div>
 
   @if (investimentos().length > 0) {
