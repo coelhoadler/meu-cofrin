@@ -1,3 +1,10 @@
+# [1.12.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.11.0...v1.12.0) (2026-09-01)
+
+
+### Features
+
+* implement investment evolution tracking and list UI components ([b8955da](https://github.com/coelhoadler/meu-cofrin/commit/b8955da007b76de53832112c861673b7f448a1ec))
+
 # [1.11.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.10.0...v1.11.0) (2026-08-30)
 
 
