@@ -4,13 +4,29 @@ import { RouterLink, Router } from '@angular/router';
 import { InvestimentoService } from '../../core/services/investimento.service';
 import { Investimento } from '../../core/models/investimento.model';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { AccordionModule } from 'primeng/accordion';
 import { InvestimentoModalComponent } from './investimento-modal/investimento-modal.component';
 
 @Component({
     selector: 'app-investimentos',
     standalone: true,
-    imports: [CommonModule, RouterLink, ProgressSpinnerModule, InvestimentoModalComponent],
+    imports: [CommonModule, RouterLink, ProgressSpinnerModule, AccordionModule, InvestimentoModalComponent],
     templateUrl: './investimentos.component.html',
+    styles: [`
+        :host ::ng-deep p-accordion-panel,
+        :host ::ng-deep .p-accordion-panel,
+        :host ::ng-deep .p-accordionpanel {
+            background: transparent !important;
+            border: none !important;
+        }
+        :host ::ng-deep p-accordion-content,
+        :host ::ng-deep .p-accordion-content,
+        :host ::ng-deep .p-accordioncontent-content,
+        :host ::ng-deep .p-accordionpanel-content {
+            background: transparent !important;
+            border: none !important;
+        }
+    `],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InvestimentosComponent implements OnInit {
