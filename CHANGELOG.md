@@ -1,3 +1,11 @@
+# [1.13.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.12.0...v1.13.0) (2026-09-02)
+
+
+### Features
+
+* implement dashboard component for monthly financial summary and visualization ([a971b31](https://github.com/coelhoadler/meu-cofrin/commit/a971b31390d607ceace08e22ec9b52e7e8029018))
+* implement main layout component with responsive sidebar and navigation menu ([42c0e23](https://github.com/coelhoadler/meu-cofrin/commit/42c0e230312df79aa10c1c718d0b411d49db3433))
+
 # [1.12.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.11.0...v1.12.0) (2026-09-01)
 
 
