@@ -50,9 +50,11 @@
           lançamentos</span>
       </a>
 
-      <a routerLink="/investimentos" routerLinkActive="bg-[#8b5cf6]/20 text-[#c4b5fd]" (click)="isSidebarOpen.set(false)"
+      <a routerLink="/investimentos" routerLinkActive="bg-[#8b5cf6]/20 text-[#c4b5fd]"
+        (click)="isSidebarOpen.set(false)"
         class="flex items-center py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors gap-3 px-3"
-        [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center md:mx-1 md:gap-0 md:px-0' : ''" title="Investimentos">
+        [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center md:mx-1 md:gap-0 md:px-0' : ''"
+        title="Investimentos">
         <span class="material-symbols-outlined text-xl">savings</span>
         <span class="text-sm truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">Investimentos</span>
       </a>
@@ -174,7 +176,7 @@
       </div>
     </header>
 
-    <div class="flex-1 p-4 pb-0 md:p-10 md:pb-0 w-full max-w[90%] mx-auto">
+    <div class="flex-1 p-4 pb-0 md:p-10 md:pb-0 w-full max-w-[80%] mx-auto">
       <router-outlet></router-outlet>
     </div>
   </main>

@@ -397,14 +397,7 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   formatDataVencimento(conta: Conta): string {
-    if (!conta.mesReferencia) return `${conta.diaVencimento}`;
-    const [ano, mes] = conta.mesReferencia.split('-');
-    const dia = conta.diaVencimento.toString().padStart(2, '0');
-
-    const date = new Date(parseInt(ano), parseInt(mes) - 1, conta.diaVencimento);
-    const mesNome = new Intl.DateTimeFormat('pt-BR', { month: 'short' }).format(date).replace('.', '');
-
-    return `${dia} de ${mesNome}`?.toUpperCase();
+    return conta.diaVencimento.toString().padStart(2, '0');
   }
 
   formatDataPagamento(dataPagamento?: string | null): string {
