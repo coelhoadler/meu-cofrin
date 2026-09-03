@@ -1,3 +1,10 @@
+# [1.14.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.13.0...v1.14.0) (2026-09-03)
+
+
+### Features
+
+* implement responsive sidebar navigation layout with theme toggle and user profile section ([c1d95c1](https://github.com/coelhoadler/meu-cofrin/commit/c1d95c1ca89525e55fce73018237ec62d6c0c114))
+
 # [1.13.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.12.0...v1.13.0) (2026-09-02)
 
 
