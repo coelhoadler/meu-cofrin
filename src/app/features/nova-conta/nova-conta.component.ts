@@ -171,7 +171,7 @@ export class NovaContaComponent implements OnInit {
           // Pre-fill the form
           let catIdToSelect = '';
           if (conta.categoria) {
-            const matchedCat = cats.find((c) => c.nome === conta.categoria);
+            const matchedCat = cats.find((c) => c.nome.toLowerCase().trim() === conta?.categoria?.toLowerCase().trim());
             if (matchedCat) {
               catIdToSelect = matchedCat.id!;
             }
