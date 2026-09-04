@@ -1,3 +1,10 @@
+# [1.16.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.15.0...v1.16.0) (2026-09-04)
+
+
+### Features
+
+* create NovaContaComponent for managing account entries with reactive form ([5eaae78](https://github.com/coelhoadler/meu-cofrin/commit/5eaae781717ef83851beaf6f0c6fdeba570d72f2))
+
 # [1.15.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.14.0...v1.15.0) (2026-09-04)
 
 
