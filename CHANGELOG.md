@@ -1,3 +1,12 @@
+# [1.15.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.14.0...v1.15.0) (2026-09-04)
+
+
+### Features
+
+* add form template for account creation and editing in NovaContaComponent ([4591ab7](https://github.com/coelhoadler/meu-cofrin/commit/4591ab7b3b2c49c3d65c7e7a9703e82ab8c2bf9b))
+* implement dashboard view with financial summary, chart visualizations, and account management ([fbc7728](https://github.com/coelhoadler/meu-cofrin/commit/fbc772880b72341d0ab17fc72252123561a777b9))
+* implement new account registration component and associated data service ([4fdcc6e](https://github.com/coelhoadler/meu-cofrin/commit/4fdcc6e8b88c804bcc9f613eaaa183a0cd8e8ff7))
+
 # [1.14.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.13.0...v1.14.0) (2026-09-03)
 
 
