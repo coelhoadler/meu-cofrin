@@ -66,7 +66,7 @@ export class NovaContaComponent implements OnInit {
   isParcelado = signal(false);
   parcelamentoIdEdit = signal<string | null>(null);
   quantidadeParcelas = signal(1);
-  parcelas = signal<{numero: number, dataVencimento: Date, valor: number, valorStr: string, isLocked: boolean, isPago: boolean, id?: string}[]>([]);
+  parcelas = signal<{ numero: number, dataVencimento: Date, valor: number, valorStr: string, isLocked: boolean, isPago: boolean, id?: string, dataPagamento?: string | null }[]>([]);
 
   diferencaValor = computed(() => {
     const antigo = this.valorAntigo();
@@ -108,9 +108,9 @@ export class NovaContaComponent implements OnInit {
     this.contaForm.get('valor')?.valueChanges.subscribe((v) => {
       this.currentValorNum.set(this.parseFloatValor(v));
       if (this.isParcelado() && !this.isEditMode()) {
-         this.gerarParcelas();
+        this.gerarParcelas();
       } else if (this.isParcelado() && this.isEditMode()) {
-         this.recalcularParcelas();
+        this.recalcularParcelas();
       }
     });
 
@@ -234,14 +234,15 @@ export class NovaContaComponent implements OnInit {
                 valor: pValor,
                 valorStr: pValor.toFixed(2).replace('.', ','),
                 isLocked: p.statusPago,
-                isPago: p.statusPago
+                isPago: p.statusPago,
+                dataPagamento: p.dataPagamento
               };
             });
             this.parcelas.set(arr);
-            
+
             // Re-sync o valor total (soma das parcelas) caso divirja por arredondamento
             const soma = arr.reduce((acc, p) => acc + p.valor, 0);
-            this.contaForm.get('valor')?.setValue(soma.toFixed(2).replace('.', ','), {emitEvent: false});
+            this.contaForm.get('valor')?.setValue(soma.toFixed(2).replace('.', ','), { emitEvent: false });
             this.currentValorNum.set(soma);
           }
         } else {
@@ -278,8 +279,8 @@ export class NovaContaComponent implements OnInit {
     if (this.isParcelado()) {
       const sum = this.parcelas().reduce((acc, p) => acc + p.valor, 0);
       if (Math.abs(sum - this.currentValorNum()) > 0.05) {
-         this.errorMessage.set('A soma das parcelas não bate com o valor total! Ajuste os valores.');
-         return;
+        this.errorMessage.set('A soma das parcelas não bate com o valor total! Ajuste os valores.');
+        return;
       }
     }
 
@@ -336,11 +337,20 @@ export class NovaContaComponent implements OnInit {
           const d = p.dataVencimento;
           const diaVenc = d.getDate();
           const formattedMesRef = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-          
-          return {
+
+          let pDataPagamento = null;
+          if (p.isPago) {
+            if (p.dataPagamento) {
+              pDataPagamento = p.dataPagamento;
+            } else {
+              const hoje = new Date();
+              pDataPagamento = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}-${String(hoje.getDate()).padStart(2, '0')}`;
+            }
+          }
+
+          const parcelaObj: any = {
             ...contaData,
-            id: p.id,
-            nome: `${formValue.nome} (${p.numero}/${this.parcelas().length})`,
+            nome: `${formValue?.nome?.replace(/\s*\(\d+\/\d+\)\s*$/g, '').trim()} (${p.numero}/${this.parcelas().length})`,
             mesReferencia: formattedMesRef,
             diaVencimento: diaVenc,
             statusPago: p.isPago,
@@ -349,15 +359,28 @@ export class NovaContaComponent implements OnInit {
             parcelamentoId: pId,
             numeroParcela: p.numero,
             totalParcelas: this.parcelas().length,
-            // Mantém a data de pagamento se já estiver pago, senão anula p/ as não pagas
-            dataPagamento: p.isPago ? contaData.dataPagamento : null
+            dataPagamento: pDataPagamento
           };
+
+          // Incluir id apenas se existir (edição), senão Firestore rejeita undefined
+          if (p.id) {
+            parcelaObj.id = p.id;
+          }
+
+          // Remover campos undefined (Firestore não aceita)
+          Object.keys(parcelaObj).forEach(key => {
+            if (parcelaObj[key] === undefined) {
+              delete parcelaObj[key];
+            }
+          });
+
+          return parcelaObj;
         });
 
         if (this.isEditMode() && this.parcelamentoIdEdit()) {
-           await this.contaService.updateContasParceladas(parcelasParaSalvar as any, this.selectedFile());
+          await this.contaService.updateContasParceladas(parcelasParaSalvar as any, this.selectedFile());
         } else {
-           await this.contaService.addContasParceladas(parcelasParaSalvar as any, this.selectedFile());
+          await this.contaService.addContasParceladas(parcelasParaSalvar as any, this.selectedFile());
         }
       } else {
         if (this.isEditMode() && this.editId()) {
@@ -377,10 +400,19 @@ export class NovaContaComponent implements OnInit {
   }
 
   async onDeleteConta() {
-    if (confirm('Tem certeza que deseja excluir esta conta?')) {
+    const pId = this.parcelamentoIdEdit();
+    const msg = pId
+      ? `Esta conta faz parte de um parcelamento (${this.parcelas().length} parcelas). Deseja excluir TODAS as parcelas?`
+      : 'Tem certeza que deseja excluir esta conta?';
+
+    if (confirm(msg)) {
       this.isLoading.set(true);
       try {
-        await this.contaService.deleteConta(this.editId()!);
+        if (pId) {
+          await this.contaService.deleteContasByParcelamentoId(pId);
+        } else {
+          await this.contaService.deleteConta(this.editId()!);
+        }
         this.router.navigate([this.returnUrl()]);
       } catch (error: any) {
         console.error(error);
@@ -441,14 +473,14 @@ export class NovaContaComponent implements OnInit {
 
     const arr = [];
     const baseDate = this.contaForm.get('dataVencimento')?.value || new Date();
-    
+
     for (let i = 1; i <= qtd; i++) {
       let v = valorBase;
       if (i === 1) {
         v += diff;
       }
       v = Math.round(v * 100) / 100;
-      
+
       const d = new Date(baseDate);
       d.setMonth(d.getMonth() + (i - 1));
 
@@ -467,13 +499,13 @@ export class NovaContaComponent implements OnInit {
   recalcularParcelas() {
     const total = this.currentValorNum();
     const arr = [...this.parcelas()];
-    
+
     const fixedParcels = arr.filter(p => p.isLocked || p.isPago);
     const sumFixed = fixedParcels.reduce((acc, p) => acc + p.valor, 0);
-    
+
     const remainingToDistribute = total - sumFixed;
     const flexibleParcels = arr.filter(p => !p.isLocked && !p.isPago);
-    
+
     if (flexibleParcels.length > 0) {
       const valorBase = Math.floor((remainingToDistribute / flexibleParcels.length) * 100) / 100;
       let diff = remainingToDistribute - (valorBase * flexibleParcels.length);
@@ -490,7 +522,7 @@ export class NovaContaComponent implements OnInit {
       if (Math.abs(diffTotal) > 0.05) {
         this.errorMessage.set(`A soma das parcelas (R$ ${sumFixed.toFixed(2)}) diverge do total (R$ ${total.toFixed(2)}). Faltam R$ ${diffTotal.toFixed(2)}.`);
       } else {
-         this.errorMessage.set(null);
+        this.errorMessage.set(null);
       }
     }
     this.parcelas.set(arr);
@@ -503,6 +535,13 @@ export class NovaContaComponent implements OnInit {
     arr[index].valor = val;
     arr[index].valorStr = val.toFixed(2).replace('.', ',');
     arr[index].isLocked = true;
+    this.parcelas.set(arr);
+    this.recalcularParcelas();
+  }
+
+  onParcelaPagoChange(index: number, event: any) {
+    const arr = [...this.parcelas()];
+    arr[index].isPago = event.checked;
     this.parcelas.set(arr);
     this.recalcularParcelas();
   }

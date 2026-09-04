@@ -465,18 +465,29 @@ export class DashboardComponent implements AfterViewInit {
   async deleteLancamento(id: string | undefined) {
     if (!id) return;
 
-    if (window.confirm('Tem certeza que deseja deletar este lançamento? Esta ação não pode ser desfeita.')) {
-      try {
-        await this.contaService.deleteConta(id);
+    try {
+      const conta = await this.contaService.getContaById(id);
+      if (!conta) return;
+
+      const isParcelada = !!conta.parcelamentoId;
+      const msg = isParcelada
+        ? `Esta conta faz parte de um parcelamento (${conta.totalParcelas || '?'} parcelas). Deseja excluir TODAS as parcelas? Esta ação não pode ser desfeita.`
+        : 'Tem certeza que deseja deletar este lançamento? Esta ação não pode ser desfeita.';
+
+      if (window.confirm(msg)) {
+        if (isParcelada) {
+          await this.contaService.deleteContasByParcelamentoId(conta.parcelamentoId!);
+        } else {
+          await this.contaService.deleteConta(id);
+        }
         this.closeModal();
-        // Recarregar os lançamentos após deletar
         await this.loadLancamentos(this.selectedMesRef());
         await this.loadResumoMes(this.selectedMesRef());
         await this.loadResumoGrafico();
-      } catch (error) {
-        console.error('Erro ao deletar lançamento:', error);
-        alert('Erro ao deletar lançamento. Tente novamente.');
       }
+    } catch (error) {
+      console.error('Erro ao deletar lançamento:', error);
+      alert('Erro ao deletar lançamento. Tente novamente.');
     }
   }
 
