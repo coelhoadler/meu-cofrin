@@ -20,7 +20,7 @@
 
   <!-- Form Card -->
   <div
-    class="bg-white dark:bg-[#1a112c] rounded-[20px] shadow-sm border border-slate-200/80 dark:border-slate-800/50 p-8 transition-colors duration-300">
+    class="bg-white dark:bg-[#1a112c] rounded-[20px] shadow-sm border border-slate-200/80 dark:border-slate-800/50 p-4 md:p-8 transition-colors duration-300">
     <form [formGroup]="contaForm" (ngSubmit)="onSubmit()" class="space-y-6">
       <!-- Nome -->
       <div>
@@ -104,8 +104,85 @@
         }
       </div>
 
-      <!-- Conta já foi paga -->
+      <!-- Parcelamento -->
+      <div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800/60">
+        <label class="flex items-center gap-3 cursor-pointer w-full py-2">
+          <p-checkbox [ngModel]="isParcelado()" (onChange)="toggleParcelamento($event)"
+            [ngModelOptions]="{standalone: true}" [binary]="true" [disabled]="isEditMode()"></p-checkbox>
+          <div class="flex flex-col">
+            <span class="text-sm font-semibold text-slate-800 dark:text-slate-200">Parcelar esta conta</span>
+            <span class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">O valor total será dividido em até
+              12x.</span>
+          </div>
+        </label>
 
+        @if (isParcelado()) {
+        <div
+          class="mt-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/50">
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-sm font-semibold text-slate-700 dark:text-slate-300">Quantidade de parcelas</span>
+            <select [ngModel]="quantidadeParcelas()" (change)="onQtdParcelasChange($event)"
+              [ngModelOptions]="{standalone: true}" [disabled]="isEditMode()"
+              class="px-3 py-1.5 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-medium text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#421b7b]/50">
+              @for (qtd of [2,3,4,5,6,7,8,9,10,11,12]; track qtd) {
+              <option [value]="qtd">{{ qtd }}x</option>
+              }
+            </select>
+          </div>
+
+          <!-- Error Message -->
+          @if (errorMessage()) {
+          <div
+            class="p-4 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm font-medium flex items-center mb-4 gap-2">
+            <span class="material-symbols-outlined text-xl">error</span>
+            {{ errorMessage() }}
+          </div>
+          }
+
+          <!-- Tabela de Parcelas -->
+          <div class="space-y-3">
+            @for (parcela of parcelas(); track parcela.numero; let i = $index) {
+            <div
+              class="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-3 bg-white dark:bg-[#130c25] rounded-xl border border-slate-200 dark:border-slate-700">
+              <div class="flex-shrink-0 w-12 text-center">
+                <span class="text-xs font-bold text-slate-500 dark:text-slate-400">{{ parcela.numero }}/{{
+                  parcelas().length }}</span>
+              </div>
+
+              <div class="flex-1 w-full relative">
+                <input type="text" [ngModel]="parcela.valorStr" (blur)="onParcelaValorBlur(i, $event)"
+                  [ngModelOptions]="{standalone: true}" placeholder="0,00" mask="separator.2" thousandSeparator="."
+                  decimalMarker="," prefix="R$ " [dropSpecialCharacters]="false" [disabled]="parcela.isPago"
+                  class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#421b7b]/50 transition-all font-medium disabled:opacity-60" />
+              </div>
+
+              <div class="flex-1 w-full relative">
+                <p-datepicker [ngModel]="parcela.dataVencimento" (ngModelChange)="onParcelaDateChange(i, $event)"
+                  [ngModelOptions]="{standalone: true}" dateFormat="dd/mm/yy" appendTo="body" styleClass="w-full"
+                  inputStyleClass="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#421b7b]/50 transition-all disabled:opacity-60"
+                  [disabled]="parcela.isPago"></p-datepicker>
+              </div>
+
+              <div class="flex-shrink-0 flex items-center justify-center pl-2">
+                <label
+                  class="flex items-center gap-2 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800/60 px-2 py-1.5 rounded-lg transition-colors">
+                  <p-checkbox [ngModel]="parcela.isPago" (onChange)="onParcelaPagoChange(i, $event)"
+                    [ngModelOptions]="{standalone: true}" [binary]="true"></p-checkbox>
+                  <span class="text-[11px] font-bold uppercase tracking-wide"
+                    [ngClass]="parcela.isPago ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'">
+                    {{ parcela.isPago ? 'Desmarcar' : 'Marcar pago' }}
+                  </span>
+                </label>
+              </div>
+            </div>
+            }
+          </div>
+        </div>
+        }
+      </div>
+
+      <!-- Conta já foi paga -->
+      @if (!isParcelado()) {
       @if (contaForm.get('statusPago')?.value) {
       <div
         class="flex items-center justify-between w-full px-4 py-3.5 bg-emerald-50/60 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/40 rounded-xl transition-all">
@@ -141,7 +218,9 @@
         </label>
       </div>
       }
+      }
 
+      @if (!isParcelado()) {
       <!-- Conta recorrente (Checkbox block) -->
       <div>
         <label
@@ -155,6 +234,7 @@
           </div>
         </label>
       </div>
+      }
 
       <!-- Recibo -->
       <div>
@@ -235,15 +315,6 @@
         </div>
         }
       </div>
-
-      <!-- Error Message -->
-      @if (errorMessage()) {
-      <div
-        class="p-4 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm font-medium flex items-center gap-2">
-        <span class="material-symbols-outlined text-xl">error</span>
-        {{ errorMessage() }}
-      </div>
-      }
 
       <!-- Buttons -->
       <div class="flex flex-col gap-3 pt-4">

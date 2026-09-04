@@ -6,7 +6,7 @@ import {
   OnInit,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NgxMaskDirective } from 'ngx-mask';
@@ -27,6 +27,7 @@ import { SelectModule } from 'primeng/select';
     DatePickerModule,
     CheckboxModule,
     SelectModule,
+    FormsModule,
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './nova-conta.component.html',
@@ -61,6 +62,11 @@ export class NovaContaComponent implements OnInit {
 
   valorAntigo = signal<number | null>(null);
   currentValorNum = signal<number>(0);
+
+  isParcelado = signal(false);
+  parcelamentoIdEdit = signal<string | null>(null);
+  quantidadeParcelas = signal(1);
+  parcelas = signal<{ numero: number, dataVencimento: Date, valor: number, valorStr: string, isLocked: boolean, isPago: boolean, id?: string, dataPagamento?: string | null }[]>([]);
 
   diferencaValor = computed(() => {
     const antigo = this.valorAntigo();
@@ -101,6 +107,11 @@ export class NovaContaComponent implements OnInit {
     // Listen to valor
     this.contaForm.get('valor')?.valueChanges.subscribe((v) => {
       this.currentValorNum.set(this.parseFloatValor(v));
+      if (this.isParcelado() && !this.isEditMode()) {
+        this.gerarParcelas();
+      } else if (this.isParcelado() && this.isEditMode()) {
+        this.recalcularParcelas();
+      }
     });
 
     // Listen to categoriaId to update tipo
@@ -200,6 +211,40 @@ export class NovaContaComponent implements OnInit {
           if (conta.reciboUrl) {
             this.existingReciboUrl.set(conta.reciboUrl);
           }
+
+          if (conta.parcelamentoId) {
+            this.isParcelado.set(true);
+            this.parcelamentoIdEdit.set(conta.parcelamentoId);
+            this.contaForm.get('isRecorrente')?.disable();
+
+            const pacs = await this.contaService.getContasByParcelamentoId(conta.parcelamentoId);
+            this.quantidadeParcelas.set(pacs.length);
+
+            const arr = pacs.map(p => {
+              let pVencDate = new Date();
+              if (p.mesReferencia && p.diaVencimento) {
+                const [y, m] = p.mesReferencia.split('-');
+                pVencDate = new Date(parseInt(y), parseInt(m) - 1, p.diaVencimento);
+              }
+              const pValor = this.parseFloatValor(p.valor);
+              return {
+                id: p.id,
+                numero: p.numeroParcela || 1,
+                dataVencimento: pVencDate,
+                valor: pValor,
+                valorStr: pValor.toFixed(2).replace('.', ','),
+                isLocked: p.statusPago,
+                isPago: p.statusPago,
+                dataPagamento: p.dataPagamento
+              };
+            });
+            this.parcelas.set(arr);
+
+            // Re-sync o valor total (soma das parcelas) caso divirja por arredondamento
+            const soma = arr.reduce((acc, p) => acc + p.valor, 0);
+            this.contaForm.get('valor')?.setValue(soma.toFixed(2).replace('.', ','), { emitEvent: false });
+            this.currentValorNum.set(soma);
+          }
         } else {
           this.errorMessage.set('Conta não encontrada.');
         }
@@ -229,6 +274,14 @@ export class NovaContaComponent implements OnInit {
     if (this.contaForm.invalid) {
       this.contaForm.markAllAsTouched();
       return;
+    }
+
+    if (this.isParcelado()) {
+      const sum = this.parcelas().reduce((acc, p) => acc + p.valor, 0);
+      if (Math.abs(sum - this.currentValorNum()) > 0.05) {
+        this.errorMessage.set('A soma das parcelas não bate com o valor total! Ajuste os valores.');
+        return;
+      }
     }
 
     this.isLoading.set(true);
@@ -278,10 +331,63 @@ export class NovaContaComponent implements OnInit {
       delete contaData.categoriaId;
       delete contaData.dataVencimento;
 
-      if (this.isEditMode() && this.editId()) {
-        await this.contaService.updateConta(this.editId()!, contaData, this.selectedFile());
+      if (this.isParcelado() && this.parcelas().length > 0) {
+        const pId = this.parcelamentoIdEdit() || `parc_${Date.now()}`;
+        const parcelasParaSalvar = this.parcelas().map(p => {
+          const d = p.dataVencimento;
+          const diaVenc = d.getDate();
+          const formattedMesRef = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+
+          let pDataPagamento = null;
+          if (p.isPago) {
+            if (p.dataPagamento) {
+              pDataPagamento = p.dataPagamento;
+            } else {
+              const hoje = new Date();
+              pDataPagamento = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}-${String(hoje.getDate()).padStart(2, '0')}`;
+            }
+          }
+
+          const parcelaObj: any = {
+            ...contaData,
+            nome: `${formValue?.nome?.replace(/\s*\(\d+\/\d+\)\s*$/g, '').trim()} (${p.numero}/${this.parcelas().length})`,
+            mesReferencia: formattedMesRef,
+            diaVencimento: diaVenc,
+            statusPago: p.isPago,
+            isRecorrente: false,
+            valor: p.valorStr,
+            parcelamentoId: pId,
+            numeroParcela: p.numero,
+            totalParcelas: this.parcelas().length,
+            dataPagamento: pDataPagamento
+          };
+
+          // Incluir id apenas se existir (edição), senão Firestore rejeita undefined
+          if (p.id) {
+            parcelaObj.id = p.id;
+          }
+
+          // Remover campos undefined (Firestore não aceita)
+          Object.keys(parcelaObj).forEach(key => {
+            if (parcelaObj[key] === undefined) {
+              delete parcelaObj[key];
+            }
+          });
+
+          return parcelaObj;
+        });
+
+        if (this.isEditMode() && this.parcelamentoIdEdit()) {
+          await this.contaService.updateContasParceladas(parcelasParaSalvar as any, this.selectedFile());
+        } else {
+          await this.contaService.addContasParceladas(parcelasParaSalvar as any, this.selectedFile());
+        }
       } else {
-        await this.contaService.addConta(contaData, this.selectedFile());
+        if (this.isEditMode() && this.editId()) {
+          await this.contaService.updateConta(this.editId()!, contaData, this.selectedFile());
+        } else {
+          await this.contaService.addConta(contaData, this.selectedFile());
+        }
       }
 
       this.router.navigate([this.returnUrl()]);
@@ -294,10 +400,19 @@ export class NovaContaComponent implements OnInit {
   }
 
   async onDeleteConta() {
-    if (confirm('Tem certeza que deseja excluir esta conta?')) {
+    const pId = this.parcelamentoIdEdit();
+    const msg = pId
+      ? `Esta conta faz parte de um parcelamento (${this.parcelas().length} parcelas). Deseja excluir TODAS as parcelas?`
+      : 'Tem certeza que deseja excluir esta conta?';
+
+    if (confirm(msg)) {
       this.isLoading.set(true);
       try {
-        await this.contaService.deleteConta(this.editId()!);
+        if (pId) {
+          await this.contaService.deleteContasByParcelamentoId(pId);
+        } else {
+          await this.contaService.deleteConta(this.editId()!);
+        }
         this.router.navigate([this.returnUrl()]);
       } catch (error: any) {
         console.error(error);
@@ -339,8 +454,124 @@ export class NovaContaComponent implements OnInit {
     if (!valor) return 0;
     if (typeof valor === 'number') return valor;
     const str = String(valor);
-    const cleanValue = str.replace(/\./g, '').replace(',', '.').replace('R$', '');
+    const cleanValue = str.replace(/\./g, '').replace(',', '.').replace('R$', '').replace(/\s/g, '');
     const numValue = parseFloat(cleanValue);
     return isNaN(numValue) ? 0 : numValue;
+  }
+
+  gerarParcelas() {
+    const total = this.currentValorNum();
+    const qtd = this.quantidadeParcelas();
+    if (!total || qtd <= 1) {
+      this.parcelas.set([]);
+      return;
+    }
+
+    const valorBase = Math.floor((total / qtd) * 100) / 100;
+    let diff = total - (valorBase * qtd);
+    diff = Math.round(diff * 100) / 100;
+
+    const arr = [];
+    const baseDate = this.contaForm.get('dataVencimento')?.value || new Date();
+
+    for (let i = 1; i <= qtd; i++) {
+      let v = valorBase;
+      if (i === 1) {
+        v += diff;
+      }
+      v = Math.round(v * 100) / 100;
+
+      const d = new Date(baseDate);
+      d.setMonth(d.getMonth() + (i - 1));
+
+      arr.push({
+        numero: i,
+        dataVencimento: d,
+        valor: v,
+        valorStr: v.toFixed(2).replace('.', ','),
+        isLocked: false,
+        isPago: false
+      });
+    }
+    this.parcelas.set(arr);
+  }
+
+  recalcularParcelas() {
+    const total = this.currentValorNum();
+    const arr = [...this.parcelas()];
+
+    const fixedParcels = arr.filter(p => p.isLocked || p.isPago);
+    const sumFixed = fixedParcels.reduce((acc, p) => acc + p.valor, 0);
+
+    const remainingToDistribute = total - sumFixed;
+    const flexibleParcels = arr.filter(p => !p.isLocked && !p.isPago);
+
+    if (flexibleParcels.length > 0) {
+      const valorBase = Math.floor((remainingToDistribute / flexibleParcels.length) * 100) / 100;
+      let diff = remainingToDistribute - (valorBase * flexibleParcels.length);
+      diff = Math.round(diff * 100) / 100;
+
+      flexibleParcels.forEach((p, index) => {
+        p.valor = valorBase + (index === 0 ? diff : 0);
+        p.valor = Math.round(p.valor * 100) / 100;
+        p.valorStr = p.valor.toFixed(2).replace('.', ',');
+      });
+      this.errorMessage.set(null);
+    } else {
+      const diffTotal = total - sumFixed;
+      if (Math.abs(diffTotal) > 0.05) {
+        this.errorMessage.set(`A soma das parcelas (R$ ${sumFixed.toFixed(2)}) diverge do total (R$ ${total.toFixed(2)}). Faltam R$ ${diffTotal.toFixed(2)}.`);
+      } else {
+        this.errorMessage.set(null);
+      }
+    }
+    this.parcelas.set(arr);
+  }
+
+  onParcelaValorBlur(index: number, event: any) {
+    const newValStr = event.target.value;
+    const val = this.parseFloatValor(newValStr);
+    const arr = [...this.parcelas()];
+    arr[index].valor = val;
+    arr[index].valorStr = val.toFixed(2).replace('.', ',');
+    arr[index].isLocked = true;
+    this.parcelas.set(arr);
+    this.recalcularParcelas();
+  }
+
+  onParcelaPagoChange(index: number, event: any) {
+    const arr = [...this.parcelas()];
+    arr[index].isPago = event.checked;
+    this.parcelas.set(arr);
+    this.recalcularParcelas();
+  }
+
+  onParcelaDateChange(index: number, newDate: Date) {
+    if (newDate) {
+      const arr = [...this.parcelas()];
+      arr[index].dataVencimento = newDate;
+      this.parcelas.set(arr);
+    }
+  }
+
+  toggleParcelamento(event: any) {
+    const checked = event.checked;
+    this.isParcelado.set(checked);
+    if (checked) {
+      this.contaForm.get('isRecorrente')?.setValue(false);
+      this.contaForm.get('isRecorrente')?.disable();
+      if (this.parcelas().length === 0) {
+        this.quantidadeParcelas.set(2);
+        this.gerarParcelas();
+      }
+    } else {
+      this.contaForm.get('isRecorrente')?.enable();
+      this.parcelas.set([]);
+    }
+  }
+
+  onQtdParcelasChange(event: any) {
+    this.quantidadeParcelas.set(parseInt(event.target.value, 10));
+    this.gerarParcelas();
   }
 }

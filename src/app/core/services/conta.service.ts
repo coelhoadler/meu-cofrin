@@ -18,6 +18,9 @@ export interface Conta {
   createdAt?: any;
   isRecorrente?: boolean;
   valorAntigo?: string | null;
+  parcelamentoId?: string;
+  numeroParcela?: number;
+  totalParcelas?: number;
 }
 
 export interface ResumoMensal {
@@ -143,10 +146,10 @@ export class ContaService {
     const contasRef = collection(this.firestore, `users/${user.uid}/contas`);
     // Busca abrangente ordenada pela data de criação
     const q = query(contasRef, orderBy('createdAt', 'desc'), limit(1000));
-    
+
     const querySnapshot = await getDocs(q);
     const termo = nome.toLowerCase().trim();
-    
+
     const items = querySnapshot.docs.map(doc => {
       return {
         id: doc.id,
@@ -240,6 +243,94 @@ export class ContaService {
     return null;
   }
 
+  async getContasByParcelamentoId(parcelamentoId: string): Promise<Conta[]> {
+    const user = await this.authService.getCurrentUserAsync();
+    if (!user) {
+      return [];
+    }
+
+    const contasRef = collection(this.firestore, `users/${user.uid}/contas`);
+    const q = query(
+      contasRef,
+      where('parcelamentoId', '==', parcelamentoId)
+    );
+
+    const querySnapshot = await getDocs(q);
+    const items = querySnapshot.docs.map(doc => {
+      return {
+        id: doc.id,
+        ...doc.data()
+      } as Conta;
+    });
+
+    // Ordenar pelo numeroParcela
+    items.sort((a, b) => (a.numeroParcela || 0) - (b.numeroParcela || 0));
+
+    return items;
+  }
+
+  async addContasParceladas(contas: Conta[], file?: File | null): Promise<void> {
+    const user = await this.authService.getCurrentUserAsync();
+    if (!user) {
+      throw new Error('Usuário não autenticado');
+    }
+
+    let reciboUrl = '';
+
+    if (file) {
+      const timestamp = new Date().getTime();
+      const filePath = `users/${user.uid}/receipts/${timestamp}_${file.name}`;
+      const storageRef = ref(this.storage, filePath);
+      const snapshot = await uploadBytes(storageRef, file);
+      reciboUrl = await getDownloadURL(snapshot.ref);
+    }
+
+    const contasRef = collection(this.firestore, `users/${user.uid}/contas`);
+
+    // Inserir todas em sequência (não suporta batch via web SDK facilmente sem writeBatch, mas addDoc em loop resolve bem para max 12 docs)
+    for (const conta of contas) {
+      const dataToSave = {
+        ...conta,
+        ...(reciboUrl ? { reciboUrl } : {}),
+        createdAt: serverTimestamp()
+      };
+      await addDoc(contasRef, dataToSave);
+    }
+
+    this.invalidateCache();
+  }
+
+  async updateContasParceladas(contas: Conta[], file?: File | null): Promise<void> {
+    const user = await this.authService.getCurrentUserAsync();
+    if (!user) {
+      throw new Error('Usuário não autenticado');
+    }
+
+    let reciboUrl = contas[0]?.reciboUrl || '';
+
+    if (file) {
+      const timestamp = new Date().getTime();
+      const filePath = `users/${user.uid}/receipts/${timestamp}_${file.name}`;
+      const storageRef = ref(this.storage, filePath);
+      const snapshot = await uploadBytes(storageRef, file);
+      reciboUrl = await getDownloadURL(snapshot.ref);
+    }
+
+    for (const conta of contas) {
+      if (conta.id) {
+        const docRef = doc(this.firestore, `users/${user.uid}/contas`, conta.id);
+        const dataToUpdate = {
+          ...conta,
+          ...(reciboUrl ? { reciboUrl } : {})
+        };
+        delete dataToUpdate.id;
+        await updateDoc(docRef, dataToUpdate);
+      }
+    }
+
+    this.invalidateCache();
+  }
+
   async updateConta(id: string, contaData: Partial<Conta>, file?: File | null): Promise<void> {
     const user = await this.authService.getCurrentUserAsync();
     if (!user) throw new Error('Usuário não autenticado');
@@ -289,6 +380,33 @@ export class ContaService {
     }
 
     await deleteDoc(docRef);
+
+    this.invalidateCache();
+  }
+
+  async deleteContasByParcelamentoId(parcelamentoId: string): Promise<void> {
+    const user = await this.authService.getCurrentUserAsync();
+    if (!user) throw new Error('Usuário não autenticado');
+
+    const contas = await this.getContasByParcelamentoId(parcelamentoId);
+
+    for (const conta of contas) {
+      if (conta.id) {
+        const docRef = doc(this.firestore, `users/${user.uid}/contas`, conta.id);
+
+        // Remove recibo do Storage se existir
+        if (conta.reciboUrl) {
+          try {
+            const fileRef = ref(this.storage, conta.reciboUrl);
+            await deleteObject(fileRef);
+          } catch (error) {
+            console.error('Erro ao deletar recibo da parcela:', error);
+          }
+        }
+
+        await deleteDoc(docRef);
+      }
+    }
 
     this.invalidateCache();
   }
