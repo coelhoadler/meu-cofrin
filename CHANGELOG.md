@@ -1,3 +1,10 @@
+# [1.18.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.17.0...v1.18.0) (2026-09-05)
+
+
+### Features
+
+* implement launch management feature with list and summary views and filtering capabilities ([f0dee5a](https://github.com/coelhoadler/meu-cofrin/commit/f0dee5a82af0559a57eecfdfa4e44a0840362850))
+
 # [1.17.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.16.0...v1.17.0) (2026-09-05)
 
 
