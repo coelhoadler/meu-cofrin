@@ -15,6 +15,8 @@ import { SelectModule } from 'primeng/select';
 import { PanelModule } from 'primeng/panel';
 import { ContaService, Conta } from '../../core/services/conta.service';
 import { CategoriaService, Categoria } from '../../core/services/categoria.service';
+import { InvestimentoService } from '../../core/services/investimento.service';
+import { Investimento } from '../../core/models/investimento.model';
 
 export type VisaoModo = 'lista' | 'resumo';
 
@@ -59,6 +61,7 @@ const MESES_NOMES = [
 export class LancamentosComponent implements OnInit {
   private contaService = inject(ContaService);
   private categoriaService = inject(CategoriaService);
+  private investimentoService = inject(InvestimentoService);
 
   constructor() {
     const savedFiltros = localStorage.getItem('lancamentosFiltros');
@@ -125,6 +128,7 @@ export class LancamentosComponent implements OnInit {
   // Dados
   contas = signal<Conta[]>([]);
   categorias = signal<Categoria[]>([]);
+  investimentos = signal<Investimento[]>([]);
   isLoading = signal<boolean>(false);
 
   tiposOptions = [
@@ -242,6 +246,10 @@ export class LancamentosComponent implements OnInit {
     return this.totalReceitas() - this.totalDespesas();
   });
 
+  totalInvestimentos = computed(() => {
+    return this.investimentos().reduce((acc, inv) => acc + (inv.valorAtual || 0), 0);
+  });
+
   resumoConsolidado = computed<ResumoAnual>(() => {
     const ano = this.resumoAno();
     const todasContas = this.contas();
@@ -289,6 +297,7 @@ export class LancamentosComponent implements OnInit {
 
   ngOnInit() {
     this.carregarCategorias();
+    this.carregarInvestimentos();
 
     if (this.isBuscaGlobal() && this.nomeFiltro().trim()) {
       this.executarPesquisaGlobal();
@@ -306,6 +315,15 @@ export class LancamentosComponent implements OnInit {
       this.categorias.set(cats);
     } catch (e) {
       console.error('Erro ao carregar categorias', e);
+    }
+  }
+
+  async carregarInvestimentos() {
+    try {
+      const items = await this.investimentoService.getInvestimentos();
+      this.investimentos.set(items || []);
+    } catch (e) {
+      console.error('Erro ao carregar investimentos', e);
     }
   }
 
