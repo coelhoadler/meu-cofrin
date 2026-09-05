@@ -1,3 +1,11 @@
+# [1.17.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.16.0...v1.17.0) (2026-09-05)
+
+
+### Features
+
+* implement reactive login and registration UI with social authentication and biometrics support ([c2e517c](https://github.com/coelhoadler/meu-cofrin/commit/c2e517c6ec51855e2a6c73851404f3599894bae9))
+* initialize global styles with Tailwind, dark mode support, and component customizations ([59e6ec2](https://github.com/coelhoadler/meu-cofrin/commit/59e6ec2eee4a753e4c0afad85da25169acf18a86))
+
 # [1.16.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.15.0...v1.16.0) (2026-09-04)
 
 
