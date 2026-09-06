@@ -1,3 +1,10 @@
+# [1.19.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.18.0...v1.19.0) (2026-09-06)
+
+
+### Features
+
+* initialize tlc-spec-driven skill with documentation, validation scripts, and sub-agent ([19651c9](https://github.com/coelhoadler/meu-cofrin/commit/19651c9e4633008ce35c207c1479da99d5a874f5))
+
 # [1.18.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.17.0...v1.18.0) (2026-09-05)
 
 
