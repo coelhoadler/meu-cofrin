@@ -1,3 +1,14 @@
+# [1.20.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.19.0...v1.20.0) (2026-09-12)
+
+
+### Features
+
+* add authentication services, route guards, CNPJ validator, and enterprise features ([d42c457](https://github.com/coelhoadler/meu-cofrin/commit/d42c457c2cef7f8335883afbf62eb399d7814831))
+* add core authentication service, dashboard component, enterprise login, and documentation ([577d3c9](https://github.com/coelhoadler/meu-cofrin/commit/577d3c9a50c678c22af7be5da4523069bb1b1d48))
+* add empresas feature area with Data Connect integration, routing, components, and styling ([732c73b](https://github.com/coelhoadler/meu-cofrin/commit/732c73b638278de33cc4c5133561999680b32d02))
+* add enterprise login UI template, E2E test suite, and agent documentation updates ([d82e86d](https://github.com/coelhoadler/meu-cofrin/commit/d82e86da65ba667ba0ee5bab59c1c1dee8947ae3))
+* add enterprise registration component with Firebase authentication and Firestore integration ([303c2e5](https://github.com/coelhoadler/meu-cofrin/commit/303c2e518aa3c5f6a528501650d1cbd3c3957e0c))
+
 # [1.19.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.18.0...v1.19.0) (2026-09-06)
 
 
