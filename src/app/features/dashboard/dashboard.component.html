@@ -421,7 +421,10 @@
   <!-- Floating Action Button (Mobile Only) -->
   @if (lancamentos().length > 0) {
   <a routerLink="/nova-conta" id="tour-fab-nova-conta"
-    class="fixed bottom-0 right-6 z-40 sm:hidden flex items-center justify-center w-14 h-14 bg-[#421b7b] active:bg-[#341561] text-white rounded-full border-[2.5px] border-[#9d6bf3] shadow-[0_0_20px_rgba(157,107,243,0.4)] transition-transform active:scale-95">
+    class="fixed bottom-0 right-6 z-30 sm:hidden flex items-center justify-center w-14 h-14 bg-[#421b7b] active:bg-[#341561] text-white rounded-full border-[2.5px] border-[#9d6bf3] shadow-[0_0_20px_rgba(157,107,243,0.4)] transition-all duration-300 active:scale-95"
+    [ngClass]="layoutService.isSidebarOpen() ? 'opacity-0 scale-75 pointer-events-none' : 'opacity-100 scale-100 pointer-events-auto'"
+    [attr.aria-hidden]="layoutService.isSidebarOpen()"
+    [tabIndex]="layoutService.isSidebarOpen() ? -1 : 0">
     <span class="material-symbols-outlined text-3xl">add</span>
   </a>
   }
