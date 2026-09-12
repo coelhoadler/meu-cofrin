@@ -8,6 +8,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
+import { SessionService } from '../../../core/auth/session.service';
 import { Firestore, doc, getDoc } from '@angular/fire/firestore';
 import { ThemeService } from '../../../core/services/theme.service';
 
@@ -27,6 +28,7 @@ export interface CompanyProfile {
 export class EmpresasMainLayoutComponent implements OnInit {
   public themeService = inject(ThemeService);
   public router = inject(Router);
+  public sessionService = inject(SessionService);
   private authService = inject(AuthService);
   private firestore = inject(Firestore);
 

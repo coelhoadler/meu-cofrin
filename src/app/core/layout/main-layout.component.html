@@ -117,7 +117,8 @@
       <div class="flex items-center mb-4 gap-3 px-2"
         [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center md:gap-0 md:px-0' : ''">
         <div
-          class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-xs shrink-0 overflow-hidden">
+          class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-xs shrink-0 overflow-hidden"
+          [title]="'Sessão: ' + sessionService.remainingFormatted()">
           @if (user()?.photoURL) {
           <img [src]="$safeNavigationMigration(user()?.photoURL)" class="w-full h-full object-cover" />
           } @else {
@@ -128,10 +129,37 @@
           }}
           }
         </div>
-        <div class="flex-1 truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">
-          <p class="text-xs font-medium text-slate-400 truncate">
+        <div class="flex-1 min-w-0" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">
+          <p class="text-xs font-medium text-slate-300 truncate">
             {{ user()?.displayName || user()?.email || 'usuario@exemplo.com' }}
           </p>
+
+          <!-- Barra de Progresso e Tempo Restante da Sessão -->
+          <div class="mt-1 flex flex-col gap-1" title="Tempo restante da sessão">
+            <div class="flex items-center justify-between text-[10px] text-slate-400">
+              <span class="flex items-center gap-0.5">
+                <span class="material-symbols-outlined text-[12px] text-indigo-400">timer</span>
+                Sessão
+              </span>
+              <span class="font-medium font-mono text-[10px]" [ngClass]="{
+                'text-rose-400 font-semibold': sessionService.urgencyLevel() === 'danger',
+                'text-amber-400 font-semibold': sessionService.urgencyLevel() === 'warning',
+                'text-slate-400': sessionService.urgencyLevel() === 'normal'
+              }">
+                {{ sessionService.remainingFormatted() }}
+              </span>
+            </div>
+            <div class="w-full h-1 bg-slate-800 rounded-full overflow-hidden">
+              <div
+                class="h-full transition-all duration-1000 ease-linear rounded-full"
+                [style.width.%]="sessionService.progressPercentage()"
+                [ngClass]="{
+                  'bg-rose-500': sessionService.urgencyLevel() === 'danger',
+                  'bg-amber-500': sessionService.urgencyLevel() === 'warning',
+                  'bg-indigo-500': sessionService.urgencyLevel() === 'normal'
+                }"></div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="flex items-center w-full gap-2" [ngClass]="isDesktopSidebarCollapsed() ? 'md:flex-col' : ''">

@@ -5,6 +5,8 @@ import { Storage, ref, listAll, deleteObject } from '@angular/fire/storage';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 
+import { SESSION_DURATION_MS } from './session.config';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -19,11 +21,6 @@ export class AuthService {
   constructor() {
     authState(this.auth).subscribe(async (user) => {
       if (user) {
-        const expired = await this.isSessionExpired(user);
-        if (expired) {
-          await this.logout();
-          return;
-        }
         this.currentUser.set(user);
         this.updateLastAccessDate(user.uid);
       } else {
@@ -39,9 +36,8 @@ export class AuthService {
       const idTokenResult = await user.getIdTokenResult();
       const authTime = Number(idTokenResult?.claims['auth_time'] || 0) * 1000;
       const now = Date.now();
-      const maxDuration = 60 * 60 * 1000; // 1 hora em milissegundos
 
-      return authTime === 0 || (now - authTime > maxDuration);
+      return authTime === 0 || (now - authTime > SESSION_DURATION_MS);
     } catch (error) {
       console.error('Erro ao verificar validade da sessão:', error);
       return true;
