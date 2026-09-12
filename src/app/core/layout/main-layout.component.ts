@@ -17,6 +17,7 @@ import { SessionService } from '../auth/session.service';
 import { ContaService } from '../services/conta.service';
 import { ThemeService } from '../services/theme.service';
 import { TourService } from '../services/tour.service';
+import { LayoutService } from '../services/layout.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -29,13 +30,14 @@ export class MainLayoutComponent implements OnDestroy {
   public themeService = inject(ThemeService);
   public router = inject(Router);
   public sessionService = inject(SessionService);
+  public layoutService = inject(LayoutService);
   private authService = inject(AuthService);
   private contaService = inject(ContaService);
   private tourService = inject(TourService);
 
   @ViewChild('mainContent') mainContent?: ElementRef<HTMLElement>;
 
-  isSidebarOpen = signal(false);
+  isSidebarOpen = this.layoutService.isSidebarOpen;
   isDesktopSidebarCollapsed = signal(false);
   isQrCodeModalOpen = signal(false);
   isContactModalOpen = signal(false);

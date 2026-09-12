@@ -124,4 +124,14 @@ describe('MainLayoutComponent', () => {
     expect(component.isAtBottom()).toBe(false);
     expect(component.currentUrl()).toBe('/categorias');
   });
+
+  it('deve alternar a abertura da sidebar ao chamar toggleSidebar()', () => {
+    expect(component.isSidebarOpen()).toBe(false);
+
+    component.toggleSidebar();
+    expect(component.isSidebarOpen()).toBe(true);
+
+    component.toggleSidebar();
+    expect(component.isSidebarOpen()).toBe(false);
+  });
 });

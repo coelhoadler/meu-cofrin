@@ -8,7 +8,10 @@ test.describe('Botão Flutuante Mobile de Retorno ao Dashboard', () => {
 
     // Usuário não autenticado vai para /login
     await expect(page).toHaveURL(/.*\/login.*/);
-    const fabButton = page.locator('#mobile-fab-back-dashboard');
-    await expect(fabButton).not.toBeVisible();
+    const fabBackButton = page.locator('#mobile-fab-back-dashboard');
+    await expect(fabBackButton).not.toBeVisible();
+
+    const fabNovaConta = page.locator('#tour-fab-nova-conta');
+    await expect(fabNovaConta).not.toBeVisible();
   });
 });

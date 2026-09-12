@@ -13,6 +13,7 @@ import { AuthService } from '../../core/auth/auth.service';
 import { Conta, ContaService } from '../../core/services/conta.service';
 import { MessagingService } from '../../core/services/messaging.service';
 import { TourService } from '../../core/services/tour.service';
+import { LayoutService } from '../../core/services/layout.service';
 
 export type Variacao = { percent: number; direction: 'up' | 'down' | 'none' } | null;
 
@@ -54,6 +55,7 @@ export class DashboardComponent implements AfterViewInit {
   private authService = inject(AuthService);
   private messagingService = inject(MessagingService);
   private tourService = inject(TourService);
+  public layoutService = inject(LayoutService);
 
   lancamentos = signal<Conta[]>([]);
   isLoading = signal(true);
