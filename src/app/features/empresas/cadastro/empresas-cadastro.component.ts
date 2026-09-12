@@ -195,16 +195,18 @@ export class EmpresasCadastroComponent {
       // 2. Cria conta no Firebase Auth com e-mail e senha
       const userCredential = await this.authService.signup(email!, senha!, nomeFantasia!);
 
-      // 3. Salva perfil da empresa no Firestore (coleção 'users')
+      // 3. Salva perfil da empresa no Firestore (users/{uid}.perfil)
       const userDocRef = doc(this.firestore, `users/${userCredential.user.uid}`);
       await setDoc(userDocRef, {
-        nomeFantasia: nomeFantasia,
-        cnpj: cnpj,
-        email: email,
-        tipo: 'empresa',
-        userId: userCredential.user.uid,
+        perfil: {
+          nomeFantasia: nomeFantasia,
+          cnpj: cnpj,
+          email: email,
+          tipo: 'empresa',
+          displayName: nomeFantasia
+        },
         createdAt: serverTimestamp()
-      });
+      }, { merge: true });
 
       // 4. Redireciona para dashboard
       this.router.navigate(['/empresas/dashboard']);
