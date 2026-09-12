@@ -42,7 +42,9 @@
     <!-- Sidebar Footer -->
     <div class="p-4 border-t border-emerald-950/50">
       <div class="flex items-center gap-3" [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center' : ''">
-        <div class="w-9 h-9 rounded-xl bg-emerald-900/60 border border-emerald-700/40 flex items-center justify-center text-emerald-400 font-bold text-sm shrink-0">
+        <div
+          class="w-9 h-9 rounded-xl bg-emerald-900/60 border border-emerald-700/40 flex items-center justify-center text-emerald-400 font-bold text-sm shrink-0"
+          [title]="'Sessão: ' + sessionService.remainingFormatted()">
           {{ (companyProfile()?.nomeFantasia || 'E').charAt(0).toUpperCase() }}
         </div>
         <div class="flex-1 min-w-0" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">
@@ -52,6 +54,33 @@
           <p class="text-[10px] text-slate-400 truncate">
             {{ companyProfile()?.email || user()?.email }}
           </p>
+
+          <!-- Barra de Progresso e Tempo Restante da Sessão Corporativa -->
+          <div class="mt-1.5 flex flex-col gap-1" title="Tempo restante da sessão corporativa">
+            <div class="flex items-center justify-between text-[10px] text-slate-400">
+              <span class="flex items-center gap-0.5">
+                <span class="material-symbols-outlined text-[12px] text-emerald-400">timer</span>
+                Sessão
+              </span>
+              <span class="font-medium font-mono text-[10px]" [ngClass]="{
+                'text-rose-400 font-semibold': sessionService.urgencyLevel() === 'danger',
+                'text-amber-400 font-semibold': sessionService.urgencyLevel() === 'warning',
+                'text-emerald-400': sessionService.urgencyLevel() === 'normal'
+              }">
+                {{ sessionService.remainingFormatted() }}
+              </span>
+            </div>
+            <div class="w-full h-1 bg-emerald-950/80 rounded-full overflow-hidden">
+              <div
+                class="h-full transition-all duration-1000 ease-linear rounded-full"
+                [style.width.%]="sessionService.progressPercentage()"
+                [ngClass]="{
+                  'bg-rose-500': sessionService.urgencyLevel() === 'danger',
+                  'bg-amber-500': sessionService.urgencyLevel() === 'warning',
+                  'bg-emerald-500': sessionService.urgencyLevel() === 'normal'
+                }"></div>
+            </div>
+          </div>
         </div>
         <button (click)="logout()" title="Sair da conta"
           class="text-slate-400 hover:text-red-400 p-1.5 rounded-lg hover:bg-white/5 transition-colors"

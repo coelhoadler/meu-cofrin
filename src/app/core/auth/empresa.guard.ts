@@ -3,6 +3,7 @@ import { CanActivateFn, Router } from '@angular/router';
 import { Auth, authState } from '@angular/fire/auth';
 import { take, switchMap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
+import { SessionService } from './session.service';
 
 /**
  * Guarda de rota corporativa para a área de Empresas (/empresas/*).
@@ -11,6 +12,7 @@ import { AuthService } from './auth.service';
 export const empresaGuard: CanActivateFn = (route, state) => {
   const auth = inject(Auth);
   const authService = inject(AuthService);
+  const sessionService = inject(SessionService);
   const router = inject(Router);
 
   return authState(auth).pipe(
@@ -23,8 +25,8 @@ export const empresaGuard: CanActivateFn = (route, state) => {
       try {
         const isExpired = await authService.isSessionExpired(user);
         if (isExpired) {
-          await authService.logout();
-          return router.createUrlTree(['/empresas/login'], { queryParams: { returnUrl: state.url } });
+          sessionService.handleSessionExpired('/empresas/login');
+          return true;
         }
 
         const isEmpresa = await authService.isEmpresaAccount(user.uid);

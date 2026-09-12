@@ -2,6 +2,7 @@ import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
+import { SessionService } from '../auth/session.service';
 import { ContaService } from '../services/conta.service';
 import { ThemeService } from '../services/theme.service';
 import { TourService } from '../services/tour.service';
@@ -16,6 +17,7 @@ import { TourService } from '../services/tour.service';
 export class MainLayoutComponent {
   public themeService = inject(ThemeService);
   public router = inject(Router);
+  public sessionService = inject(SessionService);
   private authService = inject(AuthService);
   private contaService = inject(ContaService);
   private tourService = inject(TourService);

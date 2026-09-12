@@ -5,6 +5,7 @@ import { of, firstValueFrom, Observable } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { authGuard } from './auth.guard';
 import { AuthService } from './auth.service';
+import { SessionService } from './session.service';
 
 vi.mock('@angular/fire/auth', () => ({
   Auth: vi.fn(),
@@ -14,6 +15,7 @@ vi.mock('@angular/fire/auth', () => ({
 describe('authGuard (Rotas Pessoais)', () => {
   let authMock: any;
   let authServiceMock: any;
+  let sessionServiceMock: any;
   let routerMock: any;
 
   beforeEach(() => {
@@ -23,6 +25,9 @@ describe('authGuard (Rotas Pessoais)', () => {
       logout: vi.fn().mockResolvedValue(undefined),
       isEmpresaAccount: vi.fn().mockResolvedValue(false),
     };
+    sessionServiceMock = {
+      handleSessionExpired: vi.fn(),
+    };
     routerMock = {
       createUrlTree: vi.fn((commands, extras) => ({ commands, extras } as unknown as UrlTree)),
     };
@@ -31,6 +36,7 @@ describe('authGuard (Rotas Pessoais)', () => {
       providers: [
         { provide: Auth, useValue: authMock },
         { provide: AuthService, useValue: authServiceMock },
+        { provide: SessionService, useValue: sessionServiceMock },
         { provide: Router, useValue: routerMock },
       ],
     });
@@ -64,6 +70,20 @@ describe('authGuard (Rotas Pessoais)', () => {
     );
 
     const guardResult = await firstValueFrom(result as Observable<any>);
+    expect(guardResult).toBe(true);
+  });
+
+  it('deve disparar handleSessionExpired e permitir a rota quando a sessão estiver expirada', async () => {
+    const mockUser = { uid: 'user_pessoal_123' };
+    vi.mocked(authState).mockReturnValue(of(mockUser as any));
+    authServiceMock.isSessionExpired.mockResolvedValue(true);
+
+    const result = TestBed.runInInjectionContext(() =>
+      authGuard({} as any, { url: '/dashboard' } as any)
+    );
+
+    const guardResult = await firstValueFrom(result as Observable<any>);
+    expect(sessionServiceMock.handleSessionExpired).toHaveBeenCalledWith('/login');
     expect(guardResult).toBe(true);
   });
 
