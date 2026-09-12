@@ -1,3 +1,11 @@
+# [1.22.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.21.0...v1.22.0) (2026-09-12)
+
+
+### Features
+
+* add feature HTML templates, core layout components, session config, and e2e tests ([847a9c0](https://github.com/coelhoadler/meu-cofrin/commit/847a9c09f0e03c7af2109107398b02197249331d))
+* add main layout, dashboard component, layout service, and mobile FAB e2e tests ([75160b7](https://github.com/coelhoadler/meu-cofrin/commit/75160b7ed8aec7803cf8806eb7082670863a838e))
+
 # [1.21.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.20.0...v1.21.0) (2026-09-12)
 
 
