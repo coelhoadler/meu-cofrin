@@ -1,0 +1,107 @@
+<div class="min-h-screen bg-slate-50 flex font-sans text-slate-800 dark:bg-[#06120e] dark:text-slate-100"
+  (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
+  <!-- Sidebar -->
+  <aside [class.translate-x-0]="isSidebarOpen()" [class.-translate-x-full]="!isSidebarOpen()"
+    [ngClass]="isDesktopSidebarCollapsed() ? 'w-64 md:w-20' : 'w-64'"
+    class="fixed inset-y-0 left-0 z-50 bg-[#0a1813] text-slate-300 transition-all duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col border-r border-emerald-950/50 shadow-xl md:shadow-none">
+    
+    <!-- Sidebar Header -->
+    <div class="py-6 flex items-center relative px-6 gap-3"
+      [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center md:px-0 md:gap-0' : ''">
+      <div [routerLink]="['/empresas/dashboard']"
+        class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 via-teal-500 to-green-600 flex items-center justify-center shadow-lg shadow-emerald-600/30 shrink-0 cursor-pointer">
+        <span class="material-symbols-outlined text-white text-2xl">business</span>
+      </div>
+      <div [routerLink]="['/empresas/dashboard']" class="cursor-pointer truncate"
+        [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">
+        <h1 class="text-lg font-bold text-white leading-tight">Meu Cofrin</h1>
+        <div class="flex items-center gap-1.5">
+          <span class="inline-block w-2 h-2 rounded-full bg-emerald-400"></span>
+          <p class="text-[11px] font-semibold text-emerald-400 tracking-wide uppercase">Empresas</p>
+        </div>
+      </div>
+      <button (click)="toggleDesktopSidebar()"
+        class="hidden md:flex absolute -right-3 top-8 w-6 h-6 bg-slate-800 rounded-full items-center justify-center border border-slate-700 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors z-50">
+        <span class="material-symbols-outlined text-sm">{{
+          isDesktopSidebarCollapsed() ? 'chevron_right' : 'chevron_left'
+          }}</span>
+      </button>
+    </div>
+
+    <!-- Sidebar Navigation -->
+    <nav class="flex-1 px-3 py-4 space-y-2 overflow-y-auto overflow-x-hidden">
+      <a routerLink="/empresas/dashboard" routerLinkActive="bg-emerald-500/20 text-emerald-300 font-semibold"
+        [routerLinkActiveOptions]="{ exact: true }" (click)="isSidebarOpen.set(false)"
+        class="flex items-center py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors gap-3 px-3"
+        [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center md:mx-1 md:gap-0 md:px-0' : ''" title="Dashboard Corporativo">
+        <span class="material-symbols-outlined text-xl">dashboard</span>
+        <span class="text-sm truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">Dashboard</span>
+      </a>
+    </nav>
+
+    <!-- Sidebar Footer -->
+    <div class="p-4 border-t border-emerald-950/50">
+      <div class="flex items-center gap-3" [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center' : ''">
+        <div class="w-9 h-9 rounded-xl bg-emerald-900/60 border border-emerald-700/40 flex items-center justify-center text-emerald-400 font-bold text-sm shrink-0">
+          {{ (companyProfile()?.nomeFantasia || 'E').charAt(0).toUpperCase() }}
+        </div>
+        <div class="flex-1 min-w-0" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">
+          <p class="text-xs font-semibold text-slate-200 truncate">
+            {{ companyProfile()?.nomeFantasia || 'Conta Corporativa' }}
+          </p>
+          <p class="text-[10px] text-slate-400 truncate">
+            {{ companyProfile()?.email || user()?.email }}
+          </p>
+        </div>
+        <button (click)="logout()" title="Sair da conta"
+          class="text-slate-400 hover:text-red-400 p-1.5 rounded-lg hover:bg-white/5 transition-colors"
+          [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">
+          <span class="material-symbols-outlined text-lg">logout</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Overlay Mobile -->
+  @if (isSidebarOpen()) {
+  <div (click)="isSidebarOpen.set(false)" class="fixed inset-0 bg-black/60 z-40 md:hidden backdrop-blur-xs"></div>
+  }
+
+  <!-- Main Content Wrapper -->
+  <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+    <!-- Top Bar -->
+    <header class="h-16 bg-white dark:bg-[#0a1813] border-b border-slate-200 dark:border-emerald-950/40 flex items-center justify-between px-4 md:px-8 z-10 shrink-0">
+      <div class="flex items-center gap-3">
+        <button (click)="toggleSidebar()" class="md:hidden p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 rounded-xl transition-colors">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+        <span class="text-sm md:text-base font-semibold text-slate-800 dark:text-slate-100">
+          {{ greetingCompany() }}
+        </span>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <!-- Theme Toggle -->
+        <button (click)="themeService.toggleTheme()"
+          class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 rounded-xl transition-colors cursor-pointer"
+          title="Alternar tema">
+          <span class="material-symbols-outlined">
+            {{ themeService.currentTheme() === 'dark' ? 'light_mode' : 'dark_mode' }}
+          </span>
+        </button>
+
+        <!-- Botão Sair Desktop -->
+        <button (click)="logout()"
+          class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors">
+          <span class="material-symbols-outlined text-sm">logout</span>
+          <span>Sair</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Page Outlet -->
+    <main class="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50 dark:bg-[#06120e]">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

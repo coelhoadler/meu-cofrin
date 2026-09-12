@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, authState, User, updateProfile, updatePassword, sendEmailVerification, GoogleAuthProvider, signInWithPopup, RecaptchaVerifier, linkWithPhoneNumber, ConfirmationResult, applyActionCode, reload, deleteUser } from '@angular/fire/auth';
-import { Firestore, doc, setDoc, serverTimestamp, collection, getDocs, deleteDoc } from '@angular/fire/firestore';
+import { Firestore, doc, setDoc, serverTimestamp, collection, getDocs, deleteDoc, getDoc } from '@angular/fire/firestore';
 import { Storage, ref, listAll, deleteObject } from '@angular/fire/storage';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -95,6 +95,37 @@ export class AuthService {
     } catch (error) {
       console.error('Erro ao salvar o perfil do usuário:', error);
     }
+  }
+
+  async isEmpresaAccount(uid: string): Promise<boolean> {
+    // 1. Tenta verificar na coleção dedicada 'companies/{uid}'
+    try {
+      const companyDoc = await getDoc(doc(this.firestore, `companies/${uid}`));
+      if (companyDoc.exists()) {
+        return true;
+      }
+    } catch (e) {
+      // Ignora erro caso a regra bloqueie
+    }
+
+    // 2. Tenta verificar no documento do usuário em 'users/{uid}'
+    try {
+      const userDoc = await getDoc(doc(this.firestore, `users/${uid}`));
+      if (userDoc.exists()) {
+        const data = userDoc.data();
+        if (
+          data?.['companies'] ||
+          data?.['perfil']?.tipo === 'empresa' ||
+          data?.['tipo'] === 'empresa'
+        ) {
+          return true;
+        }
+      }
+    } catch (e) {
+      console.error('Erro ao verificar se conta é de empresa no Firestore:', e);
+    }
+
+    return false;
   }
 
   async getCurrentUserAsync(): Promise<User | null> {

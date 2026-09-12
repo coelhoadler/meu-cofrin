@@ -1,7 +1,7 @@
-import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
 import { Firestore, doc, getDoc } from '@angular/fire/firestore';
 import * as packageJson from '../../../../../package.json';
@@ -10,127 +10,21 @@ import * as packageJson from '../../../../../package.json';
   selector: 'app-empresas-login',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
-  changeDetection: ChangeDetectionStrategy.Default,
-  template: `
-    <div
-      class="min-h-screen flex flex-col items-center justify-center p-4 relative font-sans text-slate-800 overflow-hidden">
-      <!-- Fundo com a imagem e Blur -->
-      <div class="absolute inset-0 -z-20 scale-110 animate-slow-pan" style="
-          background-image: url('/auth-hero.jpg');
-          background-size: cover;
-          background-position: center;
-          filter: blur(40px);
-        "></div>
-
-      <!-- Overlay branco para clarear bastante a imagem -->
-      <div class="absolute inset-0 bg-white/85 -z-10"></div>
-
-      <!-- Cabeçalho (Logo e Textos) -->
-      <div class="flex flex-col items-center mb-8 z-10">
-        <img src="logo.png" alt="Logotipo" class="w-24 h-24 object-contain" />
-
-        <h1 class="text-2xl font-bold text-slate-900 text-center">Meu Cofrin <span class="text-emerald-600">Empresas</span></h1>
-        <p class="text-slate-600 mt-1 text-center text-sm font-medium">
-          Área corporativa para gestão financeira.
-        </p>
-      </div>
-
-      <!-- Login Card -->
-      <div
-        class="w-full max-w-[420px] bg-white rounded-3xl shadow-2xl shadow-emerald-900/10 overflow-hidden p-8 z-10 border border-slate-100">
-
-        <!-- Formulário -->
-        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
-          <!-- E-mail -->
-          <div class="space-y-1">
-            <label for="email" class="text-xs font-semibold text-slate-600 ml-1">E-mail <span
-                class="text-red-500">*</span></label>
-            <input id="email" type="email" formControlName="email"
-              placeholder="empresa@exemplo.com"
-              autocomplete="email"
-              class="w-full px-4 py-3 !bg-white !border !border-slate-200 rounded-2xl !text-slate-900 placeholder:!text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm" />
-            @if (form.get('email')?.touched && form.get('email')?.invalid && form.get('email')?.dirty) {
-              <div class="text-red-500 text-xs ml-1 mt-1 font-medium">Insira um e-mail válido.</div>
-            }
-          </div>
-
-          <!-- Senha -->
-          <div class="space-y-1">
-            <div class="flex items-center justify-between ml-1">
-              <label for="password" class="text-xs font-semibold text-slate-600">Senha <span
-                  class="text-red-500">*</span></label>
-            </div>
-            <div class="relative">
-              <input id="password" [type]="showPassword() ? 'text' : 'password'" formControlName="senha"
-                autocomplete="current-password" placeholder="Insira sua senha"
-                class="w-full px-4 py-3 !bg-white !border !border-slate-200 rounded-2xl !text-slate-900 placeholder:!text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm pr-12" />
-              <button type="button" (click)="togglePasswordVisibility()"
-                class="absolute inset-y-0 right-0 flex items-center px-4 text-slate-400 hover:text-emerald-500 transition-colors focus:outline-none">
-                @if (!showPassword()) {
-                  <span class="material-symbols-outlined text-xl">visibility</span>
-                }
-                @if (showPassword()) {
-                  <span class="material-symbols-outlined text-xl">visibility_off</span>
-                }
-              </button>
-            </div>
-            @if (form.get('senha')?.touched && form.get('senha')?.invalid && form.get('senha')?.dirty) {
-              <div class="text-red-500 text-xs ml-1 mt-1 font-medium">A senha é obrigatória.</div>
-            }
-          </div>
-
-          <!-- Mensagem de Erro -->
-          @if (errorMessage()) {
-            <div class="p-3 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm text-center font-medium">
-              {{ errorMessage() }}
-            </div>
-          }
-
-          <!-- Botão de Ação -->
-          <button type="submit"
-            [disabled]="form.invalid || isLoading()"
-            class="w-full mt-6 px-8 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold shadow-md shadow-emerald-900/20 transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center h-12 text-sm">
-            @if (!isLoading()) {
-              Entrar
-            }
-            @if (isLoading()) {
-              <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-            }
-          </button>
-
-          <!-- Separador -->
-          <div class="flex items-center gap-3 mt-4 mb-2">
-            <div class="h-px bg-slate-200 flex-1"></div>
-            <span class="text-xs font-medium text-slate-400">OU</span>
-            <div class="h-px bg-slate-200 flex-1"></div>
-          </div>
-
-          <!-- Link para Cadastro -->
-          <div class="text-center">
-            <a routerLink="/empresas/cadastro" class="text-sm font-semibold text-emerald-600 hover:text-emerald-800 transition-colors">
-              Não tem conta? Cadastre-se
-            </a>
-          </div>
-        </form>
-      </div>
-
-      <!-- App Version Footer -->
-      <div
-        class="fixed bottom-2 right-2 text-xs font-mono text-slate-500 bg-white/80 px-2 py-1 rounded pointer-events-none z-[9999]">
-        v{{ version() }}
-      </div>
-    </div>
-  `
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './empresas-login.component.html',
 })
-export class EmpresasLoginComponent {
+export class EmpresasLoginComponent implements OnInit, AfterViewInit {
+  @ViewChild('emailInput') emailInput!: ElementRef<HTMLInputElement>;
+
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private firestore = inject(Firestore);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
-    senha: ['', [Validators.required, Validators.minLength(6)]]
+    senha: ['', [Validators.required, Validators.minLength(6)]],
   });
 
   isLoading = signal(false);
@@ -138,13 +32,26 @@ export class EmpresasLoginComponent {
   showPassword = signal(false);
   version = signal(packageJson.version);
 
+  ngOnInit() {
+    const errorParam = this.route.snapshot.queryParams['error'];
+    if (errorParam === 'acesso_exclusivo') {
+      this.errorMessage.set('Este acesso é exclusivo para contas corporativas. Utilize o login principal para contas pessoais.');
+    }
+  }
+
+  ngAfterViewInit() {
+    this.emailInput?.nativeElement.focus();
+  }
+
   togglePasswordVisibility() {
     this.showPassword.update((v) => !v);
   }
 
   async onSubmit() {
-    debugger
-    if (this.form.invalid) return;
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
 
     this.isLoading.set(true);
     this.errorMessage.set('');
@@ -154,41 +61,61 @@ export class EmpresasLoginComponent {
     try {
       const userCredential = await this.authService.login(email!, senha!);
 
-      // Verifica se o perfil da empresa existe no Firestore
+      // Verifica se o perfil da empresa existe em 'companies' ou em 'users/{uid}'
+      let isEmpresa = false;
+
+      // 1. Tenta verificar na coleção companies
       try {
-        const userDocRef = doc(this.firestore, `users/${userCredential.user.uid}`);
-        const userSnap = await getDoc(userDocRef);
-
-        if (!userSnap.exists()) {
-          await this.authService.logout();
-          this.errorMessage.set('Perfil não encontrado. Entre em contato com o suporte.');
-          this.isLoading.set(false);
-          return;
-        }
-
-        const userData = userSnap.data();
-        if (userData['perfil']?.tipo !== 'empresa') {
-          await this.authService.logout();
-          this.errorMessage.set('Este acesso é exclusivo para contas corporativas. Utilize o login principal para contas pessoais.');
-          this.isLoading.set(false);
-          return;
+        const companyDocRef = doc(this.firestore, `companies/${userCredential.user.uid}`);
+        const companySnap = await getDoc(companyDocRef);
+        if (companySnap.exists()) {
+          isEmpresa = true;
         }
       } catch (firestoreError: any) {
-        console.error('Erro ao consultar perfil no Firestore:', firestoreError);
-        this.errorMessage.set('Erro ao carregar perfil da empresa. Tente novamente.');
+        // Ignora erro de permissão da coleção raiz
+      }
+
+      // 2. Se não encontrou em companies, consulta o documento em users/{uid}
+      if (!isEmpresa) {
+        try {
+          const userDocRef = doc(this.firestore, `users/${userCredential.user.uid}`);
+          const userSnap = await getDoc(userDocRef);
+          if (userSnap.exists()) {
+            const userData = userSnap.data();
+            if (
+              userData?.['companies'] ||
+              userData?.['perfil']?.tipo === 'empresa' ||
+              userData?.['tipo'] === 'empresa'
+            ) {
+              isEmpresa = true;
+            }
+          }
+        } catch (userErr: any) {
+          console.error('Erro ao consultar perfil em users:', userErr);
+        }
+      }
+
+      if (!isEmpresa) {
+        await this.authService.logout();
+        this.errorMessage.set('Este acesso é exclusivo para contas corporativas. Utilize o login principal para contas pessoais.');
         this.isLoading.set(false);
         return;
       }
 
-      this.router.navigate(['/empresas/dashboard']);
+      const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/empresas/dashboard';
+      this.router.navigateByUrl(returnUrl);
     } catch (e: any) {
       console.error('Erro no login de empresas:', e);
-      if (e.code === 'auth/user-not-found' || e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') {
+      if (
+        e.code === 'auth/user-not-found' ||
+        e.code === 'auth/wrong-password' ||
+        e.code === 'auth/invalid-credential'
+      ) {
         this.errorMessage.set('Credenciais inválidas. Verifique seu e-mail e senha.');
       } else if (e.code === 'auth/too-many-requests') {
         this.errorMessage.set('Muitas tentativas de login. Aguarde alguns minutos e tente novamente.');
       } else {
-        this.errorMessage.set('Erro ao fazer login. Tente novamente.');
+        this.errorMessage.set('Erro ao fazer login corporativo. Tente novamente.');
       }
     } finally {
       this.isLoading.set(false);

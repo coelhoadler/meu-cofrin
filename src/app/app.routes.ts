@@ -4,6 +4,8 @@ import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { MainLayoutComponent } from './core/layout/main-layout.component';
 import { authGuard } from './core/auth/auth.guard';
 
+import { empresaGuard } from './core/auth/empresa.guard';
+
 export const routes: Routes = [
   { path: 'login', component: LoginComponent, title: 'Meu Cofrin - Entrar no Controle Financeiro' },
   {
@@ -85,8 +87,8 @@ export const routes: Routes = [
       },
       {
         path: 'dashboard',
-        component: MainLayoutComponent,
-        canActivate: [authGuard],
+        loadComponent: () => import('./features/empresas/layout/empresas-main-layout.component').then(m => m.EmpresasMainLayoutComponent),
+        canActivate: [empresaGuard],
         children: [
           { path: '', component: DashboardComponent, title: 'Meu Cofrin Empresas | Dashboard' }
         ]

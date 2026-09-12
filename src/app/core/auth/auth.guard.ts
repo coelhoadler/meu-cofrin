@@ -18,6 +18,13 @@ export const authGuard: CanActivateFn = (route, state) => {
           await authService.logout();
           return router.createUrlTree(['/login'], { queryParams: { returnUrl: state.url } });
         }
+
+        // Impede que contas corporativas acessem as rotas de finanças pessoais
+        const isEmpresa = await authService.isEmpresaAccount(user.uid);
+        if (isEmpresa) {
+          return router.createUrlTree(['/empresas/dashboard']);
+        }
+
         return true;
       }
       return router.createUrlTree(['/login'], { queryParams: { returnUrl: state.url } });
