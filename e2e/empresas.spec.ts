@@ -55,4 +55,12 @@ test.describe('Área Meu Cofrin Empresas', () => {
     await empresasLink.click();
     await expect(page).toHaveURL(/.*\/empresas\/login.*/);
   });
+
+  test('deve conter link de acesso às finanças pessoais na tela de login de empresas', async ({ page }) => {
+    await page.goto('http://localhost:4200/empresas/login');
+    const pessoalLink = page.getByRole('link', { name: /Acessar Finanças Pessoais/i });
+    await expect(pessoalLink).toBeVisible();
+    await pessoalLink.click();
+    await expect(page).toHaveURL(/.*\/login.*/);
+  });
 });

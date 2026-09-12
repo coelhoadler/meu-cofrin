@@ -61,7 +61,7 @@ Este documento define regras, convenções arquiteturais e padrões de desenvolv
 ## 🧪 Testes, Qualidade e Validação
 
 - **Testes Unitários**: Vitest (`npm test` ou `ng test`). Ao criar ou refatorar serviços e componentes, adicione ou atualize os testes `.spec.ts`.
-- **Testes E2E Automatizados**: Playwright (`npm run e2e`).
+- **Testes E2E Automatizados**: Playwright (`npm run e2e`). Quero que você realize os testes com um usuário real, para o nome do usuário, adicione o acrônimo `TESTE`, [EMAIL_ADDRESS] e senha `123456`. Ao criar um novo usuário para teste, lembre-se de apagá-lo após o término dos testes, na área logada, você pode ir no menu lateral -> `Perfil` e no final da página tem um botão "Apagar Conta".
 - **Validação com Playwright MCP (Obrigatório para Front-end)**:
   - **Quando aplicar**: Sempre que houver qualquer alteração no front-end (templates HTML, estilos Tailwind/CSS, componentes visuais, formulários, diálogos ou rotas).
   - **Fluxo de validação**:
