@@ -85,14 +85,13 @@ export class AuthService {
   async saveUserProfile(user: User) {
     try {
       const userDocRef = doc(this.firestore, `users/${user.uid}`);
-      const perfil = {
-        displayName: user.displayName,
-        email: user.email,
-        photoURL: user.photoURL,
-        phoneNumber: user.phoneNumber,
-        providerId: user.providerId
-      };
-      await setDoc(userDocRef, { perfil }, { merge: true });
+      await setDoc(userDocRef, {
+        'perfil.displayName': user.displayName,
+        'perfil.email': user.email,
+        'perfil.photoURL': user.photoURL,
+        'perfil.phoneNumber': user.phoneNumber,
+        'perfil.providerId': user.providerId
+      }, { merge: true });
     } catch (error) {
       console.error('Erro ao salvar o perfil do usuário:', error);
     }
@@ -144,9 +143,10 @@ export class AuthService {
 
   async logout() {
     localStorage.removeItem('lancamentosFiltros');
+    const isEmpresasRoute = this.router.url.startsWith('/empresas');
     await signOut(this.auth);
     this.currentUser.set(null);
-    this.router.navigate(['/login']);
+    this.router.navigate([isEmpresasRoute ? '/empresas/login' : '/login']);
   }
 
   async updateCurrentUserProfile(data: { displayName?: string | null, photoURL?: string | null }) {

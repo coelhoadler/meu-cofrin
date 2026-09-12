@@ -509,7 +509,7 @@ export class DashboardComponent implements AfterViewInit {
       return null;
     }
     const percent = ((newValue - oldValue) / Math.abs(oldValue)) * 100;
-    
+
     return {
       percent: Math.abs(percent),
       direction: percent > 0 ? 'up' : percent < 0 ? 'down' : 'none'

@@ -143,6 +143,7 @@ export class EmpresasLoginComponent {
   }
 
   async onSubmit() {
+    debugger
     if (this.form.invalid) return;
 
     this.isLoading.set(true);
@@ -155,12 +156,20 @@ export class EmpresasLoginComponent {
 
       // Verifica se o perfil da empresa existe no Firestore
       try {
-        const companyDocRef = doc(this.firestore, `users/${userCredential.user.uid}`);
-        const companySnap = await getDoc(companyDocRef);
+        const userDocRef = doc(this.firestore, `users/${userCredential.user.uid}`);
+        const userSnap = await getDoc(userDocRef);
 
-        if (!companySnap.exists()) {
+        if (!userSnap.exists()) {
           await this.authService.logout();
-          this.errorMessage.set('Perfil de empresa não encontrado. Entre em contato com o suporte.');
+          this.errorMessage.set('Perfil não encontrado. Entre em contato com o suporte.');
+          this.isLoading.set(false);
+          return;
+        }
+
+        const userData = userSnap.data();
+        if (userData['perfil']?.tipo !== 'empresa') {
+          await this.authService.logout();
+          this.errorMessage.set('Este acesso é exclusivo para contas corporativas. Utilize o login principal para contas pessoais.');
           this.isLoading.set(false);
           return;
         }
