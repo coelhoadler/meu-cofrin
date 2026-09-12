@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { signal } from '@angular/core';
 import { Storage } from '@angular/fire/storage';
+import { Firestore } from '@angular/fire/firestore';
 import { AuthService } from '../../core/auth/auth.service';
 import { WebauthnService } from '../../core/auth/webauthn.service';
 import { Perfil } from './perfil';
@@ -30,6 +31,7 @@ describe('Perfil', () => {
         provideRouter([]),
         { provide: AuthService, useValue: mockAuthService },
         { provide: Storage, useValue: mockStorage },
+        { provide: Firestore, useValue: {} },
         { provide: WebauthnService, useValue: mockWebauthnService },
       ],
     }).compileComponents();

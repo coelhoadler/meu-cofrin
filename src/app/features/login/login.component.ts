@@ -8,7 +8,7 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
 import { WebauthnService } from '../../core/auth/webauthn.service';
 import { CommonModule } from '@angular/common';
@@ -18,7 +18,7 @@ import * as packageJson from '../../../../package.json';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, InputTextModule],
+  imports: [ReactiveFormsModule, CommonModule, InputTextModule, RouterLink],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './login.component.html',
 })
@@ -118,7 +118,18 @@ export class LoginComponent implements OnInit {
 
     try {
       if (this.isLoginMode()) {
-        await this.authService.login(email!, password!);
+        const userCredential = await this.authService.login(email!, password!);
+
+        // Bloqueia acesso de contas corporativas na rota de login pessoal
+        const isEmpresa = await this.authService.isEmpresaAccount(userCredential.user.uid);
+        if (isEmpresa) {
+          await this.authService.logout();
+          this.errorMessage.set(
+            'Esta conta é corporativa. Para acessá-la, utilize o login Meu Cofrin Empresas em /empresas/login.'
+          );
+          this.isLoading.set(false);
+          return;
+        }
       } else {
         await this.authService.signup(email!, password!, nome);
       }
@@ -154,6 +165,19 @@ export class LoginComponent implements OnInit {
     try {
       await this.webauthnService.authenticateWithPasskey(email);
       
+      const currentUser = await this.authService.getCurrentUserAsync();
+      if (currentUser) {
+        const isEmpresa = await this.authService.isEmpresaAccount(currentUser.uid);
+        if (isEmpresa) {
+          await this.authService.logout();
+          this.errorMessage.set(
+            'Esta conta é corporativa. Para acessá-la, utilize o login Meu Cofrin Empresas em /empresas/login.'
+          );
+          this.isLoading.set(false);
+          return;
+        }
+      }
+
       if (typeof localStorage !== 'undefined') {
         localStorage.setItem('lastLoggedEmail', email);
       }
@@ -173,8 +197,18 @@ export class LoginComponent implements OnInit {
     this.isLoading.set(true);
 
     try {
-      await this.authService.loginWithGoogle();
+      const userCredential = await this.authService.loginWithGoogle();
       
+      const isEmpresa = await this.authService.isEmpresaAccount(userCredential.user.uid);
+      if (isEmpresa) {
+        await this.authService.logout();
+        this.errorMessage.set(
+          'Esta conta é corporativa. Para acessá-la, utilize o login Meu Cofrin Empresas em /empresas/login.'
+        );
+        this.isLoading.set(false);
+        return;
+      }
+
       // Attempt to save email if we could extract it from user profile, but since we use authService, we'll just save the email if it's there
       if (this.loginForm.get('email')?.value && typeof localStorage !== 'undefined') {
         localStorage.setItem('lastLoggedEmail', this.loginForm.get('email')?.value!);

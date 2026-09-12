@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, authState, User, updateProfile, updatePassword, sendEmailVerification, GoogleAuthProvider, signInWithPopup, RecaptchaVerifier, linkWithPhoneNumber, ConfirmationResult, applyActionCode, reload, deleteUser } from '@angular/fire/auth';
-import { Firestore, doc, setDoc, serverTimestamp, collection, getDocs, deleteDoc } from '@angular/fire/firestore';
+import { Firestore, doc, setDoc, serverTimestamp, collection, getDocs, deleteDoc, getDoc } from '@angular/fire/firestore';
 import { Storage, ref, listAll, deleteObject } from '@angular/fire/storage';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -85,17 +85,47 @@ export class AuthService {
   async saveUserProfile(user: User) {
     try {
       const userDocRef = doc(this.firestore, `users/${user.uid}`);
-      const perfil = {
-        displayName: user.displayName,
-        email: user.email,
-        photoURL: user.photoURL,
-        phoneNumber: user.phoneNumber,
-        providerId: user.providerId
-      };
-      await setDoc(userDocRef, { perfil }, { merge: true });
+      await setDoc(userDocRef, {
+        'perfil.displayName': user.displayName,
+        'perfil.email': user.email,
+        'perfil.photoURL': user.photoURL,
+        'perfil.phoneNumber': user.phoneNumber,
+        'perfil.providerId': user.providerId
+      }, { merge: true });
     } catch (error) {
       console.error('Erro ao salvar o perfil do usuário:', error);
     }
+  }
+
+  async isEmpresaAccount(uid: string): Promise<boolean> {
+    // 1. Tenta verificar na coleção dedicada 'companies/{uid}'
+    try {
+      const companyDoc = await getDoc(doc(this.firestore, `companies/${uid}`));
+      if (companyDoc.exists()) {
+        return true;
+      }
+    } catch (e) {
+      // Ignora erro caso a regra bloqueie
+    }
+
+    // 2. Tenta verificar no documento do usuário em 'users/{uid}'
+    try {
+      const userDoc = await getDoc(doc(this.firestore, `users/${uid}`));
+      if (userDoc.exists()) {
+        const data = userDoc.data();
+        if (
+          data?.['companies'] ||
+          data?.['perfil']?.tipo === 'empresa' ||
+          data?.['tipo'] === 'empresa'
+        ) {
+          return true;
+        }
+      }
+    } catch (e) {
+      console.error('Erro ao verificar se conta é de empresa no Firestore:', e);
+    }
+
+    return false;
   }
 
   async getCurrentUserAsync(): Promise<User | null> {
@@ -144,9 +174,10 @@ export class AuthService {
 
   async logout() {
     localStorage.removeItem('lancamentosFiltros');
+    const isEmpresasRoute = this.router.url.startsWith('/empresas');
     await signOut(this.auth);
     this.currentUser.set(null);
-    this.router.navigate(['/login']);
+    this.router.navigate([isEmpresasRoute ? '/empresas/login' : '/login']);
   }
 
   async updateCurrentUserProfile(data: { displayName?: string | null, photoURL?: string | null }) {

@@ -4,6 +4,8 @@ import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { MainLayoutComponent } from './core/layout/main-layout.component';
 import { authGuard } from './core/auth/auth.guard';
 
+import { empresaGuard } from './core/auth/empresa.guard';
+
 export const routes: Routes = [
   { path: 'login', component: LoginComponent, title: 'Meu Cofrin - Entrar no Controle Financeiro' },
   {
@@ -67,6 +69,31 @@ export const routes: Routes = [
         title: 'Meu Cofrin | Evolução do Investimento'
       },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
+    ]
+  },
+  {
+    path: 'empresas',
+    loadComponent: () => import('./features/empresas/layout/empresas-layout.component').then(m => m.EmpresasLayoutComponent),
+    children: [
+      {
+        path: 'login',
+        loadComponent: () => import('./features/empresas/login/empresas-login.component').then(m => m.EmpresasLoginComponent),
+        title: 'Meu Cofrin Empresas - Login'
+      },
+      {
+        path: 'cadastro',
+        loadComponent: () => import('./features/empresas/cadastro/empresas-cadastro.component').then(m => m.EmpresasCadastroComponent),
+        title: 'Meu Cofrin Empresas - Cadastro'
+      },
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./features/empresas/layout/empresas-main-layout.component').then(m => m.EmpresasMainLayoutComponent),
+        canActivate: [empresaGuard],
+        children: [
+          { path: '', component: DashboardComponent, title: 'Meu Cofrin Empresas | Dashboard' }
+        ]
+      },
+      { path: '', redirectTo: 'login', pathMatch: 'full' }
     ]
   },
   { path: '**', redirectTo: 'dashboard' }

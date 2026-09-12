@@ -1,0 +1,19 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Regras para documentos de usuários e suas subcoleções (Finanças Pessoais e Perfil)
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      match /{document=**} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+
+    // Regras para a coleção corporativa 'companies' (Meu Cofrin Empresas)
+    match /companies/{companyId} {
+      allow read, write: if request.auth != null && request.auth.uid == companyId;
+    }
+  }
+}
