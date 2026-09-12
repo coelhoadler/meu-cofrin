@@ -1,3 +1,10 @@
+# [1.21.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.20.0...v1.21.0) (2026-09-12)
+
+
+### Features
+
+* implement session expiration timeout handling with modal and route guards ([608dae8](https://github.com/coelhoadler/meu-cofrin/commit/608dae8de7188fb0fbf9202bfc25823c0f036865))
+
 # [1.20.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.19.0...v1.20.0) (2026-09-12)
 
 
