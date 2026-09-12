@@ -69,5 +69,30 @@ export const routes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },
+  {
+    path: 'empresas',
+    loadComponent: () => import('./features/empresas/layout/empresas-layout.component').then(m => m.EmpresasLayoutComponent),
+    children: [
+      {
+        path: 'login',
+        loadComponent: () => import('./features/empresas/login/empresas-login.component').then(m => m.EmpresasLoginComponent),
+        title: 'Meu Cofrin Empresas - Login'
+      },
+      {
+        path: 'cadastro',
+        loadComponent: () => import('./features/empresas/cadastro/empresas-cadastro.component').then(m => m.EmpresasCadastroComponent),
+        title: 'Meu Cofrin Empresas - Cadastro'
+      },
+      {
+        path: 'dashboard',
+        component: MainLayoutComponent,
+        canActivate: [authGuard],
+        children: [
+          { path: '', component: DashboardComponent, title: 'Meu Cofrin Empresas | Dashboard' }
+        ]
+      },
+      { path: '', redirectTo: 'login', pathMatch: 'full' }
+    ]
+  },
   { path: '**', redirectTo: 'dashboard' }
 ];

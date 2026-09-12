@@ -18,5 +18,8 @@
   },
   "firestore": {
     "indexes": "firestore.indexes.json"
+  },
+  "dataconnect": {
+    "source": "dataconnect"
   }
 }
