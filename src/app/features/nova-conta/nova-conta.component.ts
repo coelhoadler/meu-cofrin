@@ -12,6 +12,7 @@ import { CommonModule } from '@angular/common';
 import { NgxMaskDirective } from 'ngx-mask';
 import { Conta, ContaService } from '../../core/services/conta.service';
 import { Categoria, CategoriaService } from '../../core/services/categoria.service';
+import { NavigationHistoryService } from '../../core/services/navigation-history.service';
 import { DatePickerModule } from 'primeng/datepicker';
 import { CheckboxModule } from 'primeng/checkbox';
 import { SelectModule } from 'primeng/select';
@@ -38,6 +39,7 @@ export class NovaContaComponent implements OnInit {
   private categoriaService = inject(CategoriaService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private navigationHistory = inject(NavigationHistoryService);
 
   contaForm = this.fb.group({
     nome: ['', [Validators.required]],
@@ -158,6 +160,8 @@ export class NovaContaComponent implements OnInit {
       const from = this.route.snapshot.queryParamMap.get('from');
       if (from === 'lancamentos') {
         this.returnUrl.set('/lancamentos');
+      } else {
+        this.returnUrl.set(this.navigationHistory.previousRoute());
       }
 
       const id = this.route.snapshot.paramMap.get('id');

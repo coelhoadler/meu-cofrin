@@ -14,6 +14,7 @@ import { AuthService } from '../../core/auth/auth.service';
 import { Storage, ref, uploadBytes, getDownloadURL } from '@angular/fire/storage';
 import { Firestore, doc, getDoc, setDoc } from '@angular/fire/firestore';
 import { WebauthnService } from '../../core/auth/webauthn.service';
+import { NavigationHistoryService } from '../../core/services/navigation-history.service';
 
 @Component({
   selector: 'app-perfil',
@@ -27,6 +28,7 @@ export class Perfil implements OnInit, OnDestroy {
   private storage = inject(Storage);
   private firestore = inject(Firestore);
   private webauthnService = inject(WebauthnService);
+  public navigationHistory = inject(NavigationHistoryService);
 
   user = this.authService.currentUser;
 

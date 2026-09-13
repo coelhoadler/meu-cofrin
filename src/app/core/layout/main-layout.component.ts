@@ -18,6 +18,7 @@ import { ContaService } from '../services/conta.service';
 import { ThemeService } from '../services/theme.service';
 import { TourService } from '../services/tour.service';
 import { LayoutService } from '../services/layout.service';
+import { NavigationHistoryService } from '../services/navigation-history.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -31,6 +32,7 @@ export class MainLayoutComponent implements OnDestroy {
   public router = inject(Router);
   public sessionService = inject(SessionService);
   public layoutService = inject(LayoutService);
+  public navigationHistory = inject(NavigationHistoryService);
   private authService = inject(AuthService);
   private contaService = inject(ContaService);
   private tourService = inject(TourService);
@@ -152,6 +154,7 @@ export class MainLayoutComponent implements OnDestroy {
 
   async logout() {
     this.contaService.invalidateCache();
+    this.navigationHistory.clear();
     await this.authService.logout();
   }
 }

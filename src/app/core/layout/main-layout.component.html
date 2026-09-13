@@ -211,9 +211,9 @@
     </div>
   </main>
 
-  <!-- Floating Action Button (Mobile Only) - Voltar ao Dashboard -->
+  <!-- Floating Action Button (Mobile Only) - Voltar inteligente -->
   @if (!currentUrl().includes('/dashboard')) {
-  <a routerLink="/dashboard"
+  <a [routerLink]="navigationHistory.previousRoute()"
     id="mobile-fab-back-dashboard"
     class="fixed bottom-6 right-6 z-30 sm:hidden flex items-center justify-center w-14 h-14 bg-[#421b7b] active:bg-[#341561] text-white rounded-full border-[2.5px] border-[#9d6bf3] shadow-[0_0_20px_rgba(157,107,243,0.4)] transition-all duration-300 active:scale-95 cursor-pointer"
     [ngClass]="isBackButtonVisible() ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-75 pointer-events-none'">

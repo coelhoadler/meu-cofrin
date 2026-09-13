@@ -2,8 +2,8 @@
   <!-- Header -->
   <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
     <div>
-      <a routerLink="/dashboard"
-        class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 flex items-center gap-2 mb-2 text-sm font-medium transition-colors">
+      <a [routerLink]="navigationHistory.previousRoute()"
+        class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 flex items-center gap-2 mb-2 text-sm font-medium transition-colors hidden md:flex">
         <span class="material-symbols-outlined text-lg">arrow_back</span>
         Voltar
       </a>
@@ -68,7 +68,8 @@
                   </div>
                 </div>
                 <!-- Actions -->
-                <div class="flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
+                <div
+                  class="flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
                   <button (click)="openEditarInvestimento(inv, $event)"
                     class="text-slate-400 hover:text-indigo-500 p-1 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800">
                     <span class="material-symbols-outlined text-sm">edit</span>

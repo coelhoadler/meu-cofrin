@@ -10,6 +10,7 @@ import { DialogModule } from 'primeng/dialog';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { InvestimentoService } from '../../../core/services/investimento.service';
 import { Investimento, RegistroInvestimento } from '../../../core/models/investimento.model';
+import { NavigationHistoryService } from '../../../core/services/navigation-history.service';
 import { NgxCurrencyDirective } from 'ngx-currency';
 import { NgxMaskDirective } from 'ngx-mask';
 
@@ -24,6 +25,7 @@ export class EvolucaoComponent implements OnInit {
   private router = inject(Router);
   private investimentoService = inject(InvestimentoService);
   private fb = inject(FormBuilder);
+  public navigationHistory = inject(NavigationHistoryService);
 
   investimentoId = signal<string | null>(null);
   investimento = signal<Investimento | null>(null);

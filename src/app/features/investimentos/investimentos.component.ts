@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, inject, signal, computed, OnInit } 
 import { RouterLink, Router } from '@angular/router';
 import { InvestimentoService } from '../../core/services/investimento.service';
 import { Investimento } from '../../core/models/investimento.model';
+import { NavigationHistoryService } from '../../core/services/navigation-history.service';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { AccordionModule } from 'primeng/accordion';
 import { InvestimentoModalComponent } from './investimento-modal/investimento-modal.component';
@@ -32,6 +33,7 @@ import { InvestimentoModalComponent } from './investimento-modal/investimento-mo
 export class InvestimentosComponent implements OnInit {
     private investimentoService = inject(InvestimentoService);
     private router = inject(Router);
+    public navigationHistory = inject(NavigationHistoryService);
 
     investimentos = signal<Investimento[]>([]);
     isLoading = signal(true);

@@ -3,6 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Categoria, CategoriaService, CATEGORIA_ICONS } from '../../core/services/categoria.service';
+import { NavigationHistoryService } from '../../core/services/navigation-history.service';
 
 @Component({
   selector: 'app-categorias',
@@ -14,6 +15,7 @@ import { Categoria, CategoriaService, CATEGORIA_ICONS } from '../../core/service
 export class CategoriasComponent implements OnInit {
   private fb = inject(FormBuilder);
   private categoriaService = inject(CategoriaService);
+  public navigationHistory = inject(NavigationHistoryService);
 
   readonly availableIcons = CATEGORIA_ICONS;
   readonly defaultIcon = 'sell';

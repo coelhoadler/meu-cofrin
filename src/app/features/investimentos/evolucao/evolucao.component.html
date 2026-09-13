@@ -2,7 +2,7 @@
   <!-- Header -->
   <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
     <div>
-      <a routerLink="/investimentos"
+      <a [routerLink]="navigationHistory.previousRoute()"
         class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 flex items-center gap-2 mb-2 text-sm font-medium transition-colors">
         <span class="material-symbols-outlined text-lg">arrow_back</span>
         Voltar

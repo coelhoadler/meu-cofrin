@@ -134,4 +134,10 @@ describe('MainLayoutComponent', () => {
     component.toggleSidebar();
     expect(component.isSidebarOpen()).toBe(false);
   });
+
+  it('deve limpar o histórico de navegação ao executar logout()', async () => {
+    const clearSpy = vi.spyOn(component.navigationHistory, 'clear');
+    await component.logout();
+    expect(clearSpy).toHaveBeenCalled();
+  });
 });

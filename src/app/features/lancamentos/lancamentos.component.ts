@@ -17,6 +17,7 @@ import { ContaService, Conta } from '../../core/services/conta.service';
 import { CategoriaService, Categoria } from '../../core/services/categoria.service';
 import { InvestimentoService } from '../../core/services/investimento.service';
 import { Investimento } from '../../core/models/investimento.model';
+import { NavigationHistoryService } from '../../core/services/navigation-history.service';
 
 export type VisaoModo = 'lista' | 'resumo';
 
@@ -62,6 +63,7 @@ export class LancamentosComponent implements OnInit {
   private contaService = inject(ContaService);
   private categoriaService = inject(CategoriaService);
   private investimentoService = inject(InvestimentoService);
+  public navigationHistory = inject(NavigationHistoryService);
 
   constructor() {
     const savedFiltros = localStorage.getItem('lancamentosFiltros');
