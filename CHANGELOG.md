@@ -1,3 +1,10 @@
+# [1.24.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.23.0...v1.24.0) (2026-09-13)
+
+
+### Features
+
+* add domain-analysis skill files for multi-agent environments ([5dcb1dd](https://github.com/coelhoadler/meu-cofrin/commit/5dcb1dd1f911fb81a5e9c4d8d0307761725d252a))
+
 # [1.23.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.22.0...v1.23.0) (2026-09-13)
 
 
