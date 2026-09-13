@@ -1,3 +1,10 @@
+# [1.23.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.22.0...v1.23.0) (2026-09-13)
+
+
+### Features
+
+* implement main layout component and navigation history service with unit tests ([bd6e1ae](https://github.com/coelhoadler/meu-cofrin/commit/bd6e1ae1ec811274c84d8e2ca31780a48411d68e))
+
 # [1.22.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.21.0...v1.22.0) (2026-09-12)
 
 
