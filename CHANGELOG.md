@@ -1,3 +1,10 @@
+# [1.26.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.25.0...v1.26.0) (2026-09-14)
+
+
+### Features
+
+* add HTML template for categorias component with management modal and grid view ([b881717](https://github.com/coelhoadler/meu-cofrin/commit/b881717e1af5af2947cbcd3568fdb305e2760d4f))
+
 # [1.25.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.24.0...v1.25.0) (2026-09-14)
 
 
