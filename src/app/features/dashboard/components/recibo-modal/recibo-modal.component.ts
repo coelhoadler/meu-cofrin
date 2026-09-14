@@ -10,6 +10,7 @@ import { formatDataVencimento } from '../../../../core/utils/formatacao.utils';
   standalone: true,
   imports: [CommonModule, DialogModule, ProgressSpinnerModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'contents' },
   template: `
     <p-dialog header="Detalhes do Recibo" [modal]="true" [visible]="visible()" (visibleChange)="visibleChange.emit($event)"
       [style]="{ width: '90vw', maxWidth: '600px' }" [dismissableMask]="true">

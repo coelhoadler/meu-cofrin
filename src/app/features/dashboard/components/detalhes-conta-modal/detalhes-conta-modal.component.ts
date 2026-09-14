@@ -9,6 +9,7 @@ import { formatDataVencimento, formatDataPagamento } from '../../../../core/util
   standalone: true,
   imports: [CommonModule, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'contents' },
   template: `
     @if (conta(); as c) {
     <div

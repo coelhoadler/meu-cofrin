@@ -8,6 +8,7 @@ import { AuthService } from '../../../../core/auth/auth.service';
   standalone: true,
   imports: [CommonModule, FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'block' },
   template: `
     <!-- Card: Danger Zone -->
     <div

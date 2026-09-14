@@ -8,6 +8,7 @@ import { ChartConfiguration } from 'chart.js';
   standalone: true,
   imports: [CommonModule, BaseChartDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'block w-full h-full' },
   template: `
     <div id="tour-grafico-resumo"
       class="bg-white dark:bg-[#1a112c] rounded-[20px] p-3 sm:p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/50 flex flex-col h-[320px] transition-colors duration-300">

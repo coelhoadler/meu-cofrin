@@ -8,6 +8,7 @@ import { User } from '@angular/fire/auth';
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'block' },
   template: `
     <div
       class="bg-white dark:bg-[#1a112c] rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800/50 p-6 flex items-center justify-between gap-4 transition-colors duration-300"

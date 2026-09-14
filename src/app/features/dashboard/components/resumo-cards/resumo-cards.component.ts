@@ -7,6 +7,7 @@ import { Variacao } from '../../../../core/models/resumo-mensal.model';
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'block' },
   template: `
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
       <!-- Receitas Card -->

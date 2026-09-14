@@ -9,6 +9,7 @@ import { ContaReplicavel } from '../../services/replicar-mes.service';
   standalone: true,
   imports: [CommonModule, FormsModule, DatePickerModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'contents' },
   template: `
     @if (visible()) {
     <div

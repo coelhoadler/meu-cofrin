@@ -1,4 +1,4 @@
-<div class="space-y-6">
+<div class="flex flex-col gap-6">
   <!-- Dashboard Header Area -->
   <div
     class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sticky top-0 z-40 pt-2 pb-4 -mt-2 bg-white/80 dark:bg-[#130c25]/80 backdrop-blur-[2px]">
@@ -125,43 +125,61 @@
               <div class="material-symbols-outlined text-[#421b7b] dark:text-[#a37fd8] text-[11px]" title="Receita">
                 attach_money</div>
               }
-              @if(item.tipo === 'Despesa') {
-              <div class="material-symbols-outlined text-[#421b7b] dark:text-[#a37fd8] text-[11px]" title="Despesa">
-                money_off</div>
+              @if(item.tipo === 'Despesa' && item.statusPago) {
+              <div class="material-symbols-outlined text-emerald-500 text-[11px]" title="Pago">check</div>
+              }
+              @if(item.tipo === 'Despesa' && !item.statusPago) {
+              <div class="material-symbols-outlined text-orange-500 text-[11px]" title="Pendente">pending</div>
               }
             </td>
-            <td class="py-4 px-2 font-medium text-slate-600 dark:text-slate-300">
+            <td class="py-4 text-slate-500 dark:text-slate-400 text-center sm:font-bold">
               {{ formatDataVencimento(item) }}
             </td>
-            <td class="py-4 font-semibold text-slate-800 dark:text-slate-200">
-              <div class="flex items-center gap-2">
-                <span class="truncate max-w-[140px] sm:max-w-[280px] md:max-w-none">{{ item.nome }}</span>
-                @if (item.parcelamentoId) {
-                <span
-                  class="shrink-0 px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider bg-purple-100 text-purple-700 dark:bg-[#7941dc]/20 dark:text-purple-300 border border-purple-200 dark:border-[#7941dc]/30">
-                  {{ item.numeroParcela }}/{{ item.totalParcelas }}
-                </span>
-                }
-                @if (item.isRecorrente) {
-                <span class="material-symbols-outlined text-xs text-[#421b7b] dark:text-[#a78bfa]"
-                  title="Essa conta se repete todo o mês">autorenew</span>
-                }
-                @if (item.reciboUrl) {
-                <span
-                  class="material-symbols-outlined text-[15px] text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
-                  (click)="openImageModal($event, item)" title="Ver comprovante">receipt_long</span>
+            <td class="py-4">
+              <div class="flex flex-col">
+                <div class="flex items-center gap-2">
+                  <span
+                    class="font-semibold text-slate-800 dark:text-slate-200 dark:group-hover:text-white dark:group-hover:font-bold transition-all"
+                    [ngClass]="{ 'line-through': item.statusPago }">{{
+                    item.nome }}</span>
+                  @if (item.parcelamentoId) {
+                  <span
+                    class="shrink-0 px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider bg-purple-100 text-purple-700 dark:bg-[#7941dc]/20 dark:text-purple-300 border border-purple-200 dark:border-[#7941dc]/30">
+                    {{ item.numeroParcela }}/{{ item.totalParcelas }}
+                  </span>
+                  }
+                  @if (item.isRecorrente) {
+                  <span
+                    class="flex items-center gap-1 px-1.5 py-0.5 mr-4 bg-[#421b7b]/10 dark:bg-[#a78bfa]/10 text-[#421b7b] dark:text-[#a78bfa] rounded text-[6px] md:text-[8px] font-bold uppercase tracking-wider">
+                    <span class="material-symbols-outlined">autorenew</span>
+                    <p class="hidden md:block">Recorrente</p>
+                  </span>
+                  }
+                  @if (item.reciboUrl) {
+                  <span (click)="openImageModal($event, item)"
+                    class="material-symbols-outlined text-slate-400 text-base cursor-pointer hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                    title="Ver recibo">image</span>
+                  }
+                </div>
+                @if (item.categoria) {
+                <span class="text-xs font-medium text-slate-400 dark:text-slate-500 mt-0.5">{{
+                  item.categoria
+                  }}</span>
                 }
               </div>
             </td>
-            <td class="py-4 text-right pr-2">
-              <span class="font-bold block"
-                [ngClass]="item.tipo === 'Receita' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-800 dark:text-white'">
-                {{ showValues() ? item.valor : 'R$ ••••' }}
-              </span>
-              <span class="text-xs block font-medium"
-                [ngClass]="item.statusPago ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400 dark:text-slate-500'">
-                {{ item.statusPago ? 'Pago' : 'Pendente' }}
-              </span>
+            <td class="py-4 text-right font-semibold pr-2"
+              [ngClass]="item.tipo === 'Receita' ? 'text-emerald-600' : 'text-red-500'">
+              @if (showValues()) {
+              @if (item.tipo === 'Receita') {
+              <span>+ </span>
+              } @else {
+              <span>- </span>
+              }
+              {{ item.valor }}
+              } @else {
+              <span>R$ ••••</span>
+              }
             </td>
           </tr>
           }
@@ -169,48 +187,84 @@
       </table>
     </div>
     }
+
+    <!-- Rodapé: Total a Pagar e Legenda -->
+    @if (!isLoading() && lancamentos().length > 0) {
+    <div
+      class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mt-6 pt-4 border-t border-slate-100 dark:border-slate-800/50">
+      <!-- Total a Pagar -->
+      <div>
+        <p class="text-[11px] text-slate-500 font-medium uppercase tracking-wider mb-0.5">
+          Resta a pagar (Mês)
+        </p>
+        <p class="text-lg font-bold text-orange-500">{{ showValues() ? totalAPagar() : 'R$ ••••' }}</p>
+      </div>
+      <!-- Foi pago -->
+      <div>
+        <p class="text-[11px] text-slate-500 font-medium uppercase tracking-wider mb-0.5">
+          Foi pago (Mês)
+        </p>
+        <p class="text-lg font-bold text-green-500">{{ showValues() ? totalPago() : 'R$ ••••' }}</p>
+      </div>
+      <!-- Legenda -->
+      <div class="flex flex-wrap items-center gap-6">
+        <div class="flex items-center gap-2">
+          <div class="material-symbols-outlined dark:text-[#a37fd8] text-[#421b7b] text-[11px]">attach_money</div>
+          <span class="text-[11px] text-slate-500 font-medium uppercase tracking-wider">Receita</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="material-symbols-outlined text-emerald-500 text-[11px]">check</div>
+          <span class="text-[11px] text-slate-500 font-medium uppercase tracking-wider">Pago</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-orange-500 text-[11px]">pending</span>
+          <span class="text-[11px] text-slate-500 font-medium uppercase tracking-wider">Pendente</span>
+        </div>
+      </div>
+    </div>
+    }
   </div>
-
-  <!-- Modal de Ações da Conta Selecionada -->
-  <app-detalhes-conta-modal
-    [conta]="selectedConta()"
-    (close)="closeModal()"
-    (marcarComoPaga)="marcarComoPaga($event)"
-    (delete)="deleteLancamento($event)" />
-
-  <!-- Floating Action Button (Mobile Only) -->
-  @if (lancamentos().length > 0) {
-  <a routerLink="/nova-conta" id="tour-fab-nova-conta"
-    class="fixed bottom-0 right-6 z-30 sm:hidden flex items-center justify-center w-14 h-14 bg-[#421b7b] active:bg-[#341561] text-white rounded-full border-[2.5px] border-[#9d6bf3] shadow-[0_0_20px_rgba(157,107,243,0.4)] transition-all duration-300 active:scale-95"
-    [ngClass]="layoutService.isSidebarOpen() ? 'opacity-0 scale-75 pointer-events-none' : 'opacity-100 scale-100 pointer-events-auto'"
-    [attr.aria-hidden]="layoutService.isSidebarOpen()"
-    [tabIndex]="layoutService.isSidebarOpen() ? -1 : 0">
-    <span class="material-symbols-outlined text-3xl">add</span>
-  </a>
-  }
-
-  <!-- Modal Replicar Mês -->
-  <app-replicar-mes-modal
-    [visible]="showReplicarModal()"
-    [mesOrigem]="mesOrigem()"
-    [mesDestino]="mesDestino()"
-    [contasParaReplicar]="contasParaReplicar()"
-    [isLoading]="isLoadingReplicacao()"
-    [isAllSelected]="isAllSelected"
-    [selectedCount]="selectedContasCount"
-    (close)="closeReplicarModal()"
-    (mesOrigemChange)="mesOrigem.set($event); loadContasParaReplicar()"
-    (mesDestinoChange)="mesDestino.set($event); loadContasParaReplicar()"
-    (toggleAll)="toggleAllSelection()"
-    (toggleConta)="toggleContaSelection($event)"
-    (confirm)="confirmReplicacao()" />
-
-  <!-- Modal de Imagem (Recibo) -->
-  <app-recibo-modal
-    [visible]="showImageModal()"
-    [conta]="selectedImageConta()"
-    [isLoading]="isImageLoading()"
-    (visibleChange)="showImageModal.set($event)"
-    (imageLoad)="onImageLoad()"
-    (imageError)="onImageError()" />
 </div>
+
+<!-- Modal de Ações da Conta Selecionada -->
+<app-detalhes-conta-modal
+  [conta]="selectedConta()"
+  (close)="closeModal()"
+  (marcarComoPaga)="marcarComoPaga($event)"
+  (delete)="deleteLancamento($event)" />
+
+<!-- Floating Action Button (Mobile Only) -->
+@if (lancamentos().length > 0) {
+<a routerLink="/nova-conta" id="tour-fab-nova-conta"
+  class="fixed bottom-6 right-6 z-30 sm:hidden flex items-center justify-center w-14 h-14 bg-[#421b7b] active:bg-[#341561] text-white rounded-full border-[2.5px] border-[#9d6bf3] shadow-[0_0_20px_rgba(157,107,243,0.4)] transition-all duration-300 active:scale-95"
+  [ngClass]="layoutService.isSidebarOpen() ? 'opacity-0 scale-75 pointer-events-none' : 'opacity-100 scale-100 pointer-events-auto'"
+  [attr.aria-hidden]="layoutService.isSidebarOpen()"
+  [tabIndex]="layoutService.isSidebarOpen() ? -1 : 0">
+  <span class="material-symbols-outlined text-3xl">add</span>
+</a>
+}
+
+<!-- Modal Replicar Mês -->
+<app-replicar-mes-modal
+  [visible]="showReplicarModal()"
+  [mesOrigem]="mesOrigem()"
+  [mesDestino]="mesDestino()"
+  [contasParaReplicar]="contasParaReplicar()"
+  [isLoading]="isLoadingReplicacao()"
+  [isAllSelected]="isAllSelected"
+  [selectedCount]="selectedContasCount"
+  (close)="closeReplicarModal()"
+  (mesOrigemChange)="mesOrigem.set($event); loadContasParaReplicar()"
+  (mesDestinoChange)="mesDestino.set($event); loadContasParaReplicar()"
+  (toggleAll)="toggleAllSelection()"
+  (toggleConta)="toggleContaSelection($event)"
+  (confirm)="confirmReplicacao()" />
+
+<!-- Modal de Imagem (Recibo) -->
+<app-recibo-modal
+  [visible]="showImageModal()"
+  [conta]="selectedImageConta()"
+  [isLoading]="isImageLoading()"
+  (visibleChange)="showImageModal.set($event)"
+  (imageLoad)="onImageLoad()"
+  (imageError)="onImageError()" />
