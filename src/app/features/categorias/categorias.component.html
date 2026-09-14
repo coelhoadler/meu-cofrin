@@ -51,19 +51,19 @@
   <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
     @for (cat of categorias(); track cat.id || cat.nome) {
     <div
-      class="bg-white dark:bg-[#1a112c] rounded-[24px] shadow-sm border border-slate-200/80 dark:border-slate-800/50 p-5 sm:p-6 flex items-center justify-between h-[150px] hover:shadow-md transition-all group"
+      class="bg-white dark:bg-[#1a112c] rounded-[24px] shadow-sm border border-slate-200/80 dark:border-slate-800/50 p-5 sm:p-6 flex items-center justify-between h-[150px] hover:shadow-md transition-all group overflow-hidden"
       [ngClass]="cat.tipo === 'Despesa'
         ? 'hover:border-rose-400/50 dark:hover:border-rose-700/60'
         : 'hover:border-emerald-400/50 dark:hover:border-emerald-700/60'">
 
       <!-- Icon + Name -->
-      <div class="flex items-center gap-4 sm:gap-5 min-w-0 pr-3 flex-1">
+      <div class="flex items-center gap-4 sm:gap-5 min-w-0 pr-3 flex-1 overflow-hidden">
         <div class="w-14 h-14 shrink-0 rounded-2xl flex items-center justify-center transition-colors" [ngClass]="cat.tipo === 'Despesa'
             ? 'bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400'
             : 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400'">
           <span class="material-symbols-outlined text-3xl">{{ cat.icone || defaultIcon }}</span>
         </div>
-        <div class="min-w-0 flex-1">
+        <div class="min-w-0 flex-1 overflow-hidden">
           <div class="mb-1">
             <span class="font-bold text-sm sm:text-lg truncate block" [ngClass]="cat.tipo === 'Despesa'
                 ? 'text-rose-600 dark:text-rose-400'
@@ -72,10 +72,10 @@
             </span>
           </div>
           @if (cat.descricao) {
-          <span class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 line-clamp-2 block"
+          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 line-clamp-2 break-words"
             [title]="cat.descricao">
             {{ cat.descricao }}
-          </span>
+          </p>
           }
         </div>
       </div>
