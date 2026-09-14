@@ -13,6 +13,7 @@ import { NgxMaskDirective } from 'ngx-mask';
 import { Conta, ContaService } from '../../core/services/conta.service';
 import { Categoria, CategoriaService } from '../../core/services/categoria.service';
 import { NavigationHistoryService } from '../../core/services/navigation-history.service';
+import { parseFloatValor } from '../../core/utils/formatacao.utils';
 import { DatePickerModule } from 'primeng/datepicker';
 import { CheckboxModule } from 'primeng/checkbox';
 import { SelectModule } from 'primeng/select';
@@ -454,14 +455,7 @@ export class NovaContaComponent implements OnInit {
     this.contaForm.get('statusPago')?.setValue(true);
   }
 
-  parseFloatValor(valor: any): number {
-    if (!valor) return 0;
-    if (typeof valor === 'number') return valor;
-    const str = String(valor);
-    const cleanValue = str.replace(/\./g, '').replace(',', '.').replace('R$', '').replace(/\s/g, '');
-    const numValue = parseFloat(cleanValue);
-    return isNaN(numValue) ? 0 : numValue;
-  }
+  parseFloatValor = parseFloatValor;
 
   gerarParcelas() {
     const total = this.currentValorNum();

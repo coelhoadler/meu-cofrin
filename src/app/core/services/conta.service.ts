@@ -3,38 +3,15 @@ import { Firestore, collection, addDoc, serverTimestamp, query, where, orderBy, 
 import { Storage, ref, uploadBytes, getDownloadURL, deleteObject } from '@angular/fire/storage';
 import { AuthService } from '../auth/auth.service';
 
-export interface Conta {
-  id?: string;
-  nome: string;
-  descricao?: string;
-  tipo: 'Despesa' | 'Receita';
-  mesReferencia: string;
-  diaVencimento: number;
-  dataPagamento?: string | null;
-  statusPago: boolean;
-  valor: string | null;
-  reciboUrl?: string;
-  categoria?: string;
-  createdAt?: any;
-  isRecorrente?: boolean;
-  valorAntigo?: string | null;
-  parcelamentoId?: string;
-  numeroParcela?: number;
-  totalParcelas?: number;
-}
+import { Conta, CacheEntry } from '../models/conta.model';
+import { ResumoMensal } from '../models/resumo-mensal.model';
+export type { Conta, ResumoMensal, CacheEntry };
 
-export interface ResumoMensal {
-  id: string; // YYYY-MM
-  totalDespesas: number;
-  totalReceitas: number;
-  saldo: number;
-  atualizadoEm?: any;
-}
 
-export interface CacheEntry<T> {
-  data: T;
-  timestamp: number;
-}
+
+import { ParcelamentoService } from './parcelamento.service';
+import { ResumoMensalService } from './resumo-mensal.service';
+import { ReciboService } from './recibo.service';
 
 @Injectable({
   providedIn: 'root'
@@ -43,19 +20,21 @@ export class ContaService {
   private firestore = inject(Firestore);
   private storage = inject(Storage);
   private authService = inject(AuthService);
+  private parcelamentoService = inject(ParcelamentoService);
+  private resumoMensalService = inject(ResumoMensalService);
+  private reciboService = inject(ReciboService);
 
   // Configuração de Cache
   private readonly CACHE_TTL = 5 * 60 * 1000; // 5 minutos de TTL
   private cacheLancamentosRecentes: CacheEntry<Conta[]> | null = null;
   private cacheContasPorMes = new Map<string, CacheEntry<Conta[]>>();
-  private cacheResumos = new Map<number, CacheEntry<ResumoMensal[]>>();
   private cacheContasById = new Map<string, CacheEntry<Conta>>();
 
   public invalidateCache(): void {
     this.cacheLancamentosRecentes = null;
     this.cacheContasPorMes.clear();
-    this.cacheResumos.clear();
     this.cacheContasById.clear();
+    this.resumoMensalService.invalidateCache();
   }
 
   async addConta(contaData: Conta, file?: File | null): Promise<void> {
@@ -244,90 +223,16 @@ export class ContaService {
   }
 
   async getContasByParcelamentoId(parcelamentoId: string): Promise<Conta[]> {
-    const user = await this.authService.getCurrentUserAsync();
-    if (!user) {
-      return [];
-    }
-
-    const contasRef = collection(this.firestore, `users/${user.uid}/contas`);
-    const q = query(
-      contasRef,
-      where('parcelamentoId', '==', parcelamentoId)
-    );
-
-    const querySnapshot = await getDocs(q);
-    const items = querySnapshot.docs.map(doc => {
-      return {
-        id: doc.id,
-        ...doc.data()
-      } as Conta;
-    });
-
-    // Ordenar pelo numeroParcela
-    items.sort((a, b) => (a.numeroParcela || 0) - (b.numeroParcela || 0));
-
-    return items;
+    return this.parcelamentoService.getContasByParcelamentoId(parcelamentoId);
   }
 
   async addContasParceladas(contas: Conta[], file?: File | null): Promise<void> {
-    const user = await this.authService.getCurrentUserAsync();
-    if (!user) {
-      throw new Error('Usuário não autenticado');
-    }
-
-    let reciboUrl = '';
-
-    if (file) {
-      const timestamp = new Date().getTime();
-      const filePath = `users/${user.uid}/receipts/${timestamp}_${file.name}`;
-      const storageRef = ref(this.storage, filePath);
-      const snapshot = await uploadBytes(storageRef, file);
-      reciboUrl = await getDownloadURL(snapshot.ref);
-    }
-
-    const contasRef = collection(this.firestore, `users/${user.uid}/contas`);
-
-    // Inserir todas em sequência (não suporta batch via web SDK facilmente sem writeBatch, mas addDoc em loop resolve bem para max 12 docs)
-    for (const conta of contas) {
-      const dataToSave = {
-        ...conta,
-        ...(reciboUrl ? { reciboUrl } : {}),
-        createdAt: serverTimestamp()
-      };
-      await addDoc(contasRef, dataToSave);
-    }
-
+    await this.parcelamentoService.addContasParceladas(contas, file);
     this.invalidateCache();
   }
 
   async updateContasParceladas(contas: Conta[], file?: File | null): Promise<void> {
-    const user = await this.authService.getCurrentUserAsync();
-    if (!user) {
-      throw new Error('Usuário não autenticado');
-    }
-
-    let reciboUrl = contas[0]?.reciboUrl || '';
-
-    if (file) {
-      const timestamp = new Date().getTime();
-      const filePath = `users/${user.uid}/receipts/${timestamp}_${file.name}`;
-      const storageRef = ref(this.storage, filePath);
-      const snapshot = await uploadBytes(storageRef, file);
-      reciboUrl = await getDownloadURL(snapshot.ref);
-    }
-
-    for (const conta of contas) {
-      if (conta.id) {
-        const docRef = doc(this.firestore, `users/${user.uid}/contas`, conta.id);
-        const dataToUpdate = {
-          ...conta,
-          ...(reciboUrl ? { reciboUrl } : {})
-        };
-        delete dataToUpdate.id;
-        await updateDoc(docRef, dataToUpdate);
-      }
-    }
-
+    await this.parcelamentoService.updateContasParceladas(contas, file);
     this.invalidateCache();
   }
 
@@ -385,103 +290,21 @@ export class ContaService {
   }
 
   async deleteContasByParcelamentoId(parcelamentoId: string): Promise<void> {
-    const user = await this.authService.getCurrentUserAsync();
-    if (!user) throw new Error('Usuário não autenticado');
-
-    const contas = await this.getContasByParcelamentoId(parcelamentoId);
-
-    for (const conta of contas) {
-      if (conta.id) {
-        const docRef = doc(this.firestore, `users/${user.uid}/contas`, conta.id);
-
-        // Remove recibo do Storage se existir
-        if (conta.reciboUrl) {
-          try {
-            const fileRef = ref(this.storage, conta.reciboUrl);
-            await deleteObject(fileRef);
-          } catch (error) {
-            console.error('Erro ao deletar recibo da parcela:', error);
-          }
-        }
-
-        await deleteDoc(docRef);
-      }
-    }
-
+    await this.parcelamentoService.deleteContasByParcelamentoId(parcelamentoId);
     this.invalidateCache();
   }
 
   async removeRecibo(id: string): Promise<void> {
-    const user = await this.authService.getCurrentUserAsync();
-    if (!user) throw new Error('Usuário não autenticado');
-
-    const docRef = doc(this.firestore, `users/${user.uid}/contas`, id);
-
-    // Buscar o documento para pegar a URL do recibo e deletar do Storage
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      const conta = docSnap.data() as Conta;
-      if (conta.reciboUrl) {
-        try {
-          const fileRef = ref(this.storage, conta.reciboUrl);
-          await deleteObject(fileRef);
-        } catch (error) {
-          console.error('Erro ao deletar arquivo do Storage:', error);
-        }
-      }
-    }
-
-    await updateDoc(docRef, { reciboUrl: deleteField() });
-
+    await this.reciboService.removeRecibo(id);
     this.invalidateCache();
   }
 
   async getResumosMensais(limite: number = 6): Promise<ResumoMensal[]> {
-    const user = await this.authService.getCurrentUserAsync();
-    if (!user) return [];
-
-    const now = Date.now();
-    const cached = this.cacheResumos.get(limite);
-    if (cached && (now - cached.timestamp < this.CACHE_TTL)) {
-      return [...cached.data];
-    }
-
-    const resumosRef = collection(this.firestore, `users/${user.uid}/resumosMensais`);
-
-    // Buscar ordenando pelo ID do documento (que é YYYY-MM) de forma descendente
-    const q = query(
-      resumosRef,
-      orderBy('__name__', 'desc'),
-      limit(limite)
-    );
-
-    const querySnapshot = await getDocs(q);
-    const items = querySnapshot.docs.map(doc => {
-      return {
-        id: doc.id,
-        ...doc.data()
-      } as ResumoMensal;
-    });
-
-    this.cacheResumos.set(limite, {
-      data: [...items],
-      timestamp: now
-    });
-
-    return items;
+    return this.resumoMensalService.getResumosMensais(limite);
   }
 
   async getResumoMensalById(id: string): Promise<ResumoMensal | null> {
-    const user = await this.authService.getCurrentUserAsync();
-    if (!user) return null;
-
-    const docRef = doc(this.firestore, `users/${user.uid}/resumosMensais`, id);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-      return { id: docSnap.id, ...docSnap.data() } as ResumoMensal;
-    }
-    return null;
+    return this.resumoMensalService.getResumoMensalById(id);
   }
 
   async marcarComoPaga(id: string): Promise<void> {

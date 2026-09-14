@@ -2,29 +2,62 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, AfterViewInit, computed, effect, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ChartConfiguration } from 'chart.js';
-import { BaseChartDirective } from 'ng2-charts';
 import { ButtonModule } from 'primeng/button';
 import { DatePickerModule } from 'primeng/datepicker';
 import { FormsModule } from '@angular/forms';
-import { CheckboxModule } from 'primeng/checkbox';
-import { DialogModule } from 'primeng/dialog';
-import { ProgressSpinner, ProgressSpinnerModule } from 'primeng/progressspinner';
+
 import { AuthService } from '../../core/auth/auth.service';
 import { Conta, ContaService } from '../../core/services/conta.service';
 import { MessagingService } from '../../core/services/messaging.service';
 import { TourService } from '../../core/services/tour.service';
 import { LayoutService } from '../../core/services/layout.service';
+import { UserPreferencesService } from '../../core/services/user-preferences.service';
+import { Variacao } from '../../core/models/resumo-mensal.model';
+import { formatDataVencimento, formatDataPagamento } from '../../core/utils/formatacao.utils';
 
-export type Variacao = { percent: number; direction: 'up' | 'down' | 'none' } | null;
+import { FinanceiroCalculoService } from './services/financeiro-calculo.service';
+import { ReplicarMesService, ContaReplicavel } from './services/replicar-mes.service';
+
+import { ResumoCardsComponent } from './components/resumo-cards/resumo-cards.component';
+import { GraficoBarrasComponent } from './components/grafico-barras/grafico-barras.component';
+import { GraficoPizzaComponent } from './components/grafico-pizza/grafico-pizza.component';
+import { DetalhesContaModalComponent } from './components/detalhes-conta-modal/detalhes-conta-modal.component';
+import { ReciboModalComponent } from './components/recibo-modal/recibo-modal.component';
+import { ReplicarMesModalComponent } from './components/replicar-mes-modal/replicar-mes-modal.component';
+
+export type { Variacao };
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [RouterLink, CommonModule, BaseChartDirective, ButtonModule, DatePickerModule, FormsModule, CheckboxModule, DialogModule, ProgressSpinner, ProgressSpinnerModule],
+  imports: [
+    CommonModule,
+    RouterLink,
+    ButtonModule,
+    DatePickerModule,
+    FormsModule,
+    ResumoCardsComponent,
+    GraficoBarrasComponent,
+    GraficoPizzaComponent,
+    DetalhesContaModalComponent,
+    ReciboModalComponent,
+    ReplicarMesModalComponent
+  ],
   templateUrl: './dashboard.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardComponent implements AfterViewInit {
+  private contaService = inject(ContaService);
+  private authService = inject(AuthService);
+  private messagingService = inject(MessagingService);
+  private tourService = inject(TourService);
+  public layoutService = inject(LayoutService);
+  private userPreferences = inject(UserPreferencesService);
+  private calculoService = inject(FinanceiroCalculoService);
+  private replicarMesService = inject(ReplicarMesService);
+
+  showValues = this.userPreferences.showValues;
+
   selectedDate = signal<Date>((() => {
     const saved = localStorage.getItem('dashboard_selected_month');
     if (saved) {
@@ -51,12 +84,6 @@ export class DashboardComponent implements AfterViewInit {
     return str.charAt(0).toUpperCase() + str.slice(1);
   });
 
-  private contaService = inject(ContaService);
-  private authService = inject(AuthService);
-  private messagingService = inject(MessagingService);
-  private tourService = inject(TourService);
-  public layoutService = inject(LayoutService);
-
   lancamentos = signal<Conta[]>([]);
   isLoading = signal(true);
 
@@ -67,12 +94,95 @@ export class DashboardComponent implements AfterViewInit {
   saldoMes = signal('R$ 0,00');
   totalAPagar = signal('R$ 0,00');
   totalPago = signal('R$ 0,00');
-  statusConta = signal('');
-  showValues = signal(localStorage.getItem('showValues') !== 'false');
 
   variacaoReceitas = signal<Variacao>(null);
   variacaoDespesas = signal<Variacao>(null);
   variacaoSaldo = signal<Variacao>(null);
+
+  // Replicar Mês states
+  showReplicarModal = signal(false);
+  mesOrigem = signal<Date | null>(null);
+  mesDestino = signal<Date | null>(null);
+  contasParaReplicar = signal<ContaReplicavel[]>([]);
+  isLoadingReplicacao = signal(false);
+
+  // Modal Imagem states
+  showImageModal = signal(false);
+  selectedImageConta = signal<Conta | null>(null);
+  isImageLoading = signal(true);
+
+  pieChartOptions: ChartConfiguration<'pie'>['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'left',
+        align: 'center',
+        labels: {
+          usePointStyle: true,
+          pointStyle: 'rectRounded',
+          color: '#64748b',
+          font: { size: 12 }
+        }
+      }
+    }
+  };
+
+  pieChartData = signal<ChartConfiguration<'pie'>['data']>({
+    labels: [],
+    datasets: [{
+      data: [],
+      backgroundColor: [],
+      borderWidth: 0
+    }]
+  });
+
+  barChartOptions: ChartConfiguration<'bar'>['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        grid: { color: '#f1f5f9' },
+        ticks: { color: '#94a3b8' }
+      },
+      x: {
+        grid: { display: false },
+        ticks: { color: '#94a3b8' }
+      }
+    }
+  };
+
+  barChartData = signal<ChartConfiguration<'bar'>['data']>({
+    labels: [],
+    datasets: []
+  });
+
+  constructor() {
+    effect(() => {
+      const user = this.authService.currentUser();
+      const mesRef = this.selectedMesRef();
+      if (user && mesRef) {
+        this.authService.saveUserProfile(user);
+        this.loadLancamentos(mesRef);
+        this.loadResumoMes(mesRef);
+        this.loadResumoGrafico();
+
+        this.messagingService.requestPermissionAndGetToken();
+        this.messagingService.listenForMessages();
+      }
+    });
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.tourService.startDashboardTour(false);
+    }, 1200);
+  }
 
   previousMonth() {
     const current = this.selectedDate();
@@ -101,109 +211,8 @@ export class DashboardComponent implements AfterViewInit {
     }
   }
 
-  ngAfterViewInit() {
-    // Inicia o tour automaticamente na primeira visita do usuário (após renderizar a tela)
-    setTimeout(() => {
-      this.tourService.startDashboardTour(false);
-    }, 1200);
-  }
-
   toggleVisibility() {
-    const newValue = !this.showValues();
-    this.showValues.set(newValue);
-    localStorage.setItem('showValues', newValue.toString());
-  }
-
-  // Replicar Mês states
-  showReplicarModal = signal(false);
-  mesOrigem = signal<Date | null>(null);
-  mesDestino = signal<Date | null>(null);
-  contasParaReplicar = signal<(Conta & { existsInDestino?: boolean, selected?: boolean })[]>([]);
-  isLoadingReplicacao = signal(false);
-
-  // Modal Imagem states
-  showImageModal = signal(false);
-  selectedImageConta = signal<Conta | null>(null);
-  isImageLoading = signal(true);
-
-  pieChartOptions: ChartConfiguration<'pie'>['options'] = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        display: true,
-        position: 'left',
-        align: 'center',
-        labels: {
-          usePointStyle: true,
-          pointStyle: 'rectRounded',
-          color: '#64748b',
-          font: {
-            size: 12
-          }
-        }
-      }
-    }
-  };
-
-  pieChartData = signal<ChartConfiguration<'pie'>['data']>({
-    labels: [],
-    datasets: [{
-      data: [],
-      backgroundColor: [],
-      borderWidth: 0
-    }]
-  });
-
-  barChartOptions: ChartConfiguration<'bar'>['options'] = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        display: false // Let's hide the default legend since the HTML already has a custom legend below
-      }
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        grid: {
-          color: '#f1f5f9', // slate-100
-        },
-        ticks: {
-          color: '#94a3b8', // slate-400
-        }
-      },
-      x: {
-        grid: {
-          display: false
-        },
-        ticks: {
-          color: '#94a3b8', // slate-400
-        }
-      }
-    }
-  };
-
-  barChartData = signal<ChartConfiguration<'bar'>['data']>({
-    labels: [],
-    datasets: []
-  });
-
-  constructor() {
-    effect(() => {
-      const user = this.authService.currentUser();
-      const mesRef = this.selectedMesRef();
-      if (user && mesRef) {
-        this.authService.saveUserProfile(user);
-        this.loadLancamentos(mesRef);
-        this.loadResumoMes(mesRef);
-        this.loadResumoGrafico();
-
-        // Pede permissão para notificações e salva o token (ideal ser chamado após login)
-        this.messagingService.requestPermissionAndGetToken();
-        this.messagingService.listenForMessages();
-      }
-    });
+    this.userPreferences.toggleValuesVisibility();
   }
 
   async loadLancamentos(mesRef: string = this.selectedMesRef()) {
@@ -227,46 +236,9 @@ export class DashboardComponent implements AfterViewInit {
   async loadResumoMes(mesRef: string = this.selectedMesRef()) {
     try {
       const contasDoMes = await this.contaService.getContasByMesReferencia(mesRef);
+      const resumo = this.calculoService.calcularResumoDoMes(contasDoMes);
 
-      let somaDespesas = 0;
-      let somaReceitas = 0;
-      let somaAPagar = 0;
-      const chartReceitasMap = new Map<string, number>();
-      const chartDespesasMap = new Map<string, number>();
-
-      contasDoMes.forEach(c => {
-        if (c.valor) {
-          const cleanValue = c.valor.replace(/\./g, '').replace(',', '.').replace('R$', '');
-          const numValue = parseFloat(cleanValue);
-          if (!isNaN(numValue)) {
-            if (c.tipo === 'Despesa') {
-              somaDespesas += numValue;
-              if (!c.statusPago) {
-                somaAPagar += numValue;
-              }
-              const label = `D - ${c.categoria || 'Outros'}`;
-              chartDespesasMap.set(label, (chartDespesasMap.get(label) || 0) + numValue);
-            }
-            if (c.tipo === 'Receita') {
-              somaReceitas += numValue;
-              const label = `R - ${c.categoria || 'Outros'}`;
-              chartReceitasMap.set(label, (chartReceitasMap.get(label) || 0) + numValue);
-            }
-          }
-        }
-      });
-
-      // Pegar top 3 de cada
-      const topReceitas = Array.from(chartReceitasMap.entries())
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 3);
-
-      const topDespesas = Array.from(chartDespesasMap.entries())
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 3);
-
-      const topData = [...topReceitas, ...topDespesas];
-
+      const topData = [...resumo.topReceitas, ...resumo.topDespesas];
       const labels = topData.map(item => item[0]);
       const data = topData.map(item => item[1]);
       const colors = [
@@ -274,11 +246,10 @@ export class DashboardComponent implements AfterViewInit {
         '#8b5cf6', '#ec4899', '#14b8a6', '#f97316', '#84cc16'
       ];
 
-      // Update chart with deep copy to trigger change detection in ng2-charts
       this.pieChartData.set({
-        labels: labels,
+        labels,
         datasets: [{
-          data: data,
+          data,
           backgroundColor: labels.map((_, i) => colors[i % colors.length]),
           borderWidth: 2,
           borderColor: '#ffffff',
@@ -286,16 +257,14 @@ export class DashboardComponent implements AfterViewInit {
         }]
       });
 
-      const saldo = somaReceitas - somaDespesas;
-
+      const saldo = resumo.somaReceitas - resumo.somaDespesas;
       const formatter = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
-      this.totalDespesas.set(formatter.format(somaDespesas));
-      this.totalReceitas.set(formatter.format(somaReceitas));
+      this.totalDespesas.set(formatter.format(resumo.somaDespesas));
+      this.totalReceitas.set(formatter.format(resumo.somaReceitas));
       this.saldoMes.set(formatter.format(saldo));
-      this.totalAPagar.set(formatter.format(somaAPagar));
-      this.totalPago.set(formatter.format(somaDespesas - somaAPagar));
+      this.totalAPagar.set(formatter.format(resumo.somaAPagar));
+      this.totalPago.set(formatter.format(resumo.somaDespesas - resumo.somaAPagar));
 
-      // Busca mês anterior para calcular variação
       const [ano, mes] = mesRef.split('-');
       const currentDate = new Date(parseInt(ano), parseInt(mes) - 1, 1);
       const prevDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
@@ -303,15 +272,14 @@ export class DashboardComponent implements AfterViewInit {
 
       const prevResumo = await this.contaService.getResumoMensalById(prevMesRef);
       if (prevResumo) {
-        this.variacaoReceitas.set(this.calcularVariacao(prevResumo.totalReceitas || 0, somaReceitas));
-        this.variacaoDespesas.set(this.calcularVariacao(prevResumo.totalDespesas || 0, somaDespesas));
-        this.variacaoSaldo.set(this.calcularVariacao(prevResumo.saldo || 0, saldo));
+        this.variacaoReceitas.set(this.calculoService.calcularVariacao(prevResumo.totalReceitas || 0, resumo.somaReceitas));
+        this.variacaoDespesas.set(this.calculoService.calcularVariacao(prevResumo.totalDespesas || 0, resumo.somaDespesas));
+        this.variacaoSaldo.set(this.calculoService.calcularVariacao(prevResumo.saldo || 0, saldo));
       } else {
         this.variacaoReceitas.set(null);
         this.variacaoDespesas.set(null);
         this.variacaoSaldo.set(null);
       }
-
     } catch (error) {
       console.error('Erro ao buscar resumo do mês:', error);
     }
@@ -319,10 +287,7 @@ export class DashboardComponent implements AfterViewInit {
 
   async loadResumoGrafico() {
     try {
-      // Busca os últimos 6 meses (ordenados do mais recente para o mais antigo)
       const resumos = await this.contaService.getResumosMensais(6);
-
-      // Inverte para ficar cronológico no gráfico (ex: Jan, Fev, Mar...)
       resumos.reverse();
 
       const labels: string[] = [];
@@ -330,18 +295,17 @@ export class DashboardComponent implements AfterViewInit {
       const dataDespesas: number[] = [];
       const dataSaldos: number[] = [];
 
-      resumos.forEach(resumo => {
-        // Converter "2026-06" para "Jun 26" ou "Jun"
-        const [anoStr, mesStr] = resumo.id.split('-');
+      resumos.forEach(r => {
+        const [anoStr, mesStr] = r.id.split('-');
         const date = new Date(parseInt(anoStr), parseInt(mesStr) - 1, 1);
 
         let mesNome = new Intl.DateTimeFormat('pt-BR', { month: 'short' }).format(date).replace('.', '');
         mesNome = mesNome.charAt(0).toUpperCase() + mesNome.slice(1);
 
         labels.push(mesNome);
-        dataReceitas.push(resumo.totalReceitas || 0);
-        dataDespesas.push(resumo.totalDespesas || 0);
-        dataSaldos.push(resumo.saldo || 0);
+        dataReceitas.push(r.totalReceitas || 0);
+        dataDespesas.push(r.totalDespesas || 0);
+        dataSaldos.push(r.saldo || 0);
       });
 
       this.barChartData.set({
@@ -376,7 +340,6 @@ export class DashboardComponent implements AfterViewInit {
           }
         ] as any
       });
-
     } catch (error) {
       console.error('Erro ao buscar resumo gráfico:', error);
     }
@@ -386,63 +349,30 @@ export class DashboardComponent implements AfterViewInit {
     this.selectedConta.set(conta);
   }
 
+  closeModal() {
+    this.selectedConta.set(null);
+  }
+
   openImageModal(event: Event, conta: Conta) {
     event.stopPropagation();
-
-    // Apenas ativa o loading se for uma imagem diferente da que já estava carregada
     if (this.selectedImageConta()?.reciboUrl !== conta.reciboUrl) {
       this.isImageLoading.set(true);
     }
-
     this.selectedImageConta.set(conta);
     this.showImageModal.set(true);
   }
 
-  formatDataVencimento(conta: Conta): string {
-    return conta.diaVencimento.toString().padStart(2, '0');
+  onImageLoad() {
+    this.isImageLoading.set(false);
   }
 
-  formatDataPagamento(dataPagamento?: string | null): string {
-    if (!dataPagamento) return '';
-    try {
-      if (dataPagamento.includes('T') || dataPagamento.includes(' ')) {
-        const date = new Date(dataPagamento);
-        if (!isNaN(date.getTime())) {
-          const dia = String(date.getDate()).padStart(2, '0');
-          const mes = String(date.getMonth() + 1).padStart(2, '0');
-          const ano = date.getFullYear();
-          const horas = String(date.getHours()).padStart(2, '0');
-          const minutos = String(date.getMinutes()).padStart(2, '0');
-          return `${dia}/${mes}/${ano} ${horas}:${minutos}`;
-        }
-      }
-
-      const parts = dataPagamento.split('-');
-      if (parts.length === 3) {
-        const ano = parts[0];
-        const mes = parts[1].padStart(2, '0');
-        const dia = parts[2].padStart(2, '0');
-        return `${dia}/${mes}/${ano}`;
-      }
-
-      const date = new Date(dataPagamento);
-      if (!isNaN(date.getTime())) {
-        const dia = String(date.getDate()).padStart(2, '0');
-        const mes = String(date.getMonth() + 1).padStart(2, '0');
-        const ano = date.getFullYear();
-        const horas = String(date.getHours()).padStart(2, '0');
-        const minutos = String(date.getMinutes()).padStart(2, '0');
-        return `${dia}/${mes}/${ano} ${horas}:${minutos}`;
-      }
-    } catch {
-      // ignore
-    }
-    return dataPagamento;
+  onImageError() {
+    console.error('Erro ao carregar a imagem do recibo.');
+    this.isImageLoading.set(false);
   }
 
-  closeModal() {
-    this.selectedConta.set(null);
-  }
+  formatDataVencimento = formatDataVencimento;
+  formatDataPagamento = formatDataPagamento;
 
   getRowClass(item: Conta): string {
     if (item.statusPago || item.tipo === 'Receita') {
@@ -450,13 +380,10 @@ export class DashboardComponent implements AfterViewInit {
     }
 
     if (item.mesReferencia && item.diaVencimento) {
-      const diffDays = this.calcularDiffDataVencimento(item);
-
+      const diffDays = this.calculoService.calcularDiffDataVencimento(item);
       if (diffDays <= 0) {
-        // this.statusConta.set('vencido');
         return 'bg-red-200 hover:bg-red-300 dark:bg-rose-900/40 dark:hover:bg-rose-900/60';
       } else if (diffDays <= 5) {
-        // this.statusConta.set('prestes_vencer');
         return 'bg-yellow-100 hover:bg-yellow-200 dark:bg-[#7941dc]/20 dark:hover:bg-[#7941dc]/40';
       }
     }
@@ -493,29 +420,19 @@ export class DashboardComponent implements AfterViewInit {
     }
   }
 
-  public calcularDiffDataVencimento(item: Conta): number {
-    const [ano, mes] = item.mesReferencia.split('-');
-    const dataVencimento = new Date(parseInt(ano), parseInt(mes) - 1, item.diaVencimento);
-    const hoje = new Date();
-    hoje.setHours(0, 0, 0, 0);
+  async marcarComoPaga(id: string | undefined) {
+    if (!id) return;
 
-    const diffTime = dataVencimento.getTime() - hoje.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-    return diffDays;
-  }
-
-  public calcularVariacao(oldValue: number, newValue: number): Variacao {
-    if (oldValue === 0) {
-      if (newValue === 0) return { percent: 0, direction: 'none' };
-      return null;
+    try {
+      await this.contaService.marcarComoPaga(id);
+      this.closeModal();
+      await this.loadLancamentos(this.selectedMesRef());
+      await this.loadResumoMes(this.selectedMesRef());
+      await this.loadResumoGrafico();
+    } catch (error) {
+      console.error('Erro ao marcar como paga:', error);
+      alert('Erro ao atualizar lançamento. Tente novamente.');
     }
-    const percent = ((newValue - oldValue) / Math.abs(oldValue)) * 100;
-
-    return {
-      percent: Math.abs(percent),
-      direction: percent > 0 ? 'up' : percent < 0 ? 'down' : 'none'
-    };
   }
 
   public greetingUser(): string {
@@ -560,39 +477,13 @@ export class DashboardComponent implements AfterViewInit {
 
     this.isLoadingReplicacao.set(true);
     try {
-      const mesOrigemStr = `${origem.getFullYear()}-${String(origem.getMonth() + 1).padStart(2, '0')}`;
-      const mesDestinoStr = `${destino.getFullYear()}-${String(destino.getMonth() + 1).padStart(2, '0')}`;
-
-      const contasOrigem = await this.contaService.getContasByMesReferencia(mesOrigemStr);
-      let contasDestino: Conta[] = [];
-
-      if (mesOrigemStr !== mesDestinoStr) {
-        contasDestino = await this.contaService.getContasByMesReferencia(mesDestinoStr);
-      }
-
-      // Filtrar apenas as recorrentes
-      const contasRecorrentes = contasOrigem.filter(c => c.isRecorrente);
-
-      const items = contasRecorrentes.map(conta => {
-        // Checar se já existe no destino (mesmo nome e vencimento)
-        const exists = mesOrigemStr === mesDestinoStr || contasDestino.some(d => d.nome === conta.nome && d.diaVencimento === conta.diaVencimento);
-        return {
-          ...conta,
-          existsInDestino: exists,
-          selected: !exists // Só seleciona por padrão se não existe no destino
-        };
-      }).sort((a, b) => a.diaVencimento - b.diaVencimento);
-
+      const items = await this.replicarMesService.loadContasParaReplicar(origem, destino);
       this.contasParaReplicar.set(items);
     } catch (error) {
       console.error('Erro ao carregar contas para replicar:', error);
     } finally {
       this.isLoadingReplicacao.set(false);
     }
-  }
-
-  onMesReplicacaoChange() {
-    this.loadContasParaReplicar();
   }
 
   get isAllSelected(): boolean {
@@ -608,9 +499,8 @@ export class DashboardComponent implements AfterViewInit {
     this.contasParaReplicar.set(updated);
   }
 
-  toggleContaSelection(conta: Conta & { existsInDestino?: boolean, selected?: boolean }) {
-    if (conta.existsInDestino) return; // Não pode selecionar se já existe
-
+  toggleContaSelection(conta: ContaReplicavel) {
+    if (conta.existsInDestino) return;
     const contas = this.contasParaReplicar();
     const updated = contas.map(c => c.id === conta.id ? { ...c, selected: !c.selected } : c);
     this.contasParaReplicar.set(updated);
@@ -618,13 +508,6 @@ export class DashboardComponent implements AfterViewInit {
 
   get selectedContasCount(): number {
     return this.contasParaReplicar().filter(c => c.selected).length;
-  }
-
-  formatDateName(date: Date | null): string {
-    if (!date) return '';
-    const mes = new Intl.DateTimeFormat('pt-BR', { month: 'long' }).format(date);
-    const ano = date.getFullYear();
-    return `${mes} de ${ano}`;
   }
 
   async confirmReplicacao() {
@@ -637,64 +520,19 @@ export class DashboardComponent implements AfterViewInit {
     this.isLoadingReplicacao.set(true);
     try {
       const mesDestinoStr = `${destino.getFullYear()}-${String(destino.getMonth() + 1).padStart(2, '0')}`;
-
-      const promises = contasSelecionadas.map(conta => {
-        const novaConta: any = { ...conta };
-        delete novaConta.id;
-        delete novaConta.existsInDestino;
-        delete novaConta.selected;
-
-        novaConta.mesReferencia = mesDestinoStr;
-        novaConta.statusPago = false;
-        novaConta.dataPagamento = null;
-        novaConta.reciboUrl = ''; // Não copia recibo? Provavelmente não.
-        novaConta.valorAntigo = conta.valor;
-
-        return this.contaService.addConta(novaConta);
-      });
-
-      await Promise.all(promises);
+      await this.replicarMesService.replicarContas(contasSelecionadas, mesDestinoStr);
 
       this.closeReplicarModal();
 
-      // Recarregar os dados do dashboard se o destino for o mês atualmente visualizado
       if (mesDestinoStr === this.selectedMesRef()) {
         await this.loadLancamentos(this.selectedMesRef());
         await this.loadResumoMes(this.selectedMesRef());
       }
       await this.loadResumoGrafico();
-
     } catch (error) {
       console.error('Erro ao replicar contas:', error);
     } finally {
       this.isLoadingReplicacao.set(false);
     }
   }
-
-  async marcarComoPaga(id: string | undefined) {
-    if (!id) return;
-
-    try {
-      await this.contaService.marcarComoPaga(id);
-
-      this.closeModal();
-      // Recarregar os lançamentos após atualizar
-      await this.loadLancamentos(this.selectedMesRef());
-      await this.loadResumoMes(this.selectedMesRef());
-      await this.loadResumoGrafico();
-    } catch (error) {
-      console.error('Erro ao marcar como paga:', error);
-      alert('Erro ao atualizar lançamento. Tente novamente.');
-    }
-  }
-
-  onImageLoad() {
-    this.isImageLoading.set(false);
-  }
-
-  onImageError() {
-    console.error("Erro ao carregar a imagem do recibo.");
-    this.isImageLoading.set(false);
-  }
-
 }

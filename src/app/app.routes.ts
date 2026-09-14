@@ -90,8 +90,16 @@ export const routes: Routes = [
         loadComponent: () => import('./features/empresas/layout/empresas-main-layout.component').then(m => m.EmpresasMainLayoutComponent),
         canActivate: [empresaGuard],
         children: [
-          { path: '', component: DashboardComponent, title: 'Meu Cofrin Empresas | Dashboard' }
+          {
+            path: '',
+            loadComponent: () =>
+              import('./features/empresas/dashboard/empresas-dashboard.component').then(
+                m => m.EmpresasDashboardComponent
+              ),
+            title: 'Meu Cofrin Empresas | Dashboard'
+          }
         ]
+
       },
       { path: '', redirectTo: 'login', pathMatch: 'full' }
     ]

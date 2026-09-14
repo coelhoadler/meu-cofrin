@@ -1,4 +1,4 @@
-<div class="space-y-6">
+<div class="flex flex-col gap-6">
   <!-- Dashboard Header Area -->
   <div
     class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sticky top-0 z-40 pt-2 pb-4 -mt-2 bg-white/80 dark:bg-[#130c25]/80 backdrop-blur-[2px]">
@@ -50,161 +50,28 @@
   </div>
 
   <!-- Row 1: Summary Cards -->
-  <div class=" grid grid-cols-1 md:grid-cols-3 gap-6 relative">
-    <!-- Receitas Card -->
-    <div id="tour-receitas-card"
-      class="bg-white dark:bg-[#1a112c] rounded-[20px] p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/50 relative flex flex-col justify-between h-[140px] transition-colors duration-300">
-      <div>
-        <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mb-5">Receitas</p>
-        <h3 class="text-[clamp(1.25rem,2.5vw,1.875rem)] font-bold text-slate-800 dark:text-white truncate"
-          [title]="showValues() ? totalReceitas() : ''">{{ showValues() ? totalReceitas() : 'R$ ••••'
-          }}</h3>
-      </div>
-      @if (variacaoReceitas(); as vr) {
-      <div class="mt-auto flex items-center gap-1 w-full">
-        @if (vr.direction === 'up') {
-        <span class="material-symbols-outlined text-emerald-500 text-[14px] shrink-0">trending_up</span>
-        <p class="text-emerald-500 text-[12px] font-medium flex-1 flex items-center min-w-0 gap-1">
-          <span class="shrink-0">+{{ vr.percent | number:'1.0-1' }}%</span>
-          <span class="font-normal text-slate-400 dark:text-slate-500 truncate min-w-0">em comparação ao mês
-            passado</span>
-        </p>
-        } @else if (vr.direction === 'down') {
-        <span class="material-symbols-outlined text-rose-500 text-[14px] shrink-0">trending_down</span>
-        <p class="text-rose-500 text-[12px] font-medium flex-1 flex items-center min-w-0 gap-1">
-          <span class="shrink-0">-{{ vr.percent | number:'1.0-1' }}%</span>
-          <span class="font-normal text-slate-400 dark:text-slate-500 truncate min-w-0">em comparação ao mês
-            passado</span>
-        </p>
-        } @else {
-        <p class="text-slate-400 dark:text-slate-500 text-[12px] font-medium truncate min-w-0">Sem alteração</p>
-        }
-      </div>
-      }
-      <div
-        class="absolute top-5 right-5 w-8 h-8 bg-emerald-50 dark:bg-emerald-500/10 rounded-lg flex items-center justify-center">
-        <span class="material-symbols-outlined text-emerald-500 dark:text-emerald-400 text-base">trending_up</span>
-      </div>
-    </div>
-
-    <!-- Despesas Card -->
-    <div id="tour-despesas-card"
-      class="bg-white dark:bg-[#1a112c] rounded-[20px] p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/50 relative flex flex-col justify-between h-[140px] transition-colors duration-300">
-      <div>
-        <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mb-5">Despesas</p>
-        <h3 class="text-[clamp(1.25rem,2.5vw,1.875rem)] font-bold text-slate-800 dark:text-white truncate"
-          [title]="showValues() ? totalDespesas() : ''">{{ showValues() ? totalDespesas() : 'R$ ••••'
-          }}</h3>
-      </div>
-      @if (variacaoDespesas(); as vd) {
-      <div class="mt-auto flex items-center gap-1 w-full">
-        @if (vd.direction === 'up') {
-        <span class="material-symbols-outlined text-rose-500 text-[14px] shrink-0">trending_up</span>
-        <p class="text-rose-500 text-[12px] font-medium flex-1 flex items-center min-w-0 gap-1">
-          <span class="shrink-0">+{{ vd.percent | number:'1.0-1' }}%</span>
-          <span class="font-normal text-slate-400 dark:text-slate-500 truncate min-w-0">em comparação ao mês
-            passado</span>
-        </p>
-        } @else if (vd.direction === 'down') {
-        <span class="material-symbols-outlined text-emerald-500 text-[14px] shrink-0">trending_down</span>
-        <p class="text-emerald-500 text-[12px] font-medium flex-1 flex items-center min-w-0 gap-1">
-          <span class="shrink-0">-{{ vd.percent | number:'1.0-1' }}%</span>
-          <span class="font-normal text-slate-400 dark:text-slate-500 truncate min-w-0">em comparação ao mês
-            passado</span>
-        </p>
-        } @else {
-        <p class="text-slate-400 dark:text-slate-500 text-[12px] font-medium truncate min-w-0">Sem alteração</p>
-        }
-      </div>
-      }
-      <div
-        class="absolute top-5 right-5 w-8 h-8 bg-rose-50 dark:bg-rose-500/10 rounded-lg flex items-center justify-center">
-        <span class="material-symbols-outlined text-rose-500 dark:text-rose-400 text-base">trending_down</span>
-      </div>
-    </div>
-
-    <!-- Saldo Card -->
-    <div id="tour-saldo-card"
-      class="bg-gradient-to-br from-[#381174] via-[#581fa4] to-[#7941dc] text-white rounded-[20px] p-6 shadow-lg shadow-purple-900/15 relative overflow-hidden flex flex-col justify-between h-[140px] transition-all">
-      <div class="relative z-10">
-        <p class="text-purple-200/90 text-sm font-medium mb-5">Saldo do mês</p>
-        <h3 class="text-[clamp(1.25rem,2.5vw,1.875rem)] font-bold text-white truncate tracking-tight"
-          [title]="showValues() ? saldoMes() : ''">{{ showValues() ? saldoMes() : 'R$ ••••' }}</h3>
-      </div>
-      @if (variacaoSaldo(); as vs) {
-      <div class="relative z-10 mt-auto flex items-center gap-1 w-full">
-        @if (vs.direction === 'up') {
-        <span class="material-symbols-outlined text-emerald-400 text-[14px] shrink-0">trending_up</span>
-        <p class="text-emerald-400 text-[12px] font-medium flex-1 flex items-center min-w-0 gap-1">
-          <span class="shrink-0">+{{ vs.percent | number:'1.0-1' }}%</span>
-          <span class="font-normal text-purple-200/80 truncate min-w-0">em comparação ao mês passado</span>
-        </p>
-        } @else if (vs.direction === 'down') {
-        <span class="material-symbols-outlined text-rose-400 text-[14px] shrink-0">trending_down</span>
-        <p class="text-rose-400 text-[12px] font-medium flex-1 flex items-center min-w-0 gap-1">
-          <span class="shrink-0">-{{ vs.percent | number:'1.0-1' }}%</span>
-          <span class="font-normal text-purple-200/80 truncate min-w-0">em comparação ao mês passado</span>
-        </p>
-        } @else {
-        <p class="text-purple-200/80 text-[12px] font-medium truncate min-w-0">Sem alteração</p>
-        }
-      </div>
-      }
-      <!-- Icon top right -->
-      <div (click)="toggleVisibility()"
-        class="top-5 right-5 w-10 h-10 bg-white/15 hover:bg-white/25 active:scale-95 rounded-2xl backdrop-blur-md border border-white/10 flex items-center justify-center cursor-pointer transition-all absolute z-10 shadow-sm"
-        title="Ocultar / Mostrar valores">
-        @if (showValues()) {
-        <span class="material-symbols-outlined text-white text-xl">visibility</span>
-        } @else {
-        <span class="material-symbols-outlined text-white text-xl">visibility_off</span>
-        }
-      </div>
-    </div>
-  </div>
+  <app-resumo-cards
+    [totalReceitas]="totalReceitas()"
+    [totalDespesas]="totalDespesas()"
+    [saldoMes]="saldoMes()"
+    [variacaoReceitas]="variacaoReceitas()"
+    [variacaoDespesas]="variacaoDespesas()"
+    [variacaoSaldo]="variacaoSaldo()"
+    [showValues]="showValues()"
+    (toggleVisibility)="toggleVisibility()" />
 
   <!-- Row 2: Chart Placeholders -->
   @if (lancamentos().length > 0) {
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    <!-- Line Chart Placeholder (Spans 2 cols on lg) -->
-    <div id="tour-grafico-resumo"
-      class="bg-white dark:bg-[#1a112c] rounded-[20px] p-3 sm:p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/50 lg:col-span-2 flex flex-col h-[320px] transition-colors duration-300">
-      <div class="mb-4">
-        <h3 class="text-[15px] font-bold text-slate-800 dark:text-white">Últimos 6 meses</h3>
-        <p class="text-[13px] text-slate-500 dark:text-slate-400">Receitas vs Despesas</p>
-      </div>
-      <!-- Chart Area -->
-      <div class="flex-1 relative w-full h-full min-h-[200px]">
-        <canvas baseChart [data]="barChartData()" [options]="barChartOptions" [type]="'bar'"></canvas>
-      </div>
-      <!-- Legend -->
-      <div class="flex justify-center gap-6 mt-4">
-        <div class="flex items-center gap-2">
-          <div class="w-2.5 h-2.5 rounded-sm bg-[#9d6bf3]"></div>
-          <span class="text-[11px] text-slate-500 font-medium">Receitas</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <div class="w-2.5 h-2.5 rounded-sm bg-[#421b7b]"></div>
-          <span class="text-[11px] text-slate-500 font-medium">Despesas</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <div class="w-2.5 h-0.5 rounded-sm bg-[#10b981]"></div>
-          <span class="text-[11px] text-slate-500 font-medium">Saldo</span>
-        </div>
-      </div>
+    <div class="lg:col-span-2">
+      <app-grafico-barras
+        [chartData]="barChartData()"
+        [chartOptions]="barChartOptions" />
     </div>
-    <!-- Pie Chart Placeholder -->
-    <div id="tour-dist-mes"
-      class="bg-white dark:bg-[#1a112c] rounded-[20px] p-3 sm:p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/50 flex flex-col h-[320px] transition-colors duration-300">
-      <div>
-        <h3 class="text-[15px] font-bold text-slate-800 dark:text-white">Distribuição do mês</h3>
-        <p class="text-[13px] text-slate-500 dark:text-slate-400">Composição atual</p>
-      </div>
-      <!-- Chart Area -->
-      <div class="flex-1 relative mt-4 min-h-[200px]">
-        <canvas baseChart [data]="pieChartData()" [options]="pieChartOptions" [type]="'pie'">
-        </canvas>
-      </div>
+    <div>
+      <app-grafico-pizza
+        [chartData]="pieChartData()"
+        [chartOptions]="pieChartOptions" />
     </div>
   </div>
   }
@@ -214,8 +81,7 @@
     class="bg-white dark:bg-[#1a112c] rounded-[20px] p-3 sm:p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/50 min-h-[280px] flex flex-col transition-colors duration-300">
     <div id="tour-lancamentos-recents" class="flex items-center justify-between mb-8">
       <h3 class="text-[15px] font-bold text-slate-800 dark:text-white">Contas do mês</h3>
-      <span class="text-xs font-medium text-slate-400 dark:text-slate-500">{{ lancamentos().length }} conta(s) no
-        total</span>
+      <span class="text-xs font-medium text-slate-400 dark:text-slate-500">{{ lancamentos().length }} conta(s) no total</span>
     </div>
 
     <!-- Loading State -->
@@ -276,6 +142,12 @@
                     class="font-semibold text-slate-800 dark:text-slate-200 dark:group-hover:text-white dark:group-hover:font-bold transition-all"
                     [ngClass]="{ 'line-through': item.statusPago }">{{
                     item.nome }}</span>
+                  @if (item.parcelamentoId) {
+                  <span
+                    class="shrink-0 px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider bg-purple-100 text-purple-700 dark:bg-[#7941dc]/20 dark:text-purple-300 border border-purple-200 dark:border-[#7941dc]/30">
+                    {{ item.numeroParcela }}/{{ item.totalParcelas }}
+                  </span>
+                  }
                   @if (item.isRecorrente) {
                   <span
                     class="flex items-center gap-1 px-1.5 py-0.5 mr-4 bg-[#421b7b]/10 dark:bg-[#a78bfa]/10 text-[#421b7b] dark:text-[#a78bfa] rounded text-[6px] md:text-[8px] font-bold uppercase tracking-wider">
@@ -352,255 +224,47 @@
     </div>
     }
   </div>
-
-  <!-- Modal de Ações -->
-  @if (selectedConta(); as conta) {
-  <div
-    class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 sm:p-0 bg-slate-900/40 backdrop-blur-sm transition-opacity"
-    (click)="closeModal()">
-    <!-- Animação do bottom no mobile, center no desktop -->
-    <div
-      class="bg-white dark:bg-[#1a112c] rounded-t-[28px] sm:rounded-[24px] shadow-xl w-full max-w-sm overflow-hidden transform transition-transform"
-      (click)="$event.stopPropagation()">
-      <div class="p-6 border-b border-slate-100 dark:border-slate-800/50 flex items-center justify-between">
-        <div>
-          <h3 class="text-lg font-bold text-slate-800 dark:text-white">{{ conta.nome }}</h3>
-          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            {{ conta.valor }} • Venc: {{ formatDataVencimento(conta) }}
-          </p>
-          @if (conta.isRecorrente) {
-          <p class="text-xs text-[#421b7b] dark:text-[#a78bfa] font-medium mt-1.5 flex items-center gap-1">
-            <span class="material-symbols-outlined text-sm">autorenew</span>
-            Essa conta se repete todo o mês
-          </p>
-          }
-          @if (conta.statusPago) {
-          <p class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 mt-1.5 flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-[15px]">check</span>
-            {{ conta.dataPagamento ? 'Pago no dia ' + formatDataPagamento(conta.dataPagamento) : 'Pago' }}
-          </p>
-          }
-        </div>
-        <button (click)="closeModal()"
-          class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-700 dark:hover:text-slate-200 transition-colors">
-          <span class="material-symbols-outlined text-xl">close</span>
-        </button>
-      </div>
-      <div class="p-3 flex flex-col gap-1">
-        <a [routerLink]="['/editar-conta', conta.id]" (click)="closeModal()"
-          class="flex items-center gap-4 w-full p-4 text-left text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-xl transition-colors font-semibold">
-          <div
-            class="w-10 h-10 rounded-full bg-[#421b7b]/10 dark:bg-[#421b7b]/20 flex items-center justify-center text-[#421b7b] dark:text-[#a78bfa]">
-            <span class="material-symbols-outlined">edit</span>
-          </div>
-          Editar conta
-        </a>
-        <button (click)="deleteLancamento(conta.id)"
-          class="flex items-center gap-4 w-full p-4 text-left text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-xl transition-colors font-semibold">
-          <div
-            class="w-10 h-10 rounded-full bg-rose-50 dark:bg-rose-500/10 flex items-center justify-center text-rose-500 dark:text-rose-400">
-            <span class="material-symbols-outlined">delete</span>
-          </div>
-          Excluir conta
-        </button>
-        @if (!conta.statusPago) {
-        <button (click)="marcarComoPaga(conta.id)"
-          class="flex items-center gap-4 w-full p-4 text-left text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-xl transition-colors font-semibold">
-          <div
-            class="w-10 h-10 rounded-full bg-green-50 dark:bg-green-500/10 flex items-center justify-center text-green-500 dark:text-green-400">
-            <span class="material-symbols-outlined">check</span>
-          </div>
-          Já foi paga
-        </button>
-        }
-      </div>
-    </div>
-  </div>
-  }
-
-  <!-- Floating Action Button (Mobile Only) -->
-  @if (lancamentos().length > 0) {
-  <a routerLink="/nova-conta" id="tour-fab-nova-conta"
-    class="fixed bottom-0 right-6 z-30 sm:hidden flex items-center justify-center w-14 h-14 bg-[#421b7b] active:bg-[#341561] text-white rounded-full border-[2.5px] border-[#9d6bf3] shadow-[0_0_20px_rgba(157,107,243,0.4)] transition-all duration-300 active:scale-95"
-    [ngClass]="layoutService.isSidebarOpen() ? 'opacity-0 scale-75 pointer-events-none' : 'opacity-100 scale-100 pointer-events-auto'"
-    [attr.aria-hidden]="layoutService.isSidebarOpen()"
-    [tabIndex]="layoutService.isSidebarOpen() ? -1 : 0">
-    <span class="material-symbols-outlined text-3xl">add</span>
-  </a>
-  }
-
-  <!-- Modal Replicar Mês -->
-  @if (showReplicarModal()) {
-  <div
-    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm transition-opacity"
-    (click)="closeReplicarModal()">
-    <div
-      class="bg-white dark:bg-[#1a112c] rounded-[24px] shadow-xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]"
-      (click)="$event.stopPropagation()">
-
-      <!-- Header -->
-      <div class="p-6 border-b border-slate-100 dark:border-slate-800/50 flex items-start justify-between shrink-0">
-        <div>
-          <h3 class="text-xl font-bold text-slate-800 dark:text-white">Replicar mês</h3>
-          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Copie as contas de um mês para outro. Contas duplicadas (mesmo nome e vencimento) são destacadas e
-            desmarcadas por padrão.
-          </p>
-        </div>
-        <button (click)="closeReplicarModal()"
-          class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-700 dark:hover:text-slate-200 transition-colors ml-4 shrink-0">
-          <span class="material-symbols-outlined text-xl">close</span>
-        </button>
-      </div>
-
-      <!-- Body -->
-      <div class="p-6 overflow-y-auto flex-1">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <div>
-            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Mês de origem</label>
-            <p-datepicker [ngModel]="mesOrigem()" (ngModelChange)="mesOrigem.set($event); onMesReplicacaoChange()"
-              view="month" dateFormat="MM yy" styleClass="w-full"
-              inputStyleClass="w-full px-4 py-2.5 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#421b7b]/50 focus:border-[#421b7b] transition-all text-sm"></p-datepicker>
-          </div>
-          <div>
-            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Mês de destino</label>
-            <p-datepicker [ngModel]="mesDestino()" (ngModelChange)="mesDestino.set($event); onMesReplicacaoChange()"
-              view="month" dateFormat="MM yy" styleClass="w-full"
-              inputStyleClass="w-full px-4 py-2.5 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#421b7b]/50 focus:border-[#421b7b] transition-all text-sm"></p-datepicker>
-          </div>
-        </div>
-
-        <div class="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
-          <div
-            class="bg-slate-50 dark:bg-slate-800/50 px-4 py-3 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
-            <h4 class="text-sm font-semibold text-slate-700 dark:text-slate-300">
-              Contas em {{ formatDateName(mesOrigem()) }}
-            </h4>
-
-            @if (contasParaReplicar().length > 0) {
-            <div class="flex items-center gap-2 cursor-pointer group" (click)="toggleAllSelection()">
-              <span
-                class="text-sm font-semibold text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-colors">
-                {{ isAllSelected ? 'Desmarcar todas' : 'Selecionar todas' }}
-              </span>
-              <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors p-3"
-                [ngClass]="isAllSelected ? 'border-[#421b7b] bg-[#421b7b]' : 'border-slate-300 dark:border-slate-600'">
-                @if (isAllSelected) {
-                <span class="material-symbols-outlined text-white text-[8px]">check</span>
-                }
-              </div>
-            </div>
-            }
-          </div>
-
-          <div class="p-0">
-            @if (isLoadingReplicacao()) {
-            <div class="flex items-center justify-center py-12">
-              <div class="w-8 h-8 border-4 border-[#421b7b]/20 border-t-[#421b7b] rounded-full animate-spin"></div>
-            </div>
-            } @else if (contasParaReplicar().length === 0) {
-            <div class="flex flex-col items-center justify-center py-12 text-slate-500 dark:text-slate-400">
-              <span class="material-symbols-outlined text-4xl mb-2">info</span>
-              <p class="text-sm">Nenhuma conta encontrada em {{ formatDateName(mesOrigem()) }}.</p>
-            </div>
-            } @else {
-            <ul class="divide-y divide-slate-100 dark:divide-slate-800/50">
-              @for (conta of contasParaReplicar(); track conta.id) {
-              <li
-                class="flex items-center justify-between p-4 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors"
-                [ngClass]="{'opacity-60': conta.existsInDestino, 'cursor-pointer': !conta.existsInDestino}"
-                (click)="toggleContaSelection(conta)">
-
-                <div class="flex items-center gap-4">
-                  <div class="flex-shrink-0">
-                    <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors p-3"
-                      [ngClass]="conta.selected ? 'border-[#421b7b] bg-[#421b7b]' : 'border-slate-300 dark:border-slate-600'">
-                      @if (conta.selected) {
-                      <span class="material-symbols-outlined text-white text-[8px]">check</span>
-                      }
-                    </div>
-                  </div>
-
-                  <div>
-                    <div class="flex items-center gap-2">
-                      <span class="font-semibold text-slate-800 dark:text-slate-200">{{ conta.nome }}</span>
-                      <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider"
-                        [ngClass]="conta.tipo === 'Receita' ? 'bg-[#421b7b] text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'">
-                        {{ conta.tipo }}
-                      </span>
-                      @if (conta.existsInDestino) {
-                      <span
-                        class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider text-orange-500 border border-orange-200 dark:border-orange-500/30">
-                        replicado
-                      </span>
-                      }
-                    </div>
-                    <span class="text-xs text-slate-500 dark:text-slate-400 mt-0.5 block">
-                      Vence dia {{ conta.diaVencimento }}
-                    </span>
-                  </div>
-                </div>
-
-                <div class="font-bold pr-2" [ngClass]="conta.tipo === 'Receita' ? 'text-emerald-600' : 'text-red-500'">
-                  R$ {{ conta.valor }}
-                </div>
-              </li>
-              }
-            </ul>
-            }
-          </div>
-        </div>
-      </div>
-
-      <!-- Footer -->
-      <div
-        class="p-6 border-t border-slate-100 dark:border-slate-800/50 flex items-center justify-end gap-3 bg-slate-50 dark:bg-slate-800/20 shrink-0">
-        <button (click)="closeReplicarModal()"
-          class="px-5 py-2.5 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-xl text-sm font-semibold transition-colors">
-          Cancelar
-        </button>
-        <button (click)="confirmReplicacao()" [disabled]="isLoadingReplicacao() || selectedContasCount === 0"
-          class="px-5 py-2.5 bg-[#421b7b] hover:bg-[#341561] text-white rounded-xl text-sm font-semibold transition-colors disabled:opacity-70 disabled:cursor-not-allowed">
-          {{ isLoadingReplicacao() ? 'Aguarde...' : 'Replicar ' + selectedContasCount + ' contas' }}
-        </button>
-      </div>
-
-    </div>
-  </div>
-  }
-
-  <!-- Modal de Imagem (Recibo) -->
-  <p-dialog header="Detalhes do Recibo" [modal]="true" [(visible)]="showImageModal"
-    [style]="{ width: '90vw', maxWidth: '600px' }" [dismissableMask]="true">
-    @if (selectedImageConta(); as conta) {
-    <div class="mb-4 flex flex-col gap-2 text-sm text-slate-700 dark:text-slate-300">
-      <div
-        class="flex justify-between items-center bg-slate-50 dark:bg-slate-800/50 p-3 rounded-lg border border-slate-100 dark:border-slate-700">
-        <div>
-          <p class="font-bold text-base text-slate-800 dark:text-slate-100">{{ conta.nome }}</p>
-          @if (conta.categoria) {
-          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{{ conta.categoria }}</p>
-          }
-        </div>
-        <div class="text-right">
-          <p class="font-bold text-lg" [ngClass]="conta.tipo === 'Receita' ? 'text-emerald-600' : 'text-rose-500'">
-            {{ conta.tipo === 'Receita' ? '+ ' : '- ' }}{{ conta.valor }}
-          </p>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Venc: {{ formatDataVencimento(conta) }}</p>
-        </div>
-      </div>
-    </div>
-    <div class="flex justify-center items-center bg-slate-100 dark:bg-slate-900/50 rounded-lg p-2 min-h-[200px]">
-      @if (conta.reciboUrl) {
-      @if (isImageLoading()) {
-      <p-progress-spinner ariaLabel="loading"></p-progress-spinner>
-      }
-      <img [src]="conta.reciboUrl" alt="Recibo" class="max-w-full max-h-[60vh] object-contain rounded"
-        [class.hidden]="isImageLoading()" (load)="onImageLoad()" (error)="onImageError()" />
-      } @else {
-      <div class="text-slate-500">Imagem não encontrada.</div>
-      }
-    </div>
-    }
-  </p-dialog>
 </div>
+
+<!-- Modal de Ações da Conta Selecionada -->
+<app-detalhes-conta-modal
+  [conta]="selectedConta()"
+  (close)="closeModal()"
+  (marcarComoPaga)="marcarComoPaga($event)"
+  (delete)="deleteLancamento($event)" />
+
+<!-- Floating Action Button (Mobile Only) -->
+@if (lancamentos().length > 0) {
+<a routerLink="/nova-conta" id="tour-fab-nova-conta"
+  class="fixed bottom-6 right-6 z-30 sm:hidden flex items-center justify-center w-14 h-14 bg-[#421b7b] active:bg-[#341561] text-white rounded-full border-[2.5px] border-[#9d6bf3] shadow-[0_0_20px_rgba(157,107,243,0.4)] transition-all duration-300 active:scale-95"
+  [ngClass]="layoutService.isSidebarOpen() ? 'opacity-0 scale-75 pointer-events-none' : 'opacity-100 scale-100 pointer-events-auto'"
+  [attr.aria-hidden]="layoutService.isSidebarOpen()"
+  [tabIndex]="layoutService.isSidebarOpen() ? -1 : 0">
+  <span class="material-symbols-outlined text-3xl">add</span>
+</a>
+}
+
+<!-- Modal Replicar Mês -->
+<app-replicar-mes-modal
+  [visible]="showReplicarModal()"
+  [mesOrigem]="mesOrigem()"
+  [mesDestino]="mesDestino()"
+  [contasParaReplicar]="contasParaReplicar()"
+  [isLoading]="isLoadingReplicacao()"
+  [isAllSelected]="isAllSelected"
+  [selectedCount]="selectedContasCount"
+  (close)="closeReplicarModal()"
+  (mesOrigemChange)="mesOrigem.set($event); loadContasParaReplicar()"
+  (mesDestinoChange)="mesDestino.set($event); loadContasParaReplicar()"
+  (toggleAll)="toggleAllSelection()"
+  (toggleConta)="toggleContaSelection($event)"
+  (confirm)="confirmReplicacao()" />
+
+<!-- Modal de Imagem (Recibo) -->
+<app-recibo-modal
+  [visible]="showImageModal()"
+  [conta]="selectedImageConta()"
+  [isLoading]="isImageLoading()"
+  (visibleChange)="showImageModal.set($event)"
+  (imageLoad)="onImageLoad()"
+  (imageError)="onImageError()" />
