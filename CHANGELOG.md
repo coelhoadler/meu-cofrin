@@ -1,3 +1,11 @@
+# [1.25.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.24.0...v1.25.0) (2026-09-14)
+
+
+### Features
+
+* add new dashboard and user profile feature components and layout templates ([f20560e](https://github.com/coelhoadler/meu-cofrin/commit/f20560e7ea1fcdbd20168467657aae60c912a66f))
+* implement core services, models, authentication, and feature modules ([3c5b7f0](https://github.com/coelhoadler/meu-cofrin/commit/3c5b7f09acf2fb82c5ececcb2b5fb11479d048c8))
+
 # [1.24.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.23.0...v1.24.0) (2026-09-13)
 
 
