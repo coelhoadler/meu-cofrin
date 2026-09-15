@@ -43,14 +43,13 @@ export class MainLayoutComponent implements OnDestroy {
   isDesktopSidebarCollapsed = signal(false);
   isQrCodeModalOpen = signal(false);
   isContactModalOpen = signal(false);
-  isAtBottom = signal(false);
   currentUrl = signal(this.router.url);
 
   user = this.authService.currentUser;
 
   readonly isBackButtonVisible = computed(() => {
     if (this.isSidebarOpen()) return false;
-    if (this.isAtBottom()) return false;
+    if (this.layoutService.isAtBottom()) return false;
     const url = (this.currentUrl() || '').split('?')[0];
     if (url === '/dashboard' || url === '' || url === '/') return false;
     return true;
@@ -63,7 +62,7 @@ export class MainLayoutComponent implements OnDestroy {
       .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
       .subscribe((e) => {
         this.currentUrl.set(e.urlAfterRedirects || e.url);
-        this.isAtBottom.set(false);
+        this.layoutService.isAtBottom.set(false);
         if (this.mainContent?.nativeElement) {
           this.mainContent.nativeElement.scrollTop = 0;
         }
@@ -80,7 +79,7 @@ export class MainLayoutComponent implements OnDestroy {
     const { scrollTop, scrollHeight, clientHeight } = target;
     const hasScroll = scrollHeight > clientHeight + 40;
     const atBottom = hasScroll && (scrollHeight - scrollTop - clientHeight <= 40);
-    this.isAtBottom.set(atBottom);
+    this.layoutService.isAtBottom.set(atBottom);
   }
 
   private touchStartX = 0;

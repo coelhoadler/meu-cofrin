@@ -63,7 +63,7 @@ describe('MainLayoutComponent', () => {
   it('deve exibir o botão de voltar quando estiver em tela interna e menu fechado', () => {
     component.currentUrl.set('/lancamentos');
     component.isSidebarOpen.set(false);
-    component.isAtBottom.set(false);
+    component.layoutService.isAtBottom.set(false);
 
     expect(component.isBackButtonVisible()).toBe(true);
   });
@@ -71,7 +71,7 @@ describe('MainLayoutComponent', () => {
   it('deve ocultar o botão de voltar quando o menu lateral mobile estiver aberto', () => {
     component.currentUrl.set('/lancamentos');
     component.isSidebarOpen.set(true);
-    component.isAtBottom.set(false);
+    component.layoutService.isAtBottom.set(false);
 
     expect(component.isBackButtonVisible()).toBe(false);
   });
