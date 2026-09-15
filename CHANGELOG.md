@@ -1,3 +1,10 @@
+# [1.28.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.27.0...v1.28.0) (2026-09-15)
+
+
+### Features
+
+* add core authentication, layout, and services alongside enterprise feature module ([51d7516](https://github.com/coelhoadler/meu-cofrin/commit/51d751634206049852f4854c9590167f7a6b5bd1))
+
 # [1.27.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.26.0...v1.27.0) (2026-09-15)
 
 
