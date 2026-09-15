@@ -1,3 +1,11 @@
+# [1.27.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.26.0...v1.27.0) (2026-09-15)
+
+
+### Features
+
+* add core layout components, application services, and feature templates ([814fd1e](https://github.com/coelhoadler/meu-cofrin/commit/814fd1e50e972ba74f7378de9e0e7f61de5844b5))
+* implement desejos feature with components, service, models, routes, and unit tests ([cbf797c](https://github.com/coelhoadler/meu-cofrin/commit/cbf797c4d89a192fb4bdd3f353ca07187d01f706))
+
 # [1.26.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.25.0...v1.26.0) (2026-09-14)
 
 
