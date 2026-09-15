@@ -68,6 +68,16 @@ export const routes: Routes = [
         loadComponent: () => import('./features/investimentos/evolucao/evolucao.component').then(m => m.EvolucaoComponent),
         title: 'Meu Cofrin | Evolução do Investimento'
       },
+      {
+        path: 'desejos',
+        loadComponent: () => import('./features/desejos/desejos.component').then(m => m.DesejosComponent),
+        title: 'Meu Cofrin | Meus Desejos'
+      },
+      {
+        path: 'desejos/:id',
+        loadComponent: () => import('./features/desejos/desejo-detalhe/desejo-detalhe.component').then(m => m.DesejoDetalheComponent),
+        title: 'Meu Cofrin | Detalhes do Desejo'
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },

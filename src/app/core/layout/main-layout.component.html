@@ -66,6 +66,13 @@
         <span class="text-sm truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">Categorias</span>
       </a>
 
+      <a routerLink="/desejos" routerLinkActive="bg-[#8b5cf6]/20 text-[#c4b5fd]" (click)="isSidebarOpen.set(false)"
+        class="flex items-center py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors gap-3 px-3"
+        [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center md:mx-1 md:gap-0 md:px-0' : ''" title="Meus desejos">
+        <span class="material-symbols-outlined text-xl">loyalty</span>
+        <span class="text-sm truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">Meus desejos</span>
+      </a>
+
       <div class="h-px bg-slate-500/60 my-2 mx-3"></div>
 
       <button (click)="openQrCodeModal(); isSidebarOpen.set(false)"
