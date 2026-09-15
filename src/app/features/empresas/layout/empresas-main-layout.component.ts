@@ -52,27 +52,9 @@ export class EmpresasMainLayoutComponent implements OnInit {
       const companyDoc = await getDoc(doc(this.firestore, `companies/${uid}`));
       if (companyDoc.exists()) {
         this.companyProfile.set(companyDoc.data() as CompanyProfile);
-        return;
       }
     } catch (error) {
-      // Ignora erro de leitura em companies
-    }
-
-    try {
-      const userDoc = await getDoc(doc(this.firestore, `users/${uid}`));
-      if (userDoc.exists()) {
-        const data = userDoc.data();
-        const profile = data?.['companies'] || data?.['perfil'];
-        if (profile) {
-          this.companyProfile.set({
-            nomeFantasia: profile.nomeFantasia || profile.displayName || 'Empresa',
-            cnpj: profile.cnpj || '',
-            email: profile.email || '',
-          });
-        }
-      }
-    } catch (err) {
-      console.error('Erro ao carregar perfil corporativo em users:', err);
+      console.error('Erro ao carregar perfil corporativo na coleção companies:', error);
     }
   }
 

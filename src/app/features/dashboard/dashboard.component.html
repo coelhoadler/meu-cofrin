@@ -43,35 +43,25 @@
     <div class="flex gap-3 hidden md:flex">
       <p-button id="tour-btn-replicar-mes" label="Replicar mês" severity="secondary" variant="outlined"
         icon="pi pi-clone" (onClick)="openReplicarModal()" />
-      <p-button id="tour-btn-nova-conta" label="Nova conta" severity="secondary" variant="outlined" icon="pi pi-plus"
-        [routerLink]="['/nova-conta']" routerLinkActive="router-link-active" />
+      <p-button id="tour-btn-nova-conta" label="Cadastrar conta" severity="secondary" variant="outlined"
+        icon="pi pi-plus" [routerLink]="['/nova-conta']" routerLinkActive="router-link-active" />
     </div>
     }
   </div>
 
   <!-- Row 1: Summary Cards -->
-  <app-resumo-cards
-    [totalReceitas]="totalReceitas()"
-    [totalDespesas]="totalDespesas()"
-    [saldoMes]="saldoMes()"
-    [variacaoReceitas]="variacaoReceitas()"
-    [variacaoDespesas]="variacaoDespesas()"
-    [variacaoSaldo]="variacaoSaldo()"
-    [showValues]="showValues()"
-    (toggleVisibility)="toggleVisibility()" />
+  <app-resumo-cards [totalReceitas]="totalReceitas()" [totalDespesas]="totalDespesas()" [saldoMes]="saldoMes()"
+    [variacaoReceitas]="variacaoReceitas()" [variacaoDespesas]="variacaoDespesas()" [variacaoSaldo]="variacaoSaldo()"
+    [showValues]="showValues()" (toggleVisibility)="toggleVisibility()" />
 
   <!-- Row 2: Chart Placeholders -->
   @if (lancamentos().length > 0) {
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <div class="lg:col-span-2">
-      <app-grafico-barras
-        [chartData]="barChartData()"
-        [chartOptions]="barChartOptions" />
+      <app-grafico-barras [chartData]="barChartData()" [chartOptions]="barChartOptions" />
     </div>
     <div>
-      <app-grafico-pizza
-        [chartData]="pieChartData()"
-        [chartOptions]="pieChartOptions" />
+      <app-grafico-pizza [chartData]="pieChartData()" [chartOptions]="pieChartOptions" />
     </div>
   </div>
   }
@@ -81,7 +71,8 @@
     class="bg-white dark:bg-[#1a112c] rounded-[20px] p-3 sm:p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/50 min-h-[280px] flex flex-col transition-colors duration-300">
     <div id="tour-lancamentos-recents" class="flex items-center justify-between mb-8">
       <h3 class="text-[15px] font-bold text-slate-800 dark:text-white">Contas do mês</h3>
-      <span class="text-xs font-medium text-slate-400 dark:text-slate-500">{{ lancamentos().length }} conta(s) no total</span>
+      <span class="text-xs font-medium text-slate-400 dark:text-slate-500">{{ lancamentos().length }} conta(s) no
+        total</span>
     </div>
 
     <!-- Loading State -->
@@ -227,10 +218,7 @@
 </div>
 
 <!-- Modal de Ações da Conta Selecionada -->
-<app-detalhes-conta-modal
-  [conta]="selectedConta()"
-  (close)="closeModal()"
-  (marcarComoPaga)="marcarComoPaga($event)"
+<app-detalhes-conta-modal [conta]="selectedConta()" (close)="closeModal()" (marcarComoPaga)="marcarComoPaga($event)"
   (delete)="deleteLancamento($event)" />
 
 <!-- Floating Action Button (Mobile Only) -->
@@ -245,26 +233,13 @@
 }
 
 <!-- Modal Replicar Mês -->
-<app-replicar-mes-modal
-  [visible]="showReplicarModal()"
-  [mesOrigem]="mesOrigem()"
-  [mesDestino]="mesDestino()"
-  [contasParaReplicar]="contasParaReplicar()"
-  [isLoading]="isLoadingReplicacao()"
-  [isAllSelected]="isAllSelected"
-  [selectedCount]="selectedContasCount"
-  (close)="closeReplicarModal()"
+<app-replicar-mes-modal [visible]="showReplicarModal()" [mesOrigem]="mesOrigem()" [mesDestino]="mesDestino()"
+  [contasParaReplicar]="contasParaReplicar()" [isLoading]="isLoadingReplicacao()" [isAllSelected]="isAllSelected"
+  [selectedCount]="selectedContasCount" (close)="closeReplicarModal()"
   (mesOrigemChange)="mesOrigem.set($event); loadContasParaReplicar()"
-  (mesDestinoChange)="mesDestino.set($event); loadContasParaReplicar()"
-  (toggleAll)="toggleAllSelection()"
-  (toggleConta)="toggleContaSelection($event)"
-  (confirm)="confirmReplicacao()" />
+  (mesDestinoChange)="mesDestino.set($event); loadContasParaReplicar()" (toggleAll)="toggleAllSelection()"
+  (toggleConta)="toggleContaSelection($event)" (confirm)="confirmReplicacao()" />
 
 <!-- Modal de Imagem (Recibo) -->
-<app-recibo-modal
-  [visible]="showImageModal()"
-  [conta]="selectedImageConta()"
-  [isLoading]="isImageLoading()"
-  (visibleChange)="showImageModal.set($event)"
-  (imageLoad)="onImageLoad()"
-  (imageError)="onImageError()" />
+<app-recibo-modal [visible]="showImageModal()" [conta]="selectedImageConta()" [isLoading]="isImageLoading()"
+  (visibleChange)="showImageModal.set($event)" (imageLoad)="onImageLoad()" (imageError)="onImageError()" />

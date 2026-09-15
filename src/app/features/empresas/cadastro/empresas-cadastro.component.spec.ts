@@ -98,19 +98,8 @@ describe('EmpresasCadastroComponent', () => {
       'password123',
       'Empresa Teste'
     );
-    expect(doc).toHaveBeenCalledWith(expect.anything(), 'users/company_uid_123');
     expect(doc).toHaveBeenCalledWith(expect.anything(), 'companies/company_uid_123');
-    expect(setDoc).toHaveBeenCalledWith(
-      expect.anything(),
-      expect.objectContaining({
-        companies: expect.objectContaining({
-          nomeFantasia: 'Empresa Teste',
-          cnpj: '11222333000181',
-          email: 'contato@empresa.com.br',
-        }),
-      }),
-      { merge: true }
-    );
+    expect(setDoc).toHaveBeenCalledTimes(1);
     expect(setDoc).toHaveBeenCalledWith(
       expect.anything(),
       expect.objectContaining({

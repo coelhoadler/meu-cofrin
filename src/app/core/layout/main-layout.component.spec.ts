@@ -79,7 +79,7 @@ describe('MainLayoutComponent', () => {
   it('deve ocultar o botão de voltar quando atingir o final da página', () => {
     component.currentUrl.set('/lancamentos');
     component.isSidebarOpen.set(false);
-    component.isAtBottom.set(true);
+    component.layoutService.isAtBottom.set(true);
 
     expect(component.isBackButtonVisible()).toBe(false);
   });
@@ -92,7 +92,7 @@ describe('MainLayoutComponent', () => {
     } as unknown as HTMLElement;
 
     component.onContentScroll({ target: fakeContainer } as unknown as Event);
-    expect(component.isAtBottom()).toBe(true);
+    expect(component.layoutService.isAtBottom()).toBe(true);
 
     // Scrollando para cima
     const fakeContainerTop = {
@@ -102,7 +102,7 @@ describe('MainLayoutComponent', () => {
     } as unknown as HTMLElement;
 
     component.onContentScroll({ target: fakeContainerTop } as unknown as Event);
-    expect(component.isAtBottom()).toBe(false);
+    expect(component.layoutService.isAtBottom()).toBe(false);
   });
 
   it('não deve marcar final de página se o conteúdo for curto sem barra de rolagem', () => {
@@ -113,15 +113,15 @@ describe('MainLayoutComponent', () => {
     } as unknown as HTMLElement;
 
     component.onContentScroll({ target: fakeShortContainer } as unknown as Event);
-    expect(component.isAtBottom()).toBe(false);
+    expect(component.layoutService.isAtBottom()).toBe(false);
   });
 
   it('deve resetar o status de final de página ao navegar para outra rota', async () => {
-    component.isAtBottom.set(true);
+    component.layoutService.isAtBottom.set(true);
 
     await router.navigateByUrl('/categorias');
 
-    expect(component.isAtBottom()).toBe(false);
+    expect(component.layoutService.isAtBottom()).toBe(false);
     expect(component.currentUrl()).toBe('/categorias');
   });
 
