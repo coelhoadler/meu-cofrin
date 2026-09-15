@@ -37,6 +37,7 @@ export class TourService {
               <li><b>Meus lançamentos</b>: Lista de lançamentos.</li>
               <li><b>Investimentos</b>: Controle seus investimentos.</li>
               <li><b>Categorias</b>: Cadastro de categorias.</li>
+              <li><b>Meus desejos</b>: Gerencie seus desejos e tenha controle do melhor preço.</li>
               <li><b>Apoiar projeto</b>: Doação para o projeto.</li>
               <li><b>Meu perfil</b>: Dados do usuário e configurações do app.</li>
               <li><b>Fale conosco</b>: Contato com o suporte.</li>

@@ -2,7 +2,7 @@
   <!-- Header -->
   <div class="max-w-8xl py-4">
     <a [routerLink]="navigationHistory.previousRoute()"
-      class="items-center text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors mb-6 hidden sm:inline-flex">
+      class="items-center text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors mb-6 hidden sm:inline-flex">
       <span class="material-symbols-outlined text-sm mr-1">arrow_back</span>
       Voltar
     </a>
@@ -345,8 +345,10 @@
             <td class="py-3.5 px-4 text-center text-slate-400 dark:text-slate-600">—</td>
             <td class="py-3.5 px-4 text-center text-emerald-700 dark:text-emerald-300">
               @if (showValues()) {
-              <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">{{ formatarMoeda(resumoConsolidado().saldoTotal) }} + {{ formatarMoeda(totalInvestimentos()) }} =</span>
-              <span class="font-bold block">{{ formatarMoeda(resumoConsolidado().saldoTotal + totalInvestimentos()) }}</span>
+              <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">{{
+                formatarMoeda(resumoConsolidado().saldoTotal) }} + {{ formatarMoeda(totalInvestimentos()) }} =</span>
+              <span class="font-bold block">{{ formatarMoeda(resumoConsolidado().saldoTotal + totalInvestimentos())
+                }}</span>
               } @else {
               R$ ••••
               }

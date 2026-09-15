@@ -10,6 +10,11 @@ export class LayoutService {
   readonly isSidebarOpen = signal(false);
 
   /**
+   * Indica se o conteúdo principal atingiu o final da rolagem.
+   */
+  readonly isAtBottom = signal(false);
+
+  /**
    * Alterna o estado de abertura da barra lateral.
    */
   toggleSidebar(): void {
