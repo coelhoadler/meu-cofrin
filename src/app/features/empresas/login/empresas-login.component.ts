@@ -61,38 +61,14 @@ export class EmpresasLoginComponent implements OnInit, AfterViewInit {
     try {
       const userCredential = await this.authService.login(email!, senha!);
 
-      // Verifica se o perfil da empresa existe em 'companies' ou em 'users/{uid}'
+      // Verifica se a empresa existe na coleção 'companies'
       let isEmpresa = false;
-
-      // 1. Tenta verificar na coleção companies
       try {
         const companyDocRef = doc(this.firestore, `companies/${userCredential.user.uid}`);
         const companySnap = await getDoc(companyDocRef);
-        if (companySnap.exists()) {
-          isEmpresa = true;
-        }
+        isEmpresa = companySnap.exists();
       } catch (firestoreError: any) {
-        // Ignora erro de permissão da coleção raiz
-      }
-
-      // 2. Se não encontrou em companies, consulta o documento em users/{uid}
-      if (!isEmpresa) {
-        try {
-          const userDocRef = doc(this.firestore, `users/${userCredential.user.uid}`);
-          const userSnap = await getDoc(userDocRef);
-          if (userSnap.exists()) {
-            const userData = userSnap.data();
-            if (
-              userData?.['companies'] ||
-              userData?.['perfil']?.tipo === 'empresa' ||
-              userData?.['tipo'] === 'empresa'
-            ) {
-              isEmpresa = true;
-            }
-          }
-        } catch (userErr: any) {
-          console.error('Erro ao consultar perfil em users:', userErr);
-        }
+        console.error('Erro ao verificar empresa na coleção companies:', firestoreError);
       }
 
       if (!isEmpresa) {

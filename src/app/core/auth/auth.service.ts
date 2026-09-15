@@ -23,7 +23,7 @@ export class AuthService {
     authState(this.auth).subscribe(async (user) => {
       if (user) {
         this.currentUser.set(user);
-        this.updateLastAccessDate(user.uid);
+        await this.updateLastAccessDate(user.uid);
       } else {
         this.currentUser.set(null);
       }
@@ -71,6 +71,13 @@ export class AuthService {
   }
 
   private async updateLastAccessDate(uid: string) {
+    if (this.router.url?.startsWith('/empresas')) {
+      return;
+    }
+    const isEmpresa = await this.isEmpresaAccount(uid);
+    if (isEmpresa) {
+      return;
+    }
     return this.userDataService.updateLastAccessDate(uid);
   }
 

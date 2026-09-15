@@ -112,24 +112,9 @@ export class EmpresasDashboardComponent implements OnInit {
         const data = compSnap.data();
         this.companyName.set(data?.['nomeFantasia'] || data?.['razaoSocial'] || 'Empresa');
         this.companyCnpj.set(data?.['cnpj'] || '');
-        return;
       }
-    } catch {
-      // ignora
-    }
-
-    try {
-      const userSnap = await getDoc(doc(this.firestore, `users/${uid}`));
-      if (userSnap.exists()) {
-        const data = userSnap.data();
-        const profile = data?.['companies'] || data?.['perfil'];
-        if (profile) {
-          this.companyName.set(profile.nomeFantasia || profile.displayName || 'Empresa');
-          this.companyCnpj.set(profile.cnpj || '');
-        }
-      }
-    } catch {
-      // ignora
+    } catch (e) {
+      console.error('Erro ao carregar dados da empresa no Firestore:', e);
     }
   }
 }

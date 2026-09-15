@@ -94,5 +94,12 @@ export class UserDataService {
     } catch (e) {
       console.warn('Erro ao apagar documento principal do usuário no Firestore:', e);
     }
+
+    try {
+      const companyDocRef = doc(this.firestore, `companies/${uid}`);
+      await deleteDoc(companyDocRef);
+    } catch (e) {
+      console.warn('Erro ao apagar documento da empresa no Firestore:', e);
+    }
   }
 }

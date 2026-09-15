@@ -80,30 +80,11 @@ export class EmpresasCadastroComponent implements AfterViewInit {
         createdAt: serverTimestamp(),
       };
 
-      // 3. Salva no documento do usuário em 'users/{uid}' garantindo a chave 'companies' e 'perfil'
-      const userDocRef = doc(this.firestore, `users/${userCredential.user.uid}`);
-      await setDoc(userDocRef, {
-        companies: companyPayload,
-        perfil: {
-          nomeFantasia: nomeFantasia,
-          cnpj: cleanCnpj,
-          email: email,
-          tipo: 'empresa',
-          displayName: nomeFantasia,
-        },
-        tipo: 'empresa',
-        createdAt: serverTimestamp(),
-      }, { merge: true });
+      // 3. Salva os dados corporativos exclusivamente na coleção 'companies/{uid}'
+      const companyDocRef = doc(this.firestore, `companies/${userCredential.user.uid}`);
+      await setDoc(companyDocRef, companyPayload, { merge: true });
 
-      // 4. Salva também na coleção dedicada 'companies/{uid}' (se permitido pelas regras de segurança)
-      try {
-        const companyDocRef = doc(this.firestore, `companies/${userCredential.user.uid}`);
-        await setDoc(companyDocRef, companyPayload, { merge: true });
-      } catch (colError) {
-        console.warn('Gravação na coleção raiz companies bloqueada ou pendente de regras no Firestore:', colError);
-      }
-
-      // 5. Redireciona para dashboard corporativo
+      // 4. Redireciona para dashboard corporativo
       this.router.navigate(['/empresas/dashboard']);
     } catch (e: any) {
       if (e.code === 'auth/email-already-in-use') {
