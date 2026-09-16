@@ -51,7 +51,9 @@ export class ContaService {
       const filePath = `users/${user.uid}/receipts/${timestamp}_${file.name}`;
       const storageRef = ref(this.storage, filePath);
 
-      const snapshot = await uploadBytes(storageRef, file);
+      const snapshot = await uploadBytes(storageRef, file, {
+        cacheControl: 'public, max-age=2592000, immutable'
+      });
       reciboUrl = await getDownloadURL(snapshot.ref);
     }
 
@@ -246,7 +248,9 @@ export class ContaService {
       const timestamp = new Date().getTime();
       const filePath = `users/${user.uid}/receipts/${timestamp}_${file.name}`;
       const storageRef = ref(this.storage, filePath);
-      const snapshot = await uploadBytes(storageRef, file);
+      const snapshot = await uploadBytes(storageRef, file, {
+        cacheControl: 'public, max-age=2592000, immutable'
+      });
       reciboUrl = await getDownloadURL(snapshot.ref);
     }
 

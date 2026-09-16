@@ -47,7 +47,9 @@ export class DesejoService {
     const cleanName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
     const storagePath = `users/${uid}/desejos/${timestamp}_${cleanName}`;
     const storageRef = ref(this.storage, storagePath);
-    const snapshot = await uploadBytes(storageRef, file);
+    const snapshot = await uploadBytes(storageRef, file, {
+      cacheControl: 'public, max-age=2592000, immutable'
+    });
     const downloadUrl = await getDownloadURL(snapshot.ref);
     return { downloadUrl, storagePath };
   }

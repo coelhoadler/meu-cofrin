@@ -92,7 +92,9 @@ export class PerfilFotoComponent {
       const filePath = `profile_images/${currentUser.uid}_${Date.now()}`;
       const storageRef = ref(this.storage, filePath);
 
-      await uploadBytes(storageRef, file);
+      await uploadBytes(storageRef, file, {
+        cacheControl: 'public, max-age=2592000, immutable'
+      });
       const downloadURL = await getDownloadURL(storageRef);
 
       await this.authService.updateCurrentUserProfile({ photoURL: downloadURL });
