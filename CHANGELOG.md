@@ -1,3 +1,10 @@
+# [1.29.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.28.0...v1.29.0) (2026-09-16)
+
+
+### Features
+
+* add core services for accounts, receipts, and profile management with serv worker img caching ([1781bf6](https://github.com/coelhoadler/meu-cofrin/commit/1781bf62ba1b49d08f920a19a25fae82ef016832))
+
 # [1.28.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.27.0...v1.28.0) (2026-09-15)
 
 
