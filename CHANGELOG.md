@@ -1,3 +1,10 @@
+# [1.30.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.29.0...v1.30.0) (2026-09-17)
+
+
+### Features
+
+* add formatting utilities, unit tests, and desejo feature components ([d423b90](https://github.com/coelhoadler/meu-cofrin/commit/d423b90eb49de0bd13faf7dda0bc453be74384b3))
+
 # [1.29.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.28.0...v1.29.0) (2026-09-16)
 
 
