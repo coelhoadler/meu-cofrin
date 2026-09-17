@@ -184,6 +184,13 @@
             Sem descrição informada
           </p>
           }
+
+          @if (desejo.criadoEm) {
+          <span class="inline-flex items-center gap-1 text-[11px] text-slate-400 dark:text-slate-500 mt-2">
+            <span class="material-symbols-outlined text-[13px]">calendar_today</span>
+            {{ formatarData(desejo.criadoEm) }}
+          </span>
+          }
         </div>
 
         <!-- Price info -->
