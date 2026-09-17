@@ -3,7 +3,7 @@
   <a [routerLink]="['/desejos']"
     class="items-center gap-2 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors text-sm font-medium mb-6 inline-flex">
     <span class="material-symbols-outlined text-base">arrow_back</span>
-    Voltar para Meus Desejos
+    Voltar
   </a>
 
   <!-- Loading State -->
@@ -13,7 +13,8 @@
   </div>
   } @else if (errorMessage()) {
   <!-- Error State -->
-  <div class="bg-white dark:bg-[#1a112c] rounded-[24px] shadow-sm border border-red-200 dark:border-red-800/50 p-8 text-center">
+  <div
+    class="bg-white dark:bg-[#1a112c] rounded-[24px] shadow-sm border border-red-200 dark:border-red-800/50 p-8 text-center">
     <span class="material-symbols-outlined text-4xl text-red-500 mb-2">error</span>
     <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-2">{{ errorMessage() }}</h3>
     <a [routerLink]="['/desejos']" class="text-sm font-semibold text-purple-600 dark:text-purple-400 hover:underline">
@@ -23,11 +24,13 @@
   } @else if (desejo()) {
 
   <!-- Main Details Card -->
-  <div class="bg-white dark:bg-[#1a112c] rounded-[24px] shadow-sm border border-slate-200/80 dark:border-slate-800/60 p-6 sm:p-8 mb-8 transition-colors">
+  <div
+    class="bg-white dark:bg-[#1a112c] rounded-[24px] shadow-sm border border-slate-200/80 dark:border-slate-800/60 p-6 sm:p-8 mb-8 transition-colors">
     <div class="flex flex-col lg:flex-row gap-8 items-start">
-      
+
       <!-- Product Image -->
-      <div class="w-full lg:w-72 sm:w-80 h-64 lg:h-72 shrink-0 rounded-2xl bg-slate-100 dark:bg-slate-800/80 overflow-hidden flex items-center justify-center border border-slate-200/80 dark:border-slate-700/80 relative group">
+      <div
+        class="w-full lg:w-72 sm:w-80 h-64 lg:h-72 shrink-0 rounded-2xl bg-slate-100 dark:bg-slate-800/80 overflow-hidden flex items-center justify-center border border-slate-200/80 dark:border-slate-700/80 relative group">
         @if (desejo()?.imagemUrl) {
         <img [src]="desejo()?.imagemUrl" [alt]="desejo()?.nome" class="w-full h-full object-contain p-2" />
         } @else {
@@ -45,10 +48,22 @@
         <div>
           <!-- Badges and Actions Row -->
           <div class="flex items-center justify-between gap-3 mb-3 flex-wrap">
-            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800/40 flex items-center gap-1.5">
-              <span class="material-symbols-outlined text-[15px]">{{ categoriaIcons[desejo()!.categoria] }}</span>
-              {{ desejo()?.categoria }}
-            </span>
+            <div class="flex items-center gap-2 flex-wrap">
+              <span
+                class="px-3 py-1 rounded-full text-xs font-semibold bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800/40 flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[15px]">{{ categoriaIcons[desejo()!.categoria] }}</span>
+                {{ desejo()?.categoria }}
+              </span>
+
+              @if (desejo()?.criadoEm) {
+              <span
+                class="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/60 flex items-center gap-1.5"
+                [title]="'Cadastrado em ' + formatarDataHora(desejo()?.criadoEm)">
+                <span class="material-symbols-outlined text-[15px]">calendar_today</span>
+                Cadastrado em {{ formatarData(desejo()?.criadoEm) }}
+              </span>
+              }
+            </div>
 
             <div class="flex items-center gap-2">
               <button type="button" (click)="openEditDesejoModal()"
@@ -77,15 +92,18 @@
 
         <!-- Summary metrics bar inside card -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6 pt-6 border-t border-slate-100 dark:border-slate-800">
-          
+
           <!-- Menor Preço -->
-          <div class="p-4 rounded-2xl bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200/80 dark:border-emerald-800/40 flex flex-col justify-between">
+          <div
+            class="p-4 rounded-2xl bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200/80 dark:border-emerald-800/40 flex flex-col justify-between">
             <div class="flex items-center justify-between mb-1">
-              <span class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider flex items-center gap-1">
+              <span
+                class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider flex items-center gap-1">
                 <span class="material-symbols-outlined text-sm">trending_down</span>
                 Menor valor
               </span>
-              <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-200/70 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 font-bold">
+              <span
+                class="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-200/70 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 font-bold">
                 Melhor oferta
               </span>
             </div>
@@ -95,8 +113,10 @@
           </div>
 
           <!-- Maior Preço -->
-          <div class="p-4 rounded-2xl bg-slate-50 dark:bg-[#130c25] border border-slate-200/80 dark:border-slate-800/80 flex flex-col justify-between">
-            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1 mb-1">
+          <div
+            class="p-4 rounded-2xl bg-slate-50 dark:bg-[#130c25] border border-slate-200/80 dark:border-slate-800/80 flex flex-col justify-between">
+            <span
+              class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1 mb-1">
               <span class="material-symbols-outlined text-sm">trending_up</span>
               Maior valor
             </span>
@@ -106,8 +126,10 @@
           </div>
 
           <!-- Economia Potencial -->
-          <div class="p-4 rounded-2xl bg-purple-50/80 dark:bg-purple-950/30 border border-purple-200/80 dark:border-purple-800/40 flex flex-col justify-between">
-            <span class="text-xs font-semibold text-purple-700 dark:text-purple-300 uppercase tracking-wider flex items-center gap-1 mb-1">
+          <div
+            class="p-4 rounded-2xl bg-purple-50/80 dark:bg-purple-950/30 border border-purple-200/80 dark:border-purple-800/40 flex flex-col justify-between">
+            <span
+              class="text-xs font-semibold text-purple-700 dark:text-purple-300 uppercase tracking-wider flex items-center gap-1 mb-1">
               <span class="material-symbols-outlined text-sm">savings</span>
               Economia máxima
             </span>
@@ -129,13 +151,15 @@
   </div>
 
   <!-- Links / Onde Encontrar Section -->
-  <div class="bg-white dark:bg-[#1a112c] rounded-[24px] shadow-sm border border-slate-200/80 dark:border-slate-800/60 p-6 sm:p-8 transition-colors">
+  <div
+    class="bg-white dark:bg-[#1a112c] rounded-[24px] shadow-sm border border-slate-200/80 dark:border-slate-800/60 p-6 sm:p-8 transition-colors">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
       <div>
         <h3 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
           <span class="material-symbols-outlined text-purple-600 dark:text-purple-400">storefront</span>
           Onde encontrar
-          <span class="text-xs px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold">
+          <span
+            class="text-xs px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold">
             {{ linksOrdenados().length }} {{ linksOrdenados().length === 1 ? 'loja' : 'lojas' }}
           </span>
         </h3>
@@ -159,7 +183,8 @@
         Nenhum link ou loja cadastrada ainda
       </h4>
       <p class="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto mb-5">
-        Adicione os links dos sites e lojas onde você encontrou esse produto com seus respectivos valores para comparar e achar a melhor oferta.
+        Adicione os links dos sites e lojas onde você encontrou esse produto com seus respectivos valores para comparar
+        e achar a melhor oferta.
       </p>
       <button type="button" (click)="openAddLinkModal()"
         class="inline-flex items-center gap-2 bg-[#321764] hover:bg-[#25104d] text-white py-2 px-4 rounded-xl text-xs font-semibold shadow-sm transition-all cursor-pointer">
@@ -177,11 +202,10 @@
         [ngClass]="link.preco === menorPreco()
           ? 'bg-emerald-50/40 dark:bg-emerald-950/20 border-emerald-300/70 dark:border-emerald-700/50 shadow-xs'
           : 'bg-slate-50/70 dark:bg-[#130c25] border-slate-200/80 dark:border-slate-800/80'">
-        
+
         <!-- Left details -->
         <div class="flex items-start gap-3.5 min-w-0 flex-1">
-          <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-            [ngClass]="link.preco === menorPreco()
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" [ngClass]="link.preco === menorPreco()
               ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/60 dark:text-emerald-300'
               : 'bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400'">
             <span class="material-symbols-outlined text-xl">shopping_cart</span>
@@ -194,7 +218,8 @@
               </h4>
 
               @if (link.preco === menorPreco() && linksOrdenados().length > 1) {
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500 text-white uppercase tracking-wider">
+              <span
+                class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500 text-white uppercase tracking-wider">
                 Menor preço
               </span>
               }
@@ -207,17 +232,28 @@
               <span class="material-symbols-outlined text-[14px] shrink-0">open_in_new</span>
             </a>
 
-            @if (link.observacao) {
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1">
-              <span class="material-symbols-outlined text-[14px]">info</span>
-              {{ link.observacao }}
-            </p>
-            }
+            <!-- Linha de Metadados: Data de Cadastro e Observações -->
+            <div class="flex items-center gap-3 mt-1.5 flex-wrap text-xs text-slate-500 dark:text-slate-400">
+              @if (link.criadoEm) {
+              <span class="inline-flex items-center gap-1" [title]="'Cadastrado em ' + formatarDataHora(link.criadoEm)">
+                <span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                Cadastrado em {{ formatarData(link.criadoEm) }}
+              </span>
+              }
+
+              @if (link.observacao) {
+              <span class="inline-flex items-center gap-1">
+                <span class="material-symbols-outlined text-[14px]">info</span>
+                {{ link.observacao }}
+              </span>
+              }
+            </div>
           </div>
         </div>
 
         <!-- Right: Price and Actions -->
-        <div class="flex items-center justify-between sm:justify-end gap-4 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-200/60 dark:border-slate-800/60">
+        <div
+          class="flex items-center justify-between sm:justify-end gap-4 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-200/60 dark:border-slate-800/60">
           <div class="text-right">
             <span class="text-[10px] uppercase font-semibold text-slate-400 dark:text-slate-500 block">
               Preço nesta loja
@@ -255,10 +291,12 @@
 
   <!-- Modal: Adicionar / Editar Link da Loja -->
   @if (isLinkModalOpen()) {
-  <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
     <div class="absolute inset-0" (click)="closeLinkModal()"></div>
 
-    <div class="relative bg-white dark:bg-[#1a112c] rounded-[24px] shadow-2xl border border-slate-200/80 dark:border-slate-800/80 max-w-md w-full p-6 sm:p-7 z-10 animate-in zoom-in-95 duration-200">
+    <div
+      class="relative bg-white dark:bg-[#1a112c] rounded-[24px] shadow-2xl border border-slate-200/80 dark:border-slate-800/80 max-w-md w-full p-6 sm:p-7 z-10 animate-in zoom-in-95 duration-200">
       <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-100 dark:border-slate-800">
         <h3 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
           <span class="material-symbols-outlined text-purple-600 dark:text-purple-400">
@@ -278,8 +316,7 @@
           <label for="modal-link-url" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
             Link / URL do produto <span class="text-red-500">*</span>
           </label>
-          <input id="modal-link-url" type="url" formControlName="url"
-            placeholder="https://www.amazon.com.br/dp/..."
+          <input id="modal-link-url" type="url" formControlName="url" placeholder="https://www.amazon.com.br/dp/..."
             class="w-full px-4 py-2.5 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all text-sm" />
           @if (formLink.get('url')?.touched && formLink.get('url')?.invalid) {
           <div class="text-red-500 text-xs mt-1 font-medium">Insira um link válido do produto.</div>
@@ -338,10 +375,12 @@
 
   <!-- Modal: Editar Dados do Desejo -->
   @if (isEditDesejoModalOpen()) {
-  <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
     <div class="absolute inset-0" (click)="closeEditDesejoModal()"></div>
 
-    <div class="relative bg-white dark:bg-[#1a112c] rounded-[24px] shadow-2xl border border-slate-200/80 dark:border-slate-800/80 max-w-lg w-full p-6 sm:p-7 z-10 animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
+    <div
+      class="relative bg-white dark:bg-[#1a112c] rounded-[24px] shadow-2xl border border-slate-200/80 dark:border-slate-800/80 max-w-lg w-full p-6 sm:p-7 z-10 animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
       <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-100 dark:border-slate-800">
         <h3 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
           <span class="material-symbols-outlined text-purple-600 dark:text-purple-400">edit_note</span>
@@ -365,7 +404,8 @@
 
         <!-- Categoria -->
         <div>
-          <label for="modal-edit-categoria" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+          <label for="modal-edit-categoria"
+            class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
             Categoria <span class="text-red-500">*</span>
           </label>
           <select id="modal-edit-categoria" formControlName="categoria"
@@ -378,7 +418,8 @@
 
         <!-- Descrição -->
         <div>
-          <label for="modal-edit-descricao" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+          <label for="modal-edit-descricao"
+            class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
             Descrição
           </label>
           <textarea id="modal-edit-descricao" formControlName="descricao" rows="3"
@@ -391,7 +432,8 @@
             Foto do produto
           </label>
           @if (previewUrl()) {
-          <div class="relative w-full h-32 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 mb-2 bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+          <div
+            class="relative w-full h-32 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 mb-2 bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
             <img [src]="previewUrl()" alt="Preview da imagem" class="w-full h-full object-contain" />
             <button type="button" (click)="previewUrl.set(null); selectedFile.set(null)"
               class="absolute top-2 right-2 bg-red-600 text-white rounded-lg p-1.5 shadow-md hover:bg-red-700 transition-colors">
@@ -399,7 +441,8 @@
             </button>
           </div>
           }
-          <label class="cursor-pointer inline-flex items-center gap-2 px-3.5 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold transition-colors border border-slate-200 dark:border-slate-700">
+          <label
+            class="cursor-pointer inline-flex items-center gap-2 px-3.5 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold transition-colors border border-slate-200 dark:border-slate-700">
             <span class="material-symbols-outlined text-base">upload_file</span>
             {{ previewUrl() ? 'Trocar foto' : 'Enviar foto' }}
             <input type="file" accept="image/*" (change)="onFileSelected($event)" class="hidden" />

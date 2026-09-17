@@ -17,7 +17,7 @@ import {
   DESEJO_CATEGORIA_ICONS
 } from '../../core/models/desejo.model';
 import { NavigationHistoryService } from '../../core/services/navigation-history.service';
-import { formatarMoeda } from '../../core/utils/formatacao.utils';
+import { formatarMoeda, formatarData } from '../../core/utils/formatacao.utils';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
@@ -35,6 +35,7 @@ export class DesejosComponent implements OnInit {
 
   readonly categorias: DesejoCategoria[] = DESEJO_CATEGORIAS;
   readonly categoriaIcons = DESEJO_CATEGORIA_ICONS;
+  readonly formatarData = formatarData;
 
   desejos = signal<Desejo[]>([]);
   isLoading = signal<boolean>(true);

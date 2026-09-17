@@ -18,7 +18,12 @@ import {
   DESEJO_CATEGORIA_ICONS
 } from '../../../core/models/desejo.model';
 import { NavigationHistoryService } from '../../../core/services/navigation-history.service';
-import { formatarMoeda, parseFloatValor } from '../../../core/utils/formatacao.utils';
+import {
+  formatarMoeda,
+  parseFloatValor,
+  formatarData,
+  formatarDataHora
+} from '../../../core/utils/formatacao.utils';
 import { NgxCurrencyDirective } from 'ngx-currency';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
@@ -44,6 +49,8 @@ export class DesejoDetalheComponent implements OnInit {
 
   readonly categorias = DESEJO_CATEGORIAS;
   readonly categoriaIcons = DESEJO_CATEGORIA_ICONS;
+  readonly formatarData = formatarData;
+  readonly formatarDataHora = formatarDataHora;
 
   desejoId = signal<string | null>(null);
   desejo = signal<Desejo | null>(null);

@@ -17,9 +17,10 @@ describe('DesejoDetalheComponent', () => {
     categoria: 'Vídeo game',
     menorPreco: 3200,
     maiorPreco: 3900,
+    criadoEm: '2026-09-17T12:00:00.000Z',
     links: [
-      { id: 'l1', url: 'https://www.amazon.com.br/dp/B000', loja: 'Amazon', preco: 3500 },
-      { id: 'l2', url: 'https://www.kabum.com.br/produto/123', loja: 'KaBuM!', preco: 3200 },
+      { id: 'l1', url: 'https://www.amazon.com.br/dp/B000', loja: 'Amazon', preco: 3500, criadoEm: '2026-09-17T12:30:00.000Z' },
+      { id: 'l2', url: 'https://www.kabum.com.br/produto/123', loja: 'KaBuM!', preco: 3200, criadoEm: '2026-09-17T13:00:00.000Z' },
       { id: 'l3', url: 'https://www.mercadolivre.com.br/p/456', loja: 'Mercado Livre', preco: 3900 }
     ]
   };
@@ -97,5 +98,17 @@ describe('DesejoDetalheComponent', () => {
 
     component.closeLinkModal();
     expect(component.isLinkModalOpen()).toBe(false);
+  });
+
+  it('deve formatar data de cadastro do produto e dos links', async () => {
+    await component.loadDesejo('desejo-123');
+    fixture.detectChanges();
+
+    expect(component.formatarData(component.desejo()?.criadoEm)).toBe('17/09/2026');
+    const links = component.linksOrdenados();
+    expect(component.formatarData(links[0].criadoEm)).toBe('17/09/2026');
+
+    const nativeEl = fixture.nativeElement as HTMLElement;
+    expect(nativeEl.textContent).toContain('Cadastrado em 17/09/2026');
   });
 });
