@@ -1,3 +1,10 @@
+# [1.31.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.30.0...v1.31.0) (2026-09-25)
+
+
+### Features
+
+* add main layout component and user profile feature ([f35fc58](https://github.com/coelhoadler/meu-cofrin/commit/f35fc5863b33d0b839412c1340478d9ae1522a73))
+
 # [1.30.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.29.0...v1.30.0) (2026-09-17)
 
 
