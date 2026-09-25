@@ -15,7 +15,6 @@ import { Subscription } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { SessionService } from '../auth/session.service';
 import { ContaService } from '../services/conta.service';
-import { ThemeService } from '../services/theme.service';
 import { TourService } from '../services/tour.service';
 import { LayoutService } from '../services/layout.service';
 import { NavigationHistoryService } from '../services/navigation-history.service';
@@ -28,7 +27,6 @@ import { NavigationHistoryService } from '../services/navigation-history.service
   templateUrl: './main-layout.component.html',
 })
 export class MainLayoutComponent implements OnDestroy {
-  public themeService = inject(ThemeService);
   public router = inject(Router);
   public sessionService = inject(SessionService);
   public layoutService = inject(LayoutService);

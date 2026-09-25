@@ -119,6 +119,14 @@
         <span class="text-sm truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">Tour</span>
       </button>
       }
+
+      <button (click)="logout(); isSidebarOpen.set(false)"
+        class="w-full flex items-center py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors gap-3 px-3"
+        [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center md:mx-1 md:gap-0 md:px-0' : ''"
+        title="Sair">
+        <span class="material-symbols-outlined text-xl">logout</span>
+        <span class="text-sm truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">Sair</span>
+      </button>
     </nav>
 
     <!-- Sidebar Footer -->
@@ -168,25 +176,6 @@
             </div>
           </div>
         </div>
-      </div>
-      <div class="flex items-center w-full gap-2" [ngClass]="isDesktopSidebarCollapsed() ? 'md:flex-col' : ''">
-        <button (click)="themeService.toggleTheme()"
-          class="flex items-center justify-center py-2 text-sm text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors bg-white/5 flex-1 px-3 gap-2"
-          [ngClass]="isDesktopSidebarCollapsed() ? 'md:w-full md:flex-none md:px-0 md:gap-0' : ''"
-          [title]="themeService.currentTheme() === 'dark' ? 'Tema claro' : 'Tema escuro'">
-          <span class="material-symbols-outlined text-xl">{{
-            themeService.currentTheme() === 'dark' ? 'light_mode' : 'dark_mode'
-            }}</span>
-          <span class="truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">{{
-            themeService.currentTheme() === 'dark' ? 'Tema claro' : 'Tema escuro'
-            }}</span>
-        </button>
-        <button (click)="logout()"
-          class="flex items-center justify-center py-2 text-sm text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors flex-1 px-3 gap-2"
-          [ngClass]="isDesktopSidebarCollapsed() ? 'md:w-full md:flex-none md:px-0 md:gap-0' : ''" title="Sair">
-          <span class="material-symbols-outlined text-xl">logout</span>
-          <span [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">Sair</span>
-        </button>
       </div>
     </div>
   </aside>
