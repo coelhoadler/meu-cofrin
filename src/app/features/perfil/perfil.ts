@@ -14,6 +14,7 @@ import { PerfilFotoComponent } from './components/perfil-foto/perfil-foto.compon
 import { PerfilDadosComponent } from './components/perfil-dados/perfil-dados.component';
 import { PerfilNotificacoesComponent } from './components/perfil-notificacoes/perfil-notificacoes.component';
 import { PerfilSegurancaComponent } from './components/perfil-seguranca/perfil-seguranca.component';
+import { PerfilAparenciaComponent } from './components/perfil-aparencia/perfil-aparencia.component';
 import { DeletarContaModalComponent } from './components/deletar-conta-modal/deletar-conta-modal.component';
 
 @Component({
@@ -26,6 +27,7 @@ import { DeletarContaModalComponent } from './components/deletar-conta-modal/del
     PerfilDadosComponent,
     PerfilNotificacoesComponent,
     PerfilSegurancaComponent,
+    PerfilAparenciaComponent,
     DeletarContaModalComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
