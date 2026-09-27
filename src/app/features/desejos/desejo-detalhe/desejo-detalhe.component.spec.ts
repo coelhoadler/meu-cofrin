@@ -109,6 +109,6 @@ describe('DesejoDetalheComponent', () => {
     expect(component.formatarData(links[0].criadoEm)).toBe('17/09/2026');
 
     const nativeEl = fixture.nativeElement as HTMLElement;
-    expect(nativeEl.textContent).toContain('Cadastrado em 17/09/2026');
+    expect(nativeEl.textContent).toContain('Criado em 17/09/2026');
   });
 });

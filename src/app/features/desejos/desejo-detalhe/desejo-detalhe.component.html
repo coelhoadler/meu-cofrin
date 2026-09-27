@@ -58,9 +58,9 @@
               @if (desejo()?.criadoEm) {
               <span
                 class="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/60 flex items-center gap-1.5"
-                [title]="'Cadastrado em ' + formatarDataHora(desejo()?.criadoEm)">
+                [title]="'Criado em ' + formatarDataHora(desejo()?.criadoEm)">
                 <span class="material-symbols-outlined text-[15px]">calendar_today</span>
-                Cadastrado em {{ formatarData(desejo()?.criadoEm) }}
+                Criado em {{ formatarData(desejo()?.criadoEm) }}
               </span>
               }
             </div>
@@ -103,7 +103,7 @@
                 Menor valor
               </span>
               <span
-                class="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-200/70 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 font-bold">
+                class="text-center text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-200/70 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 font-bold">
                 Melhor oferta
               </span>
             </div>
@@ -171,7 +171,7 @@
       <button type="button" (click)="openAddLinkModal()"
         class="inline-flex items-center justify-center gap-2 bg-[#321764] hover:bg-[#25104d] text-white py-2.5 px-4 rounded-xl text-sm font-semibold shadow-sm transition-all self-start sm:self-auto cursor-pointer">
         <span class="material-symbols-outlined text-lg">add_link</span>
-        Adicionar loja / link
+        Adicionar link
       </button>
     </div>
 
@@ -219,7 +219,7 @@
 
               @if (link.preco === menorPreco() && linksOrdenados().length > 1) {
               <span
-                class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500 text-white uppercase tracking-wider">
+                class="text-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500 text-white uppercase tracking-wider">
                 Menor preço
               </span>
               }
@@ -235,9 +235,9 @@
             <!-- Linha de Metadados: Data de Cadastro e Observações -->
             <div class="flex items-center gap-3 mt-1.5 flex-wrap text-xs text-slate-500 dark:text-slate-400">
               @if (link.criadoEm) {
-              <span class="inline-flex items-center gap-1" [title]="'Cadastrado em ' + formatarDataHora(link.criadoEm)">
+              <span class="inline-flex items-center gap-1" [title]="'Criado em ' + formatarDataHora(link.criadoEm)">
                 <span class="material-symbols-outlined text-[14px]">calendar_today</span>
-                Cadastrado em {{ formatarData(link.criadoEm) }}
+                Criado em {{ formatarData(link.criadoEm) }}
               </span>
               }
 
@@ -316,7 +316,8 @@
           <label for="modal-link-url" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
             Link / URL do produto <span class="text-red-500">*</span>
           </label>
-          <input #linkUrlInput id="modal-link-url" type="url" formControlName="url" placeholder="https://www.amazon.com.br/dp/..."
+          <input #linkUrlInput id="modal-link-url" type="url" formControlName="url"
+            placeholder="https://www.amazon.com.br/dp/..."
             class="w-full px-4 py-2.5 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all text-sm" />
           @if (formLink.get('url')?.touched && formLink.get('url')?.invalid) {
           <div class="text-red-500 text-xs mt-1 font-medium">Insira um link válido do produto.</div>
