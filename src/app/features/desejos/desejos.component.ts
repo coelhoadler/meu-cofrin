@@ -4,7 +4,9 @@ import {
   signal,
   computed,
   OnInit,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  ViewChild,
+  ElementRef
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -59,6 +61,8 @@ export class DesejosComponent implements OnInit {
   previewUrl = signal<string | null>(null);
   currentImageUrl = signal<string | null>(null);
   currentImagePath = signal<string | null>(null);
+
+  @ViewChild('desejoNomeInput') desejoNomeInput!: ElementRef<HTMLInputElement>;
 
   desejoForm = this.fb.group({
     nome: ['', [Validators.required, Validators.maxLength(100)]],
@@ -125,6 +129,7 @@ export class DesejosComponent implements OnInit {
       descricao: ''
     });
     this.isModalOpen.set(true);
+    this.focusNomeInput();
   }
 
   openEditModal(desejo: Desejo, event?: Event): void {
@@ -146,6 +151,7 @@ export class DesejosComponent implements OnInit {
     });
 
     this.isModalOpen.set(true);
+    this.focusNomeInput();
   }
 
   closeModal(): void {
@@ -158,6 +164,12 @@ export class DesejosComponent implements OnInit {
     this.currentImagePath.set(null);
     this.errorMessage.set(null);
     this.desejoForm.reset();
+  }
+
+  private focusNomeInput(): void {
+    setTimeout(() => {
+      this.desejoNomeInput?.nativeElement?.focus();
+    });
   }
 
   onFileSelected(event: any): void {

@@ -4,7 +4,9 @@ import {
   inject,
   signal,
   computed,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  ViewChild,
+  ElementRef
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -66,6 +68,7 @@ export class DesejoDetalheComponent implements OnInit {
   isEditLinkMode = signal<boolean>(false);
   editingLinkId = signal<string | null>(null);
   formLink!: FormGroup;
+  @ViewChild('linkUrlInput') linkUrlInput!: ElementRef<HTMLInputElement>;
 
   // Modal de Edição dos dados do Desejo
   isEditDesejoModalOpen = signal<boolean>(false);
@@ -194,6 +197,7 @@ export class DesejoDetalheComponent implements OnInit {
       observacao: ''
     });
     this.isLinkModalOpen.set(true);
+    this.focusLinkUrlInput();
   }
 
   openEditLinkModal(link: DesejoLink): void {
@@ -206,6 +210,7 @@ export class DesejoDetalheComponent implements OnInit {
       observacao: link.observacao || ''
     });
     this.isLinkModalOpen.set(true);
+    this.focusLinkUrlInput();
   }
 
   closeLinkModal(): void {
@@ -213,6 +218,12 @@ export class DesejoDetalheComponent implements OnInit {
     this.isEditLinkMode.set(false);
     this.editingLinkId.set(null);
     this.formLink.reset();
+  }
+
+  private focusLinkUrlInput(): void {
+    setTimeout(() => {
+      this.linkUrlInput?.nativeElement?.focus();
+    });
   }
 
   async onSaveLink(): Promise<void> {
