@@ -377,7 +377,6 @@ export class DesejoDetalheComponent implements OnInit {
   }
 
   formatMoedaDisplay(valor: number | null | undefined): string {
-    if (!this.showValues()) return 'R$ •••••';
     if (valor == null) return 'R$ 0,00';
     return formatarMoeda(valor);
   }
