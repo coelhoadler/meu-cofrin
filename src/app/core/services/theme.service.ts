@@ -9,14 +9,12 @@ export type Theme = 'light' | 'dark';
 export class ThemeService {
   private platformId = inject(PLATFORM_ID);
   
-  // O tema atual é armazenado num signal para os componentes reagirem se necessário
-  public currentTheme = signal<Theme>('light');
+  // O tema atual é armazenado num signal para os componentes reagirem se necessário.
+  // Inicializa diretamente com o valor do localStorage para evitar que o effect
+  // sobrescreva o tema salvo com o valor padrão 'light' durante a hydration.
+  public currentTheme = signal<Theme>(this.getInitialTheme());
 
   constructor() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.initTheme();
-    }
-
     // Effect para atualizar o localStorage e o DOM sempre que o signal mudar
     effect(() => {
       const theme = this.currentTheme();
@@ -32,16 +30,24 @@ export class ThemeService {
     });
   }
 
-  private initTheme() {
+  /**
+   * Lê o tema salvo no localStorage de forma síncrona para usar
+   * como valor inicial do signal, antes de qualquer effect rodar.
+   */
+  private getInitialTheme(): Theme {
+    if (!isPlatformBrowser(this.platformId)) {
+      return 'light';
+    }
+
     const savedTheme = localStorage.getItem('theme') as Theme | null;
     
     if (savedTheme === 'light' || savedTheme === 'dark') {
-      this.currentTheme.set(savedTheme);
-    } else {
-      // Verifica a preferência do sistema, se desejar. Mas o padrão será claro.
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      this.currentTheme.set(prefersDark ? 'dark' : 'light');
+      return savedTheme;
     }
+
+    // Verifica a preferência do sistema. Mas o padrão será claro.
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return prefersDark ? 'dark' : 'light';
   }
 
   public toggleTheme() {
