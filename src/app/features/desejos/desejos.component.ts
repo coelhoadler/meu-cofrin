@@ -4,7 +4,9 @@ import {
   signal,
   computed,
   OnInit,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  ViewChild,
+  ElementRef
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -60,6 +62,8 @@ export class DesejosComponent implements OnInit {
   currentImageUrl = signal<string | null>(null);
   currentImagePath = signal<string | null>(null);
 
+  @ViewChild('desejoNomeInput') desejoNomeInput!: ElementRef<HTMLInputElement>;
+
   desejoForm = this.fb.group({
     nome: ['', [Validators.required, Validators.maxLength(100)]],
     categoria: ['Eletrônico' as DesejoCategoria, [Validators.required]],
@@ -84,6 +88,30 @@ export class DesejosComponent implements OnInit {
 
   totalDesejos = computed(() => this.desejos().length);
   totalFiltrados = computed(() => this.desejosFiltrados().length);
+
+  // Totalizadores (reagem aos filtros de categoria e texto)
+  totalMenorPreco = computed(() => {
+    return this.desejosFiltrados().reduce((sum, d) => sum + (d.menorPreco ?? 0), 0);
+  });
+
+  totalMaiorPreco = computed(() => {
+    return this.desejosFiltrados().reduce((sum, d) => sum + (d.maiorPreco ?? 0), 0);
+  });
+
+  economiaTotal = computed(() => {
+    const maior = this.totalMaiorPreco();
+    const menor = this.totalMenorPreco();
+    if (maior > 0 && menor > 0 && maior > menor) {
+      const valor = maior - menor;
+      const percentual = Math.round((valor / maior) * 100);
+      return { valor, percentual };
+    }
+    return null;
+  });
+
+  desejosComPreco = computed(() => {
+    return this.desejosFiltrados().filter(d => d.menorPreco != null).length;
+  });
 
   ngOnInit(): void {
     this.loadDesejos();
@@ -125,6 +153,7 @@ export class DesejosComponent implements OnInit {
       descricao: ''
     });
     this.isModalOpen.set(true);
+    this.focusNomeInput();
   }
 
   openEditModal(desejo: Desejo, event?: Event): void {
@@ -146,6 +175,7 @@ export class DesejosComponent implements OnInit {
     });
 
     this.isModalOpen.set(true);
+    this.focusNomeInput();
   }
 
   closeModal(): void {
@@ -158,6 +188,12 @@ export class DesejosComponent implements OnInit {
     this.currentImagePath.set(null);
     this.errorMessage.set(null);
     this.desejoForm.reset();
+  }
+
+  private focusNomeInput(): void {
+    setTimeout(() => {
+      this.desejoNomeInput?.nativeElement?.focus();
+    });
   }
 
   onFileSelected(event: any): void {
@@ -265,5 +301,11 @@ export class DesejosComponent implements OnInit {
     }
 
     return `${formatarMoeda(desejo.menorPreco)} - ${formatarMoeda(desejo.maiorPreco)}`;
+  }
+
+  formatMoedaDisplay(valor: number | null | undefined): string {
+    if (!this.showValues()) return 'R$ •••••';
+    if (valor == null || valor === 0) return 'R$ 0,00';
+    return formatarMoeda(valor);
   }
 }

@@ -242,6 +242,86 @@
 
   }
 
+  <!-- Totalizador de Preços -->
+  @if (desejosComPreco() > 0) {
+  <div
+    class="bg-white dark:bg-[#1a112c] rounded-[24px] shadow-sm border border-slate-200/80 dark:border-slate-800/60 p-6 sm:p-8 mt-8 transition-colors">
+    <div class="flex items-center gap-2 mb-5">
+      <span class="material-symbols-outlined text-purple-600 dark:text-purple-400">analytics</span>
+      <h3 class="text-lg font-bold text-slate-900 dark:text-white tracking-tight">
+        Resumo dos seus desejos
+      </h3>
+      <span
+        class="text-xs px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold">
+        {{ desejosComPreco() }} {{ desejosComPreco() === 1 ? 'produto com preço' : 'produtos com preços' }}
+      </span>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+      <!-- Total Menores Preços -->
+      <div
+        class="p-4 rounded-2xl bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200/80 dark:border-emerald-800/40 flex flex-col justify-between">
+        <div class="flex items-center gap-1 mb-1">
+          <span
+            class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm">trending_down</span>
+            Soma dos menores preços
+          </span>
+        </div>
+        <div class="text-xl sm:text-2xl font-black text-emerald-700 dark:text-emerald-300">
+          {{ formatMoedaDisplay(totalMenorPreco()) }}
+        </div>
+        <span class="text-[11px] text-emerald-600/70 dark:text-emerald-400/60 mt-1">
+          Se comprar tudo pelo menor preço encontrado
+        </span>
+      </div>
+
+      <!-- Total Maiores Preços -->
+      <div
+        class="p-4 rounded-2xl bg-slate-50 dark:bg-[#130c25] border border-slate-200/80 dark:border-slate-800/80 flex flex-col justify-between">
+        <div class="flex items-center gap-1 mb-1">
+          <span
+            class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm">trending_up</span>
+            Soma dos maiores preços
+          </span>
+        </div>
+        <div class="text-xl sm:text-2xl font-black text-slate-800 dark:text-slate-200">
+          {{ formatMoedaDisplay(totalMaiorPreco()) }}
+        </div>
+        <span class="text-[11px] text-slate-500/70 dark:text-slate-400/60 mt-1">
+          Se comprar tudo pelo maior preço encontrado
+        </span>
+      </div>
+
+      <!-- Economia Potencial -->
+      <div
+        class="p-4 rounded-2xl bg-purple-50/80 dark:bg-purple-950/30 border border-purple-200/80 dark:border-purple-800/40 flex flex-col justify-between">
+        <div class="flex items-center gap-1 mb-1">
+          <span
+            class="text-xs font-semibold text-purple-700 dark:text-purple-300 uppercase tracking-wider flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm">savings</span>
+            Economia potencial
+          </span>
+        </div>
+        <div class="text-xl sm:text-2xl font-black text-purple-700 dark:text-purple-300">
+          @if (economiaTotal(); as econ) {
+          {{ formatMoedaDisplay(econ.valor) }}
+          <span class="text-xs font-medium text-purple-600 dark:text-purple-400">({{ econ.percentual }}%)</span>
+          } @else {
+          <span class="text-sm font-medium text-slate-400 dark:text-slate-500">-</span>
+          }
+        </div>
+        <span class="text-[11px] text-purple-600/70 dark:text-purple-400/60 mt-1">
+          Diferença entre os maiores e menores preços
+        </span>
+      </div>
+
+    </div>
+  </div>
+  }
+
   <!-- Modal Dialog: Novo / Editar Desejo -->
   @if (isModalOpen()) {
   <div
@@ -271,7 +351,7 @@
           <label for="modal-desejo-nome" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
             Nome do produto <span class="text-red-500">*</span>
           </label>
-          <input id="modal-desejo-nome" type="text" formControlName="nome"
+          <input #desejoNomeInput id="modal-desejo-nome" type="text" formControlName="nome"
             placeholder="Ex: PlayStation 5, Cafeteira Nespresso, iPhone 16..."
             class="w-full px-4 py-2.5 bg-white dark:bg-[#130c25] border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all text-sm" />
           @if (desejoForm.get('nome')?.touched && desejoForm.get('nome')?.invalid) {

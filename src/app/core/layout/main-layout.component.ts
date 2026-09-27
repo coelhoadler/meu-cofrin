@@ -18,6 +18,7 @@ import { ContaService } from '../services/conta.service';
 import { TourService } from '../services/tour.service';
 import { LayoutService } from '../services/layout.service';
 import { NavigationHistoryService } from '../services/navigation-history.service';
+import { ThemeService } from '../services/theme.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -34,6 +35,7 @@ export class MainLayoutComponent implements OnDestroy {
   private authService = inject(AuthService);
   private contaService = inject(ContaService);
   private tourService = inject(TourService);
+  private themeService = inject(ThemeService);
 
   @ViewChild('mainContent') mainContent?: ElementRef<HTMLElement>;
 
