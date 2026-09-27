@@ -1,3 +1,11 @@
+# [1.33.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.32.0...v1.33.0) (2026-09-27)
+
+
+### Features
+
+* add desejos feature components and tests ([967951c](https://github.com/coelhoadler/meu-cofrin/commit/967951c631edd126676c74230baca397df7c4635))
+* add UI templates and unit tests for desejos components ([a5dfe2b](https://github.com/coelhoadler/meu-cofrin/commit/a5dfe2bf2e736505f7ce045d200bd234915954ff))
+
 # [1.32.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.31.0...v1.32.0) (2026-09-27)
 
 
