@@ -1,3 +1,12 @@
+# [1.32.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.31.0...v1.32.0) (2026-09-27)
+
+
+### Features
+
+* add desejos and desejo-detalhe components for wishlist management ([979ef34](https://github.com/coelhoadler/meu-cofrin/commit/979ef343224fb6892a89f9407d5b5252ca3c76bd))
+* add desejos feature component for managing product wishlists ([0d8c56b](https://github.com/coelhoadler/meu-cofrin/commit/0d8c56b8a3eff7cf25676f05e2ec0916d10bbf24))
+* implement theme service and main layout component ([0c51baa](https://github.com/coelhoadler/meu-cofrin/commit/0c51baaa4ea8e30b86b42a1a098edb232a6bf74c))
+
 # [1.31.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.30.0...v1.31.0) (2026-09-25)
 
 
