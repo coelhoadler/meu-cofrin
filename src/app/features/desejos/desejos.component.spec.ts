@@ -120,9 +120,6 @@ describe('DesejosComponent', () => {
     expect(component.formatPrecoDisplay(d2)).not.toContain('-');
 
     expect(component.formatPrecoDisplay(d3)).toBe('Sem preços registrados');
-
-    component.showValues.set(false);
-    expect(component.formatPrecoDisplay(d1)).toBe('R$ •••••');
   });
 
   it('deve abrir e fechar o modal de novo desejo corretamente', () => {

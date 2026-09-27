@@ -288,10 +288,6 @@ export class DesejosComponent implements OnInit {
   }
 
   formatPrecoDisplay(desejo: Desejo): string {
-    if (!this.showValues()) {
-      return 'R$ •••••';
-    }
-
     if (desejo.menorPreco == null || desejo.maiorPreco == null) {
       return 'Sem preços registrados';
     }
@@ -304,7 +300,6 @@ export class DesejosComponent implements OnInit {
   }
 
   formatMoedaDisplay(valor: number | null | undefined): string {
-    if (!this.showValues()) return 'R$ •••••';
     if (valor == null || valor === 0) return 'R$ 0,00';
     return formatarMoeda(valor);
   }
