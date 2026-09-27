@@ -89,6 +89,30 @@ export class DesejosComponent implements OnInit {
   totalDesejos = computed(() => this.desejos().length);
   totalFiltrados = computed(() => this.desejosFiltrados().length);
 
+  // Totalizadores (reagem aos filtros de categoria e texto)
+  totalMenorPreco = computed(() => {
+    return this.desejosFiltrados().reduce((sum, d) => sum + (d.menorPreco ?? 0), 0);
+  });
+
+  totalMaiorPreco = computed(() => {
+    return this.desejosFiltrados().reduce((sum, d) => sum + (d.maiorPreco ?? 0), 0);
+  });
+
+  economiaTotal = computed(() => {
+    const maior = this.totalMaiorPreco();
+    const menor = this.totalMenorPreco();
+    if (maior > 0 && menor > 0 && maior > menor) {
+      const valor = maior - menor;
+      const percentual = Math.round((valor / maior) * 100);
+      return { valor, percentual };
+    }
+    return null;
+  });
+
+  desejosComPreco = computed(() => {
+    return this.desejosFiltrados().filter(d => d.menorPreco != null).length;
+  });
+
   ngOnInit(): void {
     this.loadDesejos();
   }
@@ -277,5 +301,11 @@ export class DesejosComponent implements OnInit {
     }
 
     return `${formatarMoeda(desejo.menorPreco)} - ${formatarMoeda(desejo.maiorPreco)}`;
+  }
+
+  formatMoedaDisplay(valor: number | null | undefined): string {
+    if (!this.showValues()) return 'R$ •••••';
+    if (valor == null || valor === 0) return 'R$ 0,00';
+    return formatarMoeda(valor);
   }
 }
