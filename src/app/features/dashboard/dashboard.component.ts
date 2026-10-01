@@ -435,7 +435,7 @@ export class DashboardComponent implements AfterViewInit {
     }
   }
 
-  public greetingUser(): string {
+  public greeting = computed(() => {
     const data = new Date();
     const hora = data.getHours();
     const userName = this.authService.currentUser()?.displayName?.split(' ')[0] || '';
@@ -447,7 +447,7 @@ export class DashboardComponent implements AfterViewInit {
     } else {
       return `Boa noite, ${userName}!`;
     }
-  }
+  });
 
   // --- REPLICAR MÊS LOGIC ---
   openReplicarModal() {
