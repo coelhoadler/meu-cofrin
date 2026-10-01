@@ -122,8 +122,7 @@
 
       <button (click)="logout(); isSidebarOpen.set(false)"
         class="w-full flex items-center py-2.5 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl font-medium transition-colors gap-3 px-3"
-        [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center md:mx-1 md:gap-0 md:px-0' : ''"
-        title="Sair">
+        [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center md:mx-1 md:gap-0 md:px-0' : ''" title="Sair">
         <span class="material-symbols-outlined text-xl">logout</span>
         <span class="text-sm truncate" [ngClass]="isDesktopSidebarCollapsed() ? 'md:hidden' : ''">Sair</span>
       </button>
@@ -196,7 +195,7 @@
         <span class="material-symbols-outlined text-2xl">menu</span>
       </button>
       <div class="flex items-center gap-2" [routerLink]="['/dashboard']">
-        <span class="font-bold text-slate-800 dark:text-white">{{ greetingUser() }}</span>
+        <span class="font-bold text-slate-800 dark:text-white">{{ greeting() }}</span>
       </div>
     </header>
 

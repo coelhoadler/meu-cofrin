@@ -122,7 +122,7 @@ export class MainLayoutComponent implements OnDestroy {
     this.handleSwipe();
   }
 
-  public greetingUser(): string {
+  public greeting = computed(() => {
     const data = new Date();
     const hora = data.getHours();
     const userName = this.authService.currentUser()?.displayName?.split(' ')[0] || '';
@@ -134,7 +134,7 @@ export class MainLayoutComponent implements OnDestroy {
     } else {
       return `Boa noite, ${userName}!`;
     }
-  }
+  });
 
   private handleSwipe() {
     const swipeDistance = this.touchEndX - this.touchStartX;
