@@ -1,3 +1,10 @@
+# [1.34.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.33.0...v1.34.0) (2026-10-01)
+
+
+### Features
+
+* add dashboard feature and main layout components ([67f5a63](https://github.com/coelhoadler/meu-cofrin/commit/67f5a63f43a93636684db4ba44fbdd216a335ab1))
+
 # [1.33.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.32.0...v1.33.0) (2026-09-27)
 
 
