@@ -36,6 +36,15 @@ export interface DesejoLink {
   criadoEm?: any;
 }
 
+export interface DesejoRealizacao {
+  valorPago: number;
+  descricao?: string;
+  /** Data/hora em que o desejo foi realizado (ISO string, informado pelo usuário). */
+  realizadoEm: string;
+  /** Data/hora em que o registro foi salvo (ISO string). */
+  registradoEm: string;
+}
+
 export interface Desejo {
   id?: string;
   nome: string;
@@ -46,6 +55,8 @@ export interface Desejo {
   links?: DesejoLink[];
   menorPreco?: number | null;
   maiorPreco?: number | null;
+  /** Presente quando o desejo foi realizado. */
+  realizacao?: DesejoRealizacao | null;
   criadoEm?: any;
   atualizadoEm?: any;
 }

@@ -31,7 +31,13 @@ describe('DesejosComponent', () => {
       maiorPreco: 4800,
       links: [
         { id: 'l3', url: 'https://mercadolivre.com.br', loja: 'Mercado Livre', preco: 4800 }
-      ]
+      ],
+      realizacao: {
+        valorPago: 4700,
+        descricao: 'Comprado com cupom',
+        realizadoEm: '2026-10-01T15:00:00.000Z',
+        registradoEm: '2026-10-01T15:05:00.000Z'
+      }
     },
     {
       id: '3',
@@ -104,6 +110,35 @@ describe('DesejosComponent', () => {
     expect(component.desejosFiltrados()[0].categoria).toBe('Casa');
 
     component.setCategoria('Todas');
+    expect(component.desejosFiltrados().length).toBe(3);
+  });
+
+  it('deve filtrar os produtos por status (pendentes / realizados)', async () => {
+    await component.loadDesejos();
+    expect(component.totalRealizados()).toBe(1);
+
+    component.setStatus('Realizados');
+    expect(component.desejosFiltrados().map(d => d.id)).toEqual(['2']);
+
+    component.setStatus('Pendentes');
+    expect(component.desejosFiltrados().map(d => d.id)).toEqual(['1', '3']);
+
+    component.setStatus('Todos');
+    expect(component.desejosFiltrados().length).toBe(3);
+  });
+
+  it('deve combinar filtro de status com categoria e limpar todos os filtros', async () => {
+    await component.loadDesejos();
+
+    component.setStatus('Realizados');
+    component.setCategoria('Casa');
+    expect(component.desejosFiltrados().length).toBe(0);
+    expect(component.hasFiltrosAtivos()).toBe(true);
+
+    component.limparFiltros();
+    expect(component.filtroStatus()).toBe('Todos');
+    expect(component.filtroCategoria()).toBe('Todas');
+    expect(component.hasFiltrosAtivos()).toBe(false);
     expect(component.desejosFiltrados().length).toBe(3);
   });
 

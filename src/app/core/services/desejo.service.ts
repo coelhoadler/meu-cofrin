@@ -10,11 +10,12 @@ import {
   doc,
   deleteDoc,
   getDoc,
-  updateDoc
+  updateDoc,
+  deleteField
 } from '@angular/fire/firestore';
 import { Storage, ref, uploadBytes, getDownloadURL, deleteObject } from '@angular/fire/storage';
 import { AuthService } from '../auth/auth.service';
-import { Desejo, DesejoLink } from '../models/desejo.model';
+import { Desejo, DesejoLink, DesejoRealizacao } from '../models/desejo.model';
 
 @Injectable({
   providedIn: 'root'
@@ -245,6 +246,39 @@ export class DesejoService {
       links,
       menorPreco,
       maiorPreco,
+      atualizadoEm: serverTimestamp()
+    });
+  }
+
+  async marcarRealizado(
+    desejoId: string,
+    dados: Omit<DesejoRealizacao, 'registradoEm'>
+  ): Promise<DesejoRealizacao> {
+    const user = await this.authService.getCurrentUserAsync();
+    if (!user) throw new Error('Usuário não autenticado');
+
+    const realizacao: DesejoRealizacao = {
+      valorPago: Number(dados.valorPago),
+      descricao: dados.descricao?.trim() || '',
+      realizadoEm: dados.realizadoEm,
+      registradoEm: new Date().toISOString()
+    };
+
+    const docRef = doc(this.firestore, `users/${user.uid}/desejos`, desejoId);
+    await updateDoc(docRef, {
+      realizacao,
+      atualizadoEm: serverTimestamp()
+    });
+    return realizacao;
+  }
+
+  async desfazerRealizacao(desejoId: string): Promise<void> {
+    const user = await this.authService.getCurrentUserAsync();
+    if (!user) throw new Error('Usuário não autenticado');
+
+    const docRef = doc(this.firestore, `users/${user.uid}/desejos`, desejoId);
+    await updateDoc(docRef, {
+      realizacao: deleteField(),
       atualizadoEm: serverTimestamp()
     });
   }

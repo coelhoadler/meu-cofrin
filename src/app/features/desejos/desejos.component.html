@@ -45,6 +45,28 @@
       }
     </div>
 
+    <!-- Status Filter -->
+    <div class="flex items-center gap-1 p-1 rounded-xl bg-slate-100 dark:bg-slate-800/80 self-start" role="group"
+      aria-label="Filtrar por status">
+      @for (opt of statusOpcoes; track opt.valor) {
+      <button type="button" [id]="'filtro-status-' + opt.valor.toLowerCase()" (click)="setStatus(opt.valor)"
+        [attr.aria-pressed]="filtroStatus() === opt.valor"
+        class="px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer"
+        [ngClass]="filtroStatus() === opt.valor
+          ? (opt.valor === 'Realizados' ? 'bg-blue-600 text-white shadow-xs' : 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs')
+          : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'">
+        <span class="material-symbols-outlined text-[16px]">{{ opt.icone }}</span>
+        {{ opt.valor }}
+        @if (opt.valor === 'Realizados' && totalRealizados() > 0) {
+        <span class="text-[10px] px-1.5 rounded-full"
+          [ngClass]="filtroStatus() === opt.valor ? 'bg-white/25' : 'bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300'">
+          {{ totalRealizados() }}
+        </span>
+        }
+      </button>
+      }
+    </div>
+
     <!-- Category Pills -->
     <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
       <button type="button" (click)="setCategoria('Todas')"
@@ -73,8 +95,8 @@
       <span>
         Exibindo <strong>{{ totalFiltrados() }}</strong> de <strong>{{ totalDesejos() }}</strong> desejos
       </span>
-      @if (filtroTexto() || filtroCategoria() !== 'Todas') {
-      <button type="button" (click)="filtroTexto.set(''); filtroCategoria.set('Todas')"
+      @if (hasFiltrosAtivos()) {
+      <button type="button" (click)="limparFiltros()"
         class="text-purple-600 dark:text-purple-400 hover:underline font-medium cursor-pointer">
         Limpar filtros
       </button>
@@ -119,9 +141,9 @@
     <span class="material-symbols-outlined text-4xl text-slate-400 mb-2">search_off</span>
     <h4 class="text-base font-bold text-slate-700 dark:text-slate-300 mb-1">Nenhum desejo encontrado</h4>
     <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">
-      Tente buscar por outro termo ou selecione outra categoria.
+      Tente buscar por outro termo ou selecione outra categoria ou status.
     </p>
-    <button type="button" (click)="filtroTexto.set(''); filtroCategoria.set('Todas')"
+    <button type="button" (click)="limparFiltros()"
       class="text-sm font-semibold text-purple-600 dark:text-purple-400 hover:underline">
       Limpar busca e filtros
     </button>
@@ -163,6 +185,15 @@
           <span class="material-symbols-outlined text-[12px]">link</span>
           {{ (desejo.links?.length || 0) }} {{ (desejo.links?.length === 1 ? 'oferta' : 'ofertas') }}
         </span>
+
+        @if (desejo.realizacao) {
+        <!-- Realizado Badge -->
+        <span
+          class="absolute bottom-3 left-3 px-2.5 py-1 rounded-full text-[11px] font-bold bg-blue-600 text-white shadow-sm flex items-center gap-1">
+          <span class="material-symbols-outlined text-[14px]">task_alt</span>
+          Realizado
+        </span>
+        }
       </div>
 
       <!-- Card Body -->

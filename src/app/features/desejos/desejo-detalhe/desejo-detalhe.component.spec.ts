@@ -31,7 +31,9 @@ describe('DesejoDetalheComponent', () => {
     updateLink: vi.fn().mockResolvedValue(undefined),
     removeLink: vi.fn().mockResolvedValue(undefined),
     updateDesejo: vi.fn().mockResolvedValue(undefined),
-    deleteDesejo: vi.fn().mockResolvedValue(undefined)
+    deleteDesejo: vi.fn().mockResolvedValue(undefined),
+    marcarRealizado: vi.fn().mockResolvedValue(undefined),
+    desfazerRealizacao: vi.fn().mockResolvedValue(undefined)
   };
 
   beforeEach(async () => {
@@ -110,5 +112,133 @@ describe('DesejoDetalheComponent', () => {
 
     const nativeEl = fixture.nativeElement as HTMLElement;
     expect(nativeEl.textContent).toContain('Criado em 17/09/2026');
+  });
+
+  describe('Desejo realizado', () => {
+    it('deve exibir o botão "Desejo realizado" quando o desejo não foi realizado', async () => {
+      await component.loadDesejo('desejo-123');
+      fixture.detectChanges();
+
+      const nativeEl = fixture.nativeElement as HTMLElement;
+      expect(nativeEl.querySelector('#btn-desejo-realizado')).toBeTruthy();
+      expect(nativeEl.querySelector('#card-desejo-realizado')).toBeNull();
+    });
+
+    it('deve abrir o modal pré-preenchido com o menor preço e a data/hora atual', async () => {
+      await component.loadDesejo('desejo-123');
+      component.openRealizacaoModal();
+
+      expect(component.isRealizacaoModalOpen()).toBe(true);
+      const raw = component.formRealizacao.getRawValue();
+      expect(raw.valorPago).toBe(3200);
+      expect(raw.descricao).toBe('');
+      expect(raw.realizadoEm).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/);
+
+      component.closeRealizacaoModal();
+      expect(component.isRealizacaoModalOpen()).toBe(false);
+    });
+
+    it('não deve salvar quando o valor pago for inválido', async () => {
+      await component.loadDesejo('desejo-123');
+      component.openRealizacaoModal();
+      component.formRealizacao.patchValue({ valorPago: 0 });
+
+      await component.onSaveRealizacao();
+
+      expect(mockDesejoService.marcarRealizado).not.toHaveBeenCalled();
+      expect(component.isRealizacaoModalOpen()).toBe(true);
+    });
+
+    it('deve salvar a realização com valor, descrição e data em ISO', async () => {
+      await component.loadDesejo('desejo-123');
+      component.openRealizacaoModal();
+      component.formRealizacao.patchValue({
+        valorPago: 3100,
+        descricao: '  Comprei na Black Friday  ',
+        realizadoEm: '2026-10-10T20:30'
+      });
+
+      await component.onSaveRealizacao();
+
+      expect(mockDesejoService.marcarRealizado).toHaveBeenCalledWith('desejo-123', {
+        valorPago: 3100,
+        descricao: 'Comprei na Black Friday',
+        realizadoEm: new Date('2026-10-10T20:30').toISOString()
+      });
+      expect(component.isRealizacaoModalOpen()).toBe(false);
+    });
+
+    it('deve exibir o card de realizado com economia e esconder o botão', async () => {
+      mockDesejoService.getDesejoById.mockResolvedValueOnce({
+        ...mockDesejo,
+        realizacao: {
+          valorPago: 3000,
+          descricao: 'Parcelado em 10x',
+          realizadoEm: new Date(2026, 9, 10, 20, 30).toISOString(),
+          registradoEm: new Date().toISOString()
+        }
+      });
+      await component.loadDesejo('desejo-123');
+      fixture.detectChanges();
+
+      const econ = component.economiaRealizacao();
+      expect(econ?.valor).toBe(900);
+      expect(econ?.percentual).toBe(23);
+
+      const nativeEl = fixture.nativeElement as HTMLElement;
+      expect(nativeEl.querySelector('#btn-desejo-realizado')).toBeNull();
+      const card = nativeEl.querySelector('#card-desejo-realizado');
+      expect(card).toBeTruthy();
+      expect(card?.textContent).toContain('10/10/2026 às 20:30');
+      expect(card?.textContent).toContain('Parcelado em 10x');
+    });
+
+    it('deve abrir o modal em modo edição com os dados da realização existente', async () => {
+      mockDesejoService.getDesejoById.mockResolvedValueOnce({
+        ...mockDesejo,
+        realizacao: {
+          valorPago: 3000,
+          descricao: 'Obs',
+          realizadoEm: new Date(2026, 9, 1, 9, 5).toISOString(),
+          registradoEm: new Date().toISOString()
+        }
+      });
+      await component.loadDesejo('desejo-123');
+      component.openRealizacaoModal();
+
+      const raw = component.formRealizacao.getRawValue();
+      expect(raw.valorPago).toBe(3000);
+      expect(raw.descricao).toBe('Obs');
+      expect(raw.realizadoEm).toBe('2026-10-01T09:05');
+    });
+
+    it('deve desfazer a realização após confirmação', async () => {
+      mockDesejoService.getDesejoById.mockResolvedValueOnce({
+        ...mockDesejo,
+        realizacao: { valorPago: 3000, realizadoEm: new Date().toISOString(), registradoEm: new Date().toISOString() }
+      });
+      await component.loadDesejo('desejo-123');
+      const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
+
+      await component.onDesfazerRealizacao();
+
+      expect(confirmSpy).toHaveBeenCalled();
+      expect(mockDesejoService.desfazerRealizacao).toHaveBeenCalledWith('desejo-123');
+      confirmSpy.mockRestore();
+    });
+
+    it('não deve desfazer a realização se o usuário cancelar', async () => {
+      mockDesejoService.getDesejoById.mockResolvedValueOnce({
+        ...mockDesejo,
+        realizacao: { valorPago: 3000, realizadoEm: new Date().toISOString(), registradoEm: new Date().toISOString() }
+      });
+      await component.loadDesejo('desejo-123');
+      const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
+
+      await component.onDesfazerRealizacao();
+
+      expect(mockDesejoService.desfazerRealizacao).not.toHaveBeenCalled();
+      confirmSpy.mockRestore();
+    });
   });
 });
