@@ -22,6 +22,8 @@ import { NavigationHistoryService } from '../../core/services/navigation-history
 import { formatarMoeda, formatarData } from '../../core/utils/formatacao.utils';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
+export type DesejoStatusFiltro = 'Todos' | 'Pendentes' | 'Realizados';
+
 @Component({
   selector: 'app-desejos',
   standalone: true,
@@ -47,6 +49,12 @@ export class DesejosComponent implements OnInit {
   // Filtros
   filtroTexto = signal<string>('');
   filtroCategoria = signal<string>('Todas');
+  filtroStatus = signal<DesejoStatusFiltro>('Todos');
+  readonly statusOpcoes: { valor: DesejoStatusFiltro; icone: string }[] = [
+    { valor: 'Todos', icone: 'list' },
+    { valor: 'Pendentes', icone: 'hourglass_empty' },
+    { valor: 'Realizados', icone: 'task_alt' }
+  ];
 
   // Máscara de privacidade
   showValues = signal<boolean>(localStorage.getItem('showValues') !== 'false');
@@ -73,6 +81,7 @@ export class DesejosComponent implements OnInit {
   desejosFiltrados = computed(() => {
     const texto = this.filtroTexto().toLowerCase().trim();
     const cat = this.filtroCategoria();
+    const status = this.filtroStatus();
 
     return this.desejos().filter(d => {
       const matchTexto =
@@ -82,9 +91,20 @@ export class DesejosComponent implements OnInit {
 
       const matchCategoria = cat === 'Todas' || d.categoria === cat;
 
-      return matchTexto && matchCategoria;
+      const realizado = !!d.realizacao;
+      const matchStatus =
+        status === 'Todos' ||
+        (status === 'Realizados' && realizado) ||
+        (status === 'Pendentes' && !realizado);
+
+      return matchTexto && matchCategoria && matchStatus;
     });
   });
+
+  totalRealizados = computed(() => this.desejos().filter(d => !!d.realizacao).length);
+  hasFiltrosAtivos = computed(
+    () => !!this.filtroTexto() || this.filtroCategoria() !== 'Todas' || this.filtroStatus() !== 'Todos'
+  );
 
   totalDesejos = computed(() => this.desejos().length);
   totalFiltrados = computed(() => this.desejosFiltrados().length);
@@ -137,6 +157,16 @@ export class DesejosComponent implements OnInit {
 
   setCategoria(cat: string): void {
     this.filtroCategoria.set(cat);
+  }
+
+  setStatus(status: DesejoStatusFiltro): void {
+    this.filtroStatus.set(status);
+  }
+
+  limparFiltros(): void {
+    this.filtroTexto.set('');
+    this.filtroCategoria.set('Todas');
+    this.filtroStatus.set('Todos');
   }
 
   openNewModal(): void {

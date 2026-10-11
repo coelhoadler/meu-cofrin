@@ -55,4 +55,14 @@ describe('DesejoService', () => {
     ];
     expect(calculate(links2)).toEqual({ menorPreco: 1200, maiorPreco: 1850 });
   });
+
+  it('deve exigir usuário autenticado para marcar e desfazer realização', async () => {
+    mockAuthService.getCurrentUserAsync.mockResolvedValueOnce(null);
+    await expect(
+      service.marcarRealizado('d1', { valorPago: 100, realizadoEm: new Date().toISOString() })
+    ).rejects.toThrow('Usuário não autenticado');
+
+    mockAuthService.getCurrentUserAsync.mockResolvedValueOnce(null);
+    await expect(service.desfazerRealizacao('d1')).rejects.toThrow('Usuário não autenticado');
+  });
 });

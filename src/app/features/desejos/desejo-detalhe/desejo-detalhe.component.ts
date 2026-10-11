@@ -76,6 +76,11 @@ export class DesejoDetalheComponent implements OnInit {
   previewUrl = signal<string | null>(null);
   formDesejo!: FormGroup;
 
+  // Modal de Desejo Realizado
+  isRealizacaoModalOpen = signal<boolean>(false);
+  formRealizacao!: FormGroup;
+  @ViewChild('realizacaoValorInput') realizacaoValorInput!: ElementRef<HTMLInputElement>;
+
   // Computeds
   menorPreco = computed(() => this.desejo()?.menorPreco ?? null);
   maiorPreco = computed(() => this.desejo()?.maiorPreco ?? null);
@@ -94,6 +99,17 @@ export class DesejoDetalheComponent implements OnInit {
   linksOrdenados = computed(() => {
     const links = [...(this.desejo()?.links || [])];
     return links.sort((a, b) => a.preco - b.preco);
+  });
+
+  realizacao = computed(() => this.desejo()?.realizacao ?? null);
+
+  /** Economia do valor pago em relação ao maior preço cotado. */
+  economiaRealizacao = computed(() => {
+    const r = this.realizacao();
+    const maior = this.maiorPreco();
+    if (!r || maior == null || maior <= r.valorPago) return null;
+    const diff = maior - r.valorPago;
+    return { valor: diff, percentual: Math.round((diff / maior) * 100) };
   });
 
   ngOnInit(): void {
@@ -131,6 +147,12 @@ export class DesejoDetalheComponent implements OnInit {
       nome: ['', [Validators.required, Validators.maxLength(100)]],
       categoria: ['Eletrônico' as DesejoCategoria, [Validators.required]],
       descricao: ['', [Validators.maxLength(400)]]
+    });
+
+    this.formRealizacao = this.fb.group({
+      valorPago: [null as number | null, [Validators.required, Validators.min(0.01)]],
+      descricao: ['', [Validators.maxLength(400)]],
+      realizadoEm: ['', [Validators.required]]
     });
   }
 
@@ -373,6 +395,97 @@ export class DesejoDetalheComponent implements OnInit {
         console.error('Erro ao excluir desejo:', error);
         alert('Não foi possível excluir o produto.');
       }
+    }
+  }
+
+  // ---------- Desejo realizado ----------
+
+  /** Converte uma data para o formato aceito por <input type="datetime-local"> (horário local). */
+  toDateTimeLocal(date: Date): string {
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+  }
+
+  openRealizacaoModal(): void {
+    const current = this.desejo();
+    if (!current) return;
+
+    const existente = current.realizacao;
+    if (existente) {
+      const data = new Date(existente.realizadoEm);
+      this.formRealizacao.reset({
+        valorPago: existente.valorPago,
+        descricao: existente.descricao || '',
+        realizadoEm: this.toDateTimeLocal(isNaN(data.getTime()) ? new Date() : data)
+      });
+    } else {
+      this.formRealizacao.reset({
+        valorPago: this.menorPreco() ?? null,
+        descricao: '',
+        realizadoEm: this.toDateTimeLocal(new Date())
+      });
+    }
+
+    this.isRealizacaoModalOpen.set(true);
+    setTimeout(() => this.realizacaoValorInput?.nativeElement?.focus());
+  }
+
+  closeRealizacaoModal(): void {
+    this.isRealizacaoModalOpen.set(false);
+    this.formRealizacao.reset();
+  }
+
+  async onSaveRealizacao(): Promise<void> {
+    if (this.formRealizacao.invalid) {
+      this.formRealizacao.markAllAsTouched();
+      return;
+    }
+
+    const id = this.desejoId();
+    if (!id) return;
+
+    const raw = this.formRealizacao.getRawValue();
+    const valor = typeof raw.valorPago === 'number' ? raw.valorPago : parseFloatValor(raw.valorPago);
+    const data = new Date(raw.realizadoEm);
+    if (!valor || valor <= 0 || isNaN(data.getTime())) {
+      this.formRealizacao.markAllAsTouched();
+      return;
+    }
+
+    this.isSaving.set(true);
+    try {
+      await this.desejoService.marcarRealizado(id, {
+        valorPago: valor,
+        descricao: raw.descricao?.trim() || '',
+        realizadoEm: data.toISOString()
+      });
+      this.closeRealizacaoModal();
+      await this.loadDesejo(id);
+    } catch (error) {
+      console.error('Erro ao registrar desejo realizado:', error);
+      alert('Não foi possível registrar o desejo como realizado.');
+    } finally {
+      this.isSaving.set(false);
+    }
+  }
+
+  async onDesfazerRealizacao(): Promise<void> {
+    const id = this.desejoId();
+    if (!id || !this.realizacao()) return;
+
+    if (!confirm('Deseja desfazer a realização deste desejo? As informações de pagamento serão removidas.')) {
+      return;
+    }
+
+    this.isSaving.set(true);
+    try {
+      await this.desejoService.desfazerRealizacao(id);
+      await this.loadDesejo(id);
+    } catch (error) {
+      console.error('Erro ao desfazer realização:', error);
+      alert('Não foi possível desfazer a realização.');
+    } finally {
+      this.isSaving.set(false);
     }
   }
 
