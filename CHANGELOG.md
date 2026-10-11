@@ -1,3 +1,10 @@
+# [1.35.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.34.0...v1.35.0) (2026-10-11)
+
+
+### Features
+
+* add desire detail and management features with unit tests ([49e1d8e](https://github.com/coelhoadler/meu-cofrin/commit/49e1d8e4967de772910a4d3a2c69e5dd4db475c9))
+
 # [1.34.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.33.0...v1.34.0) (2026-10-01)
 
 
