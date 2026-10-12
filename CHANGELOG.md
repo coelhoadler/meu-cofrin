@@ -1,3 +1,10 @@
+# [1.38.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.37.0...v1.38.0) (2026-10-12)
+
+
+### Features
+
+* implement main layout and user session components with timer and responsive sidebar ([2b14cc3](https://github.com/coelhoadler/meu-cofrin/commit/2b14cc3801d6ec3e9e2731c3ea1182d534680ed1))
+
 # [1.37.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.36.0...v1.37.0) (2026-10-12)
 
 
