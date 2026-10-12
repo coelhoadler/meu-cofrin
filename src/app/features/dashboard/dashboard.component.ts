@@ -315,7 +315,7 @@ export class DashboardComponent implements AfterViewInit {
             type: 'bar',
             data: dataReceitas,
             label: 'Receitas',
-            backgroundColor: '#9d6bf3',
+            backgroundColor: '#10b981',
             borderRadius: 4,
             order: 1
           },
@@ -323,7 +323,7 @@ export class DashboardComponent implements AfterViewInit {
             type: 'bar',
             data: dataDespesas,
             label: 'Despesas',
-            backgroundColor: '#421b7b',
+            backgroundColor: '#f43f5e',
             borderRadius: 4,
             order: 1
           },
@@ -331,8 +331,8 @@ export class DashboardComponent implements AfterViewInit {
             type: 'line',
             data: dataSaldos,
             label: 'Saldo',
-            borderColor: '#10b981',
-            backgroundColor: 'rgba(16, 185, 129, 0.2)',
+            borderColor: '#8b5cf6',
+            backgroundColor: 'rgba(139, 92, 246, 0.2)',
             borderWidth: 2,
             fill: false,
             tension: 0.3,

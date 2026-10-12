@@ -23,15 +23,15 @@ import { ChartConfiguration } from 'chart.js';
       <!-- Legend -->
       <div class="flex justify-center gap-6 mt-4">
         <div class="flex items-center gap-2">
-          <div class="w-2.5 h-2.5 rounded-sm bg-[#9d6bf3]"></div>
+          <div class="w-2.5 h-2.5 rounded-sm bg-[#10b981]"></div>
           <span class="text-[11px] text-slate-500 font-medium">Receitas</span>
         </div>
         <div class="flex items-center gap-2">
-          <div class="w-2.5 h-2.5 rounded-sm bg-[#421b7b]"></div>
+          <div class="w-2.5 h-2.5 rounded-sm bg-[#f43f5e]"></div>
           <span class="text-[11px] text-slate-500 font-medium">Despesas</span>
         </div>
         <div class="flex items-center gap-2">
-          <div class="w-2.5 h-0.5 rounded-sm bg-[#10b981]"></div>
+          <div class="w-2.5 h-0.5 rounded-sm bg-[#8b5cf6]"></div>
           <span class="text-[11px] text-slate-500 font-medium">Saldo</span>
         </div>
       </div>
