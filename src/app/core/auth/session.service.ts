@@ -32,8 +32,8 @@ export class SessionService {
     if (sec <= 0) return '0m restantes';
     const min = Math.floor(sec / 60);
     const remSec = sec % 60;
-    if (min === 0) return `${remSec}s restantes`;
-    return `${min}m restantes`;
+    if (min === 0) return `Sessão: ${remSec}s`;
+    return `Sessão: ${min}m`;
   });
 
   readonly progressPercentage = computed(() => {

@@ -1,3 +1,48 @@
+@if (variant() === 'header') {
+<div class="flex flex-col items-end gap-1">
+  <!-- Linha Superior: Saudação + Avatar -->
+  <div class="flex items-center gap-2">
+    <span
+      class="font-bold text-sm text-slate-800 dark:text-white leading-tight truncate max-w-[170px] sm:max-w-[220px]">
+      {{ computedGreeting() }}
+    </span>
+    <div
+      class="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-xs shrink-0 overflow-hidden shadow-sm"
+      [title]="'Sessão: ' + sessionService.remainingFormatted()">
+      @if (user()?.photoURL; as photoURL) {
+      <img [src]="photoURL" class="w-full h-full object-cover" alt="Foto de perfil" />
+      } @else {
+      {{
+      user()?.displayName?.charAt(0)?.toUpperCase() ||
+      user()?.email?.charAt(0)?.toUpperCase() ||
+      'U'
+      }}
+      }
+    </div>
+  </div>
+
+  <!-- Linha Inferior: Timer + Mini barra de progresso -->
+  <div class="flex items-center gap-1.5" title="Tempo restante da sessão">
+
+    <span class="font-medium font-mono text-[10px]" [ngClass]="{
+        'text-rose-500 font-semibold': sessionService.urgencyLevel() === 'danger',
+        'text-amber-500 font-semibold': sessionService.urgencyLevel() === 'warning',
+        'text-slate-500 dark:text-slate-400': sessionService.urgencyLevel() === 'normal'
+      }">
+      {{ sessionService.remainingFormatted() }}
+    </span>
+    <div class="w-12 h-1 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden shrink-0">
+      <div class="h-full transition-all duration-1000 ease-linear rounded-full"
+        [style.width.%]="sessionService.progressPercentage()" [ngClass]="{
+            'bg-rose-500': sessionService.urgencyLevel() === 'danger',
+            'bg-amber-500': sessionService.urgencyLevel() === 'warning',
+            'bg-indigo-500': sessionService.urgencyLevel() === 'normal'
+          }"></div>
+    </div>
+  </div>
+</div>
+} @else {
+<!-- Sidebar Footer (Desktop) -->
 <div class="p-4 mt-auto">
   <div class="flex items-center mb-4 gap-3 px-2"
     [ngClass]="isDesktopSidebarCollapsed() ? 'md:justify-center md:gap-0 md:px-0' : ''">
@@ -27,22 +72,23 @@
             Sessão
           </span>
           <span class="font-medium font-mono text-[10px]" [ngClass]="{
-            'text-rose-400 font-semibold': sessionService.urgencyLevel() === 'danger',
-            'text-amber-400 font-semibold': sessionService.urgencyLevel() === 'warning',
-            'text-slate-400': sessionService.urgencyLevel() === 'normal'
-          }">
+              'text-rose-400 font-semibold': sessionService.urgencyLevel() === 'danger',
+              'text-amber-400 font-semibold': sessionService.urgencyLevel() === 'warning',
+              'text-slate-400': sessionService.urgencyLevel() === 'normal'
+            }">
             {{ sessionService.remainingFormatted() }}
           </span>
         </div>
         <div class="w-full h-1 bg-slate-800 rounded-full overflow-hidden">
           <div class="h-full transition-all duration-1000 ease-linear rounded-full"
             [style.width.%]="sessionService.progressPercentage()" [ngClass]="{
-              'bg-rose-500': sessionService.urgencyLevel() === 'danger',
-              'bg-amber-500': sessionService.urgencyLevel() === 'warning',
-              'bg-indigo-500': sessionService.urgencyLevel() === 'normal'
-            }"></div>
+                'bg-rose-500': sessionService.urgencyLevel() === 'danger',
+                'bg-amber-500': sessionService.urgencyLevel() === 'warning',
+                'bg-indigo-500': sessionService.urgencyLevel() === 'normal'
+              }"></div>
         </div>
       </div>
     </div>
   </div>
 </div>
+}

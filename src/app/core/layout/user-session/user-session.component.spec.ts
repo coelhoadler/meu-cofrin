@@ -43,7 +43,7 @@ describe('UserSessionComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('deve exibir o nome do usuário e tempo restante de sessão', () => {
+  it('deve exibir o nome do usuário e tempo restante de sessão na sidebar', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.textContent).toContain('Adler Coelho');
     expect(compiled.textContent).toContain('45m restantes');
@@ -73,9 +73,19 @@ describe('UserSessionComponent', () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const badge = compiled.querySelector('.text-rose-400');
+    const badge = compiled.querySelector('.text-rose-400, .text-rose-500');
     const bar = compiled.querySelector('.bg-rose-500');
     expect(badge).not.toBeNull();
     expect(bar).not.toBeNull();
+  });
+
+  it('deve renderizar o modo header com saudação e tempo de sessão', () => {
+    fixture.componentRef.setInput('variant', 'header');
+    fixture.componentRef.setInput('greeting', 'Bom dia, Adler!');
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Bom dia, Adler!');
+    expect(compiled.textContent).toContain('45m restantes');
   });
 });
