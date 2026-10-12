@@ -1,3 +1,10 @@
+# [1.36.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.35.0...v1.36.0) (2026-10-12)
+
+
+### Features
+
+* implement template for the desejos component featuring search, filters, and grid view ([f23a092](https://github.com/coelhoadler/meu-cofrin/commit/f23a092ee17d4b3b2d44e589a45a98564d4c7af7))
+
 # [1.35.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.34.0...v1.35.0) (2026-10-11)
 
 
