@@ -46,8 +46,9 @@
     </div>
 
     <!-- Status Filter -->
-    <div class="flex items-center gap-1 p-1 rounded-xl bg-slate-100 dark:bg-slate-800/80 self-start" role="group"
-      aria-label="Filtrar por status">
+    <div
+      class="flex items-center gap-1 p-1 rounded-xl bg-slate-100 dark:bg-slate-800/80 self-start w-[100%] md:w-auto overflow-x-auto pb-1 scrollbar-none"
+      role="group" aria-label="Filtrar por status">
       @for (opt of statusOpcoes; track opt.valor) {
       <button type="button" [id]="'filtro-status-' + opt.valor.toLowerCase()" (click)="setStatus(opt.valor)"
         [attr.aria-pressed]="filtroStatus() === opt.valor"
