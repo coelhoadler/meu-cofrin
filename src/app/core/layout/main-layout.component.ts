@@ -19,11 +19,12 @@ import { TourService } from '../services/tour.service';
 import { LayoutService } from '../services/layout.service';
 import { NavigationHistoryService } from '../services/navigation-history.service';
 import { ThemeService } from '../services/theme.service';
+import { UserSessionComponent } from './user-session/user-session.component';
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, UserSessionComponent],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './main-layout.component.html',
 })

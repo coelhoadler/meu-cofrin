@@ -8,7 +8,7 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, ActivatedRoute, RouterLink } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
 import { WebauthnService } from '../../core/auth/webauthn.service';
 import { CommonModule } from '@angular/common';
@@ -18,7 +18,7 @@ import * as packageJson from '../../../../package.json';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, InputTextModule, RouterLink],
+  imports: [ReactiveFormsModule, CommonModule, InputTextModule],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './login.component.html',
 })
@@ -133,7 +133,7 @@ export class LoginComponent implements OnInit {
       } else {
         await this.authService.signup(email!, password!, nome);
       }
-      
+
       if (typeof localStorage !== 'undefined') {
         localStorage.setItem('lastLoggedEmail', email!);
       }
@@ -164,7 +164,7 @@ export class LoginComponent implements OnInit {
 
     try {
       await this.webauthnService.authenticateWithPasskey(email);
-      
+
       const currentUser = await this.authService.getCurrentUserAsync();
       if (currentUser) {
         const isEmpresa = await this.authService.isEmpresaAccount(currentUser.uid);
@@ -198,7 +198,7 @@ export class LoginComponent implements OnInit {
 
     try {
       const userCredential = await this.authService.loginWithGoogle();
-      
+
       const isEmpresa = await this.authService.isEmpresaAccount(userCredential.user.uid);
       if (isEmpresa) {
         await this.authService.logout();
