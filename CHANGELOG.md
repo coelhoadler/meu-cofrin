@@ -1,3 +1,11 @@
+# [1.37.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.36.0...v1.37.0) (2026-10-12)
+
+
+### Features
+
+* add bar chart component and implement dashboard visualization logic ([3ac4425](https://github.com/coelhoadler/meu-cofrin/commit/3ac442542a182faa3b42c3baea9e3b8774a1955f))
+* implement recurring bills replication logic and scheduled function ([66d0062](https://github.com/coelhoadler/meu-cofrin/commit/66d006272db64cacdb1f5829b568c1f34ce5b289))
+
 # [1.36.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.35.0...v1.36.0) (2026-10-12)
 
 
