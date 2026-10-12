@@ -1,3 +1,10 @@
+# [1.39.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.38.0...v1.39.0) (2026-10-12)
+
+
+### Features
+
+* add user session management, main layout, and dashboard interface components ([6e23e8b](https://github.com/coelhoadler/meu-cofrin/commit/6e23e8b73806aed370a35e5d90ae4860167895d3))
+
 # [1.38.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.37.0...v1.38.0) (2026-10-12)
 
 
