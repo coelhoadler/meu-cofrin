@@ -1,3 +1,11 @@
+# [1.40.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.39.0...v1.40.0) (2026-10-18)
+
+
+### Features
+
+* add login component UI and update dependencies ([3880538](https://github.com/coelhoadler/meu-cofrin/commit/3880538e81a22068f2d4af880112409516e21f38))
+* add privacy consent service, banner component, and unit tests ([f2a5d44](https://github.com/coelhoadler/meu-cofrin/commit/f2a5d4453943fc3e64585d33846d812981e20b7a))
+
 # [1.39.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.38.0...v1.39.0) (2026-10-12)
 
 
