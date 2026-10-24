@@ -1,3 +1,11 @@
+# [1.41.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.40.0...v1.41.0) (2026-10-24)
+
+
+### Features
+
+* add HTML templates for user session component and dashboard view ([7a794ce](https://github.com/coelhoadler/meu-cofrin/commit/7a794ce5b4c48c4cd2fc913386e6ad9a45328428))
+* create user session, dashboard, and main layout components ([698eec7](https://github.com/coelhoadler/meu-cofrin/commit/698eec7e837db8caaef82ad1330f7905f63bdb08))
+
 # [1.40.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.39.0...v1.40.0) (2026-10-18)
 
 
