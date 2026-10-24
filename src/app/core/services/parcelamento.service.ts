@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, addDoc, serverTimestamp, query, where, getDocs, doc, deleteDoc, updateDoc } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, serverTimestamp, query, where, getDocs, doc, deleteDoc, updateDoc, writeBatch } from '@angular/fire/firestore';
 import { Storage, ref, uploadBytes, getDownloadURL, deleteObject } from '@angular/fire/storage';
 import { AuthService } from '../auth/auth.service';
 import { Conta } from '../models/conta.model';
@@ -84,6 +84,8 @@ export class ParcelamentoService {
       reciboUrl = await getDownloadURL(snapshot.ref);
     }
 
+    const batch = writeBatch(this.firestore);
+
     for (const conta of contas) {
       if (conta.id) {
         const docRef = doc(this.firestore, `users/${user.uid}/contas`, conta.id);
@@ -92,9 +94,11 @@ export class ParcelamentoService {
           ...(reciboUrl ? { reciboUrl } : {})
         };
         delete dataToUpdate.id;
-        await updateDoc(docRef, dataToUpdate);
+        batch.update(docRef, dataToUpdate);
       }
     }
+
+    await batch.commit();
   }
 
   async deleteContasByParcelamentoId(parcelamentoId: string): Promise<void> {
