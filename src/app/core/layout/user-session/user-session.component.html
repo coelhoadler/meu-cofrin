@@ -1,44 +1,46 @@
 @if (variant() === 'header') {
-<div class="flex flex-col items-end gap-1">
-  <!-- Linha Superior: Saudação + Avatar -->
-  <div class="flex items-center gap-2">
+<div class="flex items-center gap-2.5 sm:gap-3">
+  <!-- Informações à esquerda da imagem: Saudação + Timer da Sessão -->
+  <div class="flex flex-col items-end justify-center min-w-0">
+    <!-- Linha Superior: Saudação com degradê -->
     <span
       class="font-bold text-sm bg-gradient-to-r from-slate-900 via-indigo-950 to-purple-700 dark:from-white dark:via-purple-100 dark:to-purple-400 bg-clip-text text-transparent leading-tight truncate max-w-[170px] sm:max-w-[220px]">
       {{ computedGreeting() }}
     </span>
-    <div
-      class="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-xs shrink-0 overflow-hidden shadow-sm"
-      [title]="'Sessão: ' + sessionService.remainingFormatted()">
-      @if (user()?.photoURL; as photoURL) {
-      <img [src]="photoURL" class="w-full h-full object-cover" alt="Foto de perfil" />
-      } @else {
-      {{
-      user()?.displayName?.charAt(0)?.toUpperCase() ||
-      user()?.email?.charAt(0)?.toUpperCase() ||
-      'U'
-      }}
-      }
+
+    <!-- Linha Inferior: Timer + Mini barra de progresso -->
+    <div class="flex items-center gap-1.5 mt-0.5" title="Tempo restante da sessão">
+      <span class="font-medium font-mono text-[10px]" [ngClass]="{
+          'text-rose-500 font-semibold': sessionService.urgencyLevel() === 'danger',
+          'text-amber-500 font-semibold': sessionService.urgencyLevel() === 'warning',
+          'text-slate-500 dark:text-slate-400': sessionService.urgencyLevel() === 'normal'
+        }">
+        {{ sessionService.remainingFormatted() }}
+      </span>
+      <div class="w-12 h-1 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden shrink-0">
+        <div class="h-full transition-all duration-1000 ease-linear rounded-full"
+          [style.width.%]="sessionService.progressPercentage()" [ngClass]="{
+              'bg-rose-500': sessionService.urgencyLevel() === 'danger',
+              'bg-amber-500': sessionService.urgencyLevel() === 'warning',
+              'bg-indigo-500': sessionService.urgencyLevel() === 'normal'
+            }"></div>
+      </div>
     </div>
   </div>
 
-  <!-- Linha Inferior: Timer + Mini barra de progresso -->
-  <div class="flex items-center gap-1.5" title="Tempo restante da sessão">
-
-    <span class="font-medium font-mono text-[10px]" [ngClass]="{
-        'text-rose-500 font-semibold': sessionService.urgencyLevel() === 'danger',
-        'text-amber-500 font-semibold': sessionService.urgencyLevel() === 'warning',
-        'text-slate-500 dark:text-slate-400': sessionService.urgencyLevel() === 'normal'
-      }">
-      {{ sessionService.remainingFormatted() }}
-    </span>
-    <div class="w-12 h-1 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden shrink-0">
-      <div class="h-full transition-all duration-1000 ease-linear rounded-full"
-        [style.width.%]="sessionService.progressPercentage()" [ngClass]="{
-            'bg-rose-500': sessionService.urgencyLevel() === 'danger',
-            'bg-amber-500': sessionService.urgencyLevel() === 'warning',
-            'bg-indigo-500': sessionService.urgencyLevel() === 'normal'
-          }"></div>
-    </div>
+  <!-- Foto de perfil aumentada à direita -->
+  <div
+    class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-sm shrink-0 overflow-hidden shadow-sm ring-2 ring-purple-500/20 dark:ring-purple-400/20"
+    [title]="'Sessão: ' + sessionService.remainingFormatted()">
+    @if (user()?.photoURL; as photoURL) {
+    <img [src]="photoURL" class="w-full h-full object-cover" alt="Foto de perfil" />
+    } @else {
+    {{
+    user()?.displayName?.charAt(0)?.toUpperCase() ||
+    user()?.email?.charAt(0)?.toUpperCase() ||
+    'U'
+    }}
+    }
   </div>
 </div>
 } @else {
