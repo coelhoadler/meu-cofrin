@@ -44,6 +44,7 @@ describe('AuthService - LastAccessAt bypass corporativo', () => {
         { provide: Router, useValue: routerMock },
         { provide: UserDataService, useValue: userDataServiceMock },
         { provide: EmpresaService, useValue: empresaServiceMock },
+        { provide: Auth, useValue: authMock },
       ],
     });
     return TestBed.inject(AuthService);
