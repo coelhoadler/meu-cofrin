@@ -435,18 +435,24 @@ export class DashboardComponent implements AfterViewInit {
     }
   }
 
-  public greeting = computed(() => {
-    const data = new Date();
-    const hora = data.getHours();
-    const userName = this.authService.currentUser()?.displayName?.split(' ')[0] || '';
+  public greetingSalutation = computed(() => {
+    const hora = new Date().getHours();
+    if (hora < 12) return 'Bom dia';
+    if (hora < 18) return 'Boa tarde';
+    return 'Boa noite';
+  });
 
-    if (hora < 12) {
-      return `Bom dia, ${userName}!`;
-    } else if (hora < 18) {
-      return `Boa tarde, ${userName}!`;
-    } else {
-      return `Boa noite, ${userName}!`;
-    }
+  public greetingIcon = computed(() => {
+    const hora = new Date().getHours();
+    if (hora < 12) return 'wb_sunny';
+    if (hora < 18) return 'sunny';
+    return 'bedtime';
+  });
+
+  public greeting = computed(() => {
+    const saudacao = this.greetingSalutation();
+    const userName = this.authService.currentUser()?.displayName?.split(' ')[0] || '';
+    return userName ? `${saudacao}, ${userName}!` : `${saudacao}!`;
   });
 
   // --- REPLICAR MÊS LOGIC ---

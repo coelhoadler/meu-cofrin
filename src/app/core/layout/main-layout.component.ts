@@ -127,14 +127,8 @@ export class MainLayoutComponent implements OnDestroy {
     const data = new Date();
     const hora = data.getHours();
     const userName = this.authService.currentUser()?.displayName?.split(' ')[0] || '';
-
-    if (hora < 12) {
-      return `Bom dia, ${userName}!`;
-    } else if (hora < 18) {
-      return `Boa tarde, ${userName}!`;
-    } else {
-      return `Boa noite, ${userName}!`;
-    }
+    const saudacao = hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite';
+    return userName ? `${saudacao}, ${userName}!` : `${saudacao}!`;
   });
 
   private handleSwipe() {

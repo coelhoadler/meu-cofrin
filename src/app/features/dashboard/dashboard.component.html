@@ -4,8 +4,18 @@
     class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sticky top-0 z-40 pt-2 pb-0 md:pb-4 -mt-2 bg-white/80 dark:bg-[#130c25]/80 backdrop-blur-[2px]">
     <div class="flex items-center justify-between w-full sm:w-auto">
       <div>
-        <h2 class="text-[28px] font-bold text-slate-900 dark:text-white tracking-tight hidden md:block">
-          {{greeting()}}</h2>
+        <div class="hidden md:flex items-center gap-3 group cursor-default">
+          <div
+            class="flex items-center justify-center w-9 h-9 rounded-2xl bg-gradient-to-br from-indigo-500/15 via-purple-500/15 to-pink-500/15 dark:from-indigo-500/25 dark:via-purple-500/25 dark:to-fuchsia-500/25 border border-purple-200/60 dark:border-purple-500/30 text-purple-600 dark:text-purple-300 shadow-sm shrink-0 group-hover:scale-105 group-hover:rotate-6 transition-transform duration-300"
+            [title]="greetingSalutation()">
+            <span class="material-symbols-outlined text-[20px]">{{ greetingIcon() }}</span>
+          </div>
+
+          <h2
+            class="text-[28px] font-extrabold tracking-tight bg-gradient-to-r from-slate-900 via-indigo-950 to-purple-700 dark:from-white dark:via-purple-100 dark:to-purple-400 bg-clip-text text-transparent drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)] dark:drop-shadow-[0_2px_12px_rgba(168,85,247,0.25)] select-none">
+            {{greeting()}}
+          </h2>
+        </div>
         <!-- Controles de Seleção de Mês -->
         <div class="flex max-w-full items-center gap-2 mt-2">
           <div
