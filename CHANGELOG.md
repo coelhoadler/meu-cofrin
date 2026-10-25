@@ -1,3 +1,10 @@
+## [1.41.1](https://github.com/coelhoadler/meu-cofrin/compare/v1.41.0...v1.41.1) (2026-10-25)
+
+
+### Performance Improvements
+
+* optimize firestore deletion with writeBatch ([e57ab08](https://github.com/coelhoadler/meu-cofrin/commit/e57ab08ca5fbbc48cc842bfa91991c6304b1bcfc))
+
 # [1.41.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.40.0...v1.41.0) (2026-10-24)
 
 
