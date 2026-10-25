@@ -6,11 +6,27 @@ import { Firestore } from '@angular/fire/firestore';
 import { AuthService } from '../../core/auth/auth.service';
 import { WebauthnService } from '../../core/auth/webauthn.service';
 import { Perfil } from './perfil';
-import { vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from "vitest";
 
 describe('Perfil', () => {
   let component: Perfil;
   let fixture: ComponentFixture<Perfil>;
+
+  beforeEach(() => {
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: vi.fn().mockImplementation((query) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    });
+  });
 
   const mockAuthService = {
     currentUser: signal(null),
