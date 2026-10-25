@@ -6,7 +6,7 @@
  * Converte valor numérico ou string com formatação BRL para número float.
  * Suporta formatos: 1234.56, "1.234,56", "R$ 1.234,56", etc.
  */
-export function parseFloatValor(valor: any): number {
+export function parseFloatValor(valor: string | number | null | undefined): number {
   if (!valor) return 0;
   if (typeof valor === 'number') return valor;
   const str = valor.toString();
@@ -129,4 +129,3 @@ export function formatarDataHora(data: any): string {
   const minutos = String(date.getMinutes()).padStart(2, '0');
   return `${dia}/${mes}/${ano} às ${horas}:${minutos}`;
 }
-
