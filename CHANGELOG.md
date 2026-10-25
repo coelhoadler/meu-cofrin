@@ -1,3 +1,10 @@
+## [1.41.3](https://github.com/coelhoadler/meu-cofrin/compare/v1.41.2...v1.41.3) (2026-10-25)
+
+
+### Performance Improvements
+
+* **functions:** optimize notificarUsuariosInativos with batch auth fetching ([639ef9e](https://github.com/coelhoadler/meu-cofrin/commit/639ef9ed7482f6c04a33466faae0891814dff1de))
+
 ## [1.41.2](https://github.com/coelhoadler/meu-cofrin/compare/v1.41.1...v1.41.2) (2026-10-25)
 
 

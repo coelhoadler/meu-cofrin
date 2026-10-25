@@ -1,6 +1,6 @@
 {
   "name": "meu-cofrin",
-  "version": "1.41.2",
+  "version": "1.41.3",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
