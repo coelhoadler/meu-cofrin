@@ -35,46 +35,58 @@ export const notificarUsuariosInativos = onSchedule({
 
     const emails = [];
 
-    for (const doc of snapshot.docs) {
+    const validDocs = snapshot.docs.filter((doc) => {
       const userData = doc.data();
-      const userId = doc.id;
+      return userData.notificacoesEmail !== false && userData.emailNotificationsEnabled !== false;
+    });
 
-      // Pular usuários que optaram por desativar notificações por e-mail
-      if (userData.notificacoesEmail === false || userData.emailNotificationsEnabled === false) {
-        continue;
-      }
+    for (let i = 0; i < validDocs.length; i += 100) {
+      const chunk = validDocs.slice(i, i + 100);
+      const userIdentifiers = chunk.map((doc) => ({ uid: doc.id }));
 
       try {
-        const authUser = await admin.auth().getUser(userId);
+        const authUsersResult = await admin.auth().getUsers(userIdentifiers);
 
-        if (authUser.email) {
-          const nomeCompleto = authUser.displayName || userData.nome || "Usuário";
-          const primeiroNome = nomeCompleto.split(" ")[0];
-          const unsubscribeUrl = `https://meu-cofrin.app.br/unsubscribe?email=${encodeURIComponent(authUser.email)}&userId=${userId}`;
+        for (const authUser of authUsersResult.users) {
+          if (authUser.email) {
+            const doc = chunk.find((d) => d.id === authUser.uid);
+            if (doc) {
+              const userData = doc.data();
+              const userId = doc.id;
+              const nomeCompleto = authUser.displayName || userData.nome || "Usuário";
+              const primeiroNome = nomeCompleto.split(" ")[0];
+              const unsubscribeUrl = `https://meu-cofrin.app.br/unsubscribe?email=${encodeURIComponent(authUser.email)}&userId=${userId}`;
 
-          emails.push({
-            From: "naoresponder@meu-cofrin.app.br",
-            To: authUser.email,
-            TemplateId: 46163306,
-            TemplateModel: {
-              primeiro_nome: primeiroNome,
-              unsubscribe_url: unsubscribeUrl,
-            },
-            Headers: [
-              {
-                Name: "List-Unsubscribe",
-                Value: `<https://meu-cofrin.app.br/unsubscribe?email=${encodeURIComponent(authUser.email)}&userId=${userId}>`
-              },
-              {
-                Name: "List-Unsubscribe-Post",
-                Value: "List-Unsubscribe=One-Click"
-              }
-            ],
-            MessageStream: "outbound"
-          });
+              emails.push({
+                From: "naoresponder@meu-cofrin.app.br",
+                To: authUser.email,
+                TemplateId: 46163306,
+                TemplateModel: {
+                  primeiro_nome: primeiroNome,
+                  unsubscribe_url: unsubscribeUrl,
+                },
+                Headers: [
+                  {
+                    Name: "List-Unsubscribe",
+                    Value: `<https://meu-cofrin.app.br/unsubscribe?email=${encodeURIComponent(authUser.email)}&userId=${userId}>`
+                  },
+                  {
+                    Name: "List-Unsubscribe-Post",
+                    Value: "List-Unsubscribe=One-Click"
+                  }
+                ],
+                MessageStream: "outbound"
+              });
+            }
+          }
+        }
+
+        for (const notFoundUser of authUsersResult.notFound) {
+          const uid = (notFoundUser as admin.auth.UidIdentifier).uid || "desconhecido";
+          logger.warn(`Erro ao buscar dados de autenticação para o usuário ${uid}: Usuário não encontrado no Auth.`);
         }
       } catch (authError) {
-        logger.warn(`Erro ao buscar dados de autenticação para o usuário ${userId}:`, authError);
+        logger.warn(`Erro ao buscar dados de autenticação em lote:`, authError);
       }
     }
 

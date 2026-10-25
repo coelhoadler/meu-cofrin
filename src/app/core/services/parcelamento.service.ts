@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, addDoc, serverTimestamp, query, where, getDocs, doc, deleteDoc, updateDoc } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, serverTimestamp, query, where, getDocs, doc, deleteDoc, updateDoc, writeBatch } from '@angular/fire/firestore';
 import { Storage, ref, uploadBytes, getDownloadURL, deleteObject } from '@angular/fire/storage';
 import { AuthService } from '../auth/auth.service';
 import { Conta } from '../models/conta.model';
@@ -55,6 +55,7 @@ export class ParcelamentoService {
     }
 
     const contasRef = collection(this.firestore, `users/${user.uid}/contas`);
+    const batch = writeBatch(this.firestore);
 
     for (const conta of contas) {
       const dataToSave = {
@@ -62,8 +63,11 @@ export class ParcelamentoService {
         ...(reciboUrl ? { reciboUrl } : {}),
         createdAt: serverTimestamp()
       };
-      await addDoc(contasRef, dataToSave);
+      const newDocRef = doc(contasRef);
+      batch.set(newDocRef, dataToSave);
     }
+
+    await batch.commit();
   }
 
   async updateContasParceladas(contas: Conta[], file?: File | null): Promise<void> {
@@ -84,6 +88,8 @@ export class ParcelamentoService {
       reciboUrl = await getDownloadURL(snapshot.ref);
     }
 
+    const batch = writeBatch(this.firestore);
+
     for (const conta of contas) {
       if (conta.id) {
         const docRef = doc(this.firestore, `users/${user.uid}/contas`, conta.id);
@@ -92,9 +98,11 @@ export class ParcelamentoService {
           ...(reciboUrl ? { reciboUrl } : {})
         };
         delete dataToUpdate.id;
-        await updateDoc(docRef, dataToUpdate);
+        batch.update(docRef, dataToUpdate);
       }
     }
+
+    await batch.commit();
   }
 
   async deleteContasByParcelamentoId(parcelamentoId: string): Promise<void> {
@@ -102,6 +110,7 @@ export class ParcelamentoService {
     if (!user) throw new Error('Usuário não autenticado');
 
     const contas = await this.getContasByParcelamentoId(parcelamentoId);
+    const batch = writeBatch(this.firestore);
 
     for (const conta of contas) {
       if (conta.id) {
@@ -117,8 +126,10 @@ export class ParcelamentoService {
           }
         }
 
-        await deleteDoc(docRef);
+        batch.delete(docRef);
       }
     }
+
+    await batch.commit();
   }
 }

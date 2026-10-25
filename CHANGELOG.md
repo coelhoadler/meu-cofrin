@@ -1,3 +1,46 @@
+# [1.43.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.42.0...v1.43.0) (2026-10-25)
+
+
+### Features
+
+* add ThemeService and corresponding unit tests alongside SessionService tests ([9326971](https://github.com/coelhoadler/meu-cofrin/commit/93269710de0e4fae911467a054e921a93a075946))
+
+# [1.42.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.41.4...v1.42.0) (2026-10-25)
+
+
+### Features
+
+* create dashboard component markup with summary cards and transaction list ([1f23e52](https://github.com/coelhoadler/meu-cofrin/commit/1f23e524c0f3d97519b3c72c352d278a9e3f8ec5))
+
+## [1.41.4](https://github.com/coelhoadler/meu-cofrin/compare/v1.41.3...v1.41.4) (2026-10-25)
+
+
+### Performance Improvements
+
+* optimize updateContasParceladas with writeBatch ([098e7e7](https://github.com/coelhoadler/meu-cofrin/commit/098e7e7a5c1d5cd1c05af120122ae03f0c22b7d5))
+* **parcelamento:** optimize sequential firestore operations using writeBatch ([7301ba8](https://github.com/coelhoadler/meu-cofrin/commit/7301ba85b28a6c2e243f71cfedd983875f0bbc85))
+
+## [1.41.3](https://github.com/coelhoadler/meu-cofrin/compare/v1.41.2...v1.41.3) (2026-10-25)
+
+
+### Performance Improvements
+
+* **functions:** optimize notificarUsuariosInativos with batch auth fetching ([639ef9e](https://github.com/coelhoadler/meu-cofrin/commit/639ef9ed7482f6c04a33466faae0891814dff1de))
+
+## [1.41.2](https://github.com/coelhoadler/meu-cofrin/compare/v1.41.1...v1.41.2) (2026-10-25)
+
+
+### Performance Improvements
+
+* **conta.service:** prevent redundant Firestore queries via request coalescing ([11cb04f](https://github.com/coelhoadler/meu-cofrin/commit/11cb04f9817d2c384f652c39bf459defac3cae72))
+
+## [1.41.1](https://github.com/coelhoadler/meu-cofrin/compare/v1.41.0...v1.41.1) (2026-10-25)
+
+
+### Performance Improvements
+
+* optimize firestore deletion with writeBatch ([e57ab08](https://github.com/coelhoadler/meu-cofrin/commit/e57ab08ca5fbbc48cc842bfa91991c6304b1bcfc))
+
 # [1.41.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.40.0...v1.41.0) (2026-10-24)
 
 
