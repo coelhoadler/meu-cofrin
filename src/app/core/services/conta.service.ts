@@ -1,5 +1,20 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, addDoc, serverTimestamp, query, where, orderBy, getDocs, doc, deleteDoc, getDoc, updateDoc, deleteField, limit } from '@angular/fire/firestore';
+import {
+  Firestore,
+  collection,
+  addDoc,
+  serverTimestamp,
+  query,
+  where,
+  orderBy,
+  getDocs,
+  doc,
+  deleteDoc,
+  getDoc,
+  updateDoc,
+  deleteField,
+  limit,
+} from '@angular/fire/firestore';
 import { Storage, ref, uploadBytes, getDownloadURL, deleteObject } from '@angular/fire/storage';
 import { AuthService } from '../auth/auth.service';
 
@@ -7,14 +22,12 @@ import { Conta, CacheEntry } from '../models/conta.model';
 import { ResumoMensal } from '../models/resumo-mensal.model';
 export type { Conta, ResumoMensal, CacheEntry };
 
-
-
 import { ParcelamentoService } from './parcelamento.service';
 import { ResumoMensalService } from './resumo-mensal.service';
 import { ReciboService } from './recibo.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ContaService {
   private firestore = inject(Firestore);
@@ -28,6 +41,7 @@ export class ContaService {
   private readonly CACHE_TTL = 5 * 60 * 1000; // 5 minutos de TTL
   private cacheLancamentosRecentes: CacheEntry<Conta[]> | null = null;
   private cacheContasPorMes = new Map<string, CacheEntry<Conta[]>>();
+  private inFlightContasPorMes = new Map<string, Promise<Conta[]>>();
   private cacheContasById = new Map<string, CacheEntry<Conta>>();
 
   public invalidateCache(): void {
@@ -52,7 +66,7 @@ export class ContaService {
       const storageRef = ref(this.storage, filePath);
 
       const snapshot = await uploadBytes(storageRef, file, {
-        cacheControl: 'public, max-age=2592000, immutable'
+        cacheControl: 'public, max-age=2592000, immutable',
       });
       reciboUrl = await getDownloadURL(snapshot.ref);
     }
@@ -61,7 +75,7 @@ export class ContaService {
     const dataToSave = {
       ...contaData,
       ...(reciboUrl ? { reciboUrl } : {}),
-      createdAt: serverTimestamp()
+      createdAt: serverTimestamp(),
     };
 
     // Save to Firestore
@@ -78,7 +92,10 @@ export class ContaService {
     }
 
     const now = Date.now();
-    if (this.cacheLancamentosRecentes && (now - this.cacheLancamentosRecentes.timestamp < this.CACHE_TTL)) {
+    if (
+      this.cacheLancamentosRecentes &&
+      now - this.cacheLancamentosRecentes.timestamp < this.CACHE_TTL
+    ) {
       return [...this.cacheLancamentosRecentes.data];
     }
 
@@ -87,18 +104,14 @@ export class ContaService {
     const dataAtual = new Date();
     const mesAtualStr = `${dataAtual.getFullYear()}-${String(dataAtual.getMonth() + 1).padStart(2, '0')}`;
 
-    const q = query(
-      contasRef,
-      where('mesReferencia', '==', mesAtualStr),
-      limit(30)
-    );
+    const q = query(contasRef, where('mesReferencia', '==', mesAtualStr), limit(30));
 
     const querySnapshot = await getDocs(q);
-    const items = querySnapshot.docs.map(doc => {
+    const items = querySnapshot.docs.map((doc) => {
       const data = doc.data();
       return {
         id: doc.id,
-        ...data
+        ...data,
       } as Conta;
     });
 
@@ -112,7 +125,7 @@ export class ContaService {
 
     this.cacheLancamentosRecentes = {
       data: [...items],
-      timestamp: now
+      timestamp: now,
     };
 
     return items;
@@ -131,12 +144,14 @@ export class ContaService {
     const querySnapshot = await getDocs(q);
     const termo = nome.toLowerCase().trim();
 
-    const items = querySnapshot.docs.map(doc => {
-      return {
-        id: doc.id,
-        ...doc.data()
-      } as Conta;
-    }).filter(c => c.nome.toLowerCase().includes(termo));
+    const items = querySnapshot.docs
+      .map((doc) => {
+        return {
+          id: doc.id,
+          ...doc.data(),
+        } as Conta;
+      })
+      .filter((c) => c.nome.toLowerCase().includes(termo));
 
     return items;
   }
@@ -149,30 +164,43 @@ export class ContaService {
 
     const now = Date.now();
     const cached = this.cacheContasPorMes.get(mesReferencia);
-    if (cached && (now - cached.timestamp < this.CACHE_TTL)) {
+    if (cached && now - cached.timestamp < this.CACHE_TTL) {
       return [...cached.data];
     }
 
-    const contasRef = collection(this.firestore, `users/${user.uid}/contas`);
-    const q = query(
-      contasRef,
-      where('mesReferencia', '==', mesReferencia)
-    );
+    // Request coalescing: prevent redundant concurrent Firestore queries
+    // by returning the in-flight promise if a request is already pending for this month.
+    const inFlight = this.inFlightContasPorMes.get(mesReferencia);
+    if (inFlight) {
+      return inFlight;
+    }
 
-    const querySnapshot = await getDocs(q);
-    const items = querySnapshot.docs.map(doc => {
-      return {
-        id: doc.id,
-        ...doc.data()
-      } as Conta;
-    });
+    const fetchPromise = (async () => {
+      try {
+        const contasRef = collection(this.firestore, `users/${user.uid}/contas`);
+        const q = query(contasRef, where('mesReferencia', '==', mesReferencia));
 
-    this.cacheContasPorMes.set(mesReferencia, {
-      data: [...items],
-      timestamp: now
-    });
+        const querySnapshot = await getDocs(q);
+        const items = querySnapshot.docs.map((doc) => {
+          return {
+            id: doc.id,
+            ...doc.data(),
+          } as Conta;
+        });
 
-    return items;
+        this.cacheContasPorMes.set(mesReferencia, {
+          data: [...items],
+          timestamp: Date.now(),
+        });
+
+        return items;
+      } finally {
+        this.inFlightContasPorMes.delete(mesReferencia);
+      }
+    })();
+
+    this.inFlightContasPorMes.set(mesReferencia, fetchPromise);
+    return fetchPromise;
   }
 
   async getContasByAno(ano: string, limitNum: number = 50): Promise<Conta[]> {
@@ -186,14 +214,14 @@ export class ContaService {
       contasRef,
       where('mesReferencia', '>=', `${ano}-01`),
       where('mesReferencia', '<=', `${ano}-12`),
-      limit(limitNum)
+      limit(limitNum),
     );
 
     const querySnapshot = await getDocs(q);
-    const items = querySnapshot.docs.map(doc => {
+    const items = querySnapshot.docs.map((doc) => {
       return {
         id: doc.id,
-        ...doc.data()
+        ...doc.data(),
       } as Conta;
     });
 
@@ -206,7 +234,7 @@ export class ContaService {
 
     const now = Date.now();
     const cached = this.cacheContasById.get(id);
-    if (cached && (now - cached.timestamp < this.CACHE_TTL)) {
+    if (cached && now - cached.timestamp < this.CACHE_TTL) {
       return { ...cached.data };
     }
 
@@ -217,7 +245,7 @@ export class ContaService {
       const conta = { id: docSnap.id, ...docSnap.data() } as Conta;
       this.cacheContasById.set(id, {
         data: { ...conta },
-        timestamp: now
+        timestamp: now,
       });
       return conta;
     }
@@ -249,7 +277,7 @@ export class ContaService {
       const filePath = `users/${user.uid}/receipts/${timestamp}_${file.name}`;
       const storageRef = ref(this.storage, filePath);
       const snapshot = await uploadBytes(storageRef, file, {
-        cacheControl: 'public, max-age=2592000, immutable'
+        cacheControl: 'public, max-age=2592000, immutable',
       });
       reciboUrl = await getDownloadURL(snapshot.ref);
     }
@@ -257,7 +285,7 @@ export class ContaService {
     const docRef = doc(this.firestore, `users/${user.uid}/contas`, id);
     const dataToUpdate = {
       ...contaData,
-      ...(reciboUrl ? { reciboUrl } : {})
+      ...(reciboUrl ? { reciboUrl } : {}),
     };
 
     // Remove id before updating
