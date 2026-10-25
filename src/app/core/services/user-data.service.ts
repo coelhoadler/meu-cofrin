@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { User } from '@angular/fire/auth';
-import { Firestore, doc, setDoc, serverTimestamp, collection, getDocs, deleteDoc } from '@angular/fire/firestore';
+import { Firestore, doc, setDoc, serverTimestamp, collection, getDocs, deleteDoc, writeBatch } from '@angular/fire/firestore';
 import { Storage, ref, listAll, deleteObject } from '@angular/fire/storage';
 
 @Injectable({
@@ -80,8 +80,18 @@ export class UserDataService {
       try {
         const subRef = collection(this.firestore, `users/${uid}/${sub}`);
         const snapshot = await getDocs(subRef);
-        for (const docItem of snapshot.docs) {
-          await deleteDoc(docItem.ref);
+
+        const chunks = [];
+        for (let i = 0; i < snapshot.docs.length; i += 500) {
+          chunks.push(snapshot.docs.slice(i, i + 500));
+        }
+
+        for (const chunk of chunks) {
+          const batch = writeBatch(this.firestore);
+          for (const docItem of chunk) {
+            batch.delete(docItem.ref);
+          }
+          await batch.commit();
         }
       } catch (e) {
         console.warn(`Erro ao apagar subcoleção ${sub}:`, e);
