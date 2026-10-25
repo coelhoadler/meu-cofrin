@@ -19,12 +19,18 @@ export class ThemeService {
     effect(() => {
       const theme = this.currentTheme();
       if (isPlatformBrowser(this.platformId)) {
-        localStorage.setItem('theme', theme);
-        
-        if (theme === 'dark') {
-          document.documentElement.classList.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
+        try {
+          localStorage.setItem('theme', theme);
+          
+          if (typeof document !== 'undefined' && document.documentElement) {
+            if (theme === 'dark') {
+              document.documentElement.classList.add('dark');
+            } else {
+              document.documentElement.classList.remove('dark');
+            }
+          }
+        } catch {
+          // Ignora caso localStorage ou DOM não estejam disponíveis
         }
       }
     });
@@ -39,15 +45,23 @@ export class ThemeService {
       return 'light';
     }
 
-    const savedTheme = localStorage.getItem('theme') as Theme | null;
-    
-    if (savedTheme === 'light' || savedTheme === 'dark') {
-      return savedTheme;
+    try {
+      const savedTheme = localStorage.getItem('theme') as Theme | null;
+      
+      if (savedTheme === 'light' || savedTheme === 'dark') {
+        return savedTheme;
+      }
+
+      // Verifica a preferência do sistema. Mas o padrão será claro.
+      if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        return prefersDark ? 'dark' : 'light';
+      }
+    } catch {
+      return 'light';
     }
 
-    // Verifica a preferência do sistema. Mas o padrão será claro.
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    return prefersDark ? 'dark' : 'light';
+    return 'light';
   }
 
   public toggleTheme() {

@@ -49,7 +49,7 @@ describe('SessionService', () => {
     service.remainingSeconds.set(30 * 60);
 
     expect(service.remainingMinutes()).toBe(30);
-    expect(service.remainingFormatted()).toBe('30m restantes');
+    expect(service.remainingFormatted()).toBe('Sessão: 30m');
     expect(service.progressPercentage()).toBe(50);
     expect(service.urgencyLevel()).toBe('normal');
 
@@ -63,7 +63,7 @@ describe('SessionService', () => {
 
     // 45 segundos restantes
     service.remainingSeconds.set(45);
-    expect(service.remainingFormatted()).toBe('45s restantes');
+    expect(service.remainingFormatted()).toBe('Sessão: 45s');
 
     // 0 segundos
     service.remainingSeconds.set(0);
