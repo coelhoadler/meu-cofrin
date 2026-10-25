@@ -1,3 +1,10 @@
+# [1.43.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.42.0...v1.43.0) (2026-10-25)
+
+
+### Features
+
+* add ThemeService and corresponding unit tests alongside SessionService tests ([9326971](https://github.com/coelhoadler/meu-cofrin/commit/93269710de0e4fae911467a054e921a93a075946))
+
 # [1.42.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.41.4...v1.42.0) (2026-10-25)
 
 
