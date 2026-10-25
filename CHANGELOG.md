@@ -1,3 +1,10 @@
+# [1.42.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.41.4...v1.42.0) (2026-10-25)
+
+
+### Features
+
+* create dashboard component markup with summary cards and transaction list ([1f23e52](https://github.com/coelhoadler/meu-cofrin/commit/1f23e524c0f3d97519b3c72c352d278a9e3f8ec5))
+
 ## [1.41.4](https://github.com/coelhoadler/meu-cofrin/compare/v1.41.3...v1.41.4) (2026-10-25)
 
 
