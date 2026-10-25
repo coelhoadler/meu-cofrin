@@ -1,3 +1,10 @@
+## [1.41.2](https://github.com/coelhoadler/meu-cofrin/compare/v1.41.1...v1.41.2) (2026-10-25)
+
+
+### Performance Improvements
+
+* **conta.service:** prevent redundant Firestore queries via request coalescing ([11cb04f](https://github.com/coelhoadler/meu-cofrin/commit/11cb04f9817d2c384f652c39bf459defac3cae72))
+
 ## [1.41.1](https://github.com/coelhoadler/meu-cofrin/compare/v1.41.0...v1.41.1) (2026-10-25)
 
 
