@@ -55,6 +55,7 @@ export class ParcelamentoService {
     }
 
     const contasRef = collection(this.firestore, `users/${user.uid}/contas`);
+    const batch = writeBatch(this.firestore);
 
     for (const conta of contas) {
       const dataToSave = {
@@ -62,8 +63,11 @@ export class ParcelamentoService {
         ...(reciboUrl ? { reciboUrl } : {}),
         createdAt: serverTimestamp()
       };
-      await addDoc(contasRef, dataToSave);
+      const newDocRef = doc(contasRef);
+      batch.set(newDocRef, dataToSave);
     }
+
+    await batch.commit();
   }
 
   async updateContasParceladas(contas: Conta[], file?: File | null): Promise<void> {
@@ -106,6 +110,7 @@ export class ParcelamentoService {
     if (!user) throw new Error('Usuário não autenticado');
 
     const contas = await this.getContasByParcelamentoId(parcelamentoId);
+    const batch = writeBatch(this.firestore);
 
     for (const conta of contas) {
       if (conta.id) {
@@ -121,8 +126,10 @@ export class ParcelamentoService {
           }
         }
 
-        await deleteDoc(docRef);
+        batch.delete(docRef);
       }
     }
+
+    await batch.commit();
   }
 }
