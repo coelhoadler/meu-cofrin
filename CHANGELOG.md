@@ -1,3 +1,11 @@
+## [1.41.4](https://github.com/coelhoadler/meu-cofrin/compare/v1.41.3...v1.41.4) (2026-10-25)
+
+
+### Performance Improvements
+
+* optimize updateContasParceladas with writeBatch ([098e7e7](https://github.com/coelhoadler/meu-cofrin/commit/098e7e7a5c1d5cd1c05af120122ae03f0c22b7d5))
+* **parcelamento:** optimize sequential firestore operations using writeBatch ([7301ba8](https://github.com/coelhoadler/meu-cofrin/commit/7301ba85b28a6c2e243f71cfedd983875f0bbc85))
+
 ## [1.41.3](https://github.com/coelhoadler/meu-cofrin/compare/v1.41.2...v1.41.3) (2026-10-25)
 
 
