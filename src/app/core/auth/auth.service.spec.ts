@@ -37,6 +37,7 @@ describe('AuthService - LastAccessAt bypass corporativo', () => {
   });
 
   const createService = () => {
+    TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       providers: [
         AuthService,
@@ -55,7 +56,7 @@ describe('AuthService - LastAccessAt bypass corporativo', () => {
     vi.mocked(authState).mockReturnValue(of(mockUser as any));
 
     service = createService();
-    await new Promise((resolve) => setTimeout(resolve, 10));
+    await new Promise((resolve) => setTimeout(resolve, 50));
 
     expect(userDataServiceMock.updateLastAccessDate).not.toHaveBeenCalled();
   });
@@ -67,7 +68,7 @@ describe('AuthService - LastAccessAt bypass corporativo', () => {
     vi.mocked(authState).mockReturnValue(of(mockUser as any));
 
     service = createService();
-    await new Promise((resolve) => setTimeout(resolve, 10));
+    await new Promise((resolve) => setTimeout(resolve, 50));
 
     expect(userDataServiceMock.updateLastAccessDate).not.toHaveBeenCalled();
   });
@@ -79,7 +80,7 @@ describe('AuthService - LastAccessAt bypass corporativo', () => {
     vi.mocked(authState).mockReturnValue(of(mockUser as any));
 
     service = createService();
-    await new Promise((resolve) => setTimeout(resolve, 10));
+    await new Promise((resolve) => setTimeout(resolve, 50));
 
     expect(userDataServiceMock.updateLastAccessDate).toHaveBeenCalledWith('user_pessoal_123');
   });
