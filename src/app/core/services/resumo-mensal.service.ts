@@ -1,11 +1,20 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, query, orderBy, getDocs, doc, getDoc, limit } from '@angular/fire/firestore';
+import {
+  Firestore,
+  collection,
+  query,
+  orderBy,
+  getDocs,
+  doc,
+  getDoc,
+  limit,
+} from '@angular/fire/firestore';
 import { AuthService } from '../auth/auth.service';
 import { ResumoMensal } from '../models/resumo-mensal.model';
 import { CacheEntry } from '../models/conta.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ResumoMensalService {
   private firestore = inject(Firestore);
@@ -13,6 +22,7 @@ export class ResumoMensalService {
 
   private readonly CACHE_TTL = 5 * 60 * 1000;
   private cacheResumos = new Map<number, CacheEntry<ResumoMensal[]>>();
+  private inFlightResumos = new Map<number, Promise<ResumoMensal[]>>();
 
   public invalidateCache(): void {
     this.cacheResumos.clear();
@@ -24,30 +34,43 @@ export class ResumoMensalService {
 
     const now = Date.now();
     const cached = this.cacheResumos.get(limite);
-    if (cached && (now - cached.timestamp < this.CACHE_TTL)) {
+    if (cached && now - cached.timestamp < this.CACHE_TTL) {
       return [...cached.data];
     }
 
-    const resumosRef = collection(this.firestore, `users/${user.uid}/resumosMensais`);
+    const inFlight = this.inFlightResumos.get(limite);
+    if (inFlight) {
+      return inFlight;
+    }
 
-    const q = query(
-      resumosRef,
-      orderBy('__name__', 'desc'),
-      limit(limite)
-    );
+    const fetchPromise = (async () => {
+      try {
+        const resumosRef = collection(this.firestore, `users/${user.uid}/resumosMensais`);
 
-    const querySnapshot = await getDocs(q);
-    const items = querySnapshot.docs.map(d => ({
-      id: d.id,
-      ...d.data()
-    } as ResumoMensal));
+        const q = query(resumosRef, orderBy('__name__', 'desc'), limit(limite));
 
-    this.cacheResumos.set(limite, {
-      data: [...items],
-      timestamp: now
-    });
+        const querySnapshot = await getDocs(q);
+        const items = querySnapshot.docs.map(
+          (d) =>
+            ({
+              id: d.id,
+              ...d.data(),
+            }) as ResumoMensal,
+        );
 
-    return items;
+        this.cacheResumos.set(limite, {
+          data: [...items],
+          timestamp: Date.now(),
+        });
+
+        return items;
+      } finally {
+        this.inFlightResumos.delete(limite);
+      }
+    })();
+
+    this.inFlightResumos.set(limite, fetchPromise);
+    return fetchPromise;
   }
 
   async getResumoMensalById(id: string): Promise<ResumoMensal | null> {
