@@ -43,11 +43,14 @@ export class ContaService {
   private cacheContasPorMes = new Map<string, CacheEntry<Conta[]>>();
   private inFlightContasPorMes = new Map<string, Promise<Conta[]>>();
   private cacheContasById = new Map<string, CacheEntry<Conta>>();
+  private cacheContasPorAno = new Map<string, CacheEntry<Conta[]>>();
+  private inFlightContasPorAno = new Map<string, Promise<Conta[]>>();
 
   public invalidateCache(): void {
     this.cacheLancamentosRecentes = null;
     this.cacheContasPorMes.clear();
     this.cacheContasById.clear();
+    this.cacheContasPorAno.clear();
     this.resumoMensalService.invalidateCache();
   }
 
@@ -209,23 +212,49 @@ export class ContaService {
       return [];
     }
 
-    const contasRef = collection(this.firestore, `users/${user.uid}/contas`);
-    const q = query(
-      contasRef,
-      where('mesReferencia', '>=', `${ano}-01`),
-      where('mesReferencia', '<=', `${ano}-12`),
-      limit(limitNum),
-    );
+    const cacheKey = `${ano}_${limitNum}`;
+    const now = Date.now();
+    const cached = this.cacheContasPorAno.get(cacheKey);
+    if (cached && now - cached.timestamp < this.CACHE_TTL) {
+      return [...cached.data];
+    }
 
-    const querySnapshot = await getDocs(q);
-    const items = querySnapshot.docs.map((doc) => {
-      return {
-        id: doc.id,
-        ...doc.data(),
-      } as Conta;
-    });
+    const inFlight = this.inFlightContasPorAno.get(cacheKey);
+    if (inFlight) {
+      return inFlight;
+    }
 
-    return items;
+    const fetchPromise = (async () => {
+      try {
+        const contasRef = collection(this.firestore, `users/${user.uid}/contas`);
+        const q = query(
+          contasRef,
+          where('mesReferencia', '>=', `${ano}-01`),
+          where('mesReferencia', '<=', `${ano}-12`),
+          limit(limitNum),
+        );
+
+        const querySnapshot = await getDocs(q);
+        const items = querySnapshot.docs.map((doc) => {
+          return {
+            id: doc.id,
+            ...doc.data(),
+          } as Conta;
+        });
+
+        this.cacheContasPorAno.set(cacheKey, {
+          data: [...items],
+          timestamp: Date.now(),
+        });
+
+        return items;
+      } finally {
+        this.inFlightContasPorAno.delete(cacheKey);
+      }
+    })();
+
+    this.inFlightContasPorAno.set(cacheKey, fetchPromise);
+    return fetchPromise;
   }
 
   async getContaById(id: string): Promise<Conta | null> {
