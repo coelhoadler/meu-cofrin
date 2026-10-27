@@ -14,6 +14,7 @@ import {
   updateDoc,
   deleteField,
   limit,
+  writeBatch,
 } from '@angular/fire/firestore';
 import { Storage, ref, uploadBytes, getDownloadURL, deleteObject } from '@angular/fire/storage';
 import { AuthService } from '../auth/auth.service';
@@ -49,6 +50,29 @@ export class ContaService {
     this.cacheContasPorMes.clear();
     this.cacheContasById.clear();
     this.resumoMensalService.invalidateCache();
+  }
+
+  async addContasBatch(contas: Conta[]): Promise<void> {
+    const user = await this.authService.getCurrentUserAsync();
+    if (!user) {
+      throw new Error('Usuário não autenticado');
+    }
+    if (contas.length === 0) return;
+
+    const batch = writeBatch(this.firestore);
+    const contasRef = collection(this.firestore, `users/${user.uid}/contas`);
+
+    for (const conta of contas) {
+      const dataToSave = {
+        ...conta,
+        createdAt: serverTimestamp(),
+      };
+      const newDocRef = doc(contasRef);
+      batch.set(newDocRef, dataToSave);
+    }
+
+    await batch.commit();
+    this.invalidateCache();
   }
 
   async addConta(contaData: Conta, file?: File | null): Promise<void> {
