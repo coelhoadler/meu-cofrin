@@ -8,7 +8,7 @@ export type ContaReplicavel = Conta & {
 };
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ReplicarMesService {
   private contaService = inject(ContaService);
@@ -24,20 +24,29 @@ export class ReplicarMesService {
       contasDestino = await this.contaService.getContasByMesReferencia(mesDestinoStr);
     }
 
-    const contasRecorrentes = contasOrigem.filter(c => c.isRecorrente);
+    const contasRecorrentes = contasOrigem.filter((c) => c.isRecorrente);
 
-    return contasRecorrentes.map(conta => {
-      const exists = mesOrigemStr === mesDestinoStr || contasDestino.some(d => d.nome === conta.nome && d.diaVencimento === conta.diaVencimento);
-      return {
-        ...conta,
-        existsInDestino: exists,
-        selected: !exists
-      };
-    }).sort((a, b) => a.diaVencimento - b.diaVencimento);
+    return contasRecorrentes
+      .map((conta) => {
+        const exists =
+          mesOrigemStr === mesDestinoStr ||
+          contasDestino.some(
+            (d) => d.nome === conta.nome && d.diaVencimento === conta.diaVencimento,
+          );
+        return {
+          ...conta,
+          existsInDestino: exists,
+          selected: !exists,
+        };
+      })
+      .sort((a, b) => a.diaVencimento - b.diaVencimento);
   }
 
-  async replicarContas(contasSelecionadas: ContaReplicavel[], mesDestinoStr: string): Promise<void> {
-    const promises = contasSelecionadas.map(conta => {
+  async replicarContas(
+    contasSelecionadas: ContaReplicavel[],
+    mesDestinoStr: string,
+  ): Promise<void> {
+    const novasContas = contasSelecionadas.map((conta) => {
       const novaConta: any = { ...conta };
       delete novaConta.id;
       delete novaConta.existsInDestino;
@@ -49,9 +58,11 @@ export class ReplicarMesService {
       novaConta.reciboUrl = '';
       novaConta.valorAntigo = conta.valor;
 
-      return this.contaService.addConta(novaConta);
+      return novaConta as Conta;
     });
 
-    await Promise.all(promises);
+    if (novasContas.length > 0) {
+      await this.contaService.addContasBatch(novasContas);
+    }
   }
 }
