@@ -20,14 +20,33 @@ export class FinanceiroCalculoService {
     };
   }
 
+  private hojeTimestamp: number | null = null;
+  private nextMidnight: number = 0;
+
+  private getHojeTimestamp(): number {
+    const now = Date.now();
+
+    if (this.hojeTimestamp !== null && now < this.nextMidnight) {
+      return this.hojeTimestamp;
+    }
+
+    const agora = new Date(now);
+    agora.setHours(0, 0, 0, 0);
+    this.hojeTimestamp = agora.getTime();
+
+    // Calcula a próxima meia-noite
+    const tomorrow = new Date(agora);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    this.nextMidnight = tomorrow.getTime();
+
+    return this.hojeTimestamp;
+  }
+
   calcularDiffDataVencimento(item: Conta): number {
     const [ano, mes] = item.mesReferencia.split('-');
     const dataVencimento = new Date(parseInt(ano), parseInt(mes) - 1, item.diaVencimento);
-    const hoje = new Date();
-    hoje.setHours(0, 0, 0, 0);
-
-    const diffTime = dataVencimento.getTime() - hoje.getTime();
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diffTime = dataVencimento.getTime() - this.getHojeTimestamp();
+    return Math.ceil(diffTime / 86400000); // 1000 * 60 * 60 * 24 = 86400000 ms per day
   }
 
   calcularResumoDoMes(contasDoMes: Conta[]) {
