@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, ElementRef, OnInit, inject, signal, computed, effect, viewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ChartConfiguration } from 'chart.js';
@@ -13,6 +13,7 @@ import { Investimento, RegistroInvestimento } from '../../../core/models/investi
 import { NavigationHistoryService } from '../../../core/services/navigation-history.service';
 import { NgxCurrencyDirective } from 'ngx-currency';
 import { NgxMaskDirective } from 'ngx-mask';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-evolucao',
@@ -25,6 +26,7 @@ export class EvolucaoComponent implements OnInit {
   private router = inject(Router);
   private investimentoService = inject(InvestimentoService);
   private fb = inject(FormBuilder);
+  private toastr = inject(ToastrService);
   public navigationHistory = inject(NavigationHistoryService);
 
   investimentoId = signal<string | null>(null);
@@ -37,6 +39,14 @@ export class EvolucaoComponent implements OnInit {
   showModal = signal(false);
   formRegistro!: FormGroup;
   isSaving = signal(false);
+
+  // Edição inline da anotação (um registro por vez)
+  readonly anotacaoMaxLength = 100;
+  registroEditandoId = signal<string | null>(null);
+  anotacaoEditada = signal('');
+  isSavingAnotacao = signal(false);
+  private anotacaoInput = viewChild<ElementRef<HTMLInputElement>>('anotacaoInput');
+  private focarAnotacao = effect(() => this.anotacaoInput()?.nativeElement.focus());
 
   // Chart config
   lineChartOptions: ChartConfiguration<'line'>['options'] = {
@@ -84,7 +94,7 @@ export class EvolucaoComponent implements OnInit {
     this.formRegistro = this.fb.group({
       data: [`${dia}${mes}${ano}`, Validators.required],
       valor: [0, [Validators.required, Validators.min(0)]],
-      anotacao: ['']
+      anotacao: ['', [Validators.maxLength(this.anotacaoMaxLength)]]
     });
 
     this.route.paramMap.subscribe(params => {
@@ -218,6 +228,49 @@ export class EvolucaoComponent implements OnInit {
       alert('Erro ao salvar o registro. Tente novamente.');
     } finally {
       this.isSaving.set(false);
+    }
+  }
+
+  editarAnotacao(reg: RegistroInvestimento) {
+    if (!reg.id) return;
+    // Abrir outro registro descarta a edição em andamento
+    this.anotacaoEditada.set(reg.anotacao ?? '');
+    this.registroEditandoId.set(reg.id);
+  }
+
+  onAnotacaoInput(event: Event) {
+    this.anotacaoEditada.set((event.target as HTMLInputElement).value);
+  }
+
+  cancelarEdicaoAnotacao() {
+    this.registroEditandoId.set(null);
+  }
+
+  async salvarAnotacao(reg: RegistroInvestimento) {
+    const id = this.investimentoId();
+    if (!id || !reg.id || this.isSavingAnotacao()) return;
+
+    const anotacao = this.anotacaoEditada().trim();
+    if (anotacao === (reg.anotacao ?? '')) {
+      this.cancelarEdicaoAnotacao();
+      return;
+    }
+
+    this.isSavingAnotacao.set(true);
+    try {
+      await this.investimentoService.updateAnotacaoRegistro(id, reg.id, anotacao);
+      this.registros.update(regs =>
+        regs.map(r => (r.id === reg.id ? { ...r, anotacao: anotacao || undefined } : r))
+      );
+      // Só fecha se o usuário não abriu outro registro enquanto salvava
+      if (this.registroEditandoId() === reg.id) {
+        this.cancelarEdicaoAnotacao();
+      }
+    } catch (error) {
+      console.error('Erro ao salvar anotação', error);
+      this.toastr.error('Não foi possível salvar a anotação. Tente novamente.');
+    } finally {
+      this.isSavingAnotacao.set(false);
     }
   }
 

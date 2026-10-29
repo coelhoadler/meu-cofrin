@@ -93,21 +93,47 @@
 
     <div class="flex flex-col gap-1">
       @for (reg of registrosDesc(); track reg.id) {
+      @let editando = registroEditandoId() === reg.id;
       <div
-        class="flex items-center justify-between p-4 rounded-xl border border-transparent hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors group">
-        <div class="flex flex-col">
-          <p class="text-sm font-bold text-slate-800 dark:text-white">{{ reg.data | date:'dd/MM/yyyy' }}</p>
-          @if (reg.anotacao) {
-          <p class="text-[12px] text-slate-500 dark:text-slate-400 mt-1">{{ reg.anotacao }}</p>
-          }
+        class="flex flex-col gap-2 p-4 rounded-xl border border-transparent hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors group">
+        <div class="flex items-center justify-between gap-3">
+          <div class="flex flex-col min-w-0">
+            <p class="text-sm font-bold text-slate-800 dark:text-white">{{ reg.data | date:'dd/MM/yyyy' }}</p>
+            @if (!editando && reg.anotacao) {
+            <p class="text-[12px] text-slate-500 dark:text-slate-400 mt-1 wrap-break-word">{{ reg.anotacao }}</p>
+            }
+          </div>
+          <div class="flex items-center gap-3 md:gap-6 shrink-0">
+            <p class="text-sm font-bold text-slate-800 dark:text-white">{{ reg.valor | currency:'BRL' }}</p>
+            <div class="flex items-center gap-2">
+              @if (editando) {
+              <button type="button" (click)="salvarAnotacao(reg)" [disabled]="isSavingAnotacao()"
+                class="text-emerald-500 hover:text-emerald-400 transition-colors disabled:opacity-50" title="Salvar anotação">
+                <span class="material-symbols-outlined text-[20px]">check</span>
+              </button>
+              <button type="button" (click)="cancelarEdicaoAnotacao()" class="text-slate-400 hover:text-slate-200 transition-colors"
+                title="Cancelar edição">
+                <span class="material-symbols-outlined text-[20px]">close</span>
+              </button>
+              } @else {
+              <button type="button" (click)="editarAnotacao(reg)" class="text-slate-400 hover:text-slate-200 transition-colors"
+                title="Editar anotação">
+                <span class="material-symbols-outlined text-[20px]">edit</span>
+              </button>
+              <button type="button" (click)="deleteRegistro(reg.id)" class="text-slate-400 hover:text-slate-200 transition-colors"
+                title="Deletar registro">
+                <span class="material-symbols-outlined text-[20px]">delete</span>
+              </button>
+              }
+            </div>
+          </div>
         </div>
-        <div class="flex items-center gap-6">
-          <p class="text-sm font-bold text-slate-800 dark:text-white">{{ reg.valor | currency:'BRL' }}</p>
-          <button (click)="deleteRegistro(reg.id)" class="text-slate-400 hover:text-slate-200 transition-colors"
-            title="Deletar registro">
-            <span class="material-symbols-outlined text-[20px]">delete</span>
-          </button>
-        </div>
+        @if (editando) {
+        <input #anotacaoInput type="text" [value]="anotacaoEditada()" (input)="onAnotacaoInput($event)"
+          (keydown.enter)="salvarAnotacao(reg)" (keydown.escape)="cancelarEdicaoAnotacao()"
+          [maxLength]="anotacaoMaxLength" placeholder="Ex: Rendimento do mês" aria-label="Anotação do registro"
+          class="w-full md:max-w-md bg-transparent border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-1.5 text-[12px] text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all placeholder:text-slate-400" />
+        }
       </div>
       } @empty {
       <p class="text-sm text-slate-400 text-center py-6">Nenhum registro encontrado.</p>
@@ -145,7 +171,7 @@
 
     <div class="flex flex-col gap-1.5">
       <label class="text-sm font-medium">Anotação (Opcional)</label>
-      <input type="text" formControlName="anotacao" placeholder="Ex: Rendimento do mês"
+      <input type="text" formControlName="anotacao" [maxLength]="anotacaoMaxLength" placeholder="Ex: Rendimento do mês"
         class="w-full bg-transparent border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all" />
     </div>
 

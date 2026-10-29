@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, addDoc, serverTimestamp, query, orderBy, getDocs, doc, deleteDoc, getDoc, updateDoc } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, serverTimestamp, query, orderBy, getDocs, doc, deleteDoc, getDoc, updateDoc, deleteField } from '@angular/fire/firestore';
 import { AuthService } from '../auth/auth.service';
 import { Investimento, RegistroInvestimento } from '../models/investimento.model';
 
@@ -106,6 +106,15 @@ export class InvestimentoService {
     // Atualiza o valorAtual do investimento
     const investimentoRef = doc(this.firestore, `users/${user.uid}/investimentos`, investimentoId);
     await updateDoc(investimentoRef, { valorAtual: registro.valor });
+  }
+
+  // Anotação vazia remove o campo do registro.
+  async updateAnotacaoRegistro(investimentoId: string, registroId: string, anotacao: string): Promise<void> {
+    const user = await this.authService.getCurrentUserAsync();
+    if (!user) throw new Error('Usuário não autenticado');
+
+    const docRef = doc(this.firestore, `users/${user.uid}/investimentos/${investimentoId}/registros`, registroId);
+    await updateDoc(docRef, { anotacao: anotacao || deleteField() });
   }
 
   async deleteRegistro(investimentoId: string, registroId: string): Promise<void> {
