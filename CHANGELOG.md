@@ -1,3 +1,10 @@
+# [1.44.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.43.0...v1.44.0) (2026-10-29)
+
+
+### Features
+
+* add inline editing for investment record annotations and update service methods ([b311e5f](https://github.com/coelhoadler/meu-cofrin/commit/b311e5f7a9a261331e674f995feeb16b630daa60))
+
 # [1.43.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.42.0...v1.43.0) (2026-10-25)
 
 
