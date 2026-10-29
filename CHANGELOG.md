@@ -1,3 +1,16 @@
+## [1.44.1](https://github.com/coelhoadler/meu-cofrin/compare/v1.44.0...v1.44.1) (2026-10-29)
+
+
+### Bug Fixes
+
+* **dashboard:** não repetir gravações e listener do FCM a cada troca de mês ([6f6af20](https://github.com/coelhoadler/meu-cofrin/commit/6f6af207ecc5aa69b84b5c832de5f022a143040b))
+
+
+### Performance Improvements
+
+* **app:** remover provideAnimations e provideClientHydration duplicado ([4d878ab](https://github.com/coelhoadler/meu-cofrin/commit/4d878ab3c0202df8d8f28e454ec4f356f3e96e8c))
+* **icones:** reduzir fonte Material Symbols de 3,96 MB para 12 kB ([c1da531](https://github.com/coelhoadler/meu-cofrin/commit/c1da5311cc72fee7c59a2217732a668f80564772))
+
 # [1.44.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.43.0...v1.44.0) (2026-10-29)
 
 
