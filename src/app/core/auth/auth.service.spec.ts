@@ -84,3 +84,45 @@ describe('AuthService - LastAccessAt bypass corporativo', () => {
     expect(userDataServiceMock.updateLastAccessDate).toHaveBeenCalledWith('user_pessoal_123');
   });
 });
+
+describe('AuthService - saveUserProfile', () => {
+  const userDataServiceMock = {
+    updateLastAccessDate: vi.fn().mockResolvedValue(undefined),
+    saveUserProfile: vi.fn().mockResolvedValue(undefined),
+  };
+
+  let service: AuthService;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.mocked(authState).mockReturnValue(of(null));
+
+    TestBed.configureTestingModule({
+      providers: [
+        AuthService,
+        { provide: Auth, useValue: {} },
+        { provide: Router, useValue: { url: '/dashboard', navigate: vi.fn() } },
+        { provide: UserDataService, useValue: userDataServiceMock },
+        { provide: EmpresaService, useValue: { isEmpresaAccount: vi.fn().mockResolvedValue(false) } },
+      ],
+    });
+    service = TestBed.inject(AuthService);
+  });
+
+  it('deve gravar o perfil uma única vez por usuário na sessão', async () => {
+    const user = { uid: 'user-1' } as any;
+
+    await service.saveUserProfile(user);
+    await service.saveUserProfile(user);
+    await service.saveUserProfile(user);
+
+    expect(userDataServiceMock.saveUserProfile).toHaveBeenCalledTimes(1);
+  });
+
+  it('deve gravar de novo quando outro usuário entrar', async () => {
+    await service.saveUserProfile({ uid: 'user-1' } as any);
+    await service.saveUserProfile({ uid: 'user-2' } as any);
+
+    expect(userDataServiceMock.saveUserProfile).toHaveBeenCalledTimes(2);
+  });
+});

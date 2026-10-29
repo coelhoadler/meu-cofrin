@@ -163,13 +163,21 @@ export class DashboardComponent implements AfterViewInit {
   });
 
   constructor() {
+    // Dados do mês selecionado: recarregam a cada troca de mês
     effect(() => {
       const user = this.authService.currentUser();
       const mesRef = this.selectedMesRef();
       if (user && mesRef) {
-        this.authService.saveUserProfile(user);
         this.loadLancamentos(mesRef);
         this.loadResumoMes(mesRef);
+      }
+    });
+
+    // Independem do mês: rodam só quando o usuário muda
+    effect(() => {
+      const user = this.authService.currentUser();
+      if (user) {
+        this.authService.saveUserProfile(user);
         this.loadResumoGrafico();
 
         this.messagingService.requestPermissionAndGetToken();

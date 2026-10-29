@@ -18,6 +18,7 @@ export class AuthService {
   private empresaService = inject(EmpresaService);
 
   currentUser = signal<User | null | undefined>(undefined);
+  private perfilSalvoPara: string | null = null;
 
   constructor() {
     authState(this.auth).subscribe(async (user) => {
@@ -81,7 +82,10 @@ export class AuthService {
     return this.userDataService.updateLastAccessDate(uid);
   }
 
+  // Grava o perfil no máximo uma vez por usuário a cada sessão do app
   async saveUserProfile(user: User) {
+    if (this.perfilSalvoPara === user.uid) return;
+    this.perfilSalvoPara = user.uid;
     return this.userDataService.saveUserProfile(user);
   }
 
