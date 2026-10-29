@@ -1,3 +1,10 @@
+## [1.44.2](https://github.com/coelhoadler/meu-cofrin/compare/v1.44.1...v1.44.2) (2026-10-29)
+
+
+### Bug Fixes
+
+* **icones:** incluir apelidos de ícones renomeados na fonte reduzida ([9259dab](https://github.com/coelhoadler/meu-cofrin/commit/9259dab44b439af717d03888b28c06bcd5da5a82))
+
 ## [1.44.1](https://github.com/coelhoadler/meu-cofrin/compare/v1.44.0...v1.44.1) (2026-10-29)
 
 
