@@ -7,7 +7,6 @@ import {
   provideBrowserGlobalErrorListeners,
   provideZonelessChangeDetection,
 } from '@angular/core';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter, Router } from '@angular/router';
 import { provideToastr } from 'ngx-toastr';
 import { providePrimeNG } from 'primeng/config';
@@ -42,7 +41,6 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZonelessChangeDetection(),
     provideBrowserGlobalErrorListeners(),
-    provideAnimations(),
     providePrimeNG({
       theme: {
         preset: Aura,
@@ -124,6 +122,6 @@ export const appConfig: ApplicationConfig = {
       useFactory: () => () => {},
       deps: [Sentry.TraceService],
       multi: true,
-    }, provideClientHydration(),
+    },
   ],
 };
