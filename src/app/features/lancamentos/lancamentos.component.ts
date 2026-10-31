@@ -19,7 +19,11 @@ import { InvestimentoService } from '../../core/services/investimento.service';
 import { Investimento } from '../../core/models/investimento.model';
 import { NavigationHistoryService } from '../../core/services/navigation-history.service';
 import { UserPreferencesService } from '../../core/services/user-preferences.service';
-import { parseFloatValor, formatarMoeda, formatDataPagamento } from '../../core/utils/formatacao.utils';
+import {
+  parseFloatValor,
+  formatarMoeda,
+  formatDataPagamento,
+} from '../../core/utils/formatacao.utils';
 
 export type VisaoModo = 'lista' | 'resumo';
 
@@ -214,19 +218,19 @@ export class LancamentosComponent implements OnInit {
       const inicio = range[0];
       const fim = range[1];
 
+      // ⚡ Bolt Optimization: Memoize boundary dates outside the loop and use numeric timestamps
+      // Prevents instantiating 3 Date objects per iteration inside the filter
+      const inicioTime = new Date(
+        inicio.getFullYear(),
+        inicio.getMonth(),
+        inicio.getDate(),
+      ).getTime();
+      const fimTime = new Date(fim.getFullYear(), fim.getMonth(), fim.getDate()).getTime();
+
       filtradas = filtradas.filter((c) => {
         const [ano, mes] = c.mesReferencia.split('-');
-        const dataVencimento = new Date(parseInt(ano), parseInt(mes) - 1, c.diaVencimento);
-
-        const dataVencZera = new Date(
-          dataVencimento.getFullYear(),
-          dataVencimento.getMonth(),
-          dataVencimento.getDate(),
-        );
-        const inicioZera = new Date(inicio.getFullYear(), inicio.getMonth(), inicio.getDate());
-        const fimZera = new Date(fim.getFullYear(), fim.getMonth(), fim.getDate());
-
-        return dataVencZera >= inicioZera && dataVencZera <= fimZera;
+        const dataVencTime = new Date(parseInt(ano), parseInt(mes) - 1, c.diaVencimento).getTime();
+        return dataVencTime >= inicioTime && dataVencTime <= fimTime;
       });
     }
 
@@ -469,4 +473,3 @@ export class LancamentosComponent implements OnInit {
   formatarMoeda = formatarMoeda;
   formatDataPagamento = formatDataPagamento;
 }
-
