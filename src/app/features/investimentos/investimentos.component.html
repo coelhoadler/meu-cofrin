@@ -43,6 +43,22 @@
         </p-accordion-header>
 
         <p-accordion-content class="!bg-transparent !border-none !p-0">
+          <!-- Descrições dos investimentos do Tipo -->
+          @if (categoria.descricoes.length > 0) {
+          <div
+            class="mt-4 flex gap-3 rounded-2xl border border-indigo-100 bg-indigo-50/80 p-4 text-xs text-indigo-900 dark:border-indigo-900/60 dark:bg-indigo-950/40 dark:text-indigo-200">
+            <span class="material-symbols-outlined text-lg leading-none shrink-0 text-indigo-600 dark:text-indigo-400"
+              aria-hidden="true">info</span>
+            <ul aria-label="Descrições dos investimentos" class="flex min-w-0 flex-col gap-1.5">
+              @for (item of categoria.descricoes; track item.id) {
+              <li class="wrap-anywhere whitespace-pre-line">
+                <strong class="font-semibold">{{ item.nome }}:</strong> {{ item.descricao }}
+              </li>
+              }
+            </ul>
+          </div>
+          }
+
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-4">
             @for (inv of categoria.investimentos; track inv.id) {
             <div

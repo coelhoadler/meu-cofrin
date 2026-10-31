@@ -80,7 +80,12 @@ export class InvestimentosComponent implements OnInit {
         return Array.from(grouped.entries())
             .map(([tipo, investimentos]) => {
                 const total = investimentos.reduce((acc, inv) => acc + (inv.valorAtual || 0), 0);
-                return { tipo, investimentos, total };
+                // Descrições exibidas no alerta do Tipo, na mesma ordem dos cards
+                const descricoes = investimentos.flatMap(inv => {
+                    const descricao = inv.descricao?.trim();
+                    return descricao ? [{ id: inv.id, nome: inv.nome, descricao }] : [];
+                });
+                return { tipo, investimentos, total, descricoes };
             })
             .sort((a, b) => a.tipo.localeCompare(b.tipo));
     });
