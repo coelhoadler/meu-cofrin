@@ -74,25 +74,40 @@ export class UserDataService {
     }
   }
 
+  // Subcoleções de users/{uid}, com as subcoleções de cada documento. O SDK web não
+  // lista subcoleções, então toda subcoleção nova precisa ser declarada aqui.
+  private readonly userSubcollections: Record<string, string[]> = {
+    contas: [],
+    resumosMensais: [],
+    categorias: [],
+    desejos: [],
+    passkeys: [],
+    investimentos: ['registros']
+  };
+
+  private async deleteCollection(path: string, nestedSubcollections: string[] = []): Promise<void> {
+    const snapshot = await getDocs(collection(this.firestore, path));
+
+    // Apagar um documento não apaga suas subcoleções, então elas vão primeiro
+    for (const docItem of snapshot.docs) {
+      for (const nested of nestedSubcollections) {
+        await this.deleteCollection(`${docItem.ref.path}/${nested}`);
+      }
+    }
+
+    for (let i = 0; i < snapshot.docs.length; i += 500) {
+      const batch = writeBatch(this.firestore);
+      for (const docItem of snapshot.docs.slice(i, i + 500)) {
+        batch.delete(docItem.ref);
+      }
+      await batch.commit();
+    }
+  }
+
   async deleteUserFirestoreData(uid: string): Promise<void> {
-    const subcollections = ['contas', 'resumosMensais', 'categorias'];
-    for (const sub of subcollections) {
+    for (const [sub, nestedSubcollections] of Object.entries(this.userSubcollections)) {
       try {
-        const subRef = collection(this.firestore, `users/${uid}/${sub}`);
-        const snapshot = await getDocs(subRef);
-
-        const chunks = [];
-        for (let i = 0; i < snapshot.docs.length; i += 500) {
-          chunks.push(snapshot.docs.slice(i, i + 500));
-        }
-
-        for (const chunk of chunks) {
-          const batch = writeBatch(this.firestore);
-          for (const docItem of chunk) {
-            batch.delete(docItem.ref);
-          }
-          await batch.commit();
-        }
+        await this.deleteCollection(`users/${uid}/${sub}`, nestedSubcollections);
       } catch (e) {
         console.warn(`Erro ao apagar subcoleção ${sub}:`, e);
       }

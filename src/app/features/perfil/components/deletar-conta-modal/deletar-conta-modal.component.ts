@@ -91,15 +91,16 @@ import { AuthService } from '../../../../core/auth/auth.service';
                 <span class="material-symbols-outlined text-rose-500 text-[18px] mt-0.5"
                   >account_circle</span
                 >
-                <span><strong>Autenticação:</strong> Seu login e dados da conta de acesso.</span>
+                <span><strong>Autenticação:</strong> Seu login, dados da conta de acesso e biometria
+                  cadastrada.</span>
               </li>
               <li class="flex items-start gap-2">
                 <span class="material-symbols-outlined text-rose-500 text-[18px] mt-0.5"
                   >database</span
                 >
                 <span
-                  ><strong>Banco de dados:</strong> Suas contas, despesas, receitas, resumos mensais e
-                  categorias cadastradas.</span
+                  ><strong>Banco de dados:</strong> Suas contas, despesas, receitas, resumos mensais,
+                  categorias, investimentos (com o histórico de evolução) e desejos cadastrados.</span
                 >
               </li>
               <li class="flex items-start gap-2">
