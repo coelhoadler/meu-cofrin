@@ -1,3 +1,15 @@
+# [1.45.0](https://github.com/coelhoadler/meu-cofrin/compare/v1.44.2...v1.45.0) (2026-10-31)
+
+
+### Bug Fixes
+
+* **perfil:** apagar investimentos, desejos e passkeys ao excluir a conta ([d1e112b](https://github.com/coelhoadler/meu-cofrin/commit/d1e112b3e4d44402901e46b4cb1c3092d1c3a234))
+
+
+### Features
+
+* **investimentos:** exibir descrições dos investimentos no Tipo ([c62ae6c](https://github.com/coelhoadler/meu-cofrin/commit/c62ae6cecd505a011d821d62a4a50025c7ba484f))
+
 ## [1.44.2](https://github.com/coelhoadler/meu-cofrin/compare/v1.44.1...v1.44.2) (2026-10-29)
 
 
