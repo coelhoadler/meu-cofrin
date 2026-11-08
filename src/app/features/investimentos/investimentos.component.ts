@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, signal, computed, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+  computed,
+  OnInit,
+} from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { InvestimentoService } from '../../core/services/investimento.service';
 import { Investimento } from '../../core/models/investimento.model';
@@ -9,154 +16,167 @@ import { AccordionModule } from 'primeng/accordion';
 import { InvestimentoModalComponent } from './investimento-modal/investimento-modal.component';
 
 @Component({
-    selector: 'app-investimentos',
-    standalone: true,
-    imports: [CommonModule, RouterLink, ProgressSpinnerModule, AccordionModule, InvestimentoModalComponent],
-    templateUrl: './investimentos.component.html',
-    styles: [`
-        :host ::ng-deep p-accordion-panel,
-        :host ::ng-deep .p-accordion-panel,
-        :host ::ng-deep .p-accordionpanel {
-            background: transparent !important;
-            border: none !important;
-        }
-        :host ::ng-deep p-accordion-content,
-        :host ::ng-deep .p-accordion-content,
-        :host ::ng-deep .p-accordioncontent-content,
-        :host ::ng-deep .p-accordionpanel-content {
-            background: transparent !important;
-            border: none !important;
-        }
-    `],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'app-investimentos',
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterLink,
+    ProgressSpinnerModule,
+    AccordionModule,
+    InvestimentoModalComponent,
+  ],
+  templateUrl: './investimentos.component.html',
+  styles: [
+    `
+      :host ::ng-deep p-accordion-panel,
+      :host ::ng-deep .p-accordion-panel,
+      :host ::ng-deep .p-accordionpanel {
+        background: transparent !important;
+        border: none !important;
+      }
+      :host ::ng-deep p-accordion-content,
+      :host ::ng-deep .p-accordion-content,
+      :host ::ng-deep .p-accordioncontent-content,
+      :host ::ng-deep .p-accordionpanel-content {
+        background: transparent !important;
+        border: none !important;
+      }
+    `,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InvestimentosComponent implements OnInit {
-    private investimentoService = inject(InvestimentoService);
-    private router = inject(Router);
-    public navigationHistory = inject(NavigationHistoryService);
+  private investimentoService = inject(InvestimentoService);
+  private router = inject(Router);
+  public navigationHistory = inject(NavigationHistoryService);
 
-    investimentos = signal<Investimento[]>([]);
-    isLoading = signal(true);
+  investimentos = signal<Investimento[]>([]);
+  isLoading = signal(true);
 
-    // Modal State
-    showModal = signal(false);
-    selectedInvestimento = signal<Investimento | null>(null);
+  // Modal State
+  showModal = signal(false);
+  selectedInvestimento = signal<Investimento | null>(null);
 
-    showValues = signal(localStorage.getItem('showValues') !== 'false');
+  showValues = signal(localStorage.getItem('showValues') !== 'false');
 
-    totalInvestido = computed(() => {
-        return this.investimentos().reduce((acc, curr) => acc + (curr.valorAtual || 0), 0);
+  totalInvestido = computed(() => {
+    return this.investimentos().reduce((acc, curr) => acc + (curr.valorAtual || 0), 0);
+  });
+
+  investimentosPorCategoria = computed(() => {
+    const list = [...this.investimentos()];
+
+    // Ordenar por data de vencimento (mais próxima primeiro)
+    list.sort((a, b) => {
+      const hasDataA = !!a.dataVencimento;
+      const hasDataB = !!b.dataVencimento;
+
+      if (hasDataA && hasDataB) {
+        const dateA = new Date(a.dataVencimento!).getTime();
+        const dateB = new Date(b.dataVencimento!).getTime();
+        if (dateA !== dateB) return dateA - dateB;
+      } else if (hasDataA && !hasDataB) {
+        return -1;
+      } else if (!hasDataA && hasDataB) {
+        return 1;
+      }
+      // Fallback para ordem alfabética se não tiverem data
+      return a.nome.localeCompare(b.nome);
     });
 
-    investimentosPorCategoria = computed(() => {
-        const list = [...this.investimentos()];
+    const grouped = new Map<string, Investimento[]>();
+    for (const inv of list) {
+      if (!grouped.has(inv.tipo)) {
+        grouped.set(inv.tipo, []);
+      }
+      grouped.get(inv.tipo)!.push(inv);
+    }
 
-        // Ordenar por data de vencimento (mais próxima primeiro)
-        list.sort((a, b) => {
-            const hasDataA = !!a.dataVencimento;
-            const hasDataB = !!b.dataVencimento;
-
-            if (hasDataA && hasDataB) {
-                const dateA = new Date(a.dataVencimento!).getTime();
-                const dateB = new Date(b.dataVencimento!).getTime();
-                if (dateA !== dateB) return dateA - dateB;
-            } else if (hasDataA && !hasDataB) {
-                return -1;
-            } else if (!hasDataA && hasDataB) {
-                return 1;
-            }
-            // Fallback para ordem alfabética se não tiverem data
-            return a.nome.localeCompare(b.nome);
+    return Array.from(grouped.entries())
+      .map(([tipo, investimentos]) => {
+        const total = investimentos.reduce((acc, inv) => acc + (inv.valorAtual || 0), 0);
+        // Descrições exibidas no alerta do Tipo, na mesma ordem dos cards
+        const descricoes = investimentos.flatMap((inv) => {
+          const descricao = inv.descricao?.trim();
+          return descricao ? [{ id: inv.id, nome: inv.nome, descricao }] : [];
         });
 
-        const grouped = new Map<string, Investimento[]>();
-        for (const inv of list) {
-            if (!grouped.has(inv.tipo)) {
-                grouped.set(inv.tipo, []);
-            }
-            grouped.get(inv.tipo)!.push(inv);
-        }
-
-        return Array.from(grouped.entries())
-            .map(([tipo, investimentos]) => {
-                const total = investimentos.reduce((acc, inv) => acc + (inv.valorAtual || 0), 0);
-                // Descrições exibidas no alerta do Tipo, na mesma ordem dos cards
-                const descricoes = investimentos.flatMap(inv => {
-                    const descricao = inv.descricao?.trim();
-                    return descricao ? [{ id: inv.id, nome: inv.nome, descricao }] : [];
-                });
-                return { tipo, investimentos, total, descricoes };
-            })
-            .sort((a, b) => a.tipo.localeCompare(b.tipo));
-    });
-
-    async ngOnInit() {
-        await this.loadInvestimentos();
-    }
-
-    async loadInvestimentos() {
-        this.isLoading.set(true);
-        try {
-            const items = await this.investimentoService.getInvestimentos();
-            this.investimentos.set(items || []);
-        } catch (error) {
-            console.error('Erro ao buscar investimentos', error);
-        } finally {
-            this.isLoading.set(false);
-        }
-    }
-
-    getRentabilidade(inv: Investimento): { valor: number, percentual: number, positiva: boolean } {
-        const rendimento = inv.valorAtual - inv.aporteInicial;
-        let percentual = 0;
-        if (inv.aporteInicial > 0) {
+        // Pré-calcular rentabilidade para evitar chamadas de função no template durante o change detection
+        const investimentosComRentabilidade = investimentos.map((inv) => {
+          const rendimento = (inv.valorAtual || 0) - (inv.aporteInicial || 0);
+          let percentual = 0;
+          if (inv.aporteInicial > 0) {
             percentual = (rendimento / inv.aporteInicial) * 100;
-        }
-        return {
-            valor: rendimento,
-            percentual: Math.abs(percentual),
-            positiva: rendimento >= 0
-        };
-    }
+          }
+          return {
+            ...inv,
+            rentabilidade: {
+              valor: rendimento,
+              percentual: Math.abs(percentual),
+              positiva: rendimento >= 0,
+            },
+          };
+        });
 
-    openNovoInvestimento() {
-        this.selectedInvestimento.set(null);
-        this.showModal.set(true);
-    }
+        return { tipo, investimentos: investimentosComRentabilidade, total, descricoes };
+      })
+      .sort((a, b) => a.tipo.localeCompare(b.tipo));
+  });
 
-    openEditarInvestimento(inv: Investimento, event: Event) {
-        event.stopPropagation();
-        this.selectedInvestimento.set(inv);
-        this.showModal.set(true);
-    }
+  async ngOnInit() {
+    await this.loadInvestimentos();
+  }
 
-    async deleteInvestimento(id: string | undefined, event: Event) {
-        event.stopPropagation();
-        if (!id) return;
-
-        if (confirm('Tem certeza que deseja excluir este investimento?')) {
-            await this.investimentoService.deleteInvestimento(id);
-            await this.loadInvestimentos();
-        }
+  async loadInvestimentos() {
+    this.isLoading.set(true);
+    try {
+      const items = await this.investimentoService.getInvestimentos();
+      this.investimentos.set(items || []);
+    } catch (error) {
+      console.error('Erro ao buscar investimentos', error);
+    } finally {
+      this.isLoading.set(false);
     }
+  }
 
-    onModalClose(saved: boolean) {
-        this.showModal.set(false);
-        this.selectedInvestimento.set(null);
-        if (saved) {
-            this.loadInvestimentos();
-        }
-    }
+  openNovoInvestimento() {
+    this.selectedInvestimento.set(null);
+    this.showModal.set(true);
+  }
 
-    goToEvolucao(id: string | undefined) {
-        if (id) {
-            this.router.navigate(['/investimentos', id, 'evolucao']);
-        }
-    }
+  openEditarInvestimento(inv: Investimento, event: Event) {
+    event.stopPropagation();
+    this.selectedInvestimento.set(inv);
+    this.showModal.set(true);
+  }
 
-    toggleVisibility() {
-        const newValue = !this.showValues();
-        this.showValues.set(newValue);
-        localStorage.setItem('showValues', newValue.toString());
+  async deleteInvestimento(id: string | undefined, event: Event) {
+    event.stopPropagation();
+    if (!id) return;
+
+    if (confirm('Tem certeza que deseja excluir este investimento?')) {
+      await this.investimentoService.deleteInvestimento(id);
+      await this.loadInvestimentos();
     }
+  }
+
+  onModalClose(saved: boolean) {
+    this.showModal.set(false);
+    this.selectedInvestimento.set(null);
+    if (saved) {
+      this.loadInvestimentos();
+    }
+  }
+
+  goToEvolucao(id: string | undefined) {
+    if (id) {
+      this.router.navigate(['/investimentos', id, 'evolucao']);
+    }
+  }
+
+  toggleVisibility() {
+    const newValue = !this.showValues();
+    this.showValues.set(newValue);
+    localStorage.setItem('showValues', newValue.toString());
+  }
 }
