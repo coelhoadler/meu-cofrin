@@ -85,6 +85,15 @@ export class DashboardComponent implements AfterViewInit {
   });
 
   lancamentos = signal<Conta[]>([]);
+
+  // Memoized version for the view to avoid executing functions inside the @for loop during change detection
+  lancamentosView = computed(() => {
+    return this.lancamentos().map(item => ({
+      ...item,
+      rowClass: this.getRowClass(item),
+    }));
+  });
+
   isLoading = signal(true);
 
   selectedConta = signal<Conta | null>(null);
