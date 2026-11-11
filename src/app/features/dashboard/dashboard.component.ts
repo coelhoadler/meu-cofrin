@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, AfterViewInit, computed, effect, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  AfterViewInit,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ChartConfiguration } from 'chart.js';
 import { ButtonModule } from 'primeng/button';
@@ -41,10 +49,10 @@ export type { Variacao };
     GraficoPizzaComponent,
     DetalhesContaModalComponent,
     ReciboModalComponent,
-    ReplicarMesModalComponent
+    ReplicarMesModalComponent,
   ],
   templateUrl: './dashboard.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent implements AfterViewInit {
   private contaService = inject(ContaService);
@@ -58,14 +66,16 @@ export class DashboardComponent implements AfterViewInit {
 
   showValues = this.userPreferences.showValues;
 
-  selectedDate = signal<Date>((() => {
-    const saved = localStorage.getItem('dashboard_selected_month');
-    if (saved) {
-      const parsed = new Date(saved);
-      if (!isNaN(parsed.getTime())) return parsed;
-    }
-    return new Date();
-  })());
+  selectedDate = signal<Date>(
+    (() => {
+      const saved = localStorage.getItem('dashboard_selected_month');
+      if (saved) {
+        const parsed = new Date(saved);
+        if (!isNaN(parsed.getTime())) return parsed;
+      }
+      return new Date();
+    })(),
+  );
 
   selectedMesRef = computed(() => {
     const d = this.selectedDate();
@@ -85,6 +95,17 @@ export class DashboardComponent implements AfterViewInit {
   });
 
   lancamentos = signal<Conta[]>([]);
+  // BOLT OPTIMIZATION: View Model pattern.
+  // Pre-calculates row classes and formatted dates inside a computed signal
+  // to avoid expensive method calls (like new Date()) on every change detection cycle in the template.
+  lancamentosVM = computed(() => {
+    return this.lancamentos().map((item) => ({
+      ...item,
+      originalConta: item,
+      rowClass: this.getRowClass(item),
+      dataVencimentoFormatada: this.formatDataVencimento(item),
+    }));
+  });
   isLoading = signal(true);
 
   selectedConta = signal<Conta | null>(null);
@@ -123,43 +144,45 @@ export class DashboardComponent implements AfterViewInit {
           usePointStyle: true,
           pointStyle: 'rectRounded',
           color: '#64748b',
-          font: { size: 12 }
-        }
-      }
-    }
+          font: { size: 12 },
+        },
+      },
+    },
   };
 
   pieChartData = signal<ChartConfiguration<'pie'>['data']>({
     labels: [],
-    datasets: [{
-      data: [],
-      backgroundColor: [],
-      borderWidth: 0
-    }]
+    datasets: [
+      {
+        data: [],
+        backgroundColor: [],
+        borderWidth: 0,
+      },
+    ],
   });
 
   barChartOptions: ChartConfiguration<'bar'>['options'] = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: { display: false }
+      legend: { display: false },
     },
     scales: {
       y: {
         beginAtZero: true,
         grid: { color: '#f1f5f9' },
-        ticks: { color: '#94a3b8' }
+        ticks: { color: '#94a3b8' },
       },
       x: {
         grid: { display: false },
-        ticks: { color: '#94a3b8' }
-      }
-    }
+        ticks: { color: '#94a3b8' },
+      },
+    },
   };
 
   barChartData = signal<ChartConfiguration<'bar'>['data']>({
     labels: [],
-    datasets: []
+    datasets: [],
   });
 
   constructor() {
@@ -247,22 +270,32 @@ export class DashboardComponent implements AfterViewInit {
       const resumo = this.calculoService.calcularResumoDoMes(contasDoMes);
 
       const topData = [...resumo.topReceitas, ...resumo.topDespesas];
-      const labels = topData.map(item => item[0]);
-      const data = topData.map(item => item[1]);
+      const labels = topData.map((item) => item[0]);
+      const data = topData.map((item) => item[1]);
       const colors = [
-        '#421b7b', '#10b981', '#f59e0b', '#f43f5e', '#3b82f6',
-        '#8b5cf6', '#ec4899', '#14b8a6', '#f97316', '#84cc16'
+        '#421b7b',
+        '#10b981',
+        '#f59e0b',
+        '#f43f5e',
+        '#3b82f6',
+        '#8b5cf6',
+        '#ec4899',
+        '#14b8a6',
+        '#f97316',
+        '#84cc16',
       ];
 
       this.pieChartData.set({
         labels,
-        datasets: [{
-          data,
-          backgroundColor: labels.map((_, i) => colors[i % colors.length]),
-          borderWidth: 2,
-          borderColor: '#ffffff',
-          hoverOffset: 4
-        }]
+        datasets: [
+          {
+            data,
+            backgroundColor: labels.map((_, i) => colors[i % colors.length]),
+            borderWidth: 2,
+            borderColor: '#ffffff',
+            hoverOffset: 4,
+          },
+        ],
       });
 
       const saldo = resumo.somaReceitas - resumo.somaDespesas;
@@ -280,8 +313,12 @@ export class DashboardComponent implements AfterViewInit {
 
       const prevResumo = await this.contaService.getResumoMensalById(prevMesRef);
       if (prevResumo) {
-        this.variacaoReceitas.set(this.calculoService.calcularVariacao(prevResumo.totalReceitas || 0, resumo.somaReceitas));
-        this.variacaoDespesas.set(this.calculoService.calcularVariacao(prevResumo.totalDespesas || 0, resumo.somaDespesas));
+        this.variacaoReceitas.set(
+          this.calculoService.calcularVariacao(prevResumo.totalReceitas || 0, resumo.somaReceitas),
+        );
+        this.variacaoDespesas.set(
+          this.calculoService.calcularVariacao(prevResumo.totalDespesas || 0, resumo.somaDespesas),
+        );
         this.variacaoSaldo.set(this.calculoService.calcularVariacao(prevResumo.saldo || 0, saldo));
       } else {
         this.variacaoReceitas.set(null);
@@ -303,11 +340,13 @@ export class DashboardComponent implements AfterViewInit {
       const dataDespesas: number[] = [];
       const dataSaldos: number[] = [];
 
-      resumos.forEach(r => {
+      resumos.forEach((r) => {
         const [anoStr, mesStr] = r.id.split('-');
         const date = new Date(parseInt(anoStr), parseInt(mesStr) - 1, 1);
 
-        let mesNome = new Intl.DateTimeFormat('pt-BR', { month: 'short' }).format(date).replace('.', '');
+        let mesNome = new Intl.DateTimeFormat('pt-BR', { month: 'short' })
+          .format(date)
+          .replace('.', '');
         mesNome = mesNome.charAt(0).toUpperCase() + mesNome.slice(1);
 
         labels.push(mesNome);
@@ -325,7 +364,7 @@ export class DashboardComponent implements AfterViewInit {
             label: 'Receitas',
             backgroundColor: '#10b981',
             borderRadius: 4,
-            order: 1
+            order: 1,
           },
           {
             type: 'bar',
@@ -333,7 +372,7 @@ export class DashboardComponent implements AfterViewInit {
             label: 'Despesas',
             backgroundColor: '#f43f5e',
             borderRadius: 4,
-            order: 1
+            order: 1,
           },
           {
             type: 'line',
@@ -344,9 +383,9 @@ export class DashboardComponent implements AfterViewInit {
             borderWidth: 2,
             fill: false,
             tension: 0.3,
-            order: 0
-          }
-        ] as any
+            order: 0,
+          },
+        ] as any,
       });
     } catch (error) {
       console.error('Erro ao buscar resumo gráfico:', error);
@@ -501,34 +540,34 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   get isAllSelected(): boolean {
-    const validContas = this.contasParaReplicar().filter(c => !c.existsInDestino);
+    const validContas = this.contasParaReplicar().filter((c) => !c.existsInDestino);
     if (validContas.length === 0) return false;
-    return validContas.every(c => c.selected);
+    return validContas.every((c) => c.selected);
   }
 
   toggleAllSelection() {
     const newValue = !this.isAllSelected;
     const contas = this.contasParaReplicar();
-    const updated = contas.map(c => c.existsInDestino ? c : { ...c, selected: newValue });
+    const updated = contas.map((c) => (c.existsInDestino ? c : { ...c, selected: newValue }));
     this.contasParaReplicar.set(updated);
   }
 
   toggleContaSelection(conta: ContaReplicavel) {
     if (conta.existsInDestino) return;
     const contas = this.contasParaReplicar();
-    const updated = contas.map(c => c.id === conta.id ? { ...c, selected: !c.selected } : c);
+    const updated = contas.map((c) => (c.id === conta.id ? { ...c, selected: !c.selected } : c));
     this.contasParaReplicar.set(updated);
   }
 
   get selectedContasCount(): number {
-    return this.contasParaReplicar().filter(c => c.selected).length;
+    return this.contasParaReplicar().filter((c) => c.selected).length;
   }
 
   async confirmReplicacao() {
     const destino = this.mesDestino();
     if (!destino) return;
 
-    const contasSelecionadas = this.contasParaReplicar().filter(c => c.selected);
+    const contasSelecionadas = this.contasParaReplicar().filter((c) => c.selected);
     if (contasSelecionadas.length === 0) return;
 
     this.isLoadingReplicacao.set(true);
