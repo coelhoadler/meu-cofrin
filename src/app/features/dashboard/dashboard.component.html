@@ -1,255 +1,367 @@
 <div class="flex flex-col gap-6">
   <!-- Dashboard Header Area -->
   <div
-    class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 top-0 z-40 pt-2 pb-0 md:pb-4 -mt-2 bg-transparent dark:bg-[#130c25]/80 backdrop-blur-[2px]">
+    class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 top-0 z-40 pt-2 pb-0 md:pb-4 -mt-2 bg-transparent dark:bg-[#130c25]/80 backdrop-blur-[2px]"
+  >
     <div class="flex items-center justify-between w-full sm:w-auto">
       <div>
         <div class="hidden md:flex items-center gap-3 group cursor-default">
           <div
             class="flex items-center justify-center w-9 h-9 rounded-2xl bg-gradient-to-br from-indigo-500/15 via-purple-500/15 to-pink-500/15 dark:from-indigo-500/25 dark:via-purple-500/25 dark:to-fuchsia-500/25 border border-purple-200/60 dark:border-purple-500/30 text-purple-600 dark:text-purple-300 shadow-sm shrink-0 group-hover:scale-105 group-hover:rotate-6 transition-transform duration-300"
-            [title]="greetingSalutation()">
+            [title]="greetingSalutation()"
+          >
             <span class="material-symbols-outlined text-[20px]">{{ greetingIcon() }}</span>
           </div>
 
           <h2
-            class="text-[28px] font-extrabold tracking-tight bg-gradient-to-r from-slate-900 via-indigo-950 to-purple-700 dark:from-white dark:via-purple-100 dark:to-purple-400 bg-clip-text text-transparent drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)] dark:drop-shadow-[0_2px_12px_rgba(168,85,247,0.25)] select-none">
-            {{greeting()}}
+            class="text-[28px] font-extrabold tracking-tight bg-gradient-to-r from-slate-900 via-indigo-950 to-purple-700 dark:from-white dark:via-purple-100 dark:to-purple-400 bg-clip-text text-transparent drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)] dark:drop-shadow-[0_2px_12px_rgba(168,85,247,0.25)] select-none"
+          >
+            {{ greeting() }}
           </h2>
         </div>
         <!-- Controles de Seleção de Mês -->
         <div class="flex max-w-full items-center gap-2 mt-2">
           <div
-            class="inline-flex items-center bg-white dark:bg-[#1a112c] border border-slate-200 dark:border-slate-800 rounded-2xl p-1 shadow-sm transition-colors">
-            <button type="button" (click)="previousMonth()" title="Mês anterior"
-              class="w-8 h-8 flex items-center justify-center rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80 active:scale-95 transition-all">
+            class="inline-flex items-center bg-white dark:bg-[#1a112c] border border-slate-200 dark:border-slate-800 rounded-2xl p-1 shadow-sm transition-colors"
+          >
+            <button
+              type="button"
+              (click)="previousMonth()"
+              title="Mês anterior"
+              class="w-8 h-8 flex items-center justify-center rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80 active:scale-95 transition-all"
+            >
               <span class="material-symbols-outlined text-xl">chevron_left</span>
             </button>
 
             <div id="tour-date-picker" class="px-1 flex items-center max-w-[180px]">
-              <p-datepicker [ngModel]="selectedDate()" (ngModelChange)="onMonthSelect($event)" view="month"
+              <p-datepicker
+                [ngModel]="selectedDate()"
+                (ngModelChange)="onMonthSelect($event)"
+                view="month"
                 dateFormat="M y"
-                inputStyleClass="w-36 text-center font-bold text-sm text-slate-800 dark:text-white bg-transparent border-0 focus:outline-none focus:ring-0 cursor-pointer capitalize">
+                inputStyleClass="w-36 text-center font-bold text-sm text-slate-800 dark:text-white bg-transparent border-0 focus:outline-none focus:ring-0 cursor-pointer capitalize"
+              >
               </p-datepicker>
             </div>
 
-            <button type="button" (click)="nextMonth()" title="Próximo mês"
-              class="w-8 h-8 flex items-center justify-center rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80 active:scale-95 transition-all">
+            <button
+              type="button"
+              (click)="nextMonth()"
+              title="Próximo mês"
+              class="w-8 h-8 flex items-center justify-center rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80 active:scale-95 transition-all"
+            >
               <span class="material-symbols-outlined text-xl">chevron_right</span>
             </button>
           </div>
 
           @if (!isCurrentMonth()) {
-          <button type="button" (click)="goToCurrentMonth()"
-            class="px-3 py-2 bg-[#421b7b]/10 dark:bg-[#9d6bf3]/15 text-[#421b7b] dark:text-[#9d6bf3] hover:bg-[#421b7b]/20 dark:hover:bg-[#9d6bf3]/25 text-xs font-bold rounded-2xl transition-all flex items-center gap-1 shadow-sm">
-            <span class="material-symbols-outlined text-base">today</span>
-            Voltar para o mês atual
-          </button>
+            <button
+              type="button"
+              (click)="goToCurrentMonth()"
+              class="px-3 py-2 bg-[#421b7b]/10 dark:bg-[#9d6bf3]/15 text-[#421b7b] dark:text-[#9d6bf3] hover:bg-[#421b7b]/20 dark:hover:bg-[#9d6bf3]/25 text-xs font-bold rounded-2xl transition-all flex items-center gap-1 shadow-sm"
+            >
+              <span class="material-symbols-outlined text-base">today</span>
+              Voltar para o mês atual
+            </button>
           }
         </div>
       </div>
     </div>
 
     @if (lancamentos().length > 0) {
-    <div class="flex gap-3 hidden md:flex">
-      <p-button id="tour-btn-replicar-mes" label="Replicar mês" severity="secondary" variant="outlined"
-        icon="pi pi-clone" (onClick)="openReplicarModal()" />
-      <p-button id="tour-btn-nova-conta" label="Cadastrar conta" severity="secondary" variant="outlined"
-        icon="pi pi-plus" [routerLink]="['/nova-conta']" routerLinkActive="router-link-active" />
-    </div>
+      <div class="flex gap-3 hidden md:flex">
+        <p-button
+          id="tour-btn-replicar-mes"
+          label="Replicar mês"
+          severity="secondary"
+          variant="outlined"
+          icon="pi pi-clone"
+          (onClick)="openReplicarModal()"
+        />
+        <p-button
+          id="tour-btn-nova-conta"
+          label="Cadastrar conta"
+          severity="secondary"
+          variant="outlined"
+          icon="pi pi-plus"
+          [routerLink]="['/nova-conta']"
+          routerLinkActive="router-link-active"
+        />
+      </div>
     }
   </div>
 
   <!-- Row 1: Summary Cards -->
-  <app-resumo-cards [totalReceitas]="totalReceitas()" [totalDespesas]="totalDespesas()" [saldoMes]="saldoMes()"
-    [variacaoReceitas]="variacaoReceitas()" [variacaoDespesas]="variacaoDespesas()" [variacaoSaldo]="variacaoSaldo()"
-    [showValues]="showValues()" (toggleVisibility)="toggleVisibility()" />
+  <app-resumo-cards
+    [totalReceitas]="totalReceitas()"
+    [totalDespesas]="totalDespesas()"
+    [saldoMes]="saldoMes()"
+    [variacaoReceitas]="variacaoReceitas()"
+    [variacaoDespesas]="variacaoDespesas()"
+    [variacaoSaldo]="variacaoSaldo()"
+    [showValues]="showValues()"
+    (toggleVisibility)="toggleVisibility()"
+  />
 
   <!-- Row 2: Chart Placeholders -->
   @if (lancamentos().length > 0) {
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    <div class="lg:col-span-2">
-      <app-grafico-barras [chartData]="barChartData()" [chartOptions]="barChartOptions" />
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2">
+        <app-grafico-barras [chartData]="barChartData()" [chartOptions]="barChartOptions" />
+      </div>
+      <div>
+        <app-grafico-pizza [chartData]="pieChartData()" [chartOptions]="pieChartOptions" />
+      </div>
     </div>
-    <div>
-      <app-grafico-pizza [chartData]="pieChartData()" [chartOptions]="pieChartOptions" />
-    </div>
-  </div>
   }
 
   <!-- Row 3: Lançamentos Recentes -->
   <div
-    class="bg-white dark:bg-[#1a112c] rounded-[20px] p-3 sm:p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/50 min-h-[280px] flex flex-col transition-colors duration-300">
+    class="bg-white dark:bg-[#1a112c] rounded-[20px] p-3 sm:p-6 shadow-sm border border-slate-200/80 dark:border-slate-800/50 min-h-[280px] flex flex-col transition-colors duration-300"
+  >
     <div id="tour-lancamentos-recents" class="flex items-center justify-between mb-8">
       <h3 class="text-[15px] font-bold text-slate-800 dark:text-white">Contas do mês</h3>
-      <span class="text-xs font-medium text-slate-400 dark:text-slate-500">{{ lancamentos().length }} conta(s) no
-        total</span>
+      <span class="text-xs font-medium text-slate-400 dark:text-slate-500"
+        >{{ lancamentos().length }} conta(s) no total</span
+      >
     </div>
 
     <!-- Loading State -->
     @if (isLoading()) {
-    <div class="flex-1 flex items-center justify-center py-8">
-      <div class="w-8 h-8 border-4 border-[#421b7b]/20 border-t-[#421b7b] rounded-full animate-spin"></div>
-    </div>
+      <div class="flex-1 flex items-center justify-center py-8">
+        <div
+          class="w-8 h-8 border-4 border-[#421b7b]/20 border-t-[#421b7b] rounded-full animate-spin"
+        ></div>
+      </div>
     }
 
     <!-- Empty State -->
     @if (!isLoading() && lancamentos().length === 0) {
-    <div id="tour-cadastrar-primeira-conta" class="flex-1 flex flex-col items-center justify-center space-y-4 py-8">
-      <p class="text-slate-500 text-[13px]">Nenhuma conta cadastrada ainda.</p>
-      <a routerLink="/nova-conta"
-        class="px-5 py-2 bg-[#421b7b] hover:bg-[#341561] text-white text-[13px] font-semibold rounded-xl shadow-sm transition-colors">
-        Cadastrar primeira conta
-      </a>
-    </div>
+      <div
+        id="tour-cadastrar-primeira-conta"
+        class="flex-1 flex flex-col items-center justify-center space-y-4 py-8"
+      >
+        <p class="text-slate-500 text-[13px]">Nenhuma conta cadastrada ainda.</p>
+        <a
+          routerLink="/nova-conta"
+          class="px-5 py-2 bg-[#421b7b] hover:bg-[#341561] text-white text-[13px] font-semibold rounded-xl shadow-sm transition-colors"
+        >
+          Cadastrar primeira conta
+        </a>
+      </div>
     }
 
     <!-- Data List -->
     @if (!isLoading() && lancamentos().length > 0) {
-    <div class="flex-1 overflow-x-auto">
-      <table class="w-full text-left border-collapse">
-        <thead>
-          <tr
-            class="border-b border-slate-200/80 dark:border-slate-800/50 text-xs text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-            <th class="pb-3 font-medium w-8"></th>
-            <th class="pb-3 font-medium w-24">Dia Venc.</th>
-            <th class="pb-3 font-medium">Descrição</th>
-            <th class="pb-3 font-medium text-right">Valor</th>
-          </tr>
-        </thead>
-        <tbody class="text-sm">
-          @for (item of lancamentos(); track item.id) {
-          <tr (click)="openModal(item)"
-            class="group border-b border-slate-50 dark:border-slate-800/30 last:border-0 transition-colors cursor-pointer active:bg-slate-200 dark:active:bg-slate-800"
-            [ngClass]="getRowClass(item)">
-            <td class="py-4 px-2 w-8">
-              @if(item.tipo === 'Receita') {
-              <div class="material-symbols-outlined text-[#421b7b] dark:text-[#a37fd8] text-[11px]" title="Receita">
-                attach_money</div>
-              }
-              @if(item.tipo === 'Despesa' && item.statusPago) {
-              <div class="material-symbols-outlined text-emerald-500 text-[11px]" title="Pago">check</div>
-              }
-              @if(item.tipo === 'Despesa' && !item.statusPago) {
-              <div class="material-symbols-outlined text-orange-500 text-[11px]" title="Pendente">pending</div>
-              }
-            </td>
-            <td class="py-4 text-slate-500 dark:text-slate-400 text-center sm:font-bold">
-              {{ formatDataVencimento(item) }}
-            </td>
-            <td class="py-4">
-              <div class="flex flex-col">
-                <div class="flex items-center gap-2">
-                  <span
-                    class="font-semibold text-slate-800 dark:text-slate-200 dark:group-hover:text-white dark:group-hover:font-bold transition-all"
-                    [ngClass]="{ 'line-through': item.statusPago }">{{
-                    item.nome }}</span>
-                  @if (item.parcelamentoId) {
-                  <span
-                    class="shrink-0 px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider bg-purple-100 text-purple-700 dark:bg-[#7941dc]/20 dark:text-purple-300 border border-purple-200 dark:border-[#7941dc]/30">
-                    {{ item.numeroParcela }}/{{ item.totalParcelas }}
-                  </span>
+      <div class="flex-1 overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr
+              class="border-b border-slate-200/80 dark:border-slate-800/50 text-xs text-slate-400 dark:text-slate-500 uppercase tracking-wider"
+            >
+              <th class="pb-3 font-medium w-8"></th>
+              <th class="pb-3 font-medium w-24">Dia Venc.</th>
+              <th class="pb-3 font-medium">Descrição</th>
+              <th class="pb-3 font-medium text-right">Valor</th>
+            </tr>
+          </thead>
+          <tbody class="text-sm">
+            @for (item of lancamentosVM(); track item.id) {
+              <tr
+                (click)="openModal(item.originalConta)"
+                class="group border-b border-slate-50 dark:border-slate-800/30 last:border-0 transition-colors cursor-pointer active:bg-slate-200 dark:active:bg-slate-800"
+                [ngClass]="item.rowClass"
+              >
+                <td class="py-4 px-2 w-8">
+                  @if (item.tipo === 'Receita') {
+                    <div
+                      class="material-symbols-outlined text-[#421b7b] dark:text-[#a37fd8] text-[11px]"
+                      title="Receita"
+                    >
+                      attach_money
+                    </div>
                   }
-                  @if (item.isRecorrente) {
-                  <span
-                    class="flex items-center gap-1 px-1.5 py-0.5 mr-4 bg-[#421b7b]/10 dark:bg-[#a78bfa]/10 text-[#421b7b] dark:text-[#a78bfa] rounded text-[6px] md:text-[8px] font-bold uppercase tracking-wider">
-                    <span class="material-symbols-outlined">autorenew</span>
-                    <p class="hidden md:block">Recorrente</p>
-                  </span>
+                  @if (item.tipo === 'Despesa' && item.statusPago) {
+                    <div
+                      class="material-symbols-outlined text-emerald-500 text-[11px]"
+                      title="Pago"
+                    >
+                      check
+                    </div>
                   }
-                  @if (item.reciboUrl) {
-                  <span (click)="openImageModal($event, item)"
-                    class="material-symbols-outlined text-slate-400 text-base cursor-pointer hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
-                    title="Ver recibo">image</span>
+                  @if (item.tipo === 'Despesa' && !item.statusPago) {
+                    <div
+                      class="material-symbols-outlined text-orange-500 text-[11px]"
+                      title="Pendente"
+                    >
+                      pending
+                    </div>
                   }
-                </div>
-                @if (item.categoria) {
-                <span class="text-xs font-medium text-slate-400 dark:text-slate-500 mt-0.5">{{
-                  item.categoria
-                  }}</span>
-                }
-              </div>
-            </td>
-            <td class="py-4 text-right font-semibold pr-2"
-              [ngClass]="item.tipo === 'Receita' ? 'text-emerald-600' : 'text-red-500'">
-              @if (showValues()) {
-              @if (item.tipo === 'Receita') {
-              <span>+ </span>
-              } @else {
-              <span>- </span>
-              }
-              {{ item.valor }}
-              } @else {
-              <span>R$ ••••</span>
-              }
-            </td>
-          </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+                </td>
+                <td class="py-4 text-slate-500 dark:text-slate-400 text-center sm:font-bold">
+                  {{ item.dataVencimentoFormatada }}
+                </td>
+                <td class="py-4">
+                  <div class="flex flex-col">
+                    <div class="flex items-center gap-2">
+                      <span
+                        class="font-semibold text-slate-800 dark:text-slate-200 dark:group-hover:text-white dark:group-hover:font-bold transition-all"
+                        [ngClass]="{ 'line-through': item.statusPago }"
+                        >{{ item.nome }}</span
+                      >
+                      @if (item.parcelamentoId) {
+                        <span
+                          class="shrink-0 px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider bg-purple-100 text-purple-700 dark:bg-[#7941dc]/20 dark:text-purple-300 border border-purple-200 dark:border-[#7941dc]/30"
+                        >
+                          {{ item.numeroParcela }}/{{ item.totalParcelas }}
+                        </span>
+                      }
+                      @if (item.isRecorrente) {
+                        <span
+                          class="flex items-center gap-1 px-1.5 py-0.5 mr-4 bg-[#421b7b]/10 dark:bg-[#a78bfa]/10 text-[#421b7b] dark:text-[#a78bfa] rounded text-[6px] md:text-[8px] font-bold uppercase tracking-wider"
+                        >
+                          <span class="material-symbols-outlined">autorenew</span>
+                          <p class="hidden md:block">Recorrente</p>
+                        </span>
+                      }
+                      @if (item.reciboUrl) {
+                        <span
+                          (click)="openImageModal($event, item)"
+                          class="material-symbols-outlined text-slate-400 text-base cursor-pointer hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                          title="Ver recibo"
+                          >image</span
+                        >
+                      }
+                    </div>
+                    @if (item.categoria) {
+                      <span class="text-xs font-medium text-slate-400 dark:text-slate-500 mt-0.5">{{
+                        item.categoria
+                      }}</span>
+                    }
+                  </div>
+                </td>
+                <td
+                  class="py-4 text-right font-semibold pr-2"
+                  [ngClass]="item.tipo === 'Receita' ? 'text-emerald-600' : 'text-red-500'"
+                >
+                  @if (showValues()) {
+                    @if (item.tipo === 'Receita') {
+                      <span>+ </span>
+                    } @else {
+                      <span>- </span>
+                    }
+                    {{ item.valor }}
+                  } @else {
+                    <span>R$ ••••</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
     }
 
     <!-- Rodapé: Total a Pagar e Legenda -->
     @if (!isLoading() && lancamentos().length > 0) {
-    <div
-      class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mt-6 pt-4 border-t border-slate-100 dark:border-slate-800/50">
-      <!-- Total a Pagar -->
-      <div>
-        <p class="text-[11px] text-slate-500 font-medium uppercase tracking-wider mb-0.5">
-          Resta a pagar (Mês)
-        </p>
-        <p class="text-lg font-bold text-orange-500">{{ showValues() ? totalAPagar() : 'R$ ••••' }}</p>
-      </div>
-      <!-- Foi pago -->
-      <div>
-        <p class="text-[11px] text-slate-500 font-medium uppercase tracking-wider mb-0.5">
-          Foi pago (Mês)
-        </p>
-        <p class="text-lg font-bold text-green-500">{{ showValues() ? totalPago() : 'R$ ••••' }}</p>
-      </div>
-      <!-- Legenda -->
-      <div class="flex flex-wrap items-center gap-6">
-        <div class="flex items-center gap-2">
-          <div class="material-symbols-outlined dark:text-[#a37fd8] text-[#421b7b] text-[11px]">attach_money</div>
-          <span class="text-[11px] text-slate-500 font-medium uppercase tracking-wider">Receita</span>
+      <div
+        class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mt-6 pt-4 border-t border-slate-100 dark:border-slate-800/50"
+      >
+        <!-- Total a Pagar -->
+        <div>
+          <p class="text-[11px] text-slate-500 font-medium uppercase tracking-wider mb-0.5">
+            Resta a pagar (Mês)
+          </p>
+          <p class="text-lg font-bold text-orange-500">
+            {{ showValues() ? totalAPagar() : 'R$ ••••' }}
+          </p>
         </div>
-        <div class="flex items-center gap-2">
-          <div class="material-symbols-outlined text-emerald-500 text-[11px]">check</div>
-          <span class="text-[11px] text-slate-500 font-medium uppercase tracking-wider">Pago</span>
+        <!-- Foi pago -->
+        <div>
+          <p class="text-[11px] text-slate-500 font-medium uppercase tracking-wider mb-0.5">
+            Foi pago (Mês)
+          </p>
+          <p class="text-lg font-bold text-green-500">
+            {{ showValues() ? totalPago() : 'R$ ••••' }}
+          </p>
         </div>
-        <div class="flex items-center gap-2">
-          <span class="material-symbols-outlined text-orange-500 text-[11px]">pending</span>
-          <span class="text-[11px] text-slate-500 font-medium uppercase tracking-wider">Pendente</span>
+        <!-- Legenda -->
+        <div class="flex flex-wrap items-center gap-6">
+          <div class="flex items-center gap-2">
+            <div class="material-symbols-outlined dark:text-[#a37fd8] text-[#421b7b] text-[11px]">
+              attach_money
+            </div>
+            <span class="text-[11px] text-slate-500 font-medium uppercase tracking-wider"
+              >Receita</span
+            >
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="material-symbols-outlined text-emerald-500 text-[11px]">check</div>
+            <span class="text-[11px] text-slate-500 font-medium uppercase tracking-wider"
+              >Pago</span
+            >
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-orange-500 text-[11px]">pending</span>
+            <span class="text-[11px] text-slate-500 font-medium uppercase tracking-wider"
+              >Pendente</span
+            >
+          </div>
         </div>
       </div>
-    </div>
     }
   </div>
 </div>
 
 <!-- Modal de Ações da Conta Selecionada -->
-<app-detalhes-conta-modal [conta]="selectedConta()" (close)="closeModal()" (marcarComoPaga)="marcarComoPaga($event)"
-  (delete)="deleteLancamento($event)" />
+<app-detalhes-conta-modal
+  [conta]="selectedConta()"
+  (close)="closeModal()"
+  (marcarComoPaga)="marcarComoPaga($event)"
+  (delete)="deleteLancamento($event)"
+/>
 
 <!-- Floating Action Button (Mobile Only) -->
 @if (lancamentos().length > 0) {
-<a routerLink="/nova-conta" id="tour-fab-nova-conta"
-  class="fixed bottom-6 right-6 z-30 sm:hidden flex items-center justify-center w-14 h-14 bg-[#421b7b] active:bg-[#341561] text-white rounded-full border-[2.5px] border-[#9d6bf3] shadow-[0_0_20px_rgba(157,107,243,0.4)] transition-all duration-300 active:scale-95"
-  [ngClass]="(layoutService.isSidebarOpen() || layoutService.isAtBottom()) ? 'opacity-0 scale-75 pointer-events-none' : 'opacity-100 scale-100 pointer-events-auto'"
-  [attr.aria-hidden]="layoutService.isSidebarOpen() || layoutService.isAtBottom()"
-  [tabIndex]="(layoutService.isSidebarOpen() || layoutService.isAtBottom()) ? -1 : 0">
-  <span class="material-symbols-outlined text-3xl">add</span>
-</a>
+  <a
+    routerLink="/nova-conta"
+    id="tour-fab-nova-conta"
+    class="fixed bottom-6 right-6 z-30 sm:hidden flex items-center justify-center w-14 h-14 bg-[#421b7b] active:bg-[#341561] text-white rounded-full border-[2.5px] border-[#9d6bf3] shadow-[0_0_20px_rgba(157,107,243,0.4)] transition-all duration-300 active:scale-95"
+    [ngClass]="
+      layoutService.isSidebarOpen() || layoutService.isAtBottom()
+        ? 'opacity-0 scale-75 pointer-events-none'
+        : 'opacity-100 scale-100 pointer-events-auto'
+    "
+    [attr.aria-hidden]="layoutService.isSidebarOpen() || layoutService.isAtBottom()"
+    [tabIndex]="layoutService.isSidebarOpen() || layoutService.isAtBottom() ? -1 : 0"
+  >
+    <span class="material-symbols-outlined text-3xl">add</span>
+  </a>
 }
 
 <!-- Modal Replicar Mês -->
-<app-replicar-mes-modal [visible]="showReplicarModal()" [mesOrigem]="mesOrigem()" [mesDestino]="mesDestino()"
-  [contasParaReplicar]="contasParaReplicar()" [isLoading]="isLoadingReplicacao()" [isAllSelected]="isAllSelected"
-  [selectedCount]="selectedContasCount" (close)="closeReplicarModal()"
+<app-replicar-mes-modal
+  [visible]="showReplicarModal()"
+  [mesOrigem]="mesOrigem()"
+  [mesDestino]="mesDestino()"
+  [contasParaReplicar]="contasParaReplicar()"
+  [isLoading]="isLoadingReplicacao()"
+  [isAllSelected]="isAllSelected"
+  [selectedCount]="selectedContasCount"
+  (close)="closeReplicarModal()"
   (mesOrigemChange)="mesOrigem.set($event); loadContasParaReplicar()"
-  (mesDestinoChange)="mesDestino.set($event); loadContasParaReplicar()" (toggleAll)="toggleAllSelection()"
-  (toggleConta)="toggleContaSelection($event)" (confirm)="confirmReplicacao()" />
+  (mesDestinoChange)="mesDestino.set($event); loadContasParaReplicar()"
+  (toggleAll)="toggleAllSelection()"
+  (toggleConta)="toggleContaSelection($event)"
+  (confirm)="confirmReplicacao()"
+/>
 
 <!-- Modal de Imagem (Recibo) -->
-<app-recibo-modal [visible]="showImageModal()" [conta]="selectedImageConta()" [isLoading]="isImageLoading()"
-  (visibleChange)="showImageModal.set($event)" (imageLoad)="onImageLoad()" (imageError)="onImageError()" />
+<app-recibo-modal
+  [visible]="showImageModal()"
+  [conta]="selectedImageConta()"
+  [isLoading]="isImageLoading()"
+  (visibleChange)="showImageModal.set($event)"
+  (imageLoad)="onImageLoad()"
+  (imageError)="onImageError()"
+/>
